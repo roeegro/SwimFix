@@ -4,14 +4,14 @@ import pandas as pd
 import numpy as np
 
 
-def show_all_figures():
-    show_figures_of_angles_by_time()
-    show_frame_detected_figure()
-    show_body_parts_by_frame()
-    show_body_parts_location_by_time();
+def show_all_figures(output_dirs):
+    show_figures_of_angles_by_time(output_dirs)
+    show_frame_detected_figure(output_dirs)
+    show_body_parts_by_frame(output_dirs)
+    show_body_parts_location_by_time(output_dirs);
 
-def show_frame_detected_figure():
-    frame_df = pd.read_csv('../output/analytical_data/is_frame_detected.csv')
+def show_frame_detected_figure(output_dirs):
+    frame_df = pd.read_csv(output_dirs['analytical_data_path'] + '/is_frame_detected.csv')
     x = frame_df['Frame Number']
     y = []
     for index, row in frame_df.iterrows():
@@ -22,12 +22,12 @@ def show_frame_detected_figure():
     plt.xlabel('Frame Number')
     plt.ylabel('valid frame')
     plt.plot(x, y, 'ro', color='green')
-    plt.savefig("../output/figures/detected_frames_figure")
+    plt.savefig(output_dirs['figures_path'] + "/detected_frames_figure")
     plt.close()
 
 
-def show_figures_of_angles_by_time():
-    angles_df = pd.read_csv('../output/analytical_data/angles_by_time.csv')
+def show_figures_of_angles_by_time(output_dirs):
+    angles_df = pd.read_csv(output_dirs['analytical_data_path'] + '/angles_by_time.csv')
     columns = angles_df.columns
     for col in columns:
         if col == "Frame Number":
@@ -37,13 +37,13 @@ def show_figures_of_angles_by_time():
         plt.xlabel('Frame number')
         plt.ylabel("{} angle".format(col))
         plt.plot(x, y)
-        plt.savefig("../output/figures/{}_angle__by_frame".format(col))
+        plt.savefig(output_dirs['figures_path'] + "/{}_angle__by_frame".format(col))
         plt.close()
 
 
-def show_body_parts_by_frame():
+def show_body_parts_by_frame(output_dirs):
     df = pd.read_csv(
-        "../output/analytical_data/body_part_detected_by_frame_df.csv")
+        output_dirs['analytical_data_path'] + "/body_part_detected_by_frame_df.csv")
     x = df['Frame Number']
     for col in df.columns:
         if col == "Frame Number":
@@ -51,12 +51,12 @@ def show_body_parts_by_frame():
         y = df[col]
         plt.ylabel("Detected " + col)
         plt.plot(x, y, 'ro')
-        plt.savefig('../output/figures/{}_detected_by_frame'.format(col))
+        plt.savefig(output_dirs['figures_path'] + '/{}_detected_by_frame'.format(col))
         plt.close()
 
 
-def show_body_parts_location_by_time():
-    all_keypoints_df = pd.read_csv("../output/analytical_data/all_keypoints.csv")
+def show_body_parts_location_by_time(output_dirs):
+    all_keypoints_df = pd.read_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv")
     frame_axis = all_keypoints_df['Frame Number'].to_list()
     all_keypoints_df.drop(['Unnamed: 0', 'Frame Number'], axis='columns', inplace=True)
     body_triplets = [all_keypoints_df.columns[i:i + 3] for i in range(0, len(all_keypoints_df.columns), 3)]
@@ -73,10 +73,10 @@ def show_body_parts_location_by_time():
         new_x_coor = poly_x(frame_partition)
         new_y_coor = poly_y(frame_partition)
         plt.plot(frame_axis, x_coor,frame_partition,new_x_coor)
-        plt.savefig("../output/figures/{}_by_frame_and_accurancy".format(triplet[0]))
+        plt.savefig(output_dirs['figures_path'] + "/{}_by_frame_and_accurancy".format(triplet[0]))
         plt.close()
         plt.plot(frame_axis, y_coor,frame_partition,new_y_coor)
-        plt.savefig("../output/figures/{}_by_frame_and_accurancy".format(triplet[1]))
+        plt.savefig(output_dirs['figures_path'] + "/{}_by_frame_and_accurancy".format(triplet[1]))
         plt.close()
 
 

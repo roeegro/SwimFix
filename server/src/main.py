@@ -46,7 +46,6 @@ args = parser.parse_known_args()
 params = dict()
 params["model_folder"] = "../openpose/models/"
 
-
 # Add others in path?
 for i in range(0, len(args[1])):
     curr_item = args[1][i]
@@ -63,14 +62,16 @@ for i in range(0, len(args[1])):
 
 
 def main():
-    video_proccesor.get_keypoints_csv_from_video(args, params)
-    keypoint_with_estimated = data_analyser.keypoint_estimation(pd.read_csv('../output/analytical_data/all_keypoints.csv'))
-    keypoint_with_estimated.to_csv('../output/analytical_data/all_keypoints.csv')
-    data_analyser.make_body_parts_df(pd.read_csv('../output/analytical_data/all_keypoints.csv'))
-    vectors = pd.read_csv('../output/analytical_data/vectors_by_time.csv')
-    data_analyser.make_angle_df(vectors)
-    data_analyser.make_body_part_detected_by_frame_df()
-    visualizer.show_all_figures()
+    output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)
+    keypoint_with_estimated = data_analyser.keypoint_estimation(
+        pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'))
+    keypoint_with_estimated.to_csv(output_dirs['analytical_data_path'] + 'all_keypoints.csv')
+    data_analyser.make_body_parts_df(pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'),
+                                     output_dirs)
+    vectors = pd.read_csv(output_dirs['analytical_data_path'] + '/vectors_by_time.csv')
+    data_analyser.make_angle_df(vectors, output_dirs)
+    data_analyser.make_body_part_detected_by_frame_df(output_dirs)
+    visualizer.show_all_figures(output_dirs)
 
 
 if __name__ == '__main__':

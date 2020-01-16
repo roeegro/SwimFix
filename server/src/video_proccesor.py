@@ -14,7 +14,9 @@ body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', '
 # Recieves args from main (including video path) and params to configure the library
 # Creates 3 csv files(all keypoints, valid and invalid ones) and emplace wire-frame.
 def get_keypoints_csv_from_video(args, params):
-
+    video_name = utils.get_file_name(args[0].image_path)
+    video_name = utils.filename_without_prefix(video_name)
+    output_dirs = utils.generate_dirs_for_output_of_movie(video_name)
     # Starting OpenPose
     opWrapper = op.WrapperPython()
     # print(params)
@@ -70,37 +72,37 @@ def get_keypoints_csv_from_video(args, params):
             if is_valid:  # Check the dataframe without the number frame property
                 valid_keypoints_df = pd.concat([valid_keypoints_df, current_frame_df], sort=False)
                 # Update csv file
-                valid_keypoints_df.to_csv("../output/analytical_data/valid_keypoints.csv")
+                valid_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv")
             else:
                 invalid_keypoints_df = pd.concat([invalid_keypoints_df, current_frame_df], sort=False)
                 # Update csv file
-                invalid_keypoints_df.to_csv("../output/analytical_data/invalid_keypoints.csv")
+                invalid_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv")
 
             # Anyway append it to all keypoints
             all_keypoints_df = pd.concat([all_keypoints_df, current_frame_df], sort=False)
             # Update csv file
-            all_keypoints_df.to_csv("../output/analytical_data/all_keypoints.csv")
+            all_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv")
 
             # and anyway add it to detected
             current_detected_frame_array = [frame_counter, 0 if not is_valid else 1]
             current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
             current_detected_frame_df.columns = ['Frame Number', 'Detected']
             frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv("../output/analytical_data/is_frame_detected.csv")
+            frame_detected_df.to_csv(output_dirs['analytical_data_path']+"/is_frame_detected.csv")
         else:
             nan_record = [frame_counter]
             nan_record = nan_record + [math.nan] * len(body_parts)
             nan_record_df = pd.DataFrame(nan_record).T
-            nan_record_df.columns = ['Frame Number'] +  body_parts
+            nan_record_df.columns = ['Frame Number'] + body_parts
             all_keypoints_df = pd.concat([all_keypoints_df, nan_record_df], sort=False)
             # Update csv file
-            all_keypoints_df.to_csv("../output/analytical_data/all_keypoints.csv")
+            all_keypoints_df.to_csv(output_dirs['analytical_data_path']+"/all_keypoints.csv")
 
             current_detected_frame_array = [frame_counter, 0]
             current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
             current_detected_frame_df.columns = ['Frame Number', 'Detected']
             frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv("../output/analytical_data/is_frame_detected.csv")
+            frame_detected_df.to_csv(output_dirs['analytical_data_path']+"/is_frame_detected.csv")
 
         # if not args[0].no_display:
         cv2.imshow("body from video", datum.cvOutputData)
@@ -117,12 +119,11 @@ def get_keypoints_csv_from_video(args, params):
     # Closes all the frames
     cv2.destroyAllWindows()
 
-
-
     # Display Image
     # print("Body keypoints: \n" + str(datum.poseKeypoints))
     # cv2.imshow("OpenPose 1.5.1 - Tutorial Python API", datum.cvOutputData)
     # cv2.waitKey(0)
+    return output_dirs
 
 
 # Basic check if frame is valid to be included in the analytical data

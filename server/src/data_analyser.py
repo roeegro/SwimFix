@@ -15,7 +15,7 @@ body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', '
               'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']
 
 
-def make_body_parts_df(valid_keypoints_df):
+def make_body_parts_df(valid_keypoints_df,output_dirs):
     cols = ['Frame Number', 'RShoulder_X', 'RShoulder_Y', 'LShoulder_X', 'LShoulder_Y', 'RArm_X',
             'RArm_Y', 'LArm_X', 'LArm_Y', 'RForarm_X', 'RForarm_Y', 'LForarm_X',
             'LForarm_Y']
@@ -47,10 +47,10 @@ def make_body_parts_df(valid_keypoints_df):
         vectors_in_current_frame = pd.DataFrame(row_array).T
         vectors_in_current_frame.columns = cols
         vectors_by_frames_df = pd.concat([vectors_by_frames_df, vectors_in_current_frame], sort=False)
-        vectors_by_frames_df.to_csv("../output/analytical_data/vectors_by_time.csv")
+        vectors_by_frames_df.to_csv(output_dirs['analytical_data_path'] + "/vectors_by_time.csv")
 
 
-def make_angle_df(vectors_df):
+def make_angle_df(vectors_df,output_dirs):
     df_angles = pd.DataFrame(columns=['Frame Number', 'RElbow', 'RShoulder', 'LElbow', 'LShoulder'])
     for index, row in vectors_df.iterrows():
         # Calculating vectors (from each 2 points) and
@@ -103,11 +103,11 @@ def make_angle_df(vectors_df):
         current_frame_angles_df = pd.DataFrame(array_of_angles).T
         current_frame_angles_df.columns = df_angles.columns
         df_angles = pd.concat([df_angles, current_frame_angles_df], sort=False)
-        df_angles.to_csv("../output/analytical_data/angles_by_time.csv")
+        df_angles.to_csv(output_dirs['analytical_data_path']+"/angles_by_time.csv")
 
 
-def make_body_part_detected_by_frame_df():
-    df = pd.read_csv('../output/analytical_data/all_keypoints.csv')
+def make_body_part_detected_by_frame_df(output_dirs):
+    df = pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
     body_parts_without_coor = []
     for i in range(0, len(body_parts), 3):
         body_part = body_parts[i]
@@ -130,7 +130,7 @@ def make_body_part_detected_by_frame_df():
         cur_frame_df = pd.DataFrame(cur_frame_array).T
         cur_frame_df.columns = df_to_load.columns
         df_to_load = pd.concat([df_to_load, cur_frame_df], sort=False)
-        df_to_load.to_csv("../output/analytical_data/body_part_detected_by_frame_df.csv")
+        df_to_load.to_csv(output_dirs['analytical_data_path']+"/body_part_detected_by_frame_df.csv")
 
 
 def curve(x, a, b, c, d):

@@ -1,5 +1,5 @@
 import os
-
+from datetime import datetime
 
 def filename_without_prefix(filename):
     path_as_array = filename.split('/')
@@ -41,6 +41,30 @@ def get_body_parts():
             'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
             'LShoulderY', 'LShoulderScore',
             'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']
+
+def generate_dirs_for_output_of_movie(movName):
+    outputs_dir = get_src_path() + "\\..\\output"
+    os.chdir(outputs_dir)
+    time_created = datetime.utcnow().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
+    print(time_created)
+    movie_output_dir = "{}_{}_output".format(movName,time_created)
+    os.mkdir(movie_output_dir)
+    os.chdir(".\\"+movie_output_dir)
+    analytical_data_path = "analytical_data"
+    figures_path = "figures"
+    frames = "frames"
+    os.mkdir(analytical_data_path)
+    os.mkdir(figures_path)
+    os.mkdir(frames)
+    dict_to_return = dict()
+    dict_to_return["output_dir"] = outputs_dir
+    dict_to_return["output_movie_dir"] = outputs_dir + "\\" + movie_output_dir
+    dict_to_return["analytical_data_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + analytical_data_path
+    dict_to_return["figures_path"] = outputs_dir + "\\" + movie_output_dir + "\\" +  figures_path
+    dict_to_return["frames"] = outputs_dir + "\\" + movie_output_dir + "\\" + frames
+    os.chdir(get_src_path())
+    return dict_to_return
+
 
 if __name__ == "__main__":
     print(get_src_path())

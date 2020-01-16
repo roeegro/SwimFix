@@ -152,3 +152,4 @@ server/openpose/models/pose/mpi/pose_deploy_linevec.prototxt
 server/openpose/models/pose/mpi/pose_deploy_linevec_faster_4_stages.prototxt
 server/output/analytical_data/all_keypoints.csv
 server/output/analytical_data/is_frame_detected.csv
+*.csv
