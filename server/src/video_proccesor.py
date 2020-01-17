@@ -3,8 +3,13 @@ from main import *
 import cv2
 import math
 import utils
-import extract_frames as f
 
+from stat import S_ISREG, ST_CTIME, ST_MODE
+import os, sys, time
+from functools import reduce
+import extract_frames as f
+import extract_poses as p
+import canada as c
 body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', 'RShoulderX', 'RShoulderY',
               'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
               'LShoulderY', 'LShoulderScore',
@@ -17,6 +22,37 @@ def get_keypoints_csv_from_video(args, params):
     video_name = utils.get_file_name(args[0].image_path)
     video_name = utils.filename_without_prefix(video_name)
     output_dirs = utils.generate_dirs_for_output_of_movie(video_name)
+
+    # Extract frames
+    f.extract_frames_by_file(file=args[0].image_path, output=output_dirs['output_movie_dir'])
+
+    # # sort frames by creation time
+    # # path to the directory (relative or absolute)
+    # dirpath = output_dirs['output_movie_dir'] + '\\frames'
+    # list_of_frames = [name for name in os.listdir(dirpath)]
+    # frame_to_index = list(map(lambda  file_name : {'path':file_name ,'index':utils.get_id_of_file(utils.filename_without_prefix(file_name))} , list_of_frames))
+    # frame_to_index = sorted(frame_to_index, key=lambda k: (int)(k['index']))
+    # params['image_dir'] = output_dirs['output_movie_dir'] + '\\frames'
+    # params['write_images'] =output_dirs['output_movie_dir'] + '\\images'
+    # # Starting OpenPose
+    # opWrapper = op.WrapperPython()
+    # # print(params)
+    # opWrapper.configure(params)
+    # opWrapper.start()
+    # datum = op.Datum()
+    #
+    # for i in range(0,len(frame_to_index)-1):
+    #     print(i)
+    #     frame = cv2.imread(dirpath + '\\'+ frame_to_index[i]['path'])
+    #     datum.cvInputData = frame
+    #     opWrapper.emplaceAndPop([datum])
+    #     output = datum.poseKeypoints
+    #     cv2.waitKey(10)
+    #     cv2.imshow("OpenPose 1.5.1 - Tutorial Python API", datum.cvOutputData)
+    #     converter = op.OpOutputToCvMat()
+    #     cv2.imwrite(output_dirs['output_movie_dir'] + '\\images',converter.formatToCvMat(datum.cvOutputData))
+    # cv2.destroyAllWindows()
+
     # Starting OpenPose
     opWrapper = op.WrapperPython()
     # print(params)
@@ -88,7 +124,7 @@ def get_keypoints_csv_from_video(args, params):
             current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
             current_detected_frame_df.columns = ['Frame Number', 'Detected']
             frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv(output_dirs['analytical_data_path']+"/is_frame_detected.csv")
+            frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
         else:
             nan_record = [frame_counter]
             nan_record = nan_record + [math.nan] * len(body_parts)
@@ -96,13 +132,13 @@ def get_keypoints_csv_from_video(args, params):
             nan_record_df.columns = ['Frame Number'] + body_parts
             all_keypoints_df = pd.concat([all_keypoints_df, nan_record_df], sort=False)
             # Update csv file
-            all_keypoints_df.to_csv(output_dirs['analytical_data_path']+"/all_keypoints.csv")
+            all_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv")
 
             current_detected_frame_array = [frame_counter, 0]
             current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
             current_detected_frame_df.columns = ['Frame Number', 'Detected']
             frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv(output_dirs['analytical_data_path']+"/is_frame_detected.csv")
+            frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
 
         # if not args[0].no_display:
         cv2.imshow("body from video", datum.cvOutputData)
