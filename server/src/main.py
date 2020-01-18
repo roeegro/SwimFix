@@ -1,105 +1,78 @@
-import extract_frames as f
-import extract_poses as p
-import classifier as clf
+# Edited by Roee Groiser
+# It requires OpenCV installed for Python
+import sys
 import os
-import scenedetect as sd
+from sys import platform
+import argparse
+import pandas as pd
+import numpy as np
+import visualizer
+import video_proccesor
+import data_analyser
+
+# import preprocessor
+# setup
+try:
+    # Import Openpose (Windows/Ubuntu/OSX)
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    try:
+        # Windows Import
+        if platform == "win32":
+            # Change these variables to point to the correct folder (Release/x64 etc.)
+            sys.path.append(dir_path + '/../openpose/build/python/openpose/Release');
+            os.environ['PATH'] = os.environ[
+                                     'PATH'] + ';' + dir_path + '/../openpose/build/x64/Release;' + dir_path + '/../openpose/build/bin;'
+            import pyopenpose as op
+
+        else:
+            # Change these variables to point to the correct folder (Release/x64 etc.)
+            sys.path.append('../../python');
+            # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the OpenPose/python module from there. This will install OpenPose and the python library at your desired installation path. Ensure that this is in your python path in order to use it.
+            # sys.path.append('/usr/local/python')
+            from openpose import pyopenpose as op
+    except:
+        print(
+            'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
+except:
+    print('not valid')
+
+# Flags
+parser = argparse.ArgumentParser()
+parser.add_argument("--image_path",
+                    help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
+args = parser.parse_known_args()
+
+# Custom Params (refer to include/openpose/flags.hpp for more parameters)
+params = dict()
+params["model_folder"] = "../openpose/models/"
+
+# Add others in path?
+for i in range(0, len(args[1])):
+    curr_item = args[1][i]
+    if i != len(args[1]) - 1:
+        next_item = args[1][i + 1]
+    else:
+        next_item = "1"
+    if "--" in curr_item and "--" in next_item:
+        key = curr_item.replace('-', '')
+        if key not in params:  params[key] = "1"
+    elif "--" in curr_item and "--" not in next_item:
+        key = curr_item.replace('-', '')
+        if key not in params: params[key] = next_item
 
 
-# Steps to train classifier to learn pulling classifier c:
-# The dataset should include one folder for each swimmer with the video (*.MOV) inside.
-# The name of the swimmer folder and video file should be the same!
-def train(dataset_folder, open_pose_path):
-    # 1. Extract the frames from the given videos of swimmers
-    f.extract_frames_by_folder(dataset_folder)
-
-    # 2. (LOOP) For each swimmer,
-    for swimmer in next(os.walk(dataset_folder + '\.'))[1]:
-        # 2.1. Input the frames to the openpose demo application
-        os.system(open_pose_path + " "
-                                   "--image_dir " + dataset_folder + swimmer + "\\frames "
-                                                                               "--write_keypoint_json " + dataset_folder + swimmer + "\\poses "
-                                                                                                                                     "--write_images " + dataset_folder + swimmer + "\\images "
-                                                                                                                                                                                    "--net_resolution \"1312x736\" "
-                                                                                                                                                                                    "--scale_number 4 "
-                                                                                                                                                                                    "--scale_gap 0.25")
-
-    # 2.2. Extract the poses (x,y) positions from the frames
-    p.output_train_dataset(input=dataset_folder, output=dataset_folder + "data.csv")
-
-    # 2.3. To do manual labeling, override the 'ManualLabel' column in the output file manually
-
-    # 3. Train classifier on the labeled dataset and save it
-    clf.train(training_set=dataset_folder + "data.csv", output=dataset_folder + "rf_arm_points_angles.pkl",
-              feature_set="arm_points_angles", classifier='rf')
-    clf.train(training_set=dataset_folder + "data.csv", output=dataset_folder + "rf_arm_points.pkl",
-              feature_set="arm_points", classifier='rf')
-    clf.train(training_set=dataset_folder + "data.csv", output=dataset_folder + "rf_arm_angles.pkl",
-              feature_set="arm_angles", classifier='rf')
-    clf.train(training_set=dataset_folder + "data.csv", output=dataset_folder + "rf_all_point.pkl",
-              feature_set="all_point", classifier='rf')
-
-    # clf.train(training_set=dataset_folder + "data.csv",output=dataset_folder + "svm_arm_points_angles.pkl", feature_set="arm_points_angles", classifier='svm')
-    # clf.train(training_set=dataset_folder + "data.csv", output=dataset_folder + "svm_arm_points.pkl", feature_set="arm_points", classifier='svm')
-    # clf.train(training_set=dataset_folder + "data.csv", output=dataset_folder + "svm_arm_angles.pkl", feature_set="arm_angles", classifier='svm')
-    # clf.train(training_set=dataset_folder + "data.csv", output=dataset_folder + "svm_all_point.pkl", feature_set="all_point", classifier='svm')
-
-
-# Steps to predict the pulling pose of new frames of a sample swimmer
-def predict(swimmer_video, open_pose_path, model_folder):
-    # 1. Extract the frames from the given video
-    # f.extract_frames_by_file(file=swimmer_video, output=os.path.dirname(swimmer_video))
-
-    # 2. Input the frames to the openpose demo application
-    os.system(open_pose_path + " "
-                               "--image_dir " + os.path.dirname(swimmer_video) + "\\frames "
-                                                                                 "--write_keypoint_json " + os.path.dirname(
-        swimmer_video) + "\\poses "
-                         "--write_images " + os.path.dirname(swimmer_video) + "\\images "
-                                                                              "--net_resolution \"1312x736\" "
-                                                                              "--scale_number 4 "
-                                                                              "--scale_gap 0.25")
-
-    # # 3. Extract the poses (x,y) positions from the frames
-    # filename_w_ext = os.path.basename(swimmer_video)
-    # swimmer, file_extension = os.path.splitext(filename_w_ext)
-    # p.output_test_dataset(input=os.path.dirname(swimmer_video) + "\\poses", swimmer=swimmer, output=os.path.dirname(swimmer_video) + "\data.csv")
-
-    # 4. Predict the frame's pulling pose
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "rf_arm_points_angles.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_rf_arm_points_angles.csv",
-             feature_set="arm_points_angles")
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "rf_arm_points.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_rf_arm_points.csv", feature_set="arm_points")
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "rf_arm_angles.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_rf_arm_angles.csv", feature_set="arm_angles")
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "rf_all_point.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_rf_all_point.csv", feature_set="all_points")
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "svm_arm_points_angles.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_svm_arm_points_angles.csv",
-             feature_set="arm_points_angles")
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "svm_arm_points.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_svm_arm_points.csv", feature_set="arm_points")
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "svm_arm_angles.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_svm_arm_angles.csv", feature_set="arm_angles")
-    clf.test(test_set=os.path.dirname(swimmer_video) + "\data.csv", model=model_folder + "svm_all_point.pkl",
-             output=os.path.dirname(swimmer_video) + "\predict_svm_all_point.csv", feature_set="all_points")
+def main():
+    output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)
+    keypoint_with_estimated = data_analyser.keypoint_estimation(
+        pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'))
+    keypoint_with_estimated.to_csv(output_dirs['analytical_data_path'] + 'all_keypoints.csv')
+    data_analyser.make_body_parts_df(pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'),
+                                     output_dirs)
+    vectors = pd.read_csv(output_dirs['analytical_data_path'] + '/vectors_by_time.csv')
+    data_analyser.make_angle_df(vectors, output_dirs)
+    data_analyser.make_body_part_detected_by_frame_df(output_dirs)
+    visualizer.show_all_figures(output_dirs)
 
 
 if __name__ == '__main__':
-    dataset_folder = "..\\dataset\\swimmers\\"
-    f.extract_frames_by_folder(dataset_folder)
-
-    # train(dataset_folder=dataset_folder, open_pose_path="bin\\OpenPoseDemo.exe")
-    # predict(swimmer_video="..\dataset\swimmers\Hossein2\Hossein2.MOV", open_pose_path="bin\\OpenPoseDemo.exe", model_folder=dataset_folder)
-    #
-    # # models stratified-k-fold-x-val evaluations
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="arm_points_angles", classifier='rf')
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="arm_points", classifier='rf')
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="arm_angles", classifier='rf')
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="all_points", classifier='rf')
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="arm_points_angles", classifier='svm')
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="arm_points", classifier='svm')
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="arm_angles", classifier='svm')
-    # clf.evaluate(training_set=dataset_folder + "data.csv", feature_set="all_points", classifier='svm')
-
-    pass
+    main()
