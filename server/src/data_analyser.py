@@ -15,7 +15,7 @@ body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', '
               'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']
 
 
-def make_body_parts_df(valid_keypoints_df,output_dirs):
+def make_body_parts_df(valid_keypoints_df, output_dirs):
     cols = ['Frame Number', 'RShoulder_X', 'RShoulder_Y', 'LShoulder_X', 'LShoulder_Y', 'RArm_X',
             'RArm_Y', 'LArm_X', 'LArm_Y', 'RForarm_X', 'RForarm_Y', 'LForarm_X',
             'LForarm_Y']
@@ -50,7 +50,7 @@ def make_body_parts_df(valid_keypoints_df,output_dirs):
         vectors_by_frames_df.to_csv(output_dirs['analytical_data_path'] + "/vectors_by_time.csv")
 
 
-def make_angle_df(vectors_df,output_dirs):
+def make_angle_df(vectors_df, output_dirs):
     df_angles = pd.DataFrame(columns=['Frame Number', 'RElbow', 'RShoulder', 'LElbow', 'LShoulder'])
     for index, row in vectors_df.iterrows():
         # Calculating vectors (from each 2 points) and
@@ -103,7 +103,7 @@ def make_angle_df(vectors_df,output_dirs):
         current_frame_angles_df = pd.DataFrame(array_of_angles).T
         current_frame_angles_df.columns = df_angles.columns
         df_angles = pd.concat([df_angles, current_frame_angles_df], sort=False)
-        df_angles.to_csv(output_dirs['analytical_data_path']+"/angles_by_time.csv")
+        df_angles.to_csv(output_dirs['analytical_data_path'] + "/angles_by_time.csv")
 
 
 def make_body_part_detected_by_frame_df(output_dirs):
@@ -130,7 +130,7 @@ def make_body_part_detected_by_frame_df(output_dirs):
         cur_frame_df = pd.DataFrame(cur_frame_array).T
         cur_frame_df.columns = df_to_load.columns
         df_to_load = pd.concat([df_to_load, cur_frame_df], sort=False)
-        df_to_load.to_csv(output_dirs['analytical_data_path']+"/body_part_detected_by_frame_df.csv")
+        df_to_load.to_csv(output_dirs['analytical_data_path'] + "/body_part_detected_by_frame_df.csv")
 
 
 def curve(x, a, b, c, d):
@@ -171,3 +171,66 @@ def keypoint_estimation(keypoint_df):
     interpolated_keypoint_df.insert(loc=0, column='Frame Number', value=frame_numbers)
     interpolated_keypoint_df.drop(columns=['Unnamed: 0'], axis=1, inplace=True)
     return interpolated_keypoint_df
+
+
+def make_interpolation(output_dirs):
+    keypoints_df = pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
+    frame_numbers = range(len(keypoints_df))
+    keypoints_df = keypoints_df.drop(columns=['Frame Number', 'Unnamed: 0'], axis=1, inplace=False)
+    indexes = []
+    for index, row in keypoints_df.iterrows():
+        if is_all_row_nans(row):
+            indexes.append(index)
+        else:
+            break
+    start_interpolation_from = max(indexes) + 1
+
+    for col in keypoints_df.columns:
+        if "Score" in col:
+            continue
+        for specific_frame in range(start_interpolation_from, len(keypoints_df)):
+            if not math.isnan(keypoints_df.iloc[specific_frame][col]):
+                continue
+            # must interpolate. Interpolation will be done by Gera's way.
+            prev_values = take_n_prev_keypoints_of_specific_part(keypoints_df, col, specific_frame, 5)
+            next_values = take_n_next_keypoints_of_specific_part(keypoints_df, col, specific_frame, 5)
+            prev_values.extend(next_values)
+            if prev_values == []:
+                continue
+            keypoints_df.set_value(specific_frame, col, sum(prev_values) / len(prev_values))
+    keypoints_df.insert(loc=0, column='Frame Number', value=frame_numbers)
+    keypoints_df.to_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
+
+
+def is_all_row_nans(row):
+    for col in row:
+        if not math.isnan(col):
+            return False
+    return True
+
+
+def find_next_non_nan_row_index(df, index):
+    ret = index + 1
+    while ret < len(df):
+        if not is_all_row_nans(df.iloc[ret]):
+            return ret
+        ret += 1
+    return -1
+
+
+def take_n_prev_keypoints_of_specific_part(df, col, cur_index, i):
+    if cur_index - i < 0:
+        return pd.DataFrame()
+    sub_df = df.iloc[cur_index - i:cur_index]
+    lst = sub_df.loc[:, col].to_list()
+    to_return = list(filter(lambda element: not math.isnan(element), lst))
+    return to_return
+
+
+def take_n_next_keypoints_of_specific_part(df, col, cur_index, i):
+    if cur_index + i >= len(df):
+        return pd.DataFrame()
+    sub_df = df.iloc[cur_index + 1: cur_index + i + 1]
+    lst = sub_df.loc[:, col].to_list()
+    to_return = list(filter(lambda element: not math.isnan(element), lst))
+    return to_return
