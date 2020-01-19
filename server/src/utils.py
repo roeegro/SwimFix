@@ -62,10 +62,6 @@ def generate_dirs_for_output_of_movie(movName):
     dict_to_return["analytical_data_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + analytical_data_path
     dict_to_return["figures_path"] = outputs_dir + "\\" + movie_output_dir + "\\" +  figures_path
     dict_to_return["frames"] = outputs_dir + "\\" + movie_output_dir + "\\" + frames
-    with open("data.csv", "w") as my_empty_csv:
-        # now you have an empty file already
-        pass  # or write something to it already
-
     os.chdir(get_src_path())
 
 

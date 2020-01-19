@@ -5,6 +5,8 @@ from scipy import spatial
 from numpy import dot
 from numpy.linalg import norm
 from scipy.optimize import curve_fit
+import operator as op
+from functools import reduce
 
 num_dimentions = 2
 
@@ -192,14 +194,65 @@ def make_interpolation(output_dirs):
             if not math.isnan(keypoints_df.iloc[specific_frame][col]):
                 continue
             # must interpolate. Interpolation will be done by Gera's way.
-            prev_values = take_n_prev_keypoints_of_specific_part(keypoints_df, col, specific_frame, 5)
-            next_values = take_n_next_keypoints_of_specific_part(keypoints_df, col, specific_frame, 5)
-            prev_values.extend(next_values)
-            if prev_values == []:
+            prevs = take_n_prev_keypoints_of_specific_part(keypoints_df, specific_frame, col, 15)
+            # nexts = take_n_next_keypoints_of_specific_part(keypoints_df, specific_frame, col, 5)
+            # sum_weighted_points = prevs[0] + nexts[0]
+            # sum_of_coefs = prevs[1] + nexts[1]
+            if prevs[0] == []:
                 continue
-            keypoints_df.set_value(specific_frame, col, sum(prev_values) / len(prev_values))
+            # keypoints_df.set_value(specific_frame, col, sum(sum_weighted_points) / sum_of_coefs)
+            keypoints_df.set_value(specific_frame, col, sum(prevs[0])/prevs[1])
+    filter_data_in_the_edges(df=keypoints_df, first_index=start_interpolation_from,
+                             num_of_frames=10)  # filter data of the first and last 1 seconds.
+
     keypoints_df.insert(loc=0, column='Frame Number', value=frame_numbers)
     keypoints_df.to_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
+
+
+def filter_anomalies(output_dirs):
+    keypoints_df = pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
+    frame_numbers = range(len(keypoints_df))
+    keypoints_df = keypoints_df.drop(columns=['Frame Number', 'Unnamed: 0'], axis=1, inplace=False)
+    indexes = []
+    for index, row in keypoints_df.iterrows():
+        if is_all_row_nans(row):
+            indexes.append(index)
+        else:
+            break
+    start_interpolation_from = max(indexes) + 1
+    for col in keypoints_df.columns:
+        if "Score" in col:
+            continue
+        for specific_frame in range(start_interpolation_from, len(keypoints_df)):
+            set_nan_when_diff_too_high(df=keypoints_df, row=specific_frame, col=col, max_threshold=12)
+    filter_data_in_the_edges(keypoints_df, first_index=start_interpolation_from, num_of_frames=10)
+    keypoints_df.insert(loc=0, column='Frame Number', value=frame_numbers)
+    keypoints_df.to_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
+
+
+def filter_data_in_the_edges(df, first_index, num_of_frames):
+    # df.apply(lambda x: math.nan if x.name in range(first_index, first_index + num_of_frames) or x.name in range(
+    #     len(df) - num_of_frames, len(df)) else x, axis=1)
+    for row in range(first_index, first_index + num_of_frames):
+        for col in df.columns:
+            df.set_value(row, col, math.nan)
+
+    for row in range(len(df) - num_of_frames, len(df)):
+        for col in df.columns:
+            df.set_value(row, col, math.nan)
+
+
+def set_nan_when_diff_too_high(df, row, col, max_threshold):
+    if row == len(df) - 1:
+        return
+    cur_val = df.iloc[row][col]
+    next_frame_index = find_next_non_nan_row_index(df, row)
+    next_val = df.iloc[next_frame_index][col]
+    if math.isnan(cur_val) or math.isnan(next_val):
+        return
+    if math.fabs(next_val - cur_val) / math.fabs(next_frame_index - row) > max_threshold:
+        df.set_value(row, col, math.nan)
+        df.set_value(row + 1, col, math.nan)
 
 
 def is_all_row_nans(row):
@@ -218,19 +271,73 @@ def find_next_non_nan_row_index(df, index):
     return -1
 
 
-def take_n_prev_keypoints_of_specific_part(df, col, cur_index, i):
-    if cur_index - i < 0:
-        return pd.DataFrame()
-    sub_df = df.iloc[cur_index - i:cur_index]
-    lst = sub_df.loc[:, col].to_list()
-    to_return = list(filter(lambda element: not math.isnan(element), lst))
-    return to_return
+def take_n_prev_keypoints_of_specific_part(df, cur_index, col, n):
+    # if cur_index - i < 0:
+    #     return []
+    # sub_df = df.iloc[cur_index - i:cur_index]
+    # lst = sub_df.loc[:, col].to_list()
+    # to_return = list(filter(lambda element: not math.isnan(element), lst))
+    # return to_return
+    print("We want 5 prev indexes of {}".format(cur_index))
+    found_index = cur_index
+    to_return = []
+    sum_coef = 0
+    for i in range(0, n):
+        found_index = find_prev_non_nan_row_index_by_col(df, found_index, col)
+        print("Found {}".format(found_index))
+        if found_index == -1:
+            print("You steped too back!")
+            break
+        value = df.iloc[found_index][col]
+        binomial_coef = ncr(n,n-i-1)
+        sum_coef += binomial_coef
+        to_return.append(binomial_coef * value)
+    return to_return, sum_coef
 
 
-def take_n_next_keypoints_of_specific_part(df, col, cur_index, i):
-    if cur_index + i >= len(df):
-        return pd.DataFrame()
-    sub_df = df.iloc[cur_index + 1: cur_index + i + 1]
-    lst = sub_df.loc[:, col].to_list()
-    to_return = list(filter(lambda element: not math.isnan(element), lst))
-    return to_return
+def take_n_next_keypoints_of_specific_part(df, cur_index, col, n):
+    # if cur_index + i >= len(df):
+    #     return []
+    # sub_df = df.iloc[cur_index + 1: cur_index + i + 1]
+    # lst = sub_df.loc[:, col].to_list()
+    # to_return = list(filter(lambda element: not math.isnan(element), lst))
+    print("We want 5 next indexes of {}".format(cur_index))
+    found_index = cur_index
+    to_return = []
+    sum_coef = 0
+    for i in range(0, n):
+        found_index = find_next_non_nan_row_index_by_col(df, found_index, col)
+        if found_index == -1:
+            print("you steped too far")
+            break
+        print("Found next with index {}".format(found_index))
+        value = df.iloc[found_index][col]
+        binomial_coef = ncr(2 * n, n - i - 1)
+        sum_coef += binomial_coef
+        to_return.append(binomial_coef * value)
+    return to_return, sum_coef
+
+
+def find_next_non_nan_row_index_by_col(df, index, col):
+    ret = index + 1
+    while ret < len(df):
+        if not math.isnan(df.iloc[ret][col]):
+            return ret
+        ret += 1
+    return -1
+
+
+def find_prev_non_nan_row_index_by_col(df, index, col):
+    ret = index - 1
+    while ret >= 0:
+        if not math.isnan(df.iloc[ret][col]):
+            return ret
+        ret -= 1
+    return -1
+
+
+def ncr(n, r):
+    r = min(r, n - r)
+    numer = reduce(op.mul, range(n, n - r, -1), 1)
+    denom = reduce(op.mul, range(1, r + 1), 1)
+    return numer / denom

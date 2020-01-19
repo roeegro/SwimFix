@@ -66,6 +66,7 @@ def main():
     # keypoint_with_estimated = data_analyser.keypoint_estimation(
     #     pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'))
     # keypoint_with_estimated.to_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
+    data_analyser.filter_anomalies(output_dirs)
     data_analyser.make_interpolation(output_dirs)
     data_analyser.make_body_parts_df(pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'),
                                      output_dirs)
