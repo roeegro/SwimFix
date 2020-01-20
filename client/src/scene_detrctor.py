@@ -91,4 +91,4 @@ def preprocess(vid_name):
 
 
 if __name__ == "__main__":
-    preprocess("Hossein1")
+    preprocess('8162')

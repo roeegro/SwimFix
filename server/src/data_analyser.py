@@ -1,14 +1,25 @@
 # Edited by Roee Groiser and Tom Marzea
 from main import *
 import numpy as np
+import utils
 from scipy import interpolate
 from scipy.signal import argrelextrema, argrelmin
 
-def create_interpolated_csv(csv_path, y_cols, x_col='Frame Number', output_path='output'):
+
+def create_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', output_path='../output'):
     df = pd.read_csv(csv_path)
-    if type(y_cols) == str:
+    if y_cols is None:
+        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))[1:]
+        y_cols = cols.copy()
+        y_cols.remove(x_col)
+        path = output_path + '/interpolated_' + utils.filename_without_suffix(utils.get_file_name(csv_path)) + '.csv'
+    elif type(y_cols) == str:
         y_cols = [y_cols]
-    cols = y_cols + [x_col]
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    else:
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
     df.drop(columns=df.columns.difference(cols), axis=1, inplace=True)
     for col_name in y_cols:
         # Numpy Interpolation
@@ -21,6 +32,7 @@ def create_interpolated_csv(csv_path, y_cols, x_col='Frame Number', output_path=
         last_notna_frame = df[col_name].notna()[::-1].idxmax()
         df = df.iloc[first_notna_frame:last_notna_frame + 1]
         df.reset_index(drop=True, inplace=True)
+        df.set_index(['Frame Number'])
         df = df[df.columns.dropna()]
         df[col_name].interpolate(method='cubic', inplace=True)
 
@@ -31,15 +43,12 @@ def create_interpolated_csv(csv_path, y_cols, x_col='Frame Number', output_path=
         y_smoothed = bspline(xnew)
         df[col_name] = y_smoothed
 
-    path = output_path + '/' + '_'.join(y_cols) + '.csv'
     df.to_csv(path)
     return path
 
 
 def calc_avg_period(csv_path, col_names, min_period=1.5, frame_rate=30, maximum=True, avg=False):
     df = pd.read_csv(csv_path)
-    all_keypoints_csv_path = '../../all_keypoints.csv'
-    all_df = pd.read_csv(all_keypoints_csv_path)
     if type(col_names) == str:
         col_names = [col_names]
     avg_per_dict = {}

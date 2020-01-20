@@ -3,8 +3,8 @@ from datetime import datetime
 import shutil
 
 
-def filename_without_suffix(filename):
-    path_as_array = filename.split('/')
+def filename_without_suffix(path):
+    path_as_array = path.split('/')
     path_as_array[-1] = path_as_array[-1].split('.')[0]
     output = '/'.join(path_as_array)
     return output
