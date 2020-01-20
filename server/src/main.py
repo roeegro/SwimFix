@@ -10,6 +10,8 @@ import visualizer
 import video_proccesor
 import data_analyser
 import utils
+from scipy import interpolate
+
 
 # import preprocessor
 # setup
@@ -30,7 +32,7 @@ try:
             sys.path.append('../../python');
             # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the OpenPose/python module from there. This will install OpenPose and the python library at your desired installation path. Ensure that this is in your python path in order to use it.
             # sys.path.append('/usr/local/python')
-            from openpose import pyopenpose as op
+            # from openpose import pyopenpose as op
     except:
         print(
             'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
@@ -62,18 +64,25 @@ for i in range(0, len(args[1])):
         if key not in params: params[key] = next_item
 
 
+def interpolate_and_plot(csv_path, y_cols, x_col='Frame Number', interp_csv_path='output', fig_path='output', mult_figures=True):
+    interpolated_csv_path = data_analyser.create_interpolated_csv(csv_path, y_cols, x_col, interp_csv_path)
+    visualizer.create_graph(interpolated_csv_path, y_cols, x_col, fig_path, mult_figures)
+
+
 def main():
+    interpolate_and_plot('../../all_keypoints.csv', ['RWristY', 'LWristY'])
+    # Groiser
     # for output dirs keys - see utils.generate_dirs_for_output_of_movie
-    output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)
-    data_analyser.filter_anomalies(output_dirs)
-    data_analyser.make_interpolation(output_dirs)
-    data_analyser.make_body_parts_df(pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'),
-                                     output_dirs)
-    vectors = pd.read_csv(output_dirs['analytical_data_path'] + '/vectors_by_time.csv')
-    data_analyser.make_angle_df(vectors, output_dirs)
-    data_analyser.make_body_part_detected_by_frame_df(output_dirs)
-    visualizer.create_all_figures(output_dirs)
-    utils.zip_output(output_dirs)
+    # output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)
+    # data_analyser.filter_anomalies(output_dirs)
+    # data_analyser.make_interpolation(output_dirs)
+    # data_analyser.make_body_parts_df(pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'),
+    #                                  output_dirs)
+    # vectors = pd.read_csv(output_dirs['analytical_data_path'] + '/vectors_by_time.csv')
+    # data_analyser.make_angle_df(vectors, output_dirs)
+    # data_analyser.make_body_part_detected_by_frame_df(output_dirs)
+    # visualizer.create_all_figures(output_dirs)
+    # utils.zip_output(output_dirs)
 
 
 if __name__ == '__main__':

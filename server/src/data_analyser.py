@@ -201,7 +201,7 @@ def make_interpolation(output_dirs):
             if prevs[0] == []:
                 continue
             # keypoints_df.set_value(specific_frame, col, sum(sum_weighted_points) / sum_of_coefs)
-            keypoints_df.set_value(specific_frame, col, sum(prevs[0])/prevs[1])
+            keypoints_df.set_value(specific_frame, col, sum(prevs[0]) / prevs[1])
     filter_data_in_the_edges(df=keypoints_df, first_index=start_interpolation_from,
                              num_of_frames=10)  # filter data of the first and last 1 seconds.
 
@@ -289,7 +289,7 @@ def take_n_prev_keypoints_of_specific_part(df, cur_index, col, n):
             print("You steped too back!")
             break
         value = df.iloc[found_index][col]
-        binomial_coef = ncr(2 *n,n-i-1)
+        binomial_coef = ncr(2 * n, n - i - 1)
         sum_coef += binomial_coef
         to_return.append(binomial_coef * value)
     return to_return, sum_coef
@@ -341,3 +341,33 @@ def ncr(n, r):
     numer = reduce(op.mul, range(n, n - r, -1), 1)
     denom = reduce(op.mul, range(1, r + 1), 1)
     return numer / denom
+
+
+def create_interpolated_csv(csv_path, y_cols, x_col='Frame Number', output_path='output'):
+    df = pd.read_csv(csv_path)
+    if type(y_cols) == str:
+        y_cols = [y_cols]
+    cols = y_cols + [x_col]
+    df.drop(columns=df.columns.difference(cols), axis=1, inplace=True)
+    for col_name in y_cols:
+        # first valid index
+        first_notna_frame = df[col_name].notna().idxmax()
+        # 'b'
+        # last valid index
+        last_notna_frame = df[col_name].notna()[::-1].idxmax()
+        # 'd'
+        # print(df.columns)
+        # print(first_notna_frame)
+        df = df.iloc[first_notna_frame:last_notna_frame + 1]
+        df.reset_index(drop=True, inplace=True)
+        df = df[df.columns.dropna()]
+        df[col_name].interpolate(method='cubic', inplace=True)
+        y = df[col_name].values
+        x = df['Frame Number'].values
+        xnew = np.linspace(x.min(), x.max(), len(x))
+        bspline = interpolate.make_interp_spline(x, y)
+        y_smoothed = bspline(xnew)
+        df[col_name] = y_smoothed
+    path = output_path + '_'.join(y_cols) + '.csv'
+    df.to_csv(path)
+    return path
