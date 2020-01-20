@@ -74,6 +74,7 @@ def main():
     data_analyser.make_body_part_detected_by_frame_df(output_dirs)
     visualizer.create_all_figures(output_dirs)
     utils.zip_output(output_dirs)
+    utils.delete_generate_dirs(output_dirs)
 
 
 if __name__ == '__main__':

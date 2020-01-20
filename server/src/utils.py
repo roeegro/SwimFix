@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 import shutil
 
+
 def filename_without_prefix(filename):
     path_as_array = filename.split('/')
     path_as_array[-1] = path_as_array[-1].split('.')[0]
@@ -77,6 +78,10 @@ def zip_output(output_dirs):
     filename = get_file_name_for_backslash(output_dirs['output_movie_dir'])
     shutil.make_archive('{}.zip'.format(filename), 'zip', output_dirs['output_movie_dir'])
     return '{}.zip'.format(filename)
+
+
+def delete_generate_dirs(output_dirs):
+    shutil.rmtree(output_dirs['output_movie_dir'])
 
 
 if __name__ == "__main__":
