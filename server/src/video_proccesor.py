@@ -3,28 +3,21 @@ from main import *
 import cv2
 import math
 import utils
-
-from stat import S_ISREG, ST_CTIME, ST_MODE
-import os, sys, time
-from functools import reduce
+import pandas as pd
 import extract_frames as f
-import extract_poses as p
 
-body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', 'RShoulderX', 'RShoulderY',
-              'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
-              'LShoulderY', 'LShoulderScore',
-              'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']
+body_parts = utils.get_body_parts()
 
 
 # Recieves args from main (including video path) and params to configure the library
 # Creates 3 csv files(all keypoints, valid and invalid ones) and emplace wire-frame.
-def get_keypoints_csv_from_video(args, params):
-    video_name = utils.get_file_name(args[0].image_path)
+def get_keypoints_csv_from_video(video_path, params):
+    video_name = utils.get_file_name(video_path)
     video_name = utils.filename_without_suffix(video_name)
     output_dirs = utils.generate_dirs_for_output_of_movie(video_name)
 
     # Extract frames
-    f.extract_frames_by_file(file=args[0].image_path, output=output_dirs['time_path'])
+    f.extract_frames_by_file(file=video_path, output=output_dirs['time_path'])
 
     # # sort frames by creation time
     # # path to the directory (relative or absolute)
@@ -55,14 +48,13 @@ def get_keypoints_csv_from_video(args, params):
 
     # Starting OpenPose
     opWrapper = op.WrapperPython()
-    # print(params)
     opWrapper.configure(params)
     opWrapper.start()
 
     # Process Image
     datum = op.Datum()
-    print("path is {}".format(args[0].image_path))
-    cap = cv2.VideoCapture(args[0].image_path)
+    print("path is {}".format(video_path))
+    cap = cv2.VideoCapture(video_path)
     valid_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
     invalid_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
     all_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
@@ -142,10 +134,9 @@ def get_keypoints_csv_from_video(args, params):
 
         # if not args[0].no_display:
         cv2.imshow("body from video", datum.cvOutputData)
-        # outputVideo.write(datum.cvOutputData)
-        # out.write(datum.cvOutputData)
+
         key = cv2.waitKey(1)
-        # if key == 27: break
+
         frame_counter += 1
 
     # When everything done, release
@@ -155,10 +146,6 @@ def get_keypoints_csv_from_video(args, params):
     # Closes all the frames
     cv2.destroyAllWindows()
 
-    # Display Image
-    # print("Body keypoints: \n" + str(datum.poseKeypoints))
-    # cv2.imshow("OpenPose 1.5.1 - Tutorial Python API", datum.cvOutputData)
-    # cv2.waitKey(0)
     return output_dirs
 
 

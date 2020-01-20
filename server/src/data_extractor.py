@@ -1,18 +1,17 @@
 # Edited by Roee Groiser and Tom Marzea
-from main import *
+
 import math
 import numpy as np
+import operator as op
+import utils
 from numpy import dot
 from numpy.linalg import norm
-import operator as op
 from functools import reduce
+import pandas as pd
 
 num_dimentions = 2
 
-body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', 'RShoulderX', 'RShoulderY',
-              'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
-              'LShoulderY', 'LShoulderScore',
-              'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']
+body_parts = utils.get_body_parts()
 
 
 def make_body_parts_df(valid_keypoints_df, output_dirs):
