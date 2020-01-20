@@ -10,6 +10,7 @@ def create_all_figures(output_dirs):
     show_body_parts_by_frame(output_dirs)
     show_body_parts_location_by_time(output_dirs);
 
+
 def show_frame_detected_figure(output_dirs):
     frame_df = pd.read_csv(output_dirs['analytical_data_path'] + '/is_frame_detected.csv')
     x = frame_df['Frame Number']
@@ -69,16 +70,15 @@ def show_body_parts_location_by_time(output_dirs):
         coefficients_for_y_graph = np.polyfit(frame_axis, y_coor, 3)
         poly_x = np.poly1d(coefficients_for_x_graph)
         poly_y = np.poly1d(coefficients_for_y_graph)
-        frame_partition = np.linspace(frame_axis[0], frame_axis[-1],0.1)
+        frame_partition = np.linspace(frame_axis[0], frame_axis[-1], 0.1)
         new_x_coor = poly_x(frame_partition)
         new_y_coor = poly_y(frame_partition)
-        plt.plot(frame_axis, x_coor,frame_partition,new_x_coor)
+        plt.plot(frame_axis, x_coor, frame_partition, new_x_coor)
         plt.savefig(output_dirs['figures_path'] + "/{}_by_frame_and_accurancy".format(triplet[0]))
         plt.close()
-        plt.plot(frame_axis, y_coor,frame_partition,new_y_coor)
+        plt.plot(frame_axis, y_coor, frame_partition, new_y_coor)
         plt.savefig(output_dirs['figures_path'] + "/{}_by_frame_and_accurancy".format(triplet[1]))
         plt.close()
-
 
         # fig1 = plt.figure()
         # fig2 = plt.figure()
@@ -90,3 +90,22 @@ def show_body_parts_location_by_time(output_dirs):
         # for i in range(len(frame_axis)):
         #     bx.scatter(frame_axis[i], x_coors[i], color = "green")
         # fig2.savefig("../output/figures/{}_by_frame_and_accurancy".format(triplet[1]))
+
+
+def create_graph(csv_path, y_cols, x_col='Frame Number', output_path='../output', mult_figures=True):
+    df = pd.read_csv(csv_path)
+    x = df[x_col].values
+    for y_col in y_cols:
+        y = df[y_col].values
+        plt.plot(x, y)
+        if mult_figures:
+            plt.xlabel(x_col)
+            plt.ylabel(y_col)
+            plt.title = y_col + 'as a function of ' + x_col
+            plt.savefig(output_path + "/{}_by_{}".format(y_col, x_col))
+            plt.clf()
+    if not mult_figures:
+        plt.xlabel(x_col)
+        plt.legend(y_cols)
+        plt.savefig(output_path + "/{}_by_{}".format('_'.join(y_cols), x_col))
+    plt.close()

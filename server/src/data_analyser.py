@@ -2,11 +2,14 @@
 from main import *
 import math
 from scipy import spatial
+import numpy as np
 from numpy import dot
 from numpy.linalg import norm
 from scipy.optimize import curve_fit
 import operator as op
 from functools import reduce
+from scipy import interpolate
+from scipy.signal import argrelextrema, argrelmin
 
 num_dimentions = 2
 
@@ -201,7 +204,7 @@ def make_interpolation(output_dirs):
             if prevs[0] == []:
                 continue
             # keypoints_df.set_value(specific_frame, col, sum(sum_weighted_points) / sum_of_coefs)
-            keypoints_df.set_value(specific_frame, col, sum(prevs[0])/prevs[1])
+            keypoints_df.set_value(specific_frame, col, sum(prevs[0]) / prevs[1])
     filter_data_in_the_edges(df=keypoints_df, first_index=start_interpolation_from,
                              num_of_frames=10)  # filter data of the first and last 1 seconds.
 
@@ -289,7 +292,7 @@ def take_n_prev_keypoints_of_specific_part(df, cur_index, col, n):
             print("You steped too back!")
             break
         value = df.iloc[found_index][col]
-        binomial_coef = ncr(2 *n,n-i-1)
+        binomial_coef = ncr(2 * n, n - i - 1)
         sum_coef += binomial_coef
         to_return.append(binomial_coef * value)
     return to_return, sum_coef
@@ -341,3 +344,95 @@ def ncr(n, r):
     numer = reduce(op.mul, range(n, n - r, -1), 1)
     denom = reduce(op.mul, range(1, r + 1), 1)
     return numer / denom
+
+
+def nan_helper(y):
+    """Helper to handle indices and logical indices of NaNs.
+
+    Input:
+        - y, 1d numpy array with possible NaNs
+    Output:
+        - nans, logical indices of NaNs
+        - index, a function, with signature indices= index(logical_indices),
+          to convert logical indices of NaNs to 'equivalent' indices
+    Example:
+        >>> # linear interpolation of NaNs
+        >>> nans, x= nan_helper(y)
+        >>> y[nans]= np.interp(x(nans), x(~nans), y[~nans])
+    """
+
+    return np.isnan(y), lambda z: z.nonzero()[0]
+
+
+def create_interpolated_csv(csv_path, y_cols, x_col='Frame Number', output_path='output'):
+    df = pd.read_csv(csv_path)
+    if type(y_cols) == str:
+        y_cols = [y_cols]
+    cols = y_cols + [x_col]
+    df.drop(columns=df.columns.difference(cols), axis=1, inplace=True)
+    for col_name in y_cols:
+        # Numpy Interpolation
+        # y = df[col_name]
+        # nans, x = nan_helper(y)
+        # y[nans] = np.interp(x(nans), x(~nans), y[~nans])
+
+        # Pandas Interpolation
+        first_notna_frame = df[col_name].notna().idxmax()
+        last_notna_frame = df[col_name].notna()[::-1].idxmax()
+        df = df.iloc[first_notna_frame:last_notna_frame + 1]
+        df.reset_index(drop=True, inplace=True)
+        df = df[df.columns.dropna()]
+        df[col_name].interpolate(method='cubic', inplace=True)
+
+        y = df[col_name].values
+        x = df['Frame Number'].values
+        xnew = np.linspace(x.min(), x.max(), len(x))
+        bspline = interpolate.make_interp_spline(x, y)
+        y_smoothed = bspline(xnew)
+        df[col_name] = y_smoothed
+
+    path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    df.to_csv(path)
+    return path
+
+
+def calc_avg_period(csv_path, col_names, min_period=1.5, frame_rate=30, maximum=True, avg=False):
+    df = pd.read_csv(csv_path)
+    all_keypoints_csv_path = '../../all_keypoints.csv'
+    all_df = pd.read_csv(all_keypoints_csv_path)
+    if type(col_names) == str:
+        col_names = [col_names]
+    avg_per_dict = {}
+    for col_name in col_names:
+        data = df[col_name]
+        if maximum:
+            extremum_indices = argrelextrema(data.values, np.greater)[0]
+        else:
+            extremum_indices = argrelmin(data.values)[0]
+        periods = []
+        min_period_frames = frame_rate * min_period
+        i = 0
+        period_num = 1
+        while i < len(extremum_indices) - 1:
+            j = i + 1
+            found = False
+            while j < len(extremum_indices) - 1 and not found:
+                period_frames = extremum_indices[j] - extremum_indices[i]
+                if period_frames >= min_period_frames:
+                    periods.append(round(period_frames / frame_rate, 3))
+                    found = True
+                else:
+                    j += 1
+            i = j
+        avg_per_dict[col_name] = (periods, np.average(periods))
+    if len(avg_per_dict) == 1:
+        return avg_per_dict[col_names[0]][1]
+    elif avg:
+        l = list(map(lambda x: x[1], avg_per_dict.values()))
+        return round(np.average(l), 3)
+    else:
+        return avg_per_dict
+    # return round(np.average(periods)/frame_rate, 3)
+
+# def get_confidence_score(csv_path, frames):
+#     df = pd.read_csv(csv_path)
