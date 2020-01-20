@@ -24,7 +24,7 @@ def get_keypoints_csv_from_video(args, params):
     output_dirs = utils.generate_dirs_for_output_of_movie(video_name)
 
     # Extract frames
-    f.extract_frames_by_file(file=args[0].image_path, output=output_dirs['output_movie_dir'])
+    f.extract_frames_by_file(file=args[0].image_path, output=output_dirs['time_path'])
 
     # # sort frames by creation time
     # # path to the directory (relative or absolute)
