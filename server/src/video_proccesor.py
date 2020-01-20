@@ -9,7 +9,7 @@ import os, sys, time
 from functools import reduce
 import extract_frames as f
 import extract_poses as p
-import canada as c
+
 body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', 'RShoulderX', 'RShoulderY',
               'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
               'LShoulderY', 'LShoulderScore',

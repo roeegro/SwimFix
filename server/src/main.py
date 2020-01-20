@@ -67,6 +67,7 @@ def interpolate_and_plot(csv_path, y_cols, x_col='Frame Number', interp_csv_path
     visualizer.create_graph(interpolated_csv_path, y_cols, x_col, fig_path, mult_figures)
     return interpolated_csv_path
 
+
 def main():
     # for output dirs keys - see utils.generate_dirs_for_output_of_movie
     output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)
