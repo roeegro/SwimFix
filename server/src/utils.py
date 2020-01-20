@@ -50,28 +50,63 @@ def get_body_parts():
 
 
 def generate_dirs_for_output_of_movie(movName):
+    name = filename_without_suffix(movName)
+    dict_to_return = dict()
     outputs_dir = get_src_path() + "\\..\\output"
     os.chdir(outputs_dir)
-    time_created = datetime.utcnow().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
-    print(time_created)
-    movie_output_dir = "{}_{}_output".format(movName, time_created)
-    os.mkdir(movie_output_dir)
-    os.chdir(".\\" + movie_output_dir)
-    analytical_data_path = "analytical_data"
-    figures_path = "figures"
-    frames = "frames"
-    os.mkdir(analytical_data_path)
-    os.mkdir(figures_path)
-    os.mkdir(frames)
-    dict_to_return = dict()
+    if not os.path.exists(name):
+        os.mkdir(name)
+    os.chdir(name)
+    # time_created = datetime.utcnow().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
+    # time_created = datetime.date().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
+    date = datetime.now()
+    curr_date = date.strftime('%Y-%m-%d')
+    if not os.path.exists(curr_date):
+        os.mkdir(curr_date)
+    os.chdir(curr_date)
+    curr_time = date.strftime('%H-%M-%S-%f')
+    if not os.path.exists(curr_time):
+        os.mkdir(curr_time)
+    os.chdir(curr_time)
+    analytical_data_dir_name = "analytical_data"
+    figures_dir_name = "figures"
+    frames_dir_name = "frames"
+    os.mkdir(analytical_data_dir_name)
+    os.mkdir(figures_dir_name)
+    os.mkdir(frames_dir_name)
     dict_to_return["output_dir"] = outputs_dir
-    dict_to_return["output_movie_dir"] = outputs_dir + "\\" + movie_output_dir
-    dict_to_return["analytical_data_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + analytical_data_path
-    dict_to_return["figures_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + figures_path
-    dict_to_return["frames"] = outputs_dir + "\\" + movie_output_dir + "\\" + frames
+    dict_to_return["output_movie_dir"] = outputs_dir + "\\" + name
+    dict_to_return["date_path"] = outputs_dir + "\\" + name + "\\" + curr_date
+    dict_to_return["time_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time
+    dict_to_return[
+        "analytical_data"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name
+    dict_to_return[
+        "figures_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name + "\\" + figures_dir_name
+    dict_to_return[
+        "frames_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name + "\\" + figures_dir_name + frames_dir_name
     os.chdir(get_src_path())
-
     return dict_to_return
+    # os.chdir(outputs_dir)
+    # time_created = datetime.utcnow().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
+    # print(time_created)
+    # movie_output_dir = "{}_{}_output".format(movName, time_created)
+    # os.mkdir(movie_output_dir)
+    # os.chdir(".\\" + movie_output_dir)
+    # analytical_data_path = "analytical_data"
+    # figures_path = "figures"
+    # frames = "frames"
+    # os.mkdir(analytical_data_path)
+    # os.mkdir(figures_path)
+    # os.mkdir(frames)
+    # dict_to_return = dict()
+    # dict_to_return["output_dir"] = outputs_dir
+    # dict_to_return["output_movie_dir"] = outputs_dir + "\\" + movie_output_dir
+    # dict_to_return["analytical_data_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + analytical_data_path
+    # dict_to_return["figures_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + figures_path
+    # dict_to_return["frames"] = outputs_dir + "\\" + movie_output_dir + "\\" + frames
+    # os.chdir(get_src_path())
+    #
+    # return dict_to_return
 
 
 def zip_output(output_dirs):
