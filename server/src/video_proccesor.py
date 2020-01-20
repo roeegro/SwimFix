@@ -20,7 +20,7 @@ body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', '
 # Creates 3 csv files(all keypoints, valid and invalid ones) and emplace wire-frame.
 def get_keypoints_csv_from_video(args, params):
     video_name = utils.get_file_name(args[0].image_path)
-    video_name = utils.filename_without_prefix(video_name)
+    video_name = utils.filename_without_suffix(video_name)
     output_dirs = utils.generate_dirs_for_output_of_movie(video_name)
 
     # Extract frames

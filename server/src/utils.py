@@ -3,7 +3,7 @@ from datetime import datetime
 import shutil
 
 
-def filename_without_prefix(filename):
+def filename_without_suffix(filename):
     path_as_array = filename.split('/')
     path_as_array[-1] = path_as_array[-1].split('.')[0]
     output = '/'.join(path_as_array)
@@ -20,7 +20,7 @@ def get_files_in_dir(path):
 
 
 def get_id_of_file(path):
-    filename = filename_without_prefix(path.split('/')[-1])
+    filename = filename_without_suffix(path.split('/')[-1])
     id = filename.split('_')[-1]
     return id
 
@@ -76,8 +76,10 @@ def generate_dirs_for_output_of_movie(movName):
 
 def zip_output(output_dirs):
     filename = get_file_name_for_backslash(output_dirs['output_movie_dir'])
+    os.chdir(output_dirs['output_dir'])
     shutil.make_archive('{}.zip'.format(filename), 'zip', output_dirs['output_movie_dir'])
-    return '{}.zip'.format(filename)
+    os.chdir(get_src_path())
+    return output_dirs['output_dir'] + '\\{}.zip'.format(filename)
 
 
 def delete_generate_dirs(output_dirs):
