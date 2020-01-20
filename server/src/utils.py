@@ -79,11 +79,11 @@ def generate_dirs_for_output_of_movie(movName):
     dict_to_return["date_path"] = outputs_dir + "\\" + name + "\\" + curr_date
     dict_to_return["time_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time
     dict_to_return[
-        "analytical_data"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name
+        "analytical_data_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name
     dict_to_return[
-        "figures_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name + "\\" + figures_dir_name
+        "figures_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + figures_dir_name
     dict_to_return[
-        "frames_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name + "\\" + figures_dir_name + frames_dir_name
+        "frames_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + frames_dir_name
     os.chdir(get_src_path())
     return dict_to_return
     # os.chdir(outputs_dir)
