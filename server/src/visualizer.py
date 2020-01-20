@@ -92,15 +92,20 @@ def show_body_parts_location_by_time(output_dirs):
         # fig2.savefig("../output/figures/{}_by_frame_and_accurancy".format(triplet[1]))
 
 
-def create_graph(csv_path, y_cols, x_col='Frame Number', output_path='output', mult_figures=True):
+def create_graph(csv_path, y_cols, x_col='Frame Number', output_path='../output', mult_figures=True):
     df = pd.read_csv(csv_path)
     x = df[x_col].values
     for y_col in y_cols:
         y = df[y_col].values
         plt.plot(x, y)
         if mult_figures:
-            plt.savefig(output_path + "/{}_by_{}".format(x, '_'.join(y_col)))
+            plt.xlabel(x_col)
+            plt.ylabel(y_col)
+            plt.title = y_col + 'as a function of ' + x_col
+            plt.savefig(output_path + "/{}_by_{}".format(y_col, x_col))
             plt.clf()
     if not mult_figures:
-        plt.savefig(output_path + "/{}_by_{}".format(x, '_'.join(y_cols)))
+        plt.xlabel(x_col)
+        plt.legend(y_cols)
+        plt.savefig(output_path + "/{}_by_{}".format('_'.join(y_cols), x_col))
     plt.close()

@@ -10,7 +10,6 @@ import visualizer
 import video_proccesor
 import data_analyser
 import utils
-from scipy import interpolate
 
 
 # import preprocessor
@@ -64,13 +63,17 @@ for i in range(0, len(args[1])):
         if key not in params: params[key] = next_item
 
 
-def interpolate_and_plot(csv_path, y_cols, x_col='Frame Number', interp_csv_path='output', fig_path='output', mult_figures=True):
+def interpolate_and_plot(csv_path, y_cols, x_col='Frame Number', interp_csv_path='../output', fig_path='../output', mult_figures=True):
     interpolated_csv_path = data_analyser.create_interpolated_csv(csv_path, y_cols, x_col, interp_csv_path)
     visualizer.create_graph(interpolated_csv_path, y_cols, x_col, fig_path, mult_figures)
 
 
 def main():
-    interpolate_and_plot('../../all_keypoints.csv', ['RWristY', 'LWristY'])
+    interpolate_and_plot('../../all_keypoints.csv', ['RWristY', 'LWristY'], mult_figures=False)
+    interpolate_and_plot('../../all_keypoints.csv', ['RElbowY', 'RElbowX'], mult_figures=False)
+    interpolate_and_plot('../../all_keypoints.csv', ['LElbowY', 'LElbowX'], mult_figures=False)
+    interpolate_and_plot('../../all_keypoints.csv', ['RShoulderY', 'RShoulderX'], mult_figures=False)
+    interpolate_and_plot('../../all_keypoints.csv', ['LShoulderY', 'LShoulderX'], mult_figures=False)
     # Groiser
     # for output dirs keys - see utils.generate_dirs_for_output_of_movie
     # output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)

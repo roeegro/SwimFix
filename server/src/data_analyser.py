@@ -7,6 +7,8 @@ from numpy.linalg import norm
 from scipy.optimize import curve_fit
 import operator as op
 from functools import reduce
+from scipy import interpolate
+
 
 num_dimentions = 2
 
@@ -368,6 +370,6 @@ def create_interpolated_csv(csv_path, y_cols, x_col='Frame Number', output_path=
         bspline = interpolate.make_interp_spline(x, y)
         y_smoothed = bspline(xnew)
         df[col_name] = y_smoothed
-    path = output_path + '_'.join(y_cols) + '.csv'
+    path = output_path + '/' + '_'.join(y_cols) + '.csv'
     df.to_csv(path)
     return path
