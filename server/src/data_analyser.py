@@ -289,7 +289,7 @@ def take_n_prev_keypoints_of_specific_part(df, cur_index, col, n):
             print("You steped too back!")
             break
         value = df.iloc[found_index][col]
-        binomial_coef = ncr(n,n-i-1)
+        binomial_coef = ncr(2 *n,n-i-1)
         sum_coef += binomial_coef
         to_return.append(binomial_coef * value)
     return to_return, sum_coef

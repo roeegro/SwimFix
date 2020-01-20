@@ -9,6 +9,7 @@ import numpy as np
 import visualizer
 import video_proccesor
 import data_analyser
+import utils
 
 # import preprocessor
 # setup
@@ -62,10 +63,8 @@ for i in range(0, len(args[1])):
 
 
 def main():
+    # for output dirs keys - see utils.generate_dirs_for_output_of_movie
     output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)
-    # keypoint_with_estimated = data_analyser.keypoint_estimation(
-    #     pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'))
-    # keypoint_with_estimated.to_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv')
     data_analyser.filter_anomalies(output_dirs)
     data_analyser.make_interpolation(output_dirs)
     data_analyser.make_body_parts_df(pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'),
@@ -73,7 +72,8 @@ def main():
     vectors = pd.read_csv(output_dirs['analytical_data_path'] + '/vectors_by_time.csv')
     data_analyser.make_angle_df(vectors, output_dirs)
     data_analyser.make_body_part_detected_by_frame_df(output_dirs)
-    visualizer.show_all_figures(output_dirs)
+    visualizer.create_all_figures(output_dirs)
+    utils.zip_output(output_dirs)
 
 
 if __name__ == '__main__':

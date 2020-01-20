@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 
-def show_all_figures(output_dirs):
+def create_all_figures(output_dirs):
     show_figures_of_angles_by_time(output_dirs)
     show_frame_detected_figure(output_dirs)
     show_body_parts_by_frame(output_dirs)

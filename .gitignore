@@ -154,3 +154,5 @@ server/output/analytical_data/all_keypoints.csv
 server/output/analytical_data/is_frame_detected.csv
 *.csv
 *.png
+server/output/MVI_8027_20-01-2020__10_05_03_594_output/figures/Unnamed
+*.zip
