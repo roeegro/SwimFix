@@ -99,6 +99,8 @@ def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True)
     x = df[x_col].values
     if y_cols is None:
         y_cols = df.columns.difference([x_col, 'Unnamed: 0']).values
+    elif y_cols is str:
+        y_cols = [y_cols]
     for y_col in y_cols:
         y = df[y_col].values
         plt.plot(x, y)
@@ -136,6 +138,16 @@ def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
     if not mult_figures:
         plt.xlabel('Frame Number')
         plt.savefig(output_path + "/all_keypoints_frame_detection")
+    plt.close()
+
+
+def plot_histogram_from_dict(data_dict):
+    output_path = utils.get_figures_dir()
+    # print(data_dict.keys())
+    plt.bar(data_dict.keys(), data_dict.values())
+    plt.xlabel('Keypoints')
+    plt.ylabel('No. of detected frames')
+    plt.savefig(output_path + '/detected_frames_by_keypoints_histogram')
     plt.close()
 
 

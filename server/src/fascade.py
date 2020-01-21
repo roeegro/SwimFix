@@ -3,7 +3,6 @@ import data_extractor
 import utils
 import video_proccesor
 import visualizer
-import pandas as pd
 
 
 def interpolate_and_plot(csv_path, y_cols, x_col='Frame Number', interp_csv_path='../output', fig_path='../output',
@@ -19,7 +18,7 @@ def graphs_from_video(video_path, params):
     all_keypoints_df_csv_path = video_proccesor.get_keypoints_csv_from_video(video_path, params)
     vectors_csv_path = data_extractor.generate_vectors_csv(all_keypoints_df_csv_path)
     angles_csv_path = data_extractor.generate_angles_csv(vectors_csv_path)
-    data_extractor.generate_is_detected_keypoint_csv(all_keypoints_df_csv_path)
+    data_extractor.generate_detected_keypoints_csv(all_keypoints_df_csv_path)
     # visualizer.create_all_figures(output_dirs)
     # utils.zip_output(output_dirs)
     # utils.delete_generate_dirs(output_dirs)
@@ -35,8 +34,7 @@ def extract_data_from_vid(video_path):
     interpolated_keypoints_csv_path = interpolate_csv(all_keypoints_df_csv_path)
     vectors_csv_path = get_vectors_from_keypoints_csv(interpolated_keypoints_csv_path)
     angles_csv_path = get_angles_from_vectors_csv(vectors_csv_path)
-    data_extractor.generate_is_detected_keypoint_csv(all_keypoints_df_csv_path)
-    visualizer.create_graph(interpolated_keypoints_csv_path, ['RWristY', 'LWristY'])
+    data_extractor.generate_detected_keypoints_csv(all_keypoints_df_csv_path)
     return 0
 
 
@@ -70,3 +68,24 @@ def get_average_swimming_period_from_csv(csv_path):
 
 def get_average_angles_from_csv(csv_path):
     return data_analyser.calc_avg_angle(csv_path)
+
+
+def get_detected_frames_histogram_from_dict(data_dict):
+    return visualizer.plot_histogram_from_dict(data_dict)
+
+
+def main():
+    all_keypoints_df_csv_path = '../../all_keypoints.csv'
+    video_path = 'MVI_8027.MOV'
+    output_dirs = utils.generate_dirs_for_output_of_movie(video_path)
+    detected_frames_csv_path = data_extractor.generate_detected_keypoints_csv(all_keypoints_df_csv_path)
+    detected_keypoints_dict = data_analyser.calc_detected_frames_count_from_csv(detected_frames_csv_path)
+    visualizer.plot_histogram_from_dict(detected_keypoints_dict)
+
+
+def extract_analyze_plot(video_path):
+    return
+
+
+if __name__ == '__main__':
+    main()

@@ -96,12 +96,15 @@ def generate_angles_csv(csv_path, filname):
     return outp_path
 
 
-def generate_is_detected_keypoint_csv(csv_path, score_cols=None, filename='is_all_detected.csv'):
+def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
     df = pd.read_csv(csv_path)
     if score_cols is None:
+        if filename is None:
+            filename = 'detected_keypoints.csv'
         score_cols = list(filter(lambda x: 'Score' in x, df.columns.values))[1:]
     else:
-        filename = 'is_' + '_'.join(score_cols) + 'detected.csv'
+        if filename is None:
+            filename = 'is_' + '_'.join(score_cols) + 'detected.csv'
         score_cols = list(map(utils.keypoint_to_score, score_cols))
     is_detected_cols = list(map(lambda x: x.replace('Score', ''), score_cols))
     path = utils.get_analytics_dir() + '/' + filename
@@ -120,7 +123,7 @@ def generate_is_detected_keypoint_csv(csv_path, score_cols=None, filename='is_al
     return path
 
 
-def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number'):
+def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filename=None):
     df = pd.read_csv(csv_path)
     output_path = utils.get_analytics_dir()
     if y_cols is None:
@@ -135,6 +138,8 @@ def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number'):
     else:
         cols = y_cols + [x_col]
         path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    if filename is not None:
+        path = output_path + '/' + filename + '.csv'
     df.drop(columns=df.columns.difference(cols), axis=1, inplace=True)
     for col_name in y_cols:
         # Numpy Interpolation
@@ -150,7 +155,6 @@ def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number'):
         df.set_index(['Frame Number'])
         df = df[df.columns.dropna()]
         df[col_name].interpolate(method='cubic', inplace=True)
-
         y = df[col_name].values
         x = df['Frame Number'].values
         xnew = np.linspace(x.min(), x.max(), len(x))

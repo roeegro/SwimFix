@@ -50,3 +50,22 @@ def calc_avg_angle(csv_path, col_names=None):
     for col in col_names:
         avg_angle_dict[col] = df[col].mean()
     return avg_angle_dict
+
+
+def calc_detected_frames_count_from_csv(detected_frames_csv_path, keypoints=None, with_acc=False):
+    df = pd.read_csv(detected_frames_csv_path)
+    if keypoints is None:
+        keypoints = df.columns.difference(['Frame Number', 'Unnamed: 0']).values
+    det_frame_count_dict = dict()
+    total_frames = len(df['Frame Number'])
+    for keypoint in keypoints:
+        total_detected = df[keypoint].sum()
+        det_frame_count_dict[keypoint] = {'Total detected': total_detected}
+        if with_acc:
+            acc = round(total_detected / total_frames, 3)
+            det_frame_count_dict[keypoint]['Accuracy'] = acc
+    if not with_acc:
+        print(det_frame_count_dict.keys())
+        for key, value in det_frame_count_dict.items():
+            det_frame_count_dict[key] = value['Total detected']
+    return det_frame_count_dict
