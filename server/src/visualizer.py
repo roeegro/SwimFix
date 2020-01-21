@@ -4,11 +4,12 @@ import pandas as pd
 import numpy as np
 import utils
 
+
 def create_all_figures(output_dirs):
     show_figures_of_angles_by_time(output_dirs)
     show_frame_detected_figure(output_dirs)
     show_body_parts_by_frame(output_dirs)
-    show_body_parts_location_by_time(output_dirs);
+    show_body_parts_location_by_time(output_dirs)
 
 
 def show_frame_detected_figure(output_dirs):

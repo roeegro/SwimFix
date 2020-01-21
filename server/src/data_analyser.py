@@ -65,7 +65,6 @@ def calc_detected_frames_count_from_csv(detected_frames_csv_path, keypoints=None
             acc = round(total_detected / total_frames, 3)
             det_frame_count_dict[keypoint]['Accuracy'] = acc
     if not with_acc:
-        print(det_frame_count_dict.keys())
         for key, value in det_frame_count_dict.items():
             det_frame_count_dict[key] = value['Total detected']
     return det_frame_count_dict
