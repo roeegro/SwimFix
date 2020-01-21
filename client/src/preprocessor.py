@@ -1,6 +1,8 @@
 # Edited by Roee Groiser
 
 # import the necessary packages
+# import math
+
 from imutils.video import VideoStream
 import imutils
 import time
@@ -8,6 +10,10 @@ import cv2
 from moviepy.editor import *
 import os
 from natsort import natsorted
+from moviepy.video.io.VideoFileClip import VideoFileClip
+
+
+# from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 
 # if the video_path argument is 0, then we are reading from webcam
@@ -32,11 +38,15 @@ def video_cutter(video_path=0):
     is_recording = False
     frame_counter = 0
     num_frames_not_detected_in_seq = 0
+    starting_frames = []
+    starting_timestamps = []
+    ending_timestamps = []
     # loop over the frames of the video
     while True:
         # grab the current frame and initialize the occupied/unoccupied
         # text
         frame = vs.read()
+        fps = vs.get(5)
         frame = frame if video_path == 0 else frame[1]
         if not frame is None:
             frame_shape = frame.shape
@@ -81,16 +91,16 @@ def video_cutter(video_path=0):
             # motion detected
             found_countour_in_area = True
 
-            if is_recording:  # if recording just write the frame to the partial_output
-                partial_output.write(frame)
-                # cv2.imshow('frame', frame)
-            else:  # otherwise - open new partial movie and write the first detected frame.
-                fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-                fps=vs.get(5)
-                partial_output = cv2.VideoWriter(
-                    '../../server/partial_movies/partial_output_from_frame_{}.mp4'.format(frame_counter), fourcc, vs.get(5),
-                    (frame.shape[1], frame.shape[0]))
-                partial_output.write(frame)
+            if not is_recording:  # otherwise - open new partial movie and write the first detected frame.
+                starting_timestamps.append(frame_counter * 1.0 / fps)
+                starting_frames.append(frame_counter)
+                # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+                # partial_output = cv2.VideoWriter(
+                #     'partial_movies/partial_output_from_frame_{}.mp4'.format(frame_counter), fourcc, vs.get(5),
+                #     (frame.shape[1], frame.shape[0]))
+                # partial_output.write(frame)
+
                 # cv2.imshow('frame', frame)
                 is_recording = True
 
@@ -98,39 +108,45 @@ def video_cutter(video_path=0):
         num_frames_not_detected_in_seq = 0 if found_countour_in_area else num_frames_not_detected_in_seq + 1
         found_countour_in_area = False
 
-        # if there are more then 4 undetected frames in seq from the last frame detected - save the partial movies
+        # if there are more then 30 undetected frames in seq from the last frame detected - save the partial movies
         if num_frames_not_detected_in_seq > 30 and not partial_output is None:
             partial_output.release()
+            ending_timestamps.append(frame_counter * 1.0 / fps)
             partial_output = None
             is_recording = False
             num_frames_not_detected_in_seq = 0
-        # cv2.imshow("Video processor", frame)  # TODO: Remove this command when you finish
-        # delay of 25 ms between frames
-        key = cv2.waitKey(25) & 0xFF
-        # exit can be done by pressing 'q'
-        if key == ord("q"):
-            break
+
         frame_counter += 1
 
     # Close all resources
     if is_recording and not partial_output is None:
         partial_output.release()
+
+    ending_timestamps.append(frame_counter * 1.0 / fps)
     vs.stop() if video_path == 0 else vs.release()
     cv2.destroyAllWindows()
 
+    for start_frame, start_time, end_time in zip(starting_frames, starting_timestamps, ending_timestamps):
+        # ffmpeg_extract_subclip(video_path, start_time, end_time,
+        #                        targetname='partial_movies/partial_output_from_frame_{}.mp4'.format(start_frame))
+        with VideoFileClip(video_path) as video:
+            new = video.subclip(start_time, end_time)
+            new.write_videofile('partial_movies/partial_output_from_frame_{}.mp4'.format(start_frame),
+                                audio_codec='aac')
+
     lst = []
 
-    for root, dirs, files in os.walk('../../server/partial_movies/'):
+    for root, dirs, files in os.walk('partial_movies/'):
         files = natsorted(files)
-        print(files)
+        # print(files)
         for file in files:
             if os.path.splitext(file)[1] == '.mp4':
                 file_path = os.path.join(root, file)
-                print(file_path)
+                # print(file_path)
                 video = VideoFileClip(file_path)
-                print(video)
+                # print(video)
                 lst.append(video)
 
-    print(lst)
+    # print(lst)
     final_clip = concatenate_videoclips(lst)
-    final_clip.to_videofile("../../server/partial_movies/output.mp4", fps=fps, remove_temp=False)
+    final_clip.to_videofile("partial_movies/output.mp4", fps=fps, remove_temp=False)
