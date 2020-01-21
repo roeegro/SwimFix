@@ -56,6 +56,8 @@ def generate_dirs_for_output_of_movie(movName):
     name = filename_without_suffix(movName)
     dict_to_return = output_dirs_dict
     outputs_dir = get_src_path() + "\\..\\output"
+    if not os.path.exists(outputs_dir):
+        os.mkdir(outputs_dir)
     os.chdir(outputs_dir)
     if not os.path.exists(name):
         os.mkdir(name)
