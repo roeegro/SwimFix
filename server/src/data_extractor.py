@@ -2,11 +2,13 @@
 import math
 import numpy as np
 from numpy.linalg import norm
+from scipy import interpolate
+
 import utils
 import pandas as pd
 
 
-def generate_vectors_csv(csv_path, outp_path='../output'):
+def generate_vectors_csv(csv_path, filename):
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     vectors_df = pd.DataFrame(
@@ -16,7 +18,6 @@ def generate_vectors_csv(csv_path, outp_path='../output'):
     df.drop(columns=df.columns.difference(kp_cols), axis=1, inplace=True)
     df.reset_index(drop=True, inplace=True)
     # frame_nums = df['Frame Number'].values
-    df.drop(columns=['Unnamed: 0'], axis=1, inplace=True)
     # df.insert(0, 'Frame Number', frame_nums)
     # kp_cols.remove('Frame Number')
     for idx, frame in df.iterrows():
@@ -34,7 +35,7 @@ def generate_vectors_csv(csv_path, outp_path='../output'):
                          'LForearmX': frame['LElbowX'] - frame['LWristX'],
                          'LForearmY': frame['RElbowY'] - frame['RWristY'], }
         vectors_df = vectors_df.append(frame_vectors, ignore_index=True)
-    outp_path += '/vectors.csv'
+    outp_path = utils.get_analytics_dir() + '/' + filename
     pd.DataFrame.to_csv(vectors_df, outp_path, index=False)
     return outp_path
 
@@ -72,7 +73,7 @@ def angle_between(v1, v2):
     # return np.arccos(np.dot(v1_u, v2_u))
 
 
-def generate_angles_csv(csv_path, outp_path='../output'):
+def generate_angles_csv(csv_path, filname):
     vectors_df = pd.read_csv(csv_path)
     angles_df = pd.DataFrame(columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng'])
     for idx, frame in vectors_df.iterrows():
@@ -90,21 +91,20 @@ def generate_angles_csv(csv_path, outp_path='../output'):
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
-    outp_path += '/angels.csv'
-    pd.DataFrame.to_csv(angles_df, outp_path, index=False)
+    outp_path = utils.analytical_df_to_csv(angles_df, filname)
+    # pd.DataFrame.to_csv(angles_df, filname, index=False)
     return outp_path
 
 
-def generate_is_detected_keypoint_csv(csv_path, score_cols=None, outp_path='../output'):
+def generate_is_detected_keypoint_csv(csv_path, score_cols=None, filename='is_all_detected.csv'):
     df = pd.read_csv(csv_path)
     if score_cols is None:
         score_cols = list(filter(lambda x: 'Score' in x, df.columns.values))[1:]
-        name = 'is_all_detected'
     else:
-        name = '_'.join(score_cols)
+        filename = 'is_' + '_'.join(score_cols) + 'detected.csv'
         score_cols = list(map(utils.keypoint_to_score, score_cols))
     is_detected_cols = list(map(lambda x: x.replace('Score', ''), score_cols))
-    path = outp_path + '/is_' + name + '_detected.csv'
+    path = utils.get_analytics_dir() + '/' + filename
     is_detected_df = pd.DataFrame(columns=['Frame Number'] + is_detected_cols)
     for idx, frame in df.iterrows():
         is_detected_frame = {'Frame Number': frame['Frame Number']}
@@ -117,4 +117,46 @@ def generate_is_detected_keypoint_csv(csv_path, score_cols=None, outp_path='../o
         is_detected_df = is_detected_df.append(is_detected_frame, ignore_index=True)
     is_detected_df.reset_index(drop=True, inplace=True)
     pd.DataFrame.to_csv(is_detected_df, path, index=False)
+    return path
+
+
+def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number'):
+    df = pd.read_csv(csv_path)
+    output_path = utils.get_analytics_dir()
+    if y_cols is None:
+        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))[1:]
+        y_cols = cols.copy()
+        y_cols.remove(x_col)
+        path = output_path + '/interpolated_' + utils.filename_without_suffix(utils.get_file_name(csv_path)) + '.csv'
+    elif type(y_cols) == str:
+        y_cols = [y_cols]
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    else:
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    df.drop(columns=df.columns.difference(cols), axis=1, inplace=True)
+    for col_name in y_cols:
+        # Numpy Interpolation
+        # y = df[col_name]
+        # nans, x = nan_helper(y)
+        # y[nans] = np.interp(x(nans), x(~nans), y[~nans])
+
+        # Pandas Interpolation
+        first_notna_frame = df[col_name].notna().idxmax()
+        last_notna_frame = df[col_name].notna()[::-1].idxmax()
+        df = df.iloc[first_notna_frame:last_notna_frame + 1]
+        df.reset_index(drop=True, inplace=True)
+        df.set_index(['Frame Number'])
+        df = df[df.columns.dropna()]
+        df[col_name].interpolate(method='cubic', inplace=True)
+
+        y = df[col_name].values
+        x = df['Frame Number'].values
+        xnew = np.linspace(x.min(), x.max(), len(x))
+        bspline = interpolate.make_interp_spline(x, y)
+        y_smoothed = bspline(xnew)
+        df[col_name] = y_smoothed
+
+    df.to_csv(path, index=False)
     return path

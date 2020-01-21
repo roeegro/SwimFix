@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-
+import utils
 
 def create_all_figures(output_dirs):
     show_figures_of_angles_by_time(output_dirs)
@@ -92,10 +92,10 @@ def show_body_parts_location_by_time(output_dirs):
         # fig2.savefig("../output/figures/{}_by_frame_and_accurancy".format(triplet[1]))
 
 
-def create_graph(csv_path, y_cols=None, x_col='Frame Number', output_path='../output', mult_figures=True):
+def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True):
+    output_path = utils.get_figures_dir()
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
-    # df.drop(columns=['Unnnamed: 0'], axis=1, inplace=True)
     x = df[x_col].values
     if y_cols is None:
         y_cols = df.columns.difference([x_col, 'Unnamed: 0']).values
@@ -115,7 +115,8 @@ def create_graph(csv_path, y_cols=None, x_col='Frame Number', output_path='../ou
     plt.close()
 
 
-def plot_frame_detection(csv_path, y_cols=None, output_path='../output', mult_figures=True):
+def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
+    output_path = utils.get_figures_dir()
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     frames = df['Frame Number'].values
@@ -136,3 +137,6 @@ def plot_frame_detection(csv_path, y_cols=None, output_path='../output', mult_fi
         plt.xlabel('Frame Number')
         plt.savefig(output_path + "/all_keypoints_frame_detection")
     plt.close()
+
+
+# def plot_all_figures()

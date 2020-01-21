@@ -60,6 +60,7 @@ def get_keypoints_csv_from_video(video_path, params):
     all_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
     frame_detected_df = pd.DataFrame(columns=['Frame Number', 'Detected'])
     frame_counter = 0
+    all_keypoints_df_csv_path = ''
     while cap.isOpened():
         check, frame = cap.read()
         if not check:
@@ -124,8 +125,8 @@ def get_keypoints_csv_from_video(video_path, params):
             nan_record_df.columns = ['Frame Number'] + body_parts
             all_keypoints_df = pd.concat([all_keypoints_df, nan_record_df], sort=False)
             # Update csv file
-            all_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv")
-
+            all_keypoints_df_csv_path = output_dirs['analytical_data_path'] + "/all_keypoints.csv"
+            all_keypoints_df.to_csv(all_keypoints_df_csv_path)
             current_detected_frame_array = [frame_counter, 0]
             current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
             current_detected_frame_df.columns = ['Frame Number', 'Detected']
@@ -146,7 +147,7 @@ def get_keypoints_csv_from_video(video_path, params):
     # Closes all the frames
     cv2.destroyAllWindows()
 
-    return output_dirs
+    return all_keypoints_df_csv_path
 
 
 # Basic check if frame is valid to be included in the analytical data

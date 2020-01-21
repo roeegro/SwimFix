@@ -1,6 +1,9 @@
 import os
 from datetime import datetime
 import shutil
+import pandas as pd
+
+output_dirs_dict = {}
 
 
 def filename_without_suffix(path):
@@ -51,7 +54,7 @@ def get_body_parts():
 
 def generate_dirs_for_output_of_movie(movName):
     name = filename_without_suffix(movName)
-    dict_to_return = dict()
+    dict_to_return = output_dirs_dict
     outputs_dir = get_src_path() + "\\..\\output"
     os.chdir(outputs_dir)
     if not os.path.exists(name):
@@ -86,27 +89,6 @@ def generate_dirs_for_output_of_movie(movName):
         "frames_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + frames_dir_name
     os.chdir(get_src_path())
     return dict_to_return
-    # os.chdir(outputs_dir)
-    # time_created = datetime.utcnow().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
-    # print(time_created)
-    # movie_output_dir = "{}_{}_output".format(movName, time_created)
-    # os.mkdir(movie_output_dir)
-    # os.chdir(".\\" + movie_output_dir)
-    # analytical_data_path = "analytical_data"
-    # figures_path = "figures"
-    # frames = "frames"
-    # os.mkdir(analytical_data_path)
-    # os.mkdir(figures_path)
-    # os.mkdir(frames)
-    # dict_to_return = dict()
-    # dict_to_return["output_dir"] = outputs_dir
-    # dict_to_return["output_movie_dir"] = outputs_dir + "\\" + movie_output_dir
-    # dict_to_return["analytical_data_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + analytical_data_path
-    # dict_to_return["figures_path"] = outputs_dir + "\\" + movie_output_dir + "\\" + figures_path
-    # dict_to_return["frames"] = outputs_dir + "\\" + movie_output_dir + "\\" + frames
-    # os.chdir(get_src_path())
-    #
-    # return dict_to_return
 
 
 def zip_output(output_dirs):
@@ -127,6 +109,29 @@ def keypoint_to_score(col_name):
     elif 'Score' in col_name:
         return col_name
     return col_name + 'Score'
+
+
+def get_analytics_dir():
+    return output_dirs_dict['analytical_data_path']
+
+
+def get_figures_dir():
+    return output_dirs_dict['figures_path']
+
+
+def analytical_df_to_csv(df, filename):
+    analytical_dir_path = output_dirs_dict['analytical_data_path']
+    outp_path = analytical_dir_path + '/' + filename
+    pd.DataFrame.to_csv(df, outp_path, index=False)
+    return outp_path
+
+
+def get_frames_dir():
+    return output_dirs_dict['frames_path']
+
+
+def get_output_dirs_dict():
+    return output_dirs_dict
 
 
 if __name__ == "__main__":
