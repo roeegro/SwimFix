@@ -78,6 +78,7 @@ def main():
     data_extractor.make_body_parts_df(interp_csv_path, {})
     data_extractor.make_angle_df('../output/groiser/groiser_vectors.csv', {})
     visualizer.create_graph('../output/groiser/groiser_angles.csv', output_path='../output/groiser')
+    print(data_analyser.calc_avg_angle(angles_csv_path))
     # # for output dirs keys - see utils.generate_dirs_for_output_of_movie
     # output_dirs = video_proccesor.get_keypoints_csv_from_video(args, params)
     # data_extractor.make_body_parts_df(pd.read_csv(output_dirs['analytical_data_path'] + '/all_keypoints.csv'),
