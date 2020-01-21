@@ -1,9 +1,9 @@
 # Edited by Roee Groiser and Tom Marzea
-from main import *
 import numpy as np
 import utils
 from scipy import interpolate
 from scipy.signal import argrelextrema, argrelmin
+import pandas as pd
 
 
 def create_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', output_path='../output'):
