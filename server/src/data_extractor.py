@@ -11,7 +11,7 @@ import utils
 import pandas as pd
 
 
-def generate_vectors_csv(csv_path, filename):
+def generate_vectors_csv(csv_path, filename='vectors.csv'):
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     vectors_df = pd.DataFrame(
@@ -76,7 +76,7 @@ def angle_between(v1, v2):
     # return np.arccos(np.dot(v1_u, v2_u))
 
 
-def generate_angles_csv(csv_path, filname):
+def generate_angles_csv(csv_path, filename='angles.csv'):
     vectors_df = pd.read_csv(csv_path)
     angles_df = pd.DataFrame(columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng'])
     for idx, frame in vectors_df.iterrows():
@@ -94,7 +94,7 @@ def generate_angles_csv(csv_path, filname):
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
-    outp_path = utils.analytical_df_to_csv(angles_df, filname)
+    outp_path = utils.analytical_df_to_csv(angles_df, filename)
     # pd.DataFrame.to_csv(angles_df, filname, index=False)
     return outp_path
 
