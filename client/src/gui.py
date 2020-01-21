@@ -1,6 +1,7 @@
 from flask import *
 import os
 import preprocessor
+from shutil import copyfile
 from waitress import serve
 
 # from werkzeug import secure_filename
@@ -27,6 +28,11 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
+def send_file_to_server(video_path):
+    copyfile(video_path, "../../server/videos/output.mp4")
+    print("Sent file!")
+
+
 @app.route('/file', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -37,6 +43,7 @@ def upload_file():
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(video_path)
             preprocessor.video_cutter(video_path)
+            send_file_to_server("partial_movies/output.mp4")
             return redirect(url_for('upload_file'))
         else:
             return '''

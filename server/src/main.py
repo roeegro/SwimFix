@@ -58,8 +58,8 @@ for i in range(0, len(args[1])):
 
 
 def main():
-    fascade.analyze_video(args[0].image_path, params)
-
+    # fascade.analyze_video(args[0].image_path, params)
+    fascade.wait_analyze_video(params)
 
 if __name__ == '__main__':
     main()

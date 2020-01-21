@@ -2,6 +2,8 @@ import data_analyser
 import data_extractor
 import utils
 import visualizer
+import os.path
+import time
 
 
 def interpolate_and_plot(csv_path, y_cols, x_col='Frame Number', interp_csv_path='../output', fig_path='../output',
@@ -21,6 +23,31 @@ def analyze_video(video_path, params):
     # visualizer.create_all_figures(output_dirs)
     # utils.zip_output(output_dirs)
     # utils.delete_generate_dirs(output_dirs)
+
+
+def wait_analyze_video(params):
+    video_path = "../videos/output.mp4"
+    while True:
+        while not os.path.exists(video_path):
+            print("Waiting...")
+            time.sleep(1)
+
+        if os.path.isfile(video_path):
+            print("Analysing path...")
+            # read file
+            all_keypoints_csv_path = data_extractor.get_keypoints_csv_from_video(video_path, params)
+            all_keypoints_interpolated_csv_path = interpolate_csv(all_keypoints_csv_path)
+            vectors_csv_path = data_extractor.generate_vectors_csv(all_keypoints_interpolated_csv_path)
+            angles_csv_path = data_extractor.generate_angles_csv(vectors_csv_path)
+            data_extractor.generate_detected_keypoints_csv(all_keypoints_csv_path)
+            os.remove(video_path)
+            print("Removed video")
+            # visualizer.create_all_figures(output_dirs)
+            # utils.zip_output(output_dirs)
+            # utils.delete_generate_dirs(output_dirs)
+        else:
+            raise ValueError("%s isn't a file!" % video_path)
+    # for output dirs keys - see utils.generate_dirs_for_output_of_movie
 
 
 def extract_data_from_vid_and_visualize(video_path):
