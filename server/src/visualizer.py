@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import utils
+import os
 
 
 def create_all_figures(output_dirs):
@@ -142,14 +143,21 @@ def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
     plt.close()
 
 
-def plot_histogram_from_dict(data_dict):
+def plot_histogram_from_dict(data_dict, xlabel, ylabel, filename=None):
     output_path = utils.get_figures_dir()
-    # print(data_dict.keys())
     plt.bar(data_dict.keys(), data_dict.values())
-    plt.xlabel('Keypoints')
-    plt.ylabel('No. of detected frames')
-    plt.savefig(output_path + '/detected_frames_by_keypoints_histogram')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.savefig(output_path + '/' + filename)
     plt.close()
 
 
-# def plot_all_figures()
+def plot_scatter_from_dict(data_dict, xlabel, ylabel, filename=None):
+    output_path = utils.get_figures_dir()
+    plt.scatter(data_dict.keys(), data_dict.values())
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    for angle, val in data_dict.items():
+        plt.annotate(round(val, 2), (angle, val))
+    plt.savefig(output_path + '/' + filename)
+    plt.close()

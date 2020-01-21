@@ -4,8 +4,8 @@ import utils
 import visualizer
 
 
-def interpolate_and_plot(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True):
-    interpolated_csv_path = data_extractor.generate_interpolated_csv(csv_path, y_cols, x_col)
+def interpolate_and_plot(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, filename=None):
+    interpolated_csv_path = data_extractor.generate_interpolated_csv(csv_path, y_cols, x_col, filename)
     visualizer.create_graph(interpolated_csv_path, y_cols, x_col, mult_figures)
     return interpolated_csv_path
 
@@ -38,7 +38,7 @@ def get_angles_csv_from_keypoints_csv(csv_path, interpolate=True, avg_angles=Tru
     angles_csv_path = data_extractor.generate_angles_csv(data_extractor.generate_vectors_csv(csv_path))
     if avg_angles:
         avg_angles_dict = data_analyser.calc_avg_angle(angles_csv_path)
-        visualizer.plot_histogram_from_dict(avg_angles_dict)
+        visualizer.plot_scatter_from_dict(avg_angles_dict, 'Keypoints', 'Angle', 'average_keypoints_angles')
         return avg_angles_dict
     return angles_csv_path
 
@@ -47,7 +47,8 @@ def get_detected_keypoints_by_frame(csv_path, interpolate=False):
     detected_frames_csv_path = data_extractor.generate_detected_keypoints_csv(csv_path)
     visualizer.plot_frame_detection(detected_frames_csv_path)
     detected_keypoints_dict = data_analyser.calc_detected_frames_count_from_csv(detected_frames_csv_path)
-    visualizer.plot_histogram_from_dict(detected_keypoints_dict)
+    visualizer.plot_histogram_from_dict(detected_keypoints_dict, 'Keypoints', 'No. of detected frames',
+                                        'detected_frames_by_keypoints_histogram')
     return detected_keypoints_dict
 
 
