@@ -16,6 +16,8 @@ body_parts = ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', '
 
 
 def make_body_parts_df(valid_keypoints_df, output_dirs):
+    valid_keypoints_df = pd.read_csv(valid_keypoints_df)
+
     cols = ['Frame Number', 'RShoulder_X', 'RShoulder_Y', 'LShoulder_X', 'LShoulder_Y', 'RArm_X',
             'RArm_Y', 'LArm_X', 'LArm_Y', 'RForarm_X', 'RForarm_Y', 'LForarm_X',
             'LForarm_Y']
@@ -47,11 +49,13 @@ def make_body_parts_df(valid_keypoints_df, output_dirs):
         vectors_in_current_frame = pd.DataFrame(row_array).T
         vectors_in_current_frame.columns = cols
         vectors_by_frames_df = pd.concat([vectors_by_frames_df, vectors_in_current_frame], sort=False)
-        vectors_by_frames_df.to_csv(output_dirs['analytical_data_path'] + "/vectors_by_time.csv")
+        # vectors_by_frames_df.to_csv(output_dirs['analytical_data_path'] + "/vectors_by_time.csv")
+        vectors_by_frames_df.to_csv('../output/groiser/groiser_vectors.csv')
 
 
 def make_angle_df(vectors_df, output_dirs):
     df_angles = pd.DataFrame(columns=['Frame Number', 'RElbow', 'RShoulder', 'LElbow', 'LShoulder'])
+    vectors_df = pd.read_csv(vectors_df)
     for index, row in vectors_df.iterrows():
         # Calculating vectors (from each 2 points) and
         r_forarm_vector = [(float)(row['RForarm_X']), (float)(row['RForarm_Y'])]
@@ -103,7 +107,8 @@ def make_angle_df(vectors_df, output_dirs):
         current_frame_angles_df = pd.DataFrame(array_of_angles).T
         current_frame_angles_df.columns = df_angles.columns
         df_angles = pd.concat([df_angles, current_frame_angles_df], sort=False)
-        df_angles.to_csv(output_dirs['analytical_data_path'] + "/angles_by_time.csv")
+        # df_angles.to_csv(output_dirs['analytical_data_path'] + "/angles_by_time.csv")
+        pd.DataFrame.to_csv(df_angles, '../output/groiser/groiser_angles.csv')
 
 
 def make_body_part_detected_by_frame_df(output_dirs):
@@ -140,9 +145,7 @@ def ncr(n, r):
     return numer / denom
 
 
-### Tom ###
-
-
+# Tom
 def generate_vectors_csv(csv_path, outp_path='../output'):
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
@@ -219,12 +222,12 @@ def generate_angles_csv(csv_path, outp_path='../output'):
         LArmVec = (frame['LArmX'], frame['LArmY'])
         RForearmVec = (frame['RForearmX'], frame['RForearmY'])
         LForearmVec = (frame['LForearmX'], frame['LForearmY'])
-        neg = tuple([-1*x for x in RChestVec])
+        neg = tuple([-1 * x for x in RChestVec])
         frame_angels = {'Frame Number': frame['Frame Number'],
-                        'RShoulderAng': angle(tuple([1*x for x in RChestVec]), RArmVec),
-                        'LShoulderAng': angle(tuple([1*x for x in LChestVec]), LArmVec),
-                        'RElbowAng': angle(tuple([1*x for x in RArmVec]), RForearmVec),
-                        'LElbowAng': angle(tuple([1*x for x in LArmVec]), LForearmVec),
+                        'RShoulderAng': angle(tuple([-1 * x for x in RChestVec]), RArmVec),
+                        'LShoulderAng': angle(tuple([-1 * x for x in LChestVec]), LArmVec),
+                        'RElbowAng': angle(tuple([-1 * x for x in RArmVec]), RForearmVec),
+                        'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
     outp_path += '/angels.csv'
