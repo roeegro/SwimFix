@@ -15,7 +15,7 @@ def interpolate_and_plot(csv_path, y_cols, x_col='Frame Number', interp_csv_path
 def graphs_from_video(video_path, params):
     return extract_data_from_vid('MVI_8027.MOV')
     # for output dirs keys - see utils.generate_dirs_for_output_of_movie
-    all_keypoints_df_csv_path = video_proccesor.get_keypoints_csv_from_video(video_path, params)
+    all_keypoints_df_csv_path = data_extractor.get_keypoints_csv_from_video(video_path, params)
     vectors_csv_path = data_extractor.generate_vectors_csv(all_keypoints_df_csv_path)
     angles_csv_path = data_extractor.generate_angles_csv(vectors_csv_path)
     data_extractor.generate_detected_keypoints_csv(all_keypoints_df_csv_path)
