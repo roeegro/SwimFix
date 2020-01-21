@@ -1,14 +1,12 @@
 # Edited by Roee Groiser and Tom Marzea
 import math
-
 import cv2
 import numpy as np
-from numpy.linalg import norm
 from scipy import interpolate
-
 import extract_frames as f
 import utils
 import pandas as pd
+from main import *
 
 
 def generate_vectors_csv(csv_path, filename='vectors.csv'):
