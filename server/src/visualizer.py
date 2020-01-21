@@ -113,3 +113,26 @@ def create_graph(csv_path, y_cols=None, x_col='Frame Number', output_path='../ou
         plt.legend(y_cols)
         plt.savefig(output_path + "/{}_by_{}".format('_'.join(y_cols), x_col))
     plt.close()
+
+
+def plot_frame_detection(csv_path, y_cols=None, output_path='../output', mult_figures=True):
+    df = pd.read_csv(csv_path)
+    df.reset_index(drop=True, inplace=True)
+    frames = df['Frame Number'].values
+    if y_cols is None:
+        y_cols = df.columns.difference(['Frame Number', 'Unnamed: 0']).values
+    for y_col in y_cols:
+        y = df[y_col].values
+        if not mult_figures:
+            plt.scatter(frames, y, c='blue')
+        if mult_figures:
+            plt.scatter(frames, y)
+            plt.xlabel('Frame Number')
+            plt.ylabel(y_col)
+            plt.title = y_col + 'Frame Detection'
+            plt.savefig(output_path + '/{}_frame_detection'.format(y_col))
+            plt.clf()
+    if not mult_figures:
+        plt.xlabel('Frame Number')
+        plt.savefig(output_path + "/all_keypoints_frame_detection")
+    plt.close()

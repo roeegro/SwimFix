@@ -6,6 +6,7 @@ from numpy import dot
 from numpy.linalg import norm
 import operator as op
 from functools import reduce
+import utils
 
 num_dimentions = 2
 
@@ -50,7 +51,7 @@ def make_body_parts_df(valid_keypoints_df, output_dirs):
         vectors_in_current_frame.columns = cols
         vectors_by_frames_df = pd.concat([vectors_by_frames_df, vectors_in_current_frame], sort=False)
         # vectors_by_frames_df.to_csv(output_dirs['analytical_data_path'] + "/vectors_by_time.csv")
-        vectors_by_frames_df.to_csv('../output/groiser/groiser_vectors.csv')
+        vectors_by_frames_df.to_csv('../output/groiser/groiser_vectors.csv', index=False)
 
 
 def make_angle_df(vectors_df, output_dirs):
@@ -108,7 +109,7 @@ def make_angle_df(vectors_df, output_dirs):
         current_frame_angles_df.columns = df_angles.columns
         df_angles = pd.concat([df_angles, current_frame_angles_df], sort=False)
         # df_angles.to_csv(output_dirs['analytical_data_path'] + "/angles_by_time.csv")
-        pd.DataFrame.to_csv(df_angles, '../output/groiser/groiser_angles.csv')
+        pd.DataFrame.to_csv(df_angles, '../output/groiser/groiser_angles.csv', index=False)
 
 
 def make_body_part_detected_by_frame_df(output_dirs):
@@ -135,7 +136,7 @@ def make_body_part_detected_by_frame_df(output_dirs):
         cur_frame_df = pd.DataFrame(cur_frame_array).T
         cur_frame_df.columns = df_to_load.columns
         df_to_load = pd.concat([df_to_load, cur_frame_df], sort=False)
-        df_to_load.to_csv(output_dirs['analytical_data_path'] + "/body_part_detected_by_frame_df.csv")
+        df_to_load.to_csv(output_dirs['analytical_data_path'] + "/body_part_detected_by_frame_df.csv", index=False)
 
 
 def ncr(n, r):
@@ -175,7 +176,7 @@ def generate_vectors_csv(csv_path, outp_path='../output'):
                          'LForearmY': frame['RElbowY'] - frame['RWristY'], }
         vectors_df = vectors_df.append(frame_vectors, ignore_index=True)
     outp_path += '/vectors.csv'
-    pd.DataFrame.to_csv(vectors_df, outp_path)
+    pd.DataFrame.to_csv(vectors_df, outp_path, index=False)
     return outp_path
 
 
@@ -231,5 +232,30 @@ def generate_angles_csv(csv_path, outp_path='../output'):
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
     outp_path += '/angels.csv'
-    pd.DataFrame.to_csv(angles_df, outp_path)
+    pd.DataFrame.to_csv(angles_df, outp_path, index=False)
     return outp_path
+
+
+def generate_is_detected_keypoint_csv(csv_path, score_cols=None, outp_path='../output'):
+    df = pd.read_csv(csv_path)
+    if score_cols is None:
+        score_cols = list(filter(lambda x: 'Score' in x, df.columns.values))[1:]
+        name = 'is_all_detected'
+    else:
+        name = '_'.join(score_cols)
+        score_cols = list(map(utils.keypoint_to_score, score_cols))
+    is_detected_cols = list(map(lambda x: x.replace('Score', ''), score_cols))
+    path = outp_path + '/is_' + name + '_detected.csv'
+    is_detected_df = pd.DataFrame(columns=['Frame Number'] + is_detected_cols)
+    for idx, frame in df.iterrows():
+        is_detected_frame = {'Frame Number': frame['Frame Number']}
+        for score_col in score_cols:
+            is_detected_col = score_col.replace('Score', '')
+            if math.isnan(frame[score_col]):
+                is_detected_frame[is_detected_col] = 0
+            else:
+                is_detected_frame[is_detected_col] = 1
+        is_detected_df = is_detected_df.append(is_detected_frame, ignore_index=True)
+    is_detected_df.reset_index(drop=True, inplace=True)
+    pd.DataFrame.to_csv(is_detected_df, path, index=False)
+    return path

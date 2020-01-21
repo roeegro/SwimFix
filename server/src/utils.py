@@ -86,5 +86,13 @@ def delete_generate_dirs(output_dirs):
     shutil.rmtree(output_dirs['output_movie_dir'])
 
 
+def keypoint_to_score(col_name):
+    if col_name[-1] == 'X' or col_name[-1] == 'Y':
+        return col_name[:-1] + 'Score'
+    elif 'Score' in col_name:
+        return col_name
+    return col_name + 'Score'
+
+
 if __name__ == "__main__":
     print(get_src_path())

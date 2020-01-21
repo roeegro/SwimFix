@@ -43,7 +43,7 @@ def create_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', output_
         y_smoothed = bspline(xnew)
         df[col_name] = y_smoothed
 
-    df.to_csv(path)
+    df.to_csv(path, index=False)
     return path
 
 
@@ -85,7 +85,7 @@ def calc_avg_period(csv_path, col_names, min_period=1.5, frame_rate=30, maximum=
 def calc_avg_angle(csv_path, col_names=None):
     df = pd.read_csv(csv_path)
     if col_names is None:
-        col_names = df.columns.difference(['Frame Number']).values
+        col_names = df.columns.difference(['Frame Number', 'Unnamed: 0']).values
     # df.drop(columns=df.columns.differecne(col_names), index=1, inplace=True)
     avg_angle_dict = {}
     for col in col_names:
