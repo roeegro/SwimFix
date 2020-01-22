@@ -93,16 +93,16 @@ def generate_dirs_for_output_of_movie(movName):
     return dict_to_return
 
 
-def zip_output(output_dirs):
-    filename = get_file_name_for_backslash(output_dirs['output_movie_dir'])
-    os.chdir(output_dirs['output_dir'])
-    shutil.make_archive('{}.zip'.format(filename), 'zip', output_dirs['output_movie_dir'])
+def zip_output():
+    filename = get_file_name_for_backslash(output_dirs_dict['output_movie_dir'])
+    os.chdir(output_dirs_dict['output_dir'])
+    shutil.make_archive('{}'.format(filename), 'zip', output_dirs_dict['output_movie_dir'])
     os.chdir(get_src_path())
-    return output_dirs['output_dir'] + '\\{}.zip'.format(filename)
+    return output_dirs_dict['output_dir'] + '\\{}.zip'.format(filename)
 
 
-def delete_generate_dirs(output_dirs):
-    shutil.rmtree(output_dirs['output_movie_dir'])
+def delete_generate_dirs():
+    shutil.rmtree(output_dirs_dict['output_movie_dir'])
 
 
 def keypoint_to_score(col_name):
@@ -134,6 +134,12 @@ def get_frames_dir():
 
 def get_output_dirs_dict():
     return output_dirs_dict
+
+
+def send_zip(src_zip, dest_path, delete_output_folder=False):
+    shutil.move(src_zip, dest_path)
+    if delete_output_folder:
+        delete_generate_dirs()
 
 
 if __name__ == "__main__":

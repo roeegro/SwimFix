@@ -3,7 +3,7 @@ import os
 import preprocessor
 from shutil import copyfile
 from waitress import serve
-
+import shutil
 # from werkzeug import secure_filename
 
 app = Flask(__name__)
@@ -30,6 +30,12 @@ def allowed_file(filename):
 
 def send_file_to_server(video_path):
     copyfile(video_path, "../../server/videos/output.mp4")
+    # os.remove(video_path)
+    shutil.rmtree('partial_movies')
+    os.mkdir('partial_movies')
+    if not os.path.exists('output'):
+        print('Created output')
+        os.mkdir('output')
     print("Sent file!")
 
 
@@ -38,6 +44,8 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
+            if not os.path.exists('partial_movies'):
+                os.mkdir('partial_movies')
             # filename = secure_filename(file.filename)
             filename = file.filename
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
