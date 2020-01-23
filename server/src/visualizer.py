@@ -4,6 +4,8 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+
+import output_manager
 import utils
 
 
@@ -79,7 +81,7 @@ def show_body_parts_location_by_time(output_dirs):
 
 
 def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True):
-    output_path = utils.get_figures_dir()
+    output_path = output_manager.get_figures_dir()
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     x = df[x_col].values
@@ -104,7 +106,7 @@ def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True)
 
 
 def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
-    output_path = utils.get_figures_dir()
+    output_path = output_manager.get_figures_dir()
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     frames = df['Frame Number'].values
@@ -128,7 +130,7 @@ def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
 
 
 def plot_histogram_from_dict(data_dicts, xlabel, ylabel, filename=None):
-    output_path = utils.get_figures_dir()
+    output_path = output_manager.get_figures_dir()
     if filename is None:
         filename = ylabel + '_of_' + xlabel + '_histogram'
     if isinstance(data_dicts, dict) or len(data_dicts) == 1:
@@ -147,7 +149,7 @@ def plot_histogram_from_dict(data_dicts, xlabel, ylabel, filename=None):
 
 
 def plot_scatter_from_dict(data_dict, xlabel, ylabel, filename=None):
-    output_path = utils.get_figures_dir()
+    output_path = output_manager.get_figures_dir()
     plt.scatter(data_dict.keys(), data_dict.values())
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)

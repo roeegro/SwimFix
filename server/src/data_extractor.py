@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from scipy import interpolate
 import extract_frames as f
+import output_manager
 import utils
 import pandas as pd
 from main import *
@@ -36,7 +37,7 @@ def generate_vectors_csv(csv_path, filename='vectors.csv'):
                          'LForearmX': frame['LElbowX'] - frame['LWristX'],
                          'LForearmY': frame['RElbowY'] - frame['RWristY'], }
         vectors_df = vectors_df.append(frame_vectors, ignore_index=True)
-    outp_path = utils.get_analytics_dir() + '/' + filename
+    outp_path = output_manager.get_analytics_dir() + '/' + filename
     pd.DataFrame.to_csv(vectors_df, outp_path, index=False)
     return outp_path
 
@@ -92,7 +93,7 @@ def generate_angles_csv(csv_path, filename='angles.csv'):
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
-    outp_path = utils.analytical_df_to_csv(angles_df, filename)
+    outp_path = output_manager.analytical_df_to_csv(angles_df, filename)
     # pd.DataFrame.to_csv(angles_df, filname, index=False)
     return outp_path
 
@@ -108,7 +109,7 @@ def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
             filename = 'is_' + '_'.join(score_cols) + 'detected.csv'
         score_cols = list(map(utils.keypoint_to_score, score_cols))
     is_detected_cols = list(map(lambda x: x.replace('Score', ''), score_cols))
-    path = utils.get_analytics_dir() + '/' + filename
+    path = output_manager.get_analytics_dir() + '/' + filename
     is_detected_df = pd.DataFrame(columns=['Frame Number'] + is_detected_cols)
     for idx, frame in df.iterrows():
         is_detected_frame = {'Frame Number': frame['Frame Number']}
@@ -124,14 +125,15 @@ def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
     return path
 
 
-def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filename=None):
+def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filename=None, output_path=None):
     df = pd.read_csv(csv_path)
-    output_path = utils.get_analytics_dir()
+    if output_path is None:
+        output_path = output_manager.get_analytics_dir()
     if y_cols is None:
         cols = list(filter(lambda name: 'Score' not in name, df.columns.values))[1:]
         y_cols = cols.copy()
         y_cols.remove(x_col)
-        path = output_path + '/interpolated_' + utils.filename_without_suffix(utils.get_file_name(csv_path)) + '.csv'
+        path = output_path + '/interpolated_' + utils.path_without_suffix(utils.get_file_name(csv_path)) + '.csv'
     elif type(y_cols) == str:
         y_cols = [y_cols]
         cols = y_cols + [x_col]
@@ -174,8 +176,8 @@ body_parts = utils.get_body_parts()
 # Creates 3 csv files(all keypoints, valid and invalid ones) and emplace wire-frame.
 def get_keypoints_csv_from_video(video_path, params):
     video_name = utils.get_file_name(video_path)
-    video_name = utils.filename_without_suffix(video_name)
-    output_dirs = utils.generate_dirs_for_output_of_movie(video_name)
+    video_name = utils.path_without_suffix(video_name)
+    output_dirs = output_manager.generate_dirs_for_output_of_movie(video_name)
 
     # Extract frames
     f.extract_frames_by_file(file=video_path, output=output_dirs['time_path'])

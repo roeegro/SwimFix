@@ -1,5 +1,6 @@
 import data_analyser
 import data_extractor
+import output_manager
 import utils
 import visualizer
 import os
@@ -46,15 +47,15 @@ def get_keypoints_csv_from_video(video_path, params):
 
 
 def zip_output():
-    zip_path = utils.zip_output()
-    utils.send_zip(zip_path, "../../client/src/output")
+    zip_path = output_manager.zip_output()
+    output_manager.send_zip(zip_path, "../../client/src/output")
     return zip_path
 
 
 def main():
     all_keypoints_df_csv_path = '../../all_keypoints.csv'
     video_path = 'MVI_8027.MOV'
-    output_dirs = utils.generate_dirs_for_output_of_movie(video_path)
+    output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
     interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
     get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
     get_detected_keypoints_by_frame(all_keypoints_df_csv_path)
