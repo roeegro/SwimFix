@@ -4,6 +4,7 @@ import preprocessor
 from shutil import copyfile
 from waitress import serve
 import shutil
+
 # from werkzeug import secure_filename
 
 app = Flask(__name__)
@@ -13,14 +14,9 @@ app = Flask(__name__)
 # UPLOAD_FOLDER = '/code/flask-test/upload_files'
 UPLOAD_FOLDER = 'uploaded_files'
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV','mp4'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-
-@app.route("/")
-def hello(name=None):
-    return render_template('hello.html', name=name)
 
 
 def allowed_file(filename):
@@ -29,17 +25,19 @@ def allowed_file(filename):
 
 
 def send_file_to_server(video_path):
-    copyfile(video_path, "../../server/videos/output.mp4")
+    video_name = video_path.split('/')[-1]
+    video_name = video_name.split('.')[0]
+    # to create the output dir from the server
+    if not os.path.exists('output'):
+        print('Created output dir')
+        os.mkdir('output')
+    copyfile(video_path, "../../server/videos/" + video_name + ".mp4")
     # os.remove(video_path)
     shutil.rmtree('partial_movies')
-    os.mkdir('partial_movies')
-    if not os.path.exists('output'):
-        print('Created output')
-        os.mkdir('output')
     print("Sent file!")
 
 
-@app.route('/file', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
@@ -50,8 +48,8 @@ def upload_file():
             filename = file.filename
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(video_path)
-            preprocessor.video_cutter(video_path)
-            send_file_to_server("partial_movies/output.mp4")
+            video_name = preprocessor.video_cutter(video_path)
+            send_file_to_server("partial_movies/" + video_name + ".mp4")
             return redirect(url_for('upload_file'))
         else:
             return '''
@@ -69,11 +67,6 @@ def upload_file():
          <input type=submit value=Upload>
     </form>
     '''
-
-
-@app.route("/user/<username>")
-def profile(username):
-    return u"こんにちは！" + username + u"くん！"
 
 
 if __name__ == "__main__":

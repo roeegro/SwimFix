@@ -4,7 +4,9 @@ import sys
 import os
 from sys import platform
 import argparse
-import fascade
+import facade
+import time
+import shutil
 
 # import preprocessor
 # setup
@@ -57,9 +59,26 @@ for i in range(0, len(args[1])):
         if key not in params: params[key] = next_item
 
 
-def main():
-    # fascade.analyze_video(args[0].image_path, params)
-    fascade.wait_analyze_video(params)
+def wait_analyze_video():
+    while True:
+        for filename in os.listdir('../videos')[:1]:
+            print(filename)
+            video_path = '../videos/' + filename
+            print(video_path)
+            print("Analysing path...")
+            all_keypoints_csv_path = facade.get_keypoints_csv_from_video(video_path, params)
+            interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
+            facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
+            facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
+            facade.get_average_swimming_period_from_csv(interpolated_keypoints_path)
+            zip_path = facade.zip_output()
+            os.remove(video_path)
+            print("Removed video")
+            # else:
+            #     raise ValueError("%s isn't a file!" % filename)
+        print("Waiting...")
+        time.sleep(1)
+
 
 if __name__ == '__main__':
-    main()
+    wait_analyze_video()

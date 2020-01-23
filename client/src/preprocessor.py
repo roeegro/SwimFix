@@ -149,4 +149,7 @@ def video_cutter(video_path=0):
 
     # print(lst)
     final_clip = concatenate_videoclips(lst)
-    final_clip.to_videofile("partial_movies/output.mp4", fps=fps, remove_temp=False)
+    video_name = video_path.split('\\')[-1]
+    video_name = video_name.split('.')[0]
+    final_clip.to_videofile("partial_movies/"+video_name+".mp4", fps=fps, remove_temp=False)
+    return video_name

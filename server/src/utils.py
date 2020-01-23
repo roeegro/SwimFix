@@ -4,6 +4,7 @@ import shutil
 import pandas as pd
 
 output_dirs_dict = {}
+expected_output_dirs_dict = {}
 
 
 def filename_without_suffix(path):
@@ -52,9 +53,12 @@ def get_body_parts():
             'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']
 
 
-def generate_dirs_for_output_of_movie(movName):
-    name = filename_without_suffix(movName)
-    dict_to_return = output_dirs_dict
+def generate_dirs_for_output_of_movie(vid_name, generate_expected=False):
+    name = filename_without_suffix(vid_name)
+    if generate_expected:
+        dict_to_return = expected_output_dirs_dict
+    else:
+        dict_to_return = output_dirs_dict
     outputs_dir = get_src_path() + "\\..\\output"
     if not os.path.exists(outputs_dir):
         os.mkdir(outputs_dir)
@@ -95,10 +99,14 @@ def generate_dirs_for_output_of_movie(movName):
 
 def zip_output():
     filename = get_file_name_for_backslash(output_dirs_dict['output_movie_dir'])
-    os.chdir(output_dirs_dict['output_dir'])
-    shutil.make_archive('{}'.format(filename), 'zip', output_dirs_dict['output_movie_dir'])
+    zip_out_path = output_dirs_dict['time_path']
+    os.chdir(zip_out_path)
+    time_path = output_dirs_dict['time_path'].split('\\')[-1]
+    date_path = output_dirs_dict['date_path'].split('\\')[-1]
+    zip_name = '{}_{}_{}'.format(filename, date_path, time_path)
+    shutil.make_archive(zip_name, 'zip')
     os.chdir(get_src_path())
-    return output_dirs_dict['output_dir'] + '\\{}.zip'.format(filename)
+    return zip_out_path + '\\{}.zip'.format(zip_name)
 
 
 def delete_generate_dirs():

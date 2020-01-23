@@ -8,7 +8,7 @@ def extract_frames_by_folder(parent):
 
 
 def extract_frames_by_file(file, output):
-    vidcap = cv2.VideoCapture(file);
+    vidcap = cv2.VideoCapture(file)
     if not os.path.exists(output + "\\frames"):
         os.makedirs(output + "\\frames")
     if not os.path.exists(output + "\\poses"):
