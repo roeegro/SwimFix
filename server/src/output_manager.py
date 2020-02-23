@@ -1,7 +1,7 @@
 import os
 import shutil
 from datetime import datetime
-
+import utils
 import pandas as pd
 
 from utils import path_without_suffix, get_src_path, get_file_name_for_backslash
@@ -10,19 +10,18 @@ expected_output_dirs_dict = {}
 output_dirs_dict = {}
 
 
-def generate_dirs_for_output_of_movie(vid_name, generate_expected=False):
-    name = path_without_suffix(vid_name)
-    if generate_expected:
-        output_dir = get_src_path() + "\\..\\expected_output"
-    else:
-        output_dir = get_src_path() + "\\..\\output"
-    dict_to_return = {}
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-    os.chdir(output_dir)
+def generate_dirs_for_output_of_movie(movName):
+    name = utils.path_without_suffix(movName)
+    dict_to_return = output_dirs_dict
+    outputs_dir = get_src_path() + "\\..\\output"
+    if not os.path.exists(outputs_dir):
+        os.mkdir(outputs_dir)
+    os.chdir(outputs_dir)
     if not os.path.exists(name):
         os.mkdir(name)
     os.chdir(name)
+    # time_created = datetime.utcnow().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
+    # time_created = datetime.date().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
     date = datetime.now()
     curr_date = date.strftime('%Y-%m-%d')
     if not os.path.exists(curr_date):
@@ -38,22 +37,17 @@ def generate_dirs_for_output_of_movie(vid_name, generate_expected=False):
     os.mkdir(analytical_data_dir_name)
     os.mkdir(figures_dir_name)
     os.mkdir(frames_dir_name)
-    dict_to_return["output_dir"] = output_dir
-    dict_to_return["output_movie_dir"] = output_dir + "\\" + name
-    dict_to_return["date_path"] = output_dir + "\\" + name + "\\" + curr_date
-    dict_to_return["time_path"] = output_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time
+    dict_to_return["output_dir"] = outputs_dir
+    dict_to_return["output_movie_dir"] = outputs_dir + "\\" + name
+    dict_to_return["date_path"] = outputs_dir + "\\" + name + "\\" + curr_date
+    dict_to_return["time_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time
     dict_to_return[
-        "analytical_data_path"] = output_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name
+        "analytical_data_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + analytical_data_dir_name
     dict_to_return[
-        "figures_path"] = output_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + figures_dir_name
+        "figures_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + figures_dir_name
     dict_to_return[
-        "frames_path"] = output_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + frames_dir_name
+        "frames_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + frames_dir_name
     os.chdir(get_src_path())
-    output_dict_key = name + '_' + curr_time + '_' + curr_time
-    if generate_expected:
-        expected_output_dirs_dict[output_dict_key] = dict_to_return
-    else:
-        output_dirs_dict[output_dict_key] = dict_to_return
     return dict_to_return
 
 
@@ -87,28 +81,28 @@ def get_expected_output_dirs_dict():
     return expected_output_dirs_dict
 
 
-def get_output_dir(key):
-    return output_dirs_dict[key]
-
-
-def get_expected_output_dir(key):
-    return expected_output_dirs_dict[key]
-
-
-def get_output_csv(key, csv_name='all_keypoints.csv'):
-    return output_dirs_dict[key]['analytical_data_path'] + '/' + csv_name
-
-
-def get_output_figure(key, fig_name):
-    return output_dirs_dict[key]['figures_path'] + '/' + fig_name
-
-
-def get_expected_output_csv(key, csv_name='all_keypoints.csv'):
-    return expected_output_dirs_dict[key]['analytical_data_path'] + '/' + csv_name
-
-
-def get_expected_output_figure(key, fig_name):
-    return expected_output_dirs_dict[key]['figures_path'] + '/' + fig_name
+# def get_output_dir(key):
+#     return output_dirs_dict[key]
+#
+#
+# def get_expected_output_dir(key):
+#     return expected_output_dirs_dict[key]
+#
+#
+# def get_output_csv(key, csv_name='all_keypoints.csv'):
+#     return output_dirs_dict[key]['analytical_data_path'] + '/' + csv_name
+#
+#
+# def get_output_figure(key, fig_name):
+#     return output_dirs_dict[key]['figures_path'] + '/' + fig_name
+#
+#
+# def get_expected_output_csv(key, csv_name='all_keypoints.csv'):
+#     return expected_output_dirs_dict[key]['analytical_data_path'] + '/' + csv_name
+#
+#
+# def get_expected_output_figure(key, fig_name):
+#     return expected_output_dirs_dict[key]['figures_path'] + '/' + fig_name
 
 
 def get_analytics_dir():
