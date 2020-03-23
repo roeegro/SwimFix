@@ -69,11 +69,12 @@ def compare_csvs(actual_csv_path, expected_csv_path, out_path, tolerance=1, col_
         col_names = list(expected_df.columns)
         col_names.remove('Frame Number')
     compared_df = pd.DataFrame(columns=col_names)
+    tolerated_count = 0
     for idx, expected_row in expected_df.iterrows():
         if expected_row['Frame Number'] not in actual_df['Frame Number'].values:
             continue
         actual_row = actual_df.loc[actual_df['Frame Number'] == expected_row['Frame Number']].iloc[0, :]
-        compared_row = {'Frame Number': expected_row['Frame Number']}
+        compared_row = {'Frame Number': expected_row['Frame Number'], 'tolerated': 1}
         for col in col_names:
             if math.isnan(expected_row[col]):
                 compared_row[col] = 1
@@ -85,12 +86,22 @@ def compare_csvs(actual_csv_path, expected_csv_path, out_path, tolerance=1, col_
                     compared_row[col] = 1
                 else:
                     compared_row[col] = 0
+            compared_row['tolerated'] = compared_row['tolerated'] and compared_row[col]
+        if compared_row['tolerated'] == 1:
+            tolerated_count += 1
         compared_df = compared_df.append(compared_row, ignore_index=True)
-    compared_df.to_csv(out_path)
+    compared_df.to_csv(out_path, index=False)
+    acc_dic = {'accuracy': round(tolerated_count/len(compared_df), 3)}
+    for col in col_names:
+        acc_dic[col + '_accuracy'] = round(len(compared_df.loc[compared_df[col] == 1])/len(compared_df), 3)
+    return acc_dic
 
 
 if __name__ == '__main__':
     actual_path = '../output/MVI_8027/2020-01-22/00-58-05-647226/analytical_data/interpolated_all_keypoints.csv'
     expected_path = '../output/MVI_8027/MVI_8027_expected.csv'
     output_path = '../output/MVI_8027/MVI_8027_compared.csv'
-    compare_csvs(actual_path, expected_path, output_path)
+    cols = ['RShoulderX', 'RShoulderY', 'RElbowX', 'RElbowY', 'RWristX', 'RWristY',
+            'LShoulderX', 'LShoulderY', 'LElbowX', 'LElbowY', 'LWristX', 'LWristY']
+    acc = compare_csvs(actual_path, expected_path, output_path, 5, cols)
+    print(acc)
