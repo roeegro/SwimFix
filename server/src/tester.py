@@ -62,5 +62,35 @@ def start_test(out_path):
     pass
 
 
+def compare_csvs(actual_csv_path, expected_csv_path, out_path, tolerance=1, col_names=None):
+    actual_df = pd.read_csv(actual_csv_path)
+    expected_df = pd.read_csv(expected_csv_path)
+    if col_names is None:
+        col_names = list(expected_df.columns)
+        col_names.remove('Frame Number')
+    compared_df = pd.DataFrame(columns=col_names)
+    for idx, expected_row in expected_df.iterrows():
+        if expected_row['Frame Number'] not in actual_df['Frame Number'].values:
+            continue
+        actual_row = actual_df.loc[actual_df['Frame Number'] == expected_row['Frame Number']].iloc[0, :]
+        compared_row = {'Frame Number': expected_row['Frame Number']}
+        for col in col_names:
+            if math.isnan(expected_row[col]):
+                compared_row[col] = 1
+            elif math.isnan(actual_row[col]):
+                compared_row[col] = 0
+            else:
+                col_diff = math.fabs(actual_row[col] - expected_row[col])
+                if col_diff < tolerance:
+                    compared_row[col] = 1
+                else:
+                    compared_row[col] = 0
+        compared_df = compared_df.append(compared_row, ignore_index=True)
+    compared_df.to_csv(out_path)
+
+
 if __name__ == '__main__':
-    start_test()
+    actual_path = '../output/MVI_8027/2020-01-22/00-58-05-647226/analytical_data/interpolated_all_keypoints.csv'
+    expected_path = '../output/MVI_8027/MVI_8027_expected.csv'
+    output_path = '../output/MVI_8027/MVI_8027_compared.csv'
+    compare_csvs(actual_path, expected_path, output_path)
