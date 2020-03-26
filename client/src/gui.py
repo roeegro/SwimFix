@@ -44,6 +44,8 @@ def upload_file():
         if file and allowed_file(file.filename):
             if not os.path.exists('partial_movies'):
                 os.mkdir('partial_movies')
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.mkdir(UPLOAD_FOLDER)
             # filename = secure_filename(file.filename)
             filename = file.filename
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)

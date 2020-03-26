@@ -7,6 +7,7 @@ import extract_frames as f
 import output_manager
 import utils
 import pandas as pd
+# import main
 from main import *
 
 
@@ -180,7 +181,7 @@ def get_keypoints_csv_from_video(video_path, params):
     output_dirs = output_manager.generate_dirs_for_output_of_movie(video_name)
 
     # Extract frames
-    f.extract_frames_by_file(file=video_path, output=output_dirs['time_path'])
+    # f.extract_frames_by_file(file=video_path, output=output_dirs['time_path'])
 
     # # sort frames by creation time
     # # path to the directory (relative or absolute)

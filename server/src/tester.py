@@ -5,7 +5,7 @@ import data_analyser
 import data_extractor
 from sklearn.metrics import mean_squared_error
 import pandas as pd
-import math
+import mth
 import facade
 
 
