@@ -68,6 +68,7 @@ def wait_recv_video():
     print("Receiver started..")
     host = '132.72.96.31'
     sock = socket()         # Create a socket object
+    sock.settimeout(120)
     port = 12345                 # Reserve a port for your service.
     sock.bind((host, port))        # Bind to the port
     sock.listen(5)                 # Now wait for client connection.

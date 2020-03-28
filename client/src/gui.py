@@ -15,7 +15,7 @@ app = Flask(__name__)
 # UPLOAD_FOLDER = '/code/flask-test/upload_files'
 UPLOAD_FOLDER = 'uploaded_files'
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -29,8 +29,9 @@ def allowed_file(filename):
 
 def send_file_to_server(video_path, filename):
     sock = socket()  # Create a socket object
+    sock.settimeout(120)
     host = '132.72.96.31'
-    port = 12345  # Reserve a port for your service.
+    port = 60001  # Reserve a port for your service.
     sock.connect((host, port))
 
     with sock, open(video_path, 'rb') as f:
