@@ -67,9 +67,10 @@ CHUNKSIZE = 1_000_000
 def wait_recv_video():
     print("Receiver started..")
     host = '132.72.96.31'
-    sock = socket()         # Create a socket object
-    sock.settimeout(120)
-    port = 12345                 # Reserve a port for your service.
+    # host = '132.72.201.69'
+    # host = '127.0.0.1'
+    sock = socket()                # Create a socket object
+    port = 60001                   # Reserve a port for your service.
     sock.bind((host, port))        # Bind to the port
     sock.listen(5)                 # Now wait for client connection.
 
@@ -97,7 +98,9 @@ def wait_recv_video():
 
     with sock:
         while True:
+            print('Waiting for a client..')
             client, addr = sock.accept()
+            print('accepted a client with address {}'.format(addr))
             # Use a socket.makefile() object to treat the socket as a file.
             # Then, readline() can be used to read the newline-terminated metadata.
             with client, client.makefile('rb') as clientfile:
@@ -112,7 +115,7 @@ def wait_recv_video():
                         chunk = min(length, CHUNKSIZE)
                         data = clientfile.read(chunk)
                         if not data:
-                            break # socket closed
+                            break  # socket closed
                         f.write(data)
                         length -= len(data)
 

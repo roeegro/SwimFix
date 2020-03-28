@@ -31,6 +31,8 @@ def send_file_to_server(video_path, filename):
     sock = socket()  # Create a socket object
     sock.settimeout(120)
     host = '132.72.96.31'
+    # host = '132.72.201.69'
+    # host = '127.0.0.1'
     port = 60001  # Reserve a port for your service.
     sock.connect((host, port))
 
