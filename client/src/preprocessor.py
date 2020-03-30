@@ -12,11 +12,16 @@ import os
 from natsort import natsorted
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
-
 # from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
+output_dir = "partial_movies/"
 
 
 # if the video_path argument is 0, then we are reading from webcam
+def get_video_name_from_path(video_path):
+    video_name = video_path.split('/')[-1]
+    video_name = video_name.split('.')[0]
+    return video_name
+
 
 def video_cutter(video_path=0):
     if video_path == 0:
@@ -81,10 +86,19 @@ def video_cutter(video_path=0):
 
         found_countour_in_area = False
         # loop over the contours
+        # contour_area_lst = []
+        # i = 0
         for c in cnts:
             # if the contour is too small, ignore it
+            # i += 1
+            # contour_area_lst.append(cv2.contourArea(c))
+            # print(str(i)+" - " + str(cv2.contourArea(c)))
             if cv2.contourArea(c) < min_area:
                 continue
+
+            # if cv2.contourArea(c) < max(contour_area_lst[-6:-1]):
+            #     print("contour lowers")
+            #     continue
 
             # (x, y, w, h) = cv2.boundingRect(c)
             # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -129,24 +143,32 @@ def video_cutter(video_path=0):
     for start_frame, start_time, end_time in zip(starting_frames, starting_timestamps, ending_timestamps):
         # ffmpeg_extract_subclip(video_path, start_time, end_time,
         #                        targetname='partial_movies/partial_output_from_frame_{}.mp4'.format(start_frame))
-        with VideoFileClip(video_path) as video:
-            new = video.subclip(start_time, end_time)
-            new.write_videofile('partial_movies/partial_output_from_frame_{}.mp4'.format(start_frame),
-                                audio_codec='aac')
+        video = VideoFileClip(video_path)
+        new = video.subclip(start_time, end_time)
+        new.write_videofile(output_dir + 'partial_output_from_frame_{}.mp4'.format(start_frame), audio=False)
 
     lst = []
-
-    for root, dirs, files in os.walk('partial_movies/'):
+    file_path = 0
+    for root, dirs, files in os.walk(output_dir):
         files = natsorted(files)
         # print(files)
         for file in files:
             if os.path.splitext(file)[1] == '.mp4':
                 file_path = os.path.join(root, file)
                 # print(file_path)
-                video = VideoFileClip(file_path)
-                # print(video)
-                lst.append(video)
+                lst.append(VideoFileClip(file_path))
 
-    # print(lst)
-    final_clip = concatenate_videoclips(lst)
-    final_clip.to_videofile("partial_movies/output.mp4", fps=fps, remove_temp=False)
+    original_video_name = video_path.split('\\')[-1]
+    print(video_path)
+    print(original_video_name)
+    if len(lst) > 1:
+        final_clip = concatenate_videoclips(lst)
+        final_clip.to_videofile(output_dir + original_video_name, fps=fps, remove_temp=True)
+        final_clip.close()
+        for video in lst:
+            video.close()
+    elif len(lst):
+        lst[0].close()
+        os.rename(file_path, output_dir + original_video_name)
+
+    return original_video_name
