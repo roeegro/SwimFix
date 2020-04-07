@@ -8,16 +8,11 @@ import imutils
 import time
 import timeit
 import cv2
-from moviepy.editor import *
 import os
 
-from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from moviepy.config import get_setting
 from moviepy.tools import subprocess_call
-from natsort import natsorted
-from moviepy.video.io.VideoFileClip import VideoFileClip
 
-# from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 output_dir = "partial_movies/"
 
 
@@ -99,6 +94,8 @@ def video_cutter(video_path=0):
             # i += 1
             # contour_area_lst.append(cv2.contourArea(c))
             # print(str(i)+" - " + str(cv2.contourArea(c)))
+
+            print(cv2.contourArea(c))
             if cv2.contourArea(c) < min_area:
                 continue
 
@@ -106,86 +103,49 @@ def video_cutter(video_path=0):
             #     print("contour lowers")
             #     continue
 
-            # (x, y, w, h) = cv2.boundingRect(c)
-            # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            (x, y, w, h) = cv2.boundingRect(c)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
             # motion detected
             found_countour_in_area = True
 
             if not is_recording:  # otherwise - open new partial movie and write the first detected frame.
                 starting_timestamps.append(frame_counter * 1.0 / fps)
                 starting_frames.append(frame_counter)
-                # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-                # partial_output = cv2.VideoWriter(
-                #     'partial_movies/partial_output_from_frame_{}.mp4'.format(frame_counter), fourcc, vs.get(5),
-                #     (frame.shape[1], frame.shape[0]))
-                # partial_output.write(frame)
-
-                # cv2.imshow('frame', frame)
                 is_recording = True
+
+        cv2.imshow("Security Feed", frame)
+        cv2.imshow("Thresh", thresh)
+        cv2.imshow("Frame Delta", frame_delta)
+        key = cv2.waitKey(1) & 0xFF
 
         # update num of undetected frames in sequence if necessary
         num_frames_not_detected_in_seq = 0 if found_countour_in_area else num_frames_not_detected_in_seq + 1
         found_countour_in_area = False
+        # show the frame and record if the user presses a key
 
         # if there are more then 30 undetected frames in seq from the last frame detected - save the partial movies
-        if num_frames_not_detected_in_seq > 30 and not partial_output is None:
-            partial_output.release()
+        if num_frames_not_detected_in_seq > 100 and is_recording:
             ending_timestamps.append(frame_counter * 1.0 / fps)
-            partial_output = None
             is_recording = False
             num_frames_not_detected_in_seq = 0
 
         frame_counter += 1
 
-    # Close all resources
-    if is_recording and not partial_output is None:
-        partial_output.release()
-
-    ending_timestamps.append(frame_counter * 1.0 / fps)
+    if is_recording:
+        ending_timestamps.append(frame_counter * 1.0 / fps)
     vs.stop() if video_path == 0 else vs.release()
     cv2.destroyAllWindows()
     video_name = get_video_name_from_path(video_path)
     new_videos_paths = []
     for start_frame, start_time, end_time in zip(starting_frames, starting_timestamps, ending_timestamps):
-        print(video_path)
-        timer_start = time.time()
+        print("start time: " + str(start_time) + " end time: " + str(end_time))
         target_path = output_dir + video_name + '_from_frame_' + str(start_frame) + '.mp4'
         print(target_path)
         extract_subclip(video_path, start_time, end_time, target_path)
-        timer_end = time.time()
-        print("Ended extracting a clip in total of " + str(timer_end - timer_start) + " seconds")
         new_videos_paths.append(target_path)
-        # video = VideoFileClip(video_path)
-        # new = video.subclip(start_time, end_time)
-        # new.write_videofile(output_dir + 'partial_output_from_frame_{}.mp4'.format(start_frame), audio=False)
 
-    # concatenate videos - currenty we dont want to use it
-    # lst = []
-    # file_path = 0
-    # for root, dirs, files in os.walk(output_dir):
-    #     files = natsorted(files)
-    #     # print(files)
-    #     for file in files:
-    #         if os.path.splitext(file)[1] == '.mp4':
-    #             file_path = os.path.join(root, file)
-    #             # print(file_path)
-    #             lst.append(VideoFileClip(file_path))
-    #
-    # original_video_name = video_path.split('\\')[-1]
-    # print(video_path)
-    # print(original_video_name)
-    # if len(lst) > 1:
-    #     final_clip = concatenate_videoclips(lst)
-    #     final_clip.to_videofile(output_dir + original_video_name, fps=fps, remove_temp=True)
-    #     final_clip.close()
-    #     for video in lst:
-    #         video.close()
-    # elif len(lst):
-    #     lst[0].close()
-    #     os.rename(file_path, output_dir + original_video_name)
-
-    # return original_video_name
     print(new_videos_paths)
     return new_videos_paths
 

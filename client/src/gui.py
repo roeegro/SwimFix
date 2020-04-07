@@ -30,15 +30,16 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
-def send_file_to_server(video_path):
-    video_name = video_path.split('/')[-1]
-    # to create the output dir from the server
-    create_dir_if_not_exists('output')
-    create_dir_if_not_exists('../../server/videos/')
-    copyfile(video_path, "../../server/videos/" + video_name)
-    # os.remove(video_path)
+def send_file_to_server(video_paths):
+    for video_path in video_paths:
+        video_name = video_path.split('/')[-1]
+        # to create the output dir from the server
+        create_dir_if_not_exists('output')
+        create_dir_if_not_exists('../../server/videos/')
+        copyfile(video_path, "../../server/videos/" + video_name)
+        # os.remove(video_path)
+        print("Sent file!")
     shutil.rmtree('partial_movies')
-    print("Sent file!")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -55,8 +56,7 @@ def upload_file():
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(video_path)
             new_video_paths = preprocessor.video_cutter(video_path)
-            for new_video_path in new_video_paths:
-                send_file_to_server(new_video_path)
+            send_file_to_server(new_video_paths)
             return redirect(url_for('upload_file'))
         else:
             return '''
