@@ -6,9 +6,14 @@
 from imutils.video import VideoStream
 import imutils
 import time
+import timeit
 import cv2
 from moviepy.editor import *
 import os
+
+from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
+from moviepy.config import get_setting
+from moviepy.tools import subprocess_call
 from natsort import natsorted
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
@@ -19,6 +24,7 @@ output_dir = "partial_movies/"
 # if the video_path argument is 0, then we are reading from webcam
 def get_video_name_from_path(video_path):
     video_name = video_path.split('/')[-1]
+    video_name = video_name.split('\\')[-1]
     video_name = video_name.split('.')[0]
     return video_name
 
@@ -139,36 +145,60 @@ def video_cutter(video_path=0):
     ending_timestamps.append(frame_counter * 1.0 / fps)
     vs.stop() if video_path == 0 else vs.release()
     cv2.destroyAllWindows()
-
+    video_name = get_video_name_from_path(video_path)
+    new_videos_paths = []
     for start_frame, start_time, end_time in zip(starting_frames, starting_timestamps, ending_timestamps):
-        # ffmpeg_extract_subclip(video_path, start_time, end_time,
-        #                        targetname='partial_movies/partial_output_from_frame_{}.mp4'.format(start_frame))
-        video = VideoFileClip(video_path)
-        new = video.subclip(start_time, end_time)
-        new.write_videofile(output_dir + 'partial_output_from_frame_{}.mp4'.format(start_frame), audio=False)
+        print(video_path)
+        timer_start = time.time()
+        target_path = output_dir + video_name + '_from_frame_' + str(start_frame) + '.mp4'
+        print(target_path)
+        extract_subclip(video_path, start_time, end_time, target_path)
+        timer_end = time.time()
+        print("Ended extracting a clip in total of " + str(timer_end - timer_start) + " seconds")
+        new_videos_paths.append(target_path)
+        # video = VideoFileClip(video_path)
+        # new = video.subclip(start_time, end_time)
+        # new.write_videofile(output_dir + 'partial_output_from_frame_{}.mp4'.format(start_frame), audio=False)
 
-    lst = []
-    file_path = 0
-    for root, dirs, files in os.walk(output_dir):
-        files = natsorted(files)
-        # print(files)
-        for file in files:
-            if os.path.splitext(file)[1] == '.mp4':
-                file_path = os.path.join(root, file)
-                # print(file_path)
-                lst.append(VideoFileClip(file_path))
+    # concatenate videos - currenty we dont want to use it
+    # lst = []
+    # file_path = 0
+    # for root, dirs, files in os.walk(output_dir):
+    #     files = natsorted(files)
+    #     # print(files)
+    #     for file in files:
+    #         if os.path.splitext(file)[1] == '.mp4':
+    #             file_path = os.path.join(root, file)
+    #             # print(file_path)
+    #             lst.append(VideoFileClip(file_path))
+    #
+    # original_video_name = video_path.split('\\')[-1]
+    # print(video_path)
+    # print(original_video_name)
+    # if len(lst) > 1:
+    #     final_clip = concatenate_videoclips(lst)
+    #     final_clip.to_videofile(output_dir + original_video_name, fps=fps, remove_temp=True)
+    #     final_clip.close()
+    #     for video in lst:
+    #         video.close()
+    # elif len(lst):
+    #     lst[0].close()
+    #     os.rename(file_path, output_dir + original_video_name)
 
-    original_video_name = video_path.split('\\')[-1]
-    print(video_path)
-    print(original_video_name)
-    if len(lst) > 1:
-        final_clip = concatenate_videoclips(lst)
-        final_clip.to_videofile(output_dir + original_video_name, fps=fps, remove_temp=True)
-        final_clip.close()
-        for video in lst:
-            video.close()
-    elif len(lst):
-        lst[0].close()
-        os.rename(file_path, output_dir + original_video_name)
+    # return original_video_name
+    print(new_videos_paths)
+    return new_videos_paths
 
-    return original_video_name
+
+def extract_subclip(filename, t1, t2, targetname):
+    """ Makes a new video file playing video file ``filename`` between
+        the times ``t1`` and ``t2``. """
+    name, ext = os.path.splitext(filename)
+
+    cmd = [get_setting("FFMPEG_BINARY"), "-y",
+           "-i", filename,
+           "-ss", "%0.2f" % t1,
+           "-t", "%0.2f" % (t2 - t1),
+           "-vcodec", "copy", "-an", targetname]
+
+    subprocess_call(cmd)

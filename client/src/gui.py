@@ -54,8 +54,9 @@ def upload_file():
             filename = file.filename
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(video_path)
-            video_name = preprocessor.video_cutter(video_path)
-            send_file_to_server("partial_movies/" + video_name)
+            new_video_paths = preprocessor.video_cutter(video_path)
+            for new_video_path in new_video_paths:
+                send_file_to_server(new_video_path)
             return redirect(url_for('upload_file'))
         else:
             return '''
