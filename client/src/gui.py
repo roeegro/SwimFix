@@ -1,7 +1,9 @@
 from flask import *
 import os
 import preprocessor
+from shutil import copyfile
 from waitress import serve
+import shutil
 
 # from werkzeug import secure_filename
 
@@ -12,14 +14,15 @@ app = Flask(__name__)
 # UPLOAD_FOLDER = '/code/flask-test/upload_files'
 UPLOAD_FOLDER = 'uploaded_files'
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV','mp4'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-@app.route("/")
-def hello(name=None):
-    return render_template('hello.html', name=name)
+def create_dir_if_not_exists(dir):
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+        print('Created dir' + dir)
 
 
 def allowed_file(filename):
@@ -27,16 +30,33 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
-@app.route('/file', methods=['GET', 'POST'])
+def send_file_to_server(video_paths):
+    for video_path in video_paths:
+        video_name = video_path.split('/')[-1]
+        # to create the output dir from the server
+        create_dir_if_not_exists('output')
+        create_dir_if_not_exists('../../server/videos/')
+        copyfile(video_path, "../../server/videos/" + video_name)
+        # os.remove(video_path)
+        print("Sent file!")
+    shutil.rmtree('partial_movies')
+
+
+@app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
+            if not os.path.exists('partial_movies'):
+                os.mkdir('partial_movies')
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.mkdir(UPLOAD_FOLDER)
             # filename = secure_filename(file.filename)
             filename = file.filename
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(video_path)
-            preprocessor.video_cutter(video_path)
+            new_video_paths = preprocessor.video_cutter(video_path)
+            send_file_to_server(new_video_paths)
             return redirect(url_for('upload_file'))
         else:
             return '''
@@ -56,11 +76,6 @@ def upload_file():
     '''
 
 
-@app.route("/user/<username>")
-def profile(username):
-    return u"こんにちは！" + username + u"くん！"
-
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
     # serve(app)
