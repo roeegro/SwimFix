@@ -1,2 +1,0 @@
-1. Till now, we do not have the swimmers' concent to release their swimming pictures to public but the course instructors! We put Hossein's swimming data as sample. 
-2. In order to case study two sample swimmer, one from professionals and one from novices, we remove their features from our train set and build our different models according to our baselines. We will predict the pulling pose for each frame of these two swimmers and plot the histogram as our test set.

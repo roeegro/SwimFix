@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Previous Feedbacks</h1>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="previous_feedbacks_tbl" class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Upload Date</th>
+                            <th>Zip</th>
+                        </tr>
+                        </thead>
+                        <tbody id = "previous_feedbacks_tbl_body">
+
+                        </tbody>
+{#                        <button type="button" onclick="insertRow()">Try it</button>#}
+{##}
+{#                        <script>#}
+{#                            function insertRow() {#}
+{#                                var table = document.getElementById("previous_feedbacks_tbl_body");#}
+{#                                var row = table.insertRow(0);#}
+{#                                var cell1 = row.insertCell(0);#}
+{#                                var cell2 = row.insertCell(1);#}
+{#                                cell1.innerHTML = "NEW CELL1";#}
+{#                                cell2.innerHTML = "NEW CELL2";#}
+{#                            }#}
+{#                        </script>#}
+                        {% for item in data %}
+                            <tr>
+                                <td>{{ item.date }}</td>
+                                <td>{{ item.zip }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
