@@ -1,0 +1,7 @@
+--video C:\Users\Hossein\Desktop\IMG_0718.MOV
+--image_dir C:\Users\Hossein\Desktop\openpose-master\openpose-master\examples\media\
+
+--image_dir C:\Users\Hossein\Desktop\openpose-master\openpose-master\examples\media\ --write_keypoint_json C:\Users\Hossein\Desktop\openpose-master\openpose-master\examples\media\output
+
+--image_dir C:\Users\Hossein\Desktop\Stephanie\frames --write_keypoint_json C:\Users\Hossein\Desktop\Stephanie
+--video C:\Users\Hossein\Desktop\Stephanie\Stephanie.MOV --write_keypoint_json C:\Users\Hossein\Desktop\Stephanie
