@@ -24,16 +24,14 @@ def send_file_to_server(video_paths):
     shutil.rmtree('partial_movies')
 
 
-def upload_file(upload_folder, file, trimmer=True):
+def upload_file(upload_folder, file):
     create_dir_if_not_exists('partial_movies')
     filename = file.filename
     video_path = os.path.join(upload_folder, filename)
     file.save(video_path)
-    if trimmer:
-        new_video_paths = preprocessor.video_cutter(video_path)
-        send_file_to_server(new_video_paths)
-    else:
-        time.sleep(3)
+    new_video_paths = preprocessor.video_cutter(video_path)
+    send_file_to_server(new_video_paths)
+
 
 
 if __name__ == "__main__":
