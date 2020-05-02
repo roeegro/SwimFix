@@ -1,15 +1,8 @@
-import os
-
-from flask import Flask, redirect, url_for, render_template, flash, request
-from forms import RegistrationForm, LoginForm
-# from requests import request
 from gui_utils import upload_file
+from flask import render_template, url_for, flash, redirect,request
+from forms import RegistrationForm, LoginForm
+from . import app
 
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '46a3aa3658359c95a3fe731050236443'
-UPLOAD_FOLDER = '.\\uploaded_files'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 
 
@@ -62,7 +55,7 @@ def login():
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks(add_to_table=False):
     if add_to_table:
-        return render_template('previous-feedbacks.html',data=[{'date':1,'zip':2}])
+        return render_template('previous-feedbacks.html', data=[{'date': 1, 'zip': 2}])
     else:
         return render_template('previous-feedbacks.html')
 
@@ -79,7 +72,3 @@ def register():
 @app.route("/tables", methods=['GET', 'POST'])
 def tables():
     return render_template('tables.html')
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
