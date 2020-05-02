@@ -159,3 +159,4 @@ server/output/MVI_8027_20-01-2020__10_05_03_594_output/figures/Unnamed
 /openpose_train/
 /coco-annotator/
 /openpose_caffe_train/
+/lmdb_reader/
