@@ -1,61 +1,47 @@
-# Edited by Roee Groiser
+# Edited by Roee Groiser and Tom Marzea
+
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+
+import output_manager
 import utils
-import os
 
 
-def create_all_figures(output_dirs):
-    show_figures_of_angles_by_time(output_dirs)
-    show_frame_detected_figure(output_dirs)
-    show_body_parts_by_frame(output_dirs)
-    show_body_parts_location_by_time(output_dirs)
+def show_avg_angle_diff(dict_of_avg_angle_for_test, dict_of_avg_angle_for_tested):
+    labels = dict_of_avg_angle_for_test.keys()
 
+    x = np.arange(len(labels))  # the label locations
+    width = 0.35  # the width of the bars
 
-def show_frame_detected_figure(output_dirs):
-    frame_df = pd.read_csv(output_dirs['analytical_data_path'] + '/is_frame_detected.csv')
-    x = frame_df['Frame Number']
-    y = []
-    for index, row in frame_df.iterrows():
-        if row['Detected']:
-            y.extend([1])
-        else:
-            y.extend([0])
-    plt.xlabel('Frame Number')
-    plt.ylabel('valid frame')
-    plt.plot(x, y, 'ro', color='green')
-    plt.savefig(output_dirs['figures_path'] + "/detected_frames_figure")
-    plt.close()
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(x - width / 2, dict_of_avg_angle_for_test.values(), width, label='Men')
+    rects2 = ax.bar(x + width / 2, dict_of_avg_angle_for_tested.values(), width, label='Women')
 
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Avg angle')
+    ax.set_title('Body part')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
 
-def show_figures_of_angles_by_time(output_dirs):
-    angles_df = pd.read_csv(output_dirs['analytical_data_path'] + '/angles_by_time.csv')
-    columns = angles_df.columns
-    for col in columns:
-        if col == "Frame Number":
-            continue
-        x = angles_df['Frame Number']
-        y = angles_df[col]
-        plt.xlabel('Frame number')
-        plt.ylabel("{} angle".format(col))
-        plt.plot(x, y)
-        plt.savefig(output_dirs['figures_path'] + "/{}_angle__by_frame".format(col))
-        plt.close()
+    def autolabel(rects):
+        """Attach a text label above each bar in *rects*, displaying its height."""
+        for rect in rects:
+            height = rect.get_height()
+            ax.annotate('{}'.format(height),
+                        xy=(rect.get_x() + rect.get_width() / 2, height),
+                        xytext=(0, 3),  # 3 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom')
 
+    autolabel(rects1)
+    autolabel(rects2)
 
-def show_body_parts_by_frame(output_dirs):
-    df = pd.read_csv(
-        output_dirs['analytical_data_path'] + "/body_part_detected_by_frame_df.csv")
-    x = df['Frame Number']
-    for col in df.columns:
-        if col == "Frame Number":
-            continue
-        y = df[col]
-        plt.ylabel("Detected " + col)
-        plt.plot(x, y, 'ro')
-        plt.savefig(output_dirs['figures_path'] + '/{}_detected_by_frame'.format(col))
-        plt.close()
+    fig.tight_layout()
+
+    plt.show()
 
 
 def show_body_parts_location_by_time(output_dirs):
@@ -95,7 +81,7 @@ def show_body_parts_location_by_time(output_dirs):
 
 
 def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True):
-    output_path = utils.get_figures_dir()
+    output_path = output_manager.get_figures_dir()
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     x = df[x_col].values
@@ -120,7 +106,7 @@ def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True)
 
 
 def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
-    output_path = utils.get_figures_dir()
+    output_path = output_manager.get_figures_dir()
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     frames = df['Frame Number'].values
@@ -143,17 +129,27 @@ def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
     plt.close()
 
 
-def plot_histogram_from_dict(data_dict, xlabel, ylabel, filename=None):
-    output_path = utils.get_figures_dir()
-    plt.bar(data_dict.keys(), data_dict.values())
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+def plot_histogram_from_dict(data_dicts, xlabel, ylabel, filename=None):
+    output_path = output_manager.get_figures_dir()
+    if filename is None:
+        filename = ylabel + '_of_' + xlabel + '_histogram'
+    if isinstance(data_dicts, dict) or len(data_dicts) == 1:
+        rects = plt.bar(data_dicts.keys(), data_dicts.values())
+        autolabel(rects, plt)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+    else:
+        fig, ax = plt.subplots()
+        for label, data_dict in [x.items() for x in data_dicts]:
+            rects = ax.bar(data_dict.keys(), data_dict.values(), label=label)
+            autolabel(rects, ax)
+        ax.legend()
     plt.savefig(output_path + '/' + filename)
     plt.close()
 
 
 def plot_scatter_from_dict(data_dict, xlabel, ylabel, filename=None):
-    output_path = utils.get_figures_dir()
+    output_path = output_manager.get_figures_dir()
     plt.scatter(data_dict.keys(), data_dict.values())
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -161,3 +157,14 @@ def plot_scatter_from_dict(data_dict, xlabel, ylabel, filename=None):
         plt.annotate(round(val, 2), (angle, val))
     plt.savefig(output_path + '/' + filename)
     plt.close()
+
+
+def autolabel(rects, ax):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')

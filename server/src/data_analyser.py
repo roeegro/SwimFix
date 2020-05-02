@@ -4,7 +4,7 @@ from scipy.signal import argrelextrema, argrelmin
 import pandas as pd
 
 
-def calc_avg_period(csv_path, col_names=None, min_period=1.5, frame_rate=30, maximum=True, avg=True):
+def calc_avg_period(csv_path, col_names=None, min_period=1.5, frame_rate=30, maximum=True):
     if col_names is None:
         col_names = ['RWristY', 'LWristY']
     df = pd.read_csv(csv_path)
@@ -32,13 +32,7 @@ def calc_avg_period(csv_path, col_names=None, min_period=1.5, frame_rate=30, max
                     j += 1
             i = j
         avg_per_dict[col_name] = (periods, np.average(periods))
-    if len(avg_per_dict) == 1:
-        return avg_per_dict[col_names[0]][1]
-    elif avg:
-        avg_list = list(map(lambda x: x[1], avg_per_dict.values()))
-        return round(np.average(avg_list), 3)
-    else:
-        return avg_per_dict
+    return avg_per_dict
 
 
 def calc_avg_angle(csv_path, col_names=None):

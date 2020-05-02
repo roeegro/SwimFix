@@ -19,27 +19,22 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-def create_dir_if_not_exists(dir):
-    if not os.path.exists(dir):
-        os.mkdir(dir)
-        print('Created dir' + dir)
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
-def send_file_to_server(video_paths):
-    for video_path in video_paths:
-        video_name = video_path.split('/')[-1]
-        # to create the output dir from the server
-        create_dir_if_not_exists('output')
-        create_dir_if_not_exists('../../server/videos/')
-        copyfile(video_path, "../../server/videos/" + video_name)
-        # os.remove(video_path)
-        print("Sent file!")
+def send_file_to_server(video_path):
+    video_name = video_path.split('/')[-1]
+    video_name = video_name.split('.')[0]
+    # to create the output dir from the server
+    if not os.path.exists('output'):
+        print('Created output dir')
+        os.mkdir('output')
+    copyfile(video_path, "../../server/videos/" + video_name + ".mp4")
+    # os.remove(video_path)
     shutil.rmtree('partial_movies')
+    print("Sent file!")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -55,8 +50,8 @@ def upload_file():
             filename = file.filename
             video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(video_path)
-            new_video_paths = preprocessor.video_cutter(video_path)
-            send_file_to_server(new_video_paths)
+            video_name = preprocessor.video_cutter(video_path)
+            send_file_to_server("partial_movies/" + video_name + ".mp4")
             return redirect(url_for('upload_file'))
         else:
             return '''
@@ -77,5 +72,5 @@ def upload_file():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
     # serve(app)
