@@ -5,11 +5,10 @@
       <sourceFolder url="file://$MODULE_DIR$/server/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/client/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/coco-annotator" />
-      <excludeFolder url="file://$MODULE_DIR$/lmdb_reader" />
       <excludeFolder url="file://$MODULE_DIR$/openpose_caffe_train" />
       <excludeFolder url="file://$MODULE_DIR$/openpose_train" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
