@@ -179,6 +179,8 @@ def get_keypoints_csv_from_video(video_path, params):
     video_name = utils.get_file_name(video_path)
     video_name = utils.path_without_suffix(video_name)
     output_dirs = output_manager.generate_dirs_for_output_of_movie(video_name)
+    size = (600, 480)
+    annotated_video_cap = cv2.VideoWriter('annotated_video.avi', cv2.VideoWriter_fourcc(*'MP4V'), 30, size)
 
     # Extract frames
     # f.extract_frames_by_file(file=video_path, output=output_dirs['time_path'])
@@ -239,7 +241,7 @@ def get_keypoints_csv_from_video(video_path, params):
         if not datum.poseKeypoints.shape == ():
             first_person = output[0]
             current_frame_array = []
-
+            coors = [math.nan] * int(len(body_parts) / 3)
             # make representation of each relevant point
             for i, body_part in enumerate(first_person):
                 if i < len(body_parts) / 3:  # take only 8 first points which are relevant to our detection
@@ -253,6 +255,9 @@ def get_keypoints_csv_from_video(video_path, params):
                     if score == 0:
                         score = math.nan
                     current_frame_array += [xCoor, yCoor, score]
+                    coors[i] = (xCoor, yCoor)
+            annotated_frame = get_annotated_frame(frame, coors)
+            annotated_video_cap.write(annotated_frame)
 
             # Concatenate record of current frame number
             current_frame_array = [frame_counter] + current_frame_array
@@ -283,6 +288,7 @@ def get_keypoints_csv_from_video(video_path, params):
             frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
             frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
         else:
+            annotated_video_cap.write(frame)
             nan_record = [frame_counter]
             nan_record = nan_record + [math.nan] * len(body_parts)
             nan_record_df = pd.DataFrame(nan_record).T
@@ -308,10 +314,33 @@ def get_keypoints_csv_from_video(video_path, params):
     # the video capture object
     print("finished")
     cap.release()
+    shutil.copy('annotated_video.avi',output_dirs['annotated_video'])
+    annotated_video_cap.release()
     # Closes all the frames
     cv2.destroyAllWindows()
 
     return all_keypoints_df_csv_path
+
+
+# coors - coors is list of tuples and lines are list of lists of pairs
+# returns an annotated frame
+def get_annotated_frame(frame, coors, lines=[[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [1, 5], [5, 6], [6, 7]]):
+    annotated_frame = frame
+    for line in lines:
+        from_kp_index = line[0]
+        to_kp_index = line[1]
+        from_point = coors[from_kp_index]
+        to_point = coors[to_kp_index]
+        if not math.isnan(from_point[0]) and not math.isnan(from_point[1]):
+            annotated_frame = cv2.circle(annotated_frame, from_point, 1, (0, 255, 0), thickness=1)
+        if not math.isnan(to_point[0]) and not math.isnan(to_point[1]):
+            annotated_frame = cv2.circle(annotated_frame, coors[to_kp_index], 1, (0, 255, 0), thickness=1)
+        try:
+            annotated_frame = cv2.line(annotated_frame, to_point, coors[to_kp_index], (0, 255, 0),
+                                       thickness=1)
+        except:
+            continue
+    return annotated_frame
 
 
 # Basic check if frame is valid to be included in the analytical data
