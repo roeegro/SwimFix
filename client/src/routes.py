@@ -1,5 +1,5 @@
-from gui_utils import upload_file
-from flask import render_template, url_for, flash, redirect,request
+from gui_utils import upload_file, get_previous_feedbacks
+from flask import render_template, url_for, flash, redirect, request
 from forms import RegistrationForm, LoginForm
 from . import app
 
@@ -54,10 +54,10 @@ def login():
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks(add_to_table=False):
-    if add_to_table:
-        return render_template('previous-feedbacks.html', data=[{'date': 1, 'zip': 2}])
-    else:
-        return render_template('previous-feedbacks.html')
+    data_to_pass = get_previous_feedbacks()
+    print(data_to_pass)
+    a = [{'date': 1, 'zip': 2}]
+    return render_template('previous-feedbacks.html', data=data_to_pass)
 
 
 @app.route("/register", methods=['GET', 'POST'])

@@ -4,6 +4,7 @@ import preprocessor
 from shutil import copyfile
 import shutil
 import time
+from datetime import date
 
 
 def create_dir_if_not_exists(directory):
@@ -32,6 +33,18 @@ def upload_file(upload_folder, file):
     new_video_paths = preprocessor.video_cutter(video_path)
     send_file_to_server(new_video_paths)
 
+
+def get_previous_feedbacks():
+    previous_feedbacks = list()
+    path_to_outputs = './output'
+    for filename in os.listdir(path_to_outputs):
+        path ='./output/' + str(filename)
+        print(path)
+        record_dict = dict()
+        record_dict['date'] = date.today()
+        record_dict['zip'] = path
+        previous_feedbacks.append(record_dict)
+    return previous_feedbacks
 
 
 if __name__ == "__main__":
