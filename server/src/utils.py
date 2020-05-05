@@ -28,7 +28,7 @@ def get_file_name(path):
 
 
 def get_file_name_for_backslash(path):
-    return path.split('\\')[-1]
+    return path.split('/')[-1]
 
 
 def get_number_of_start_frame(movie_name):
