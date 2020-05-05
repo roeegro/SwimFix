@@ -1,7 +1,10 @@
+from flask_login import login_user, logout_user, current_user
+
 from gui_utils import upload_file, get_previous_feedbacks
 from flask import render_template, url_for, flash, redirect, request
 from forms import RegistrationForm, LoginForm
-from . import app
+from client.src.models import User
+from . import app, db, bcrypt
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 
@@ -21,7 +24,6 @@ def forgot_password():
     return render_template('forgot-password.html')
 
 
-@app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -40,15 +42,25 @@ def load_video():
     return render_template('load-video.html')
 
 
+@app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm(request.form)
+
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'success')
+        print(form.email.data)
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            print(2)
+            login_user(user, remember=form.remember.data)
+            print(3)
             return redirect(url_for('index'))
         else:
+            print(4)
             flash('Login Unsuccessful. Please check username and password', 'danger')
+    print(5)
     return render_template('login.html', title='Login', form=form)
 
 
@@ -64,6 +76,10 @@ def previous_feedbacks(add_to_table=False):
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
