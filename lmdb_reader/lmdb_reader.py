@@ -68,7 +68,7 @@ import cv2
 #   ==================
 #       http://deepdish.io/2015/04/28/creating-lmdb-in-python/
 
-lmdb_file = "..\\openpose_train\\dataset\\lmdb_coco"
+lmdb_file = "../openpose_train/dataset/lmdb_coco"
 lmdb_env = lmdb.open(lmdb_file)
 lmdb_txn = lmdb_env.begin()
 lmdb_cursor = lmdb_txn.cursor()

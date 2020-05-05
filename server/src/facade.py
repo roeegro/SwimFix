@@ -46,9 +46,13 @@ def get_keypoints_csv_from_video(video_path, params):
     return data_extractor.get_keypoints_csv_from_video(video_path, params)
 
 
-def zip_output():
+def zip_output(output_dir='../../client/output'):
     zip_path = output_manager.zip_output()
-    output_manager.send_zip(zip_path, "../../client/src/output")
+    zip_name = utils.get_file_name(zip_path)
+    # print(zip_name)
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    output_manager.send_zip(zip_path, output_dir + "/" + zip_name)
     return zip_path
 
 

@@ -72,6 +72,7 @@ def wait_analyze_video():
             facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
             facade.get_average_swimming_period_from_csv(interpolated_keypoints_path)
             zip_path = facade.zip_output()
+            print('Zipped the output in path: ', zip_path)
             os.remove(video_path)
             print("Removed video")
             # else:
