@@ -67,8 +67,6 @@ def login():
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks(add_to_table=False):
     data_to_pass = get_previous_feedbacks()
-    print(data_to_pass)
-    a = [{'date': 1, 'zip': 2}]
     return render_template('previous-feedbacks.html', data=data_to_pass)
 
 

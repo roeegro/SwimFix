@@ -35,7 +35,7 @@ def upload_file(upload_folder, file):
 
 
 def get_previous_feedbacks():
-    previous_feedbacks = list()
+    previous_feedbacks = []
     path_to_outputs = './output'
     for filename in os.listdir(path_to_outputs):
         path ='./output/' + str(filename)
