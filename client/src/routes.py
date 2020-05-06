@@ -29,6 +29,7 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/')
 @app.route("/load-video", methods=['GET', 'POST'])
 def load_video():
     if request.method == 'POST':
@@ -42,7 +43,6 @@ def load_video():
     return render_template('load-video.html')
 
 
-@app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
