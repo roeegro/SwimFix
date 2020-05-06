@@ -36,13 +36,13 @@ def upload_file(upload_folder, file):
 
 def get_previous_feedbacks():
     previous_feedbacks = []
-    path_to_outputs = './output'
+    path_to_outputs = './static/output1'
     for filename in os.listdir(path_to_outputs):
-        path ='./output/' + str(filename)
+        path = path_to_outputs + '/' + str(filename)
         print(path)
         record_dict = dict()
-        record_dict['date'] = date.today()
-        record_dict['zip'] = path
+        record_dict['date'] = time.ctime(os.path.getctime(path))
+        record_dict['zip'] = filename
         previous_feedbacks.append(record_dict)
     return previous_feedbacks
 
