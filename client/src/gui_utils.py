@@ -42,7 +42,8 @@ def get_previous_feedbacks():
         print(path)
         record_dict = dict()
         record_dict['date'] = time.ctime(os.path.getctime(path))
-        record_dict['zip'] = filename
+        record_dict['zip'] = path
+        record_dict['zip_name'] = filename
         previous_feedbacks.append(record_dict)
     return previous_feedbacks
 
