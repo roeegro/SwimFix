@@ -1,0 +1,55 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Python testing</title>
+    <meta name="vievport" content="width=device-width,initial-scale=1">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+</head>
+
+<body style=" background-position:center;">
+<div role="navigation" style="width:90%;margin:1%; margin-left:5%;">
+    <ul class="nav nav-justified">
+        <li><a {% if p== 1 %}class="btn btn-primary active" {%else%}class="btn btn-primary" {% endif %} href="/"
+               style="margin:0.4%">Main</a></li>
+        <li><a {% if p== 2 %}class="btn btn-primary active" {%else%}class="btn btn-primary" {% endif %} href="/forum/0"
+               style="margin:0.4%">Forum</a></li>
+        <li><a {% if p== 3 %}class="btn btn-primary active" {%else%}class="btn btn-primary" {% endif %} href="/panel"
+               style="margin:0.4%">Panel</a></li>
+    </ul>
+</div>
+
+<div class="border-row" style="width:100%; margin-bottom: 15px;"></div>
+<div class="container" style="font-size:120%; min-height:80%; min-height:600px; min-width:360px; margin-bottom: 10%">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="row" style="width: 95%; margin:0%; margin-left:2.5%">
+        {% for category, message in messages %}
+        <div class="col-md-4" style="padding: 0%;">
+            <div class="panel panel-{{ category }}" style="margin-right:1%; margin-left:1%; width: 98%">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ category.upper() }}</h3>
+                </div>
+                <div class="panel-body">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block body %}
+    {% endblock %}
+</div>
+
+<div class="container" style="width:100%; min-width:520px; height:10%;color:#B0B0B0;)">
+    <div class="container" style="margin-top:1%">
+        Made by <a href="https://github.com/zakrent">Szymon Zakrent</a> using <a href="http://getbootstrap.com">Bootstrap</a>
+    </div>
+    <div class="container">
+        Code licensed MIT
+    </div>
+</div>
+</body>
+</html>
