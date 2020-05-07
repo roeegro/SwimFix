@@ -22,13 +22,11 @@ def about():
 def forgot_password():
     return render_template('forgot-password.html')
 
-
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
 
 
-@app.route('/')
 @app.route("/load-video", methods=['GET', 'POST'])
 def load_video():
     if request.method == 'POST':
@@ -84,9 +82,9 @@ def previous_feedbacks(add_to_table=False):
 #     return render_template('register.html', title='Register', form=form)
 
 
-@app.route("/tables", methods=['GET', 'POST'])
-def tables():
-    return render_template('tables.html')
+# @app.route("/tables", methods=['GET', 'POST'])
+# def tables():
+#     return render_template('tables.html')
 
 
 ########Forum#######
@@ -185,7 +183,7 @@ def createPost():
     if not content:
         flash(u"Post must contain content!", "danger")
     else:
-        userID = session.get('ID') if session.get('logged_in') else 0
+        userID = session.get('ID') if session and session.get('logged_in') else 0
         createPostFunction(content, topicID, userID)
     return redirect("/forum/topic/0/" + topicID + "/" + page)
 
@@ -194,7 +192,7 @@ def createPost():
 def createTopic():
     content = request.form['content']
     title = request.form['title']
-    userID = session.get('ID') if session.get('logged_in') else 0
+    userID = session.get('ID') if session and session.get('logged_in') else 0
     # if not userID or not session.get('logged_in'):
     #     flash(u"You must be logged in!", "danger")
     if not content or not title:
@@ -214,19 +212,21 @@ def createTopic():
 
 
 # Panel
-@app.route("/panel")
-def panel():
-    if session.get('logged_in') == True:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (session['username'],))
-        return render_template("panel.html", p=3, user=cur.fetchone())
-    return render_template("login2.html", p=3)
+# @app.route("/panel")
+# def panel():
+#     if session.get('logged_in') == True:
+#         cur = mysql.connection.cursor()
+#         cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (session['username'],))
+#         return render_template("panel.html", p=3, user=cur.fetchone())
+#     return render_template("login2.html", p=3)
 
 
 # Login / Register / Logout scripts
+@app.route('/')
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    # if not session or not session['logged_in']:
+    # if session and session['logged_in']:
+    #     print(session['logged_in'])
     #     return redirect(url_for('index'))
 
     form = LoginForm(request.form)
@@ -248,10 +248,9 @@ def login():
             session['logged_in'] = True
             session['isAdmin'] = (user['ISADMIN'] == 1)
             flash(u"You're now logged in!", "info")
-        else:
-            flash(u"Passwords don't match!", "danger")
-    else:
-        flash(u"Incorrect login", "danger")
+            return redirect(url_for('index'))
+
+    flash(u"Incorrect login", "danger")
     return redirect(url_for('login'))
 
 
@@ -289,8 +288,4 @@ def register():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for('index'))
-
-
-def index():
-    return render_template("index2.html", p=1)
+    return redirect(url_for('login'))

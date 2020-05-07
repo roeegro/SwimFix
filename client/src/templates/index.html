@@ -66,9 +66,16 @@
                 <span>Previous Feedbacks</span></a>
         </li>
 
+        <!-- Nav Item - previous-feedbacks -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('forum', page='0') }}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Forum</span></a>
+        </li>
+
         <!-- Nav Item - Logout -->
         <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('login') }}">
+            <a class="nav-link" href="{{ url_for('logout') }}">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Logout</span></a>
         </li>
