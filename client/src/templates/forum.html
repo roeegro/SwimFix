@@ -1,0 +1,83 @@
+{% extends "header.html" %}
+
+{% block body %}
+
+<div class="panel panel-default" style="width:95%; margin-left:2.5%">
+    <nav class="navbar navbar-default">
+        <div class="navbar-brand">Forum</div>
+        {% if nextPageExists%}
+        <a href="/forum/{{page+1}}" type="button" class="btn btn-primary navbar-btn"
+           style="float: right; margin-right: 2%;">Next page</a>
+        {% else %}
+        <div type="button" class="btn btn-primary navbar-btn" style="float: right; margin-right: 2%;"
+             disabled="disabled">Next page
+        </div>
+        {% endif %}
+        <div type="button" class="btn navbar-btn" style="float: right; margin-right: 2%;">{{page}}</div>
+        {% if page > 0 %}
+        <a href="/forum/{{page-1}}" type="button" class="btn btn-primary navbar-btn"
+           style="float: right; margin-right: 2%;">Last page</a>
+        {% endif %}
+    </nav>
+    <div style="margin:3%">
+        {% if topics or pinned%}
+        <table class="table table-hover table-condensed">
+            {% for topic in pinned %}
+            <tr style="width: 100%; font-size: small; font-weight: bold;">
+                <td style="width: 70%; padding-left: 0;padding-right: 0;">
+                    <a href="/forum/topic/{{page}}/{{topic['ID']}}/0"
+                       style="width: 100%; height: 100%; display: block; color: #121212; text-decoration: none">
+                        <span style="text-decoration: underline;">{{topic['NAME']}}</span>
+                        <span style="font-size: x-small;">by {{topic['CREATOR']}}</span>
+                    </a>
+                </td>
+                <td style="width: 10%; padding-left: 0;padding-right: 0;">
+                    <a href="/forum/topic/{{page}}/{{topic['ID']}}/0"
+                       style="width: 100%; height: 100%; display: block; color: #121212; text-decoration: none">
+                        <span style="font-size: x-small;">Posts: </span>{{topic['POSTS']}}
+                    </a>
+                </th>
+                <td style="width: 20%; padding-left: 0;padding-right: 0;">
+                    <a href="/forum/topic/{{page}}/{{topic['ID']}}/0"
+                       style="width: 100%; height: 100%; display: block; color: #121212; text-decoration: none">
+                        <span style="font-size: x-small;">Last post: </span>{{topic['LASTPOST']}}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% for topic in topics %}
+            <tr style="width: 100%; font-size: small; font-weight: bold;">
+                <td style="width: 70%; padding-left: 0;padding-right: 0;">
+                    <a href="/forum/topic/{{page}}/{{topic['ID']}}/0"
+                       style="width: 100%; height: 100%; display: block; color: #121212; text-decoration: none">{{topic['NAME']}}
+                        <span style="font-size: x-small;">by {{topic['CREATOR']}}</span>
+                    </a>
+                </td>
+                <td style="width: 10%; padding-left: 0;padding-right: 0;">
+                    <a href="/forum/topic/{{page}}/{{topic['ID']}}/0"
+                       style="width: 100%; height: 100%; display: block; color: #121212; text-decoration: none">
+                        <span style="font-size: x-small;">Posts: </span>{{topic['POSTS']}}
+                    </a>
+                </th>
+                <td style="width: 20%; padding-left: 0;padding-right: 0;">
+                    <a href="/forum/topic/{{page}}/{{topic['ID']}}/0"
+                       style="width: 100%; height: 100%; display: block; color: #121212; text-decoration: none">
+                        <span style="font-size: x-small;">Last post: </span>{{topic['LASTPOST']}}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        <form style="margin-top:1%;" action="/forum/createTopic" method="post">
+            <h4>Create new topic:</h4>
+            <div class="form-group">
+                <input type="text" class="form-control" name="title" placeholder="Title">
+                <textarea class="form-control" rows="3" name="content" placeholder="Content"></textarea>
+            </div>
+            <button type="submit" class="btn btn-default">Create</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
