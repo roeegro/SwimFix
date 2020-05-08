@@ -222,7 +222,7 @@ def createTopic():
 
 
 # Login / Register / Logout scripts
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     # if session and session['logged_in']:
