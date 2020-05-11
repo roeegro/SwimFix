@@ -3,6 +3,7 @@ from gui_utils import upload_file, get_previous_feedbacks
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
 from client.src.models import User
+from test_generator import run
 from . import app, db, bcrypt, mysql
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
@@ -21,6 +22,21 @@ def about():
 @app.route('/forgot-password')
 def forgot_password():
     return render_template('forgot-password.html')
+
+
+@app.route('/add-test', methods=['GET', 'POST'])
+def add_test():
+    try:
+        run()
+    finally:
+        return redirect(url_for("admin_index"))
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/admin-index', methods=['GET', 'POST'])
+def admin_index():
+    return render_template('admin-index.html')
+
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -222,7 +238,7 @@ def createTopic():
 
 
 # Login / Register / Logout scripts
-@app.route('/', methods=['GET', 'POST'])
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     # if session and session['logged_in']:

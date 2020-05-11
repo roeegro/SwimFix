@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+{% block admin_menu %}
+
+<!-- Nav Item - Add new test -->
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('add_test') }}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Add new Test</span></a>
+</li>
+
+<!-- Nav Item - Tables -->
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Plug & Play</span></a>
+</li>
+{% endblock admin_menu %}
+
+{% block content %}
+{% endblock content %}

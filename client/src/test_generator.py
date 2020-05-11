@@ -355,9 +355,8 @@ def red_btn_pressed():
         output_video_name = create_video()
         csv_name = get_video_name() + "_expected.csv"
         add_data_to_excepted_csvs(output_video_name, csv_name)
-        exit(0)
-    except:
-        exit(0)
+    finally:
+        return
 
 
 def reset_guidata_object():
