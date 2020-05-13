@@ -4,6 +4,7 @@ import preprocessor
 from shutil import copyfile
 import shutil
 import time
+import filetype
 from datetime import date
 
 
@@ -25,7 +26,7 @@ def send_file_to_server(video_paths):
     shutil.rmtree('partial_movies')
 
 
-def upload_file(upload_folder, file):
+def upload_video_file(upload_folder, file):
     create_dir_if_not_exists('partial_movies')
     filename = file.filename
     video_path = os.path.join(upload_folder, filename)
@@ -46,6 +47,20 @@ def get_previous_feedbacks():
         record_dict['zip_name'] = filename
         previous_feedbacks.append(record_dict)
     return previous_feedbacks
+
+
+def upload_python_file(upload_folder, file):
+    try:
+        filename = file.filename
+        extension = filename.split('.')[-1]
+        if extension != 'py':
+            return False
+        path = os.path.join(upload_folder, filename)
+        file.save(path)
+        shutil.move(path,'../../server/plug_and_play_functions')
+        return True
+    except:
+        return False
 
 
 if __name__ == "__main__":
