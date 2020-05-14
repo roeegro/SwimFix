@@ -4,6 +4,7 @@ import preprocessor
 from shutil import copyfile
 import shutil
 import time
+from zipfile import ZipFile
 
 
 def create_dir_if_not_exists(directory):
@@ -31,6 +32,38 @@ def upload_video_file(upload_folder, file):
     file.save(video_path)
     new_video_paths = preprocessor.video_cutter(video_path)
     send_file_to_server(new_video_paths)
+
+
+def get_all_csvs_paths(zip_name):
+    csvs_paths = list()
+    zip_dir = os.getcwd() + '/static/output1/'
+    os.chdir(zip_dir)
+
+    if not os.path.exists('csvs'):
+        os.makedirs('csvs')
+    with ZipFile('{}.zip'.format(zip_name), 'r') as zipObj:
+        # Get a list of all archived file names from the zip
+        listOfFileNames = zipObj.namelist()
+        # Iterate over the file names
+        for fileName in listOfFileNames:
+            # Check filename endswith csv
+            if fileName.endswith('.csv'):
+                # Extract a single file from zip
+                zipObj.extract(fileName, 'csvs')
+                try:
+                    shutil.move('csvs/{}'.format(fileName), 'csvs')
+                except:
+                    continue
+    for file in os.listdir('csvs'):
+        if not file.endswith('.csv'):
+            shutil.rmtree('csvs/{}'.format(file))
+        else:
+            csvs_paths.append(zip_dir + '/csvs/{}'.format(file))
+
+    if len(csvs_paths) == 0:
+        shutil.rmtree('csvs')
+    os.chdir('../..')
+    return csvs_paths
 
 
 def get_previous_feedbacks():

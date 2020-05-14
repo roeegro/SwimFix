@@ -1,5 +1,5 @@
 from flask_login import login_user, logout_user, current_user
-from gui_utils import upload_video_file, get_previous_feedbacks, upload_python_file
+from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
 from client.src.models import User
@@ -37,7 +37,6 @@ def admin_index():
     return render_template('admin-index.html')
 
 
-@app.route('/', methods=['GET', 'POST'])
 @app.route('/charts')
 def charts():
     return render_template('charts.html')
@@ -61,10 +60,20 @@ def load_video():
     return render_template('load-video.html')
 
 
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks():
     data_to_pass = get_previous_feedbacks()
     return render_template('previous-feedbacks.html', data=data_to_pass)
+
+
+@app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
+def previous_feedback(zip_name):
+    csvs_paths = get_all_csvs_paths(zip_name)
+    csvs_dir = None if len(csvs_paths) == 0 else csvs_paths[0].split('/')[:-1]
+    data_to_pass = [{'path:': path} for path in csvs_paths]
+    print(data_to_pass)
+    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass)
 
 
 # Forum
