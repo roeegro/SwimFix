@@ -32,10 +32,15 @@ def add_test():
         return redirect(url_for("admin_index"))
 
 
-@app.route('/', methods=['GET', 'POST'])
 @app.route('/admin-index', methods=['GET', 'POST'])
 def admin_index():
     return render_template('admin-index.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/charts')
+def charts():
+    return render_template('charts.html')
 
 
 @app.route('/index', methods=['GET', 'POST'])
@@ -270,7 +275,7 @@ def plug_and_play():
     if request.method == 'POST':
         file = request.files['file']
         if file:
-            success = upload_python_file(app.config['UPLOAD_FOLDER'],file)
+            success = upload_python_file(app.config['UPLOAD_FOLDER'], file)
             if success:
                 flash('The file {} was uploaded successfully'.format(file.filename), 'success')
                 return admin_index()

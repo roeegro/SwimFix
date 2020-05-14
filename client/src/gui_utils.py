@@ -4,8 +4,6 @@ import preprocessor
 from shutil import copyfile
 import shutil
 import time
-import filetype
-from datetime import date
 
 
 def create_dir_if_not_exists(directory):
@@ -57,7 +55,7 @@ def upload_python_file(upload_folder, file):
             return False
         path = os.path.join(upload_folder, filename)
         file.save(path)
-        shutil.move(path,'../../server/plug_and_play_functions')
+        shutil.move(path, '../../server/plug_and_play_functions')
         return True
     except:
         return False
