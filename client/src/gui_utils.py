@@ -79,7 +79,6 @@ def get_previous_feedbacks():
     path_to_outputs = './static/output1'
     for filename in os.listdir(path_to_outputs):
         path = path_to_outputs + '/' + str(filename)
-        print(path)
         record_dict = dict()
         record_dict['date'] = time.ctime(os.path.getctime(path))
         record_dict['zip'] = path

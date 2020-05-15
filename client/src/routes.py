@@ -70,9 +70,7 @@ def previous_feedbacks():
 @app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
 def previous_feedback(zip_name):
     csvs_dir, csvs_paths = get_all_csvs_paths(zip_name)
-    print('csvs dir is {}'.format(csvs_dir))
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
-    print(data_to_pass)
     return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass)
 
 

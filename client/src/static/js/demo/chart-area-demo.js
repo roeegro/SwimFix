@@ -28,7 +28,6 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 function make_chart_from_csv(csv_path) {
-    console.log("path is " + csv_path)
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
@@ -39,7 +38,6 @@ function make_chart_from_csv(csv_path) {
 function make_chart(data) {
     columns = d3.keys(data[0])
     columns.forEach(column => {
-        console.log(columns)
         var frame_range = []
         for (i = 0; i < data.length; i++) {
             var frame_num = (data[i])["Frame Number"]
@@ -53,7 +51,6 @@ function make_chart(data) {
         var body_sides = []
         body_sides.push('R')
         body_sides.push('L')
-        console.log("current column = " + column)
         if (body_sides.indexOf(column_prefix) != -1) {
             match_keypoint_column = body_sides[1 + (body_sides.indexOf(column_prefix) % 2)] + body_part_name
             should_plot_multiple_graphs = true
@@ -61,7 +58,6 @@ function make_chart(data) {
 
         var charts_node = document.getElementById('Charts')
         var canvas_tag = document.createElement("canvas")
-        console.log(body_part_name)
         if (should_plot_multiple_graphs == true) {
             canvas_tag.setAttribute("id", body_part_name + " graph")
         }
