@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>test_generator</class>
+ <widget class="QMainWindow" name="test_generator">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1560</width>
+    <height>846</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1565</width>
+    <height>846</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>test generator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../מייל לגרא ורזיאל/keypoints_pose_18.png</normaloff>../מייל לגרא ורזיאל/keypoints_pose_18.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="next_button">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>760</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Next</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="current_frame_number">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>10</y>
+      <width>201</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Current frame will be shown here</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="image_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>1011</width>
+      <height>681</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="lineWidth">
+     <number>15</number>
+    </property>
+    <property name="midLineWidth">
+     <number>15</number>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="body_part_coors">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>40</y>
+      <width>451</width>
+      <height>281</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="insert_row_btn">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>330</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Insert row</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="finish_body_parts_def_btn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1220</x>
+      <y>330</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Finish define table</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="lines_tbl">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>410</y>
+      <width>451</width>
+      <height>281</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="keypoints_table_lbl">
+    <property name="geometry">
+     <rect>
+      <x>1320</x>
+      <y>0</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Keypoints</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lines_table_lbl">
+    <property name="geometry">
+     <rect>
+      <x>1320</x>
+      <y>370</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lines</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="from_keypoint_cmbox">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>720</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="from_keypoint_lbl">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>680</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>From Keypoint</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="to_keypoint_cmbox">
+    <property name="geometry">
+     <rect>
+      <x>1260</x>
+      <y>720</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="add_line_btn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1410</x>
+      <y>720</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="to_keypoint_lbl">
+    <property name="geometry">
+     <rect>
+      <x>1280</x>
+      <y>680</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>To Keypoint</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="finish_line_def_btn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1280</x>
+      <y>770</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Finish line definition</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="load_video_btn">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>760</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load Video</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="msg_lbl">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>10</y>
+      <width>201</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="set_default_setting_btn">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>760</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Default Settings</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="undo_btn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1340</x>
+      <y>330</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Undo</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="prev_button">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>760</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Prev</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="load_csv_btn">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>760</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load CSV file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="clean_all_btn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1450</x>
+      <y>330</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clean all</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

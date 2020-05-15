@@ -42,6 +42,14 @@
                 <!-- Content Row -->
                 <div class="row">
                     <div id="Charts" class="col-xl-8 col-lg-7">
+                        {% for item in data %}
+                        <script src="/static/js/demo/chart-area-demo.js"></script>
+                        <script src="/static/vendor/chart.js/Chart.min.js"></script>
+                        <script src="/static/js/d3.min.js"></script>
+                        <script>
+                            make_chart_from_csv("{{item.path}}")
+                        </script>
+                        {% endfor %}
                     </div>
                 </div>
                 <!-- End of Content Row -->
