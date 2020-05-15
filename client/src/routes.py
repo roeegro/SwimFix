@@ -4,10 +4,13 @@ from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
 from client.src.models import User
 from test_generator import run
-from . import app, db, bcrypt, mysql
+from . import app, db, bcrypt
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 
+
+def is_admin():
+    return session.get('isAdmin') if session and session.get('logged_in') else False
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -16,12 +19,12 @@ def allowed_file(filename):
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
-    return render_template('about.html')
+    return render_template('about.html',isAdmin=is_admin())
 
 
 @app.route('/forgot-password')
 def forgot_password():
-    return render_template('forgot-password.html')
+    return render_template('forgot-password.html',isAdmin=is_admin())
 
 
 @app.route('/add-test', methods=['GET', 'POST'])
@@ -34,17 +37,20 @@ def add_test():
 
 @app.route('/admin-index', methods=['GET', 'POST'])
 def admin_index():
-    return render_template('admin-index.html')
+    if is_admin():
+        return render_template('admin-index.html',isAdmin=is_admin())
+    flash("You are not authorized to access this page", 'failure')
+    return redirect(url_for('index'))
 
 
 @app.route('/charts')
 def charts():
-    return render_template('charts.html')
+    return render_template('charts.html',isAdmin=is_admin())
 
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html',isAdmin=is_admin())
 
 
 @app.route("/load-video", methods=['GET', 'POST'])
@@ -53,18 +59,31 @@ def load_video():
         file = request.files['file']
         if file and allowed_file(file.filename):
             upload_video_file(app.config['UPLOAD_FOLDER'], file)
+            userID = session.get('ID') if session and session.get('logged_in') else 0
+            upload_file_sql(file.filename.split('.')[0],userID)
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
             return previous_feedbacks()
         else:
             flash('Failed to upload video file. Please try again', 'failure')
-    return render_template('load-video.html')
+    return render_template('load-video.html',isAdmin=is_admin())
 
 
-@app.route('/', methods=['GET', 'POST'])
+def upload_file_sql(filename, user_id=0):
+    cur = mysql.connection.cursor()
+    cur.execute('''
+        INSERT INTO FILES(NAME, CREATORID)
+        VALUE (%s, %s)
+        ''', (filename, user_id))
+    mysql.connection.commit()
+    cur.close()
+    return
+
+
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks():
-    data_to_pass = get_previous_feedbacks()
-    return render_template('previous-feedbacks.html', data=data_to_pass)
+    user_id= session.get('ID') if session and session.get('logged_in') else 0
+    data_to_pass = get_previous_feedbacks(user_id)
+    return render_template('previous-feedbacks.html', data=data_to_pass,isAdmin=is_admin())
 
 
 @app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
@@ -73,7 +92,7 @@ def previous_feedback(zip_name):
     print('csvs dir is {}'.format(csvs_dir))
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
     print(data_to_pass)
-    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass)
+    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass,isAdmin=is_admin())
 
 
 # Forum
@@ -113,7 +132,7 @@ def forum(page):
     if len(topics) == 0 and page != 0:
         return redirect("/forum/" + str(page - 1))
 
-    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists)
+    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists,isAdmin=is_admin())
 
 
 @app.route("/forum/topic/<forumPage>/<topicID>/<page>")
@@ -145,7 +164,7 @@ def topic(forumPage, topicID, page):
         return redirect("/forum/topic/" + forumPage + "/" + topicID + "/" + str(page - 1))
     posts = posts[:limit]
     return render_template("topic.html", p=2, posts=posts, name=name, topicID=topicID, forumPage=forumPage,
-                           page=page, nextPageExists=nextPageExists, isPinned=isPinned, isAdmin=session.get('isAdmin'))
+                           page=page, nextPageExists=nextPageExists, isPinned=isPinned, isAdmin=is_admin())
 
 
 # Create post, topic
@@ -199,18 +218,8 @@ def createTopic():
     return redirect("/forum")
 
 
-# Panel
-# @app.route("/panel")
-# def panel():
-#     if session.get('logged_in') == True:
-#         cur = mysql.connection.cursor()
-#         cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (session['username'],))
-#         return render_template("panel.html", p=3, user=cur.fetchone())
-#     return render_template("login2.html", p=3)
-
-
 # Login / Register / Logout scripts
-
+@app.route('/', methods=['GET', 'POST'])
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     # if session and session['logged_in']:
@@ -292,4 +301,4 @@ def plug_and_play():
                 flash('Failed to upload python file. Please try again', 'failure')
         else:
             flash('Failed to upload python file. Please try again', 'failure')
-    return render_template('plug-and-play.html')
+    return render_template('plug-and-play.html',isAdmin=is_admin())

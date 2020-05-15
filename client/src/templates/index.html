@@ -33,8 +33,14 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-
-
+        {% if isAdmin %}
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin_index') }}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Admin Panel</span></a>
+        </li>
+        {% endif %}
 
         <!-- Nav Item - Tables -->
         <li class="nav-item">
