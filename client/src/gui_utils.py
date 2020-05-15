@@ -34,7 +34,7 @@ def upload_video_file(upload_folder, file):
     send_file_to_server(new_video_paths)
 
 
-def get_all_csvs_paths(zip_name):
+def get_all_csvs_paths(zip_name, expected_csvs_names = ['all_keypoints','angles','detected_keypoints','interpolated_all_keypoints']):
     csvs_paths = list()
     relative_zip_dir = '/static/output1/'
     zip_dir = os.getcwd() + relative_zip_dir
@@ -54,11 +54,14 @@ def get_all_csvs_paths(zip_name):
             # Check filename endswith csv
             if fileName.endswith('.csv'):
                 # Extract a single file from zip
-                zipObj.extract(fileName, 'csvs')
-                try:
-                    shutil.move('csvs/{}'.format(fileName), 'csvs')
-                except:
-                    continue
+                name_of_file_with_extension = fileName.split('/')[-1]
+                name_of_file_without_extension = name_of_file_with_extension.split('.')[0]
+                if name_of_file_without_extension in expected_csvs_names: # check if we want this csv
+                    zipObj.extract(fileName, 'csvs')
+                    try:
+                        shutil.move('csvs/{}'.format(fileName), 'csvs')
+                    except:
+                        continue
     for file in os.listdir('csvs'):
         if not file.endswith('.csv'):
             shutil.rmtree('csvs/{}'.format(file))
