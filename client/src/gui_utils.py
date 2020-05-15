@@ -36,11 +36,16 @@ def upload_video_file(upload_folder, file):
 
 def get_all_csvs_paths(zip_name):
     csvs_paths = list()
-    zip_dir = os.getcwd() + '/static/output1/'
+    relative_zip_dir = '/static/output1/'
+    zip_dir = os.getcwd() + relative_zip_dir
     os.chdir(zip_dir)
 
     if not os.path.exists('csvs'):
         os.makedirs('csvs')
+    else:
+        for file in os.listdir(zip_dir + 'csvs'):
+            os.remove(zip_dir + 'csvs/' + file)
+
     with ZipFile('{}.zip'.format(zip_name), 'r') as zipObj:
         # Get a list of all archived file names from the zip
         listOfFileNames = zipObj.namelist()
@@ -58,12 +63,12 @@ def get_all_csvs_paths(zip_name):
         if not file.endswith('.csv'):
             shutil.rmtree('csvs/{}'.format(file))
         else:
-            csvs_paths.append(zip_dir + '/csvs/{}'.format(file))
+            csvs_paths.append(relative_zip_dir + 'csvs/{}'.format(file))
 
     if len(csvs_paths) == 0:
         shutil.rmtree('csvs')
     os.chdir('../..')
-    return csvs_paths
+    return zip_dir + 'csvs', csvs_paths
 
 
 def get_previous_feedbacks():

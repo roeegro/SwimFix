@@ -44,9 +44,10 @@
                     <div id="Charts" class="col-xl-8 col-lg-7">
                         {% for item in data %}
                         <script src="/static/js/demo/chart-area-demo.js"></script>
+                        <script src="/static/vendor/chart.js/Chart.min.js"></script>
+                        <script src="/static/js/d3.min.js"></script>
                         <script>
-                            console.log({{item.path}})
-                            make_chart_from_csv(item.path)
+                            make_chart_from_csv("{{item.path}}")
                         </script>
                         {% endfor %}
                     </div>
@@ -86,7 +87,7 @@
 <script src="/static/js/d3.min.js"></script>
 <!-- Page level custom scripts -->
 
-<script src="/static/js/demo/chart-area-demo.js"></script>
+<!--<script src="/static/js/demo/chart-area-demo.js"></script>-->
 <!--<script src="/static/js/demo/chart-pie-demo.js"></script>-->
 <!--<script src="/static/js/demo/chart-bar-demo.js"></script>-->
 
