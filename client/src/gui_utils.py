@@ -96,7 +96,6 @@ def get_previous_feedbacks(user_id):
         filename_no_extention = filename.split('.')[0]
         if filename_no_extention not in users_filenames: continue
         path = path_to_outputs + '/' + str(filename)
-        print(path)
         record_dict = dict()
         # record_dict['date'] = time.ctime(os.path.getctime(path))
         record_dict['date'] = users_files_creation[users_filenames.index(filename_no_extention)]
