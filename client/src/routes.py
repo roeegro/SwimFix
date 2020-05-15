@@ -1,8 +1,9 @@
 from flask_login import login_user, logout_user, current_user
-from gui_utils import upload_file, get_previous_feedbacks
+from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
 from client.src.models import User
+from test_generator import run
 from . import app, db, bcrypt, mysql
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
@@ -22,6 +23,25 @@ def about():
 def forgot_password():
     return render_template('forgot-password.html')
 
+
+@app.route('/add-test', methods=['GET', 'POST'])
+def add_test():
+    try:
+        run()
+    finally:
+        return redirect(url_for("admin_index"))
+
+
+@app.route('/admin-index', methods=['GET', 'POST'])
+def admin_index():
+    return render_template('admin-index.html')
+
+
+@app.route('/charts')
+def charts():
+    return render_template('charts.html')
+
+
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -32,62 +52,30 @@ def load_video():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            upload_file(app.config['UPLOAD_FOLDER'], file)
+            upload_video_file(app.config['UPLOAD_FOLDER'], file)
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            return previous_feedbacks(add_to_table=True)
+            return previous_feedbacks()
         else:
             flash('Failed to upload video file. Please try again', 'failure')
     return render_template('load-video.html')
 
 
-## Groiser's Login
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if current_user.is_authenticated:
-#         return redirect(url_for('index'))
-#     form = LoginForm(request.form)
-#
-#     if form.validate_on_submit():
-#         print(form.email.data)
-#         user = User.query.filter_by(email=form.email.data).first()
-#         if user and bcrypt.check_password_hash(user.password, form.password.data):
-#             print(2)
-#             login_user(user, remember=form.remember.data)
-#             print(3)
-#             return redirect(url_for('index'))
-#         else:
-#             print(4)
-#             flash('Login Unsuccessful. Please check username and password', 'danger')
-#     print(5)
-#     return render_template('login.html', title='Login', form=form)
-
-
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
-def previous_feedbacks(add_to_table=False):
+def previous_feedbacks():
     data_to_pass = get_previous_feedbacks()
     return render_template('previous-feedbacks.html', data=data_to_pass)
 
 
-## Groiser's register
-# @app.route("/register", methods=['GET', 'POST'])
-# def register():
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-#         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-#         db.session.add(user)
-#         db.session.commit()
-#         flash(f'Account created for {form.username.data}!', 'success')
-#         return redirect(url_for('login'))
-#     return render_template('register.html', title='Register', form=form)
+@app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
+def previous_feedback(zip_name):
+    csvs_dir, csvs_paths = get_all_csvs_paths(zip_name)
+    print('csvs dir is {}'.format(csvs_dir))
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+    print(data_to_pass)
+    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass)
 
 
-# @app.route("/tables", methods=['GET', 'POST'])
-# def tables():
-#     return render_template('tables.html')
-
-
-########Forum#######
 # Forum
 @app.route("/forum/<page>")
 def forum(page):
@@ -222,7 +210,7 @@ def createTopic():
 
 
 # Login / Register / Logout scripts
-@app.route('/', methods=['GET', 'POST'])
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     # if session and session['logged_in']:
@@ -289,3 +277,19 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+
+@app.route("/plug-and-play", methods=['POST', 'GET'])
+def plug_and_play():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            success = upload_python_file(app.config['UPLOAD_FOLDER'], file)
+            if success:
+                flash('The file {} was uploaded successfully'.format(file.filename), 'success')
+                return admin_index()
+            else:
+                flash('Failed to upload python file. Please try again', 'failure')
+        else:
+            flash('Failed to upload python file. Please try again', 'failure')
+    return render_template('plug-and-play.html')

@@ -27,8 +27,13 @@
                 <span>Main Page</span></a>
         </li>
 
+
+        {% block admin_menu %}
+        {% endblock admin_menu %}
         <!-- Divider -->
         <hr class="sidebar-divider">
+
+
 
 
         <!-- Nav Item - Tables -->
@@ -38,19 +43,6 @@
                 <span>Load video</span></a>
         </li>
 
-        <!-- Nav Item - Charts -->
-        {#        <li class="nav-item">#}
-        {#            <a class="nav-link" href="{{ url_for('charts') }}">#}
-        {#                <i class="fas fa-fw fa-chart-area"></i>#}
-        {#                <span>Charts</span></a>#}
-        {#        </li>#}
-        {##}
-        <!-- Nav Item - Tables -->
-        {#        <li class="nav-item">#}
-        {#            <a class="nav-link" href="{{ url_for('tables') }}">#}
-        {#                <i class="fas fa-fw fa-table"></i>#}
-        {#                <span>Tables</span></a>#}
-        {#        </li>#}
 
         <!-- Nav Item - Tables -->
         <li class="nav-item">
@@ -128,7 +120,7 @@
 </div>
 
 <!-- Bootstrap core JavaScript-->
-<script src="/static/jquery/jquery.min.js"></script>
+<script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
@@ -141,8 +133,8 @@
 <script src="/static/vendor/chart.js/Chart.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="/static/js/demo/chart-area-demo.js"></script>
-<script src="/static/js/demo/chart-pie-demo.js"></script>
+<!--<script src="/static/js/demo/chart-area-demo.js"></script>-->
+<!--<script src="/static/js/demo/chart-pie-demo.js"></script>-->
 
 </body>
 
