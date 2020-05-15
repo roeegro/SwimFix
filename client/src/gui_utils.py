@@ -36,11 +36,12 @@ def upload_video_file(upload_folder, file):
     send_file_to_server(new_video_paths)
 
 
-def get_all_csvs_paths(zip_name, expected_csvs_names = ['all_keypoints','angles','detected_keypoints','interpolated_all_keypoints']):
+def get_all_csvs_paths(zip_name, expected_csvs_names=['all_keypoints', 'angles', 'detected_keypoints',
+                                                      'interpolated_all_keypoints']):
     csvs_paths = list()
     relative_zip_dir = '/static/output1/'
     zip_dir = os.getcwd() + relative_zip_dir
-    os.chdir(zip_dir)
+    # os.chdir(zip_dir)
 
     if not os.path.exists('csvs'):
         os.makedirs('csvs')
@@ -48,7 +49,7 @@ def get_all_csvs_paths(zip_name, expected_csvs_names = ['all_keypoints','angles'
         for file in os.listdir(zip_dir + 'csvs'):
             os.remove(zip_dir + 'csvs/' + file)
 
-    with ZipFile('{}.zip'.format(zip_name), 'r') as zipObj:
+    with ZipFile('{}.zip'.format(zip_dir + zip_name), 'r') as zipObj:
         # Get a list of all archived file names from the zip
         listOfFileNames = zipObj.namelist()
         # Iterate over the file names
@@ -58,22 +59,36 @@ def get_all_csvs_paths(zip_name, expected_csvs_names = ['all_keypoints','angles'
                 # Extract a single file from zip
                 name_of_file_with_extension = fileName.split('/')[-1]
                 name_of_file_without_extension = name_of_file_with_extension.split('.')[0]
-                if name_of_file_without_extension in expected_csvs_names: # check if we want this csv
-                    zipObj.extract(fileName, 'csvs')
+                if name_of_file_without_extension in expected_csvs_names:  # check if we want this csv
+                    zipObj.extract(fileName, zip_dir + 'csvs')
                     try:
-                        shutil.move('csvs/{}'.format(fileName), 'csvs')
+                        shutil.move(zip_dir + 'csvs/{}'.format(fileName), zip_dir + 'csvs')
                     except:
                         continue
-    for file in os.listdir('csvs'):
+    for file in os.listdir(zip_dir + 'csvs'):
         if not file.endswith('.csv'):
-            shutil.rmtree('csvs/{}'.format(file))
+            shutil.rmtree(zip_dir + 'csvs/{}'.format(file))
         else:
             csvs_paths.append(relative_zip_dir + 'csvs/{}'.format(file))
 
     if len(csvs_paths) == 0:
-        shutil.rmtree('csvs')
-    os.chdir('../..')
+        shutil.rmtree(zip_dir + 'csvs')
+    # os.chdir('../..')
     return zip_dir + 'csvs', csvs_paths
+
+
+def get_previous_feedbacks_groiser():
+    previous_feedbacks = []
+    path_to_outputs = './static/output1'
+    for filename in os.listdir(path_to_outputs):
+        path = path_to_outputs + '/' + str(filename)
+        record_dict = dict()
+        record_dict['date'] = time.ctime(os.path.getctime(path))
+        record_dict['zip'] = path
+        record_dict['zip_name'] = filename
+        record_dict['zip_name_without_extension'] = filename.split('.')[0]
+        previous_feedbacks.append(record_dict)
+    return previous_feedbacks
 
 
 def get_previous_feedbacks(user_id):
