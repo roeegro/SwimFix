@@ -257,6 +257,7 @@ def get_keypoints_csv_from_video(video_path, params):
                     current_frame_array += [xCoor, yCoor, score]
                     coors[i] = (xCoor, yCoor)
             annotated_frame = get_annotated_frame(frame, coors)
+            cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), datum.cvOutputData)
             annotated_video_cap.write(annotated_frame)
 
             # Concatenate record of current frame number
@@ -288,6 +289,7 @@ def get_keypoints_csv_from_video(video_path, params):
             frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
             frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
         else:
+            cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), datum.cvOutputData)
             annotated_video_cap.write(frame)
             nan_record = [frame_counter]
             nan_record = nan_record + [math.nan] * len(body_parts)
@@ -314,7 +316,7 @@ def get_keypoints_csv_from_video(video_path, params):
     # the video capture object
     print("finished")
     cap.release()
-    shutil.copy('annotated_video.avi',output_dirs['annotated_video'])
+    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
     annotated_video_cap.release()
     # Closes all the frames
     cv2.destroyAllWindows()
@@ -336,7 +338,7 @@ def get_annotated_frame(frame, coors, lines=[[0, 1], [1, 2], [2, 3], [3, 4], [1,
         if not math.isnan(to_point[0]) and not math.isnan(to_point[1]):
             annotated_frame = cv2.circle(annotated_frame, coors[to_kp_index], 1, (0, 255, 0), thickness=1)
         try:
-            annotated_frame = cv2.line(annotated_frame, to_point, coors[to_kp_index], (0, 255, 0),
+            annotated_frame = cv2.line(annotated_frame, to_point, from_point, (0, 255, 0),
                                        thickness=1)
         except:
             continue
