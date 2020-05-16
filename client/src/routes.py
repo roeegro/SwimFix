@@ -7,6 +7,7 @@ from test_generator import run
 from . import app, db, bcrypt
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
+IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
 
 def is_admin():
@@ -91,9 +92,17 @@ def previous_feedbacks():
 @app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
 def previous_feedback(zip_name):
     try:
-        csvs_dir, csvs_paths = get_all_csvs_paths(zip_name)
+        csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                         expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
+                                                              'interpolated_all_keypoints'])
+        frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
+        for path in frames_paths:
+            print(path.split('.')[0].split('_')[-1])
+        sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+        frames_paths = sorted(frames_paths, key=sort_lambda)
+        frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
         data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
-        return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, isAdmin=is_admin())
+        return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames= frames_paths_dict, isAdmin=is_admin())
     except:
         return previous_feedbacks()
 
