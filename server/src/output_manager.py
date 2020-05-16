@@ -3,6 +3,7 @@ import shutil
 from datetime import datetime
 import utils
 import pandas as pd
+import zipfile
 
 from utils import path_without_suffix, get_src_path, get_file_name_for_backslash
 
@@ -47,20 +48,41 @@ def generate_dirs_for_output_of_movie(movName):
         "figures_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + figures_dir_name
     dict_to_return[
         "frames_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + frames_dir_name
-    dict_to_return['annotated_video'] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + "annotated_video.mp4"
+    dict_to_return[
+        'annotated_video'] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + "annotated_video.mp4"
     os.chdir(get_src_path())
     return dict_to_return
 
 
 def zip_output():
+    print('start zip process')
     filename = get_file_name_for_backslash(output_dirs_dict['output_movie_dir'])
+    print('filename = {}'.format(filename))
     zip_out_path = output_dirs_dict['time_path']
+    print('zip_out_path : {} '.format(zip_out_path))
     os.chdir(zip_out_path)
+    print('zip process-1')
     time_path = output_dirs_dict['time_path'].split('\\')[-1]
+    print('time_path = {}'.format(time_path))
+    print('time_path = {}'.format(time_path))
     date_path = output_dirs_dict['date_path'].split('\\')[-1]
+    print('date_path = {}'.format(date_path))
     zip_name = '{}_{}_{}'.format(filename, date_path, time_path)
-    shutil.make_archive(zip_name, 'zip')
+    print('zip process-2')
+    print('zip name  : {} '.format(zip_name))
+    print(os.getcwd())
+    zipf = zipfile.ZipFile(zip_name, 'w')
+
+    for folder, subfolders, files in os.walk(zip_out_path):
+        for file in files:
+            zipf.write(os.path.join(folder, file),
+                              os.path.relpath(os.path.join(folder, file), zip_out_path),
+                              compress_type=zipfile.ZIP_DEFLATED)
+
+    fantasy_zip.close()
+    # shutil.make_archive(zip_name, 'zip')
     os.chdir(get_src_path())
+    print('zip process-3')
     return zip_out_path + '\\{}.zip'.format(zip_name)
 
 
@@ -69,9 +91,12 @@ def delete_generate_dirs():
 
 
 def send_zip(src_zip, dest_path, delete_output_folder=False):
+    print('begin to send zip')
     shutil.move(src_zip, dest_path)
+    print('moved zip')
     if delete_output_folder:
         delete_generate_dirs()
+        print('deleted generate dirs')
 
 
 def get_output_dirs_dict():

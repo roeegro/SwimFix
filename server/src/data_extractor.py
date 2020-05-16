@@ -11,6 +11,8 @@ import pandas as pd
 from main import *
 
 
+#
+
 def generate_vectors_csv(csv_path, filename='vectors.csv'):
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
@@ -25,10 +27,10 @@ def generate_vectors_csv(csv_path, filename='vectors.csv'):
     # kp_cols.remove('Frame Number')
     for idx, frame in df.iterrows():
         frame_vectors = {'Frame Number': frame['Frame Number'],
-                         'RChestX': frame['RShoulderX'] - frame['ChestX'],
-                         'RChestY': frame['RShoulderY'] - frame['ChestY'],
-                         'LChestX': frame['LShoulderX'] - frame['ChestX'],
-                         'LChestY': frame['LShoulderY'] - frame['ChestY'],
+                         'RChestX': frame['RShoulderX'] - frame['NeckX'],
+                         'RChestY': frame['RShoulderY'] - frame['NeckY'],
+                         'LChestX': frame['LShoulderX'] - frame['NeckX'],
+                         'LChestY': frame['LShoulderY'] - frame['NeckY'],
                          'RArmX': frame['RShoulderX'] - frame['RElbowX'],
                          'RArmY': frame['RShoulderY'] - frame['RElbowY'],
                          'LArmX': frame['LShoulderX'] - frame['LElbowX'],
@@ -131,7 +133,7 @@ def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filen
     if output_path is None:
         output_path = output_manager.get_analytics_dir()
     if y_cols is None:
-        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))[1:]
+        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))
         y_cols = cols.copy()
         y_cols.remove(x_col)
         path = output_path + '/interpolated_' + utils.path_without_suffix(utils.get_file_name(csv_path)) + '.csv'
@@ -175,42 +177,12 @@ body_parts = utils.get_body_parts()
 
 # Recieves args from main (including video path) and params to configure the library
 # Creates 3 csv files(all keypoints, valid and invalid ones) and emplace wire-frame.
-def get_keypoints_csv_from_video(video_path, params):
+def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     video_name = utils.get_file_name(video_path)
     video_name = utils.path_without_suffix(video_name)
     output_dirs = output_manager.generate_dirs_for_output_of_movie(video_name)
     size = (600, 480)
     annotated_video_cap = cv2.VideoWriter('annotated_video.avi', cv2.VideoWriter_fourcc(*'MP4V'), 30, size)
-
-    # Extract frames
-    # f.extract_frames_by_file(file=video_path, output=output_dirs['time_path'])
-
-    # # sort frames by creation time
-    # # path to the directory (relative or absolute)
-    # dirpath = output_dirs['output_movie_dir'] + '\\frames'
-    # list_of_frames = [name for name in os.listdir(dirpath)]
-    # frame_to_index = list(map(lambda  file_name : {'path':file_name ,'index':utils.get_id_of_file(utils.filename_without_prefix(file_name))} , list_of_frames))
-    # frame_to_index = sorted(frame_to_index, key=lambda k: (int)(k['index']))
-    # params['image_dir'] = output_dirs['output_movie_dir'] + '\\frames'
-    # params['write_images'] =output_dirs['output_movie_dir'] + '\\images'
-    # # Starting OpenPose
-    # opWrapper = op.WrapperPython()
-    # # print(params)
-    # opWrapper.configure(params)
-    # opWrapper.start()
-    # datum = op.Datum()
-    #
-    # for i in range(0,len(frame_to_index)-1):
-    #     print(i)
-    #     frame = cv2.imread(dirpath + '\\'+ frame_to_index[i]['path'])
-    #     datum.cvInputData = frame
-    #     opWrapper.emplaceAndPop([datum])
-    #     output = datum.poseKeypoints
-    #     cv2.waitKey(10)
-    #     cv2.imshow("OpenPose 1.5.1 - Tutorial Python API", datum.cvOutputData)
-    #     converter = op.OpOutputToCvMat()
-    #     cv2.imwrite(output_dirs['output_movie_dir'] + '\\images',converter.formatToCvMat(datum.cvOutputData))
-    # cv2.destroyAllWindows()
 
     # Starting OpenPose
     opWrapper = op.WrapperPython()
@@ -221,107 +193,83 @@ def get_keypoints_csv_from_video(video_path, params):
     datum = op.Datum()
     print("path is {}".format(video_path))
     cap = cv2.VideoCapture(video_path)
-    valid_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
-    invalid_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
+    valid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
+    invalid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
     all_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
     frame_detected_df = pd.DataFrame(columns=['Frame Number', 'Detected'])
-    frame_counter = 0
-    all_keypoints_df_csv_path = ''
+    frame_counter = utils.get_number_of_start_frame(video_name)
+
     while cap.isOpened():
         check, frame = cap.read()
         if not check:
             break
         resized_frame = cv2.resize(frame, (600, 480), fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
-        # resized_frame = cv2.resize(frame, dsize=(720, 480))
+        # emplace keypoints
         datum.cvInputData = resized_frame
         opWrapper.emplaceAndPop([datum])
-        output = datum.poseKeypoints
-
+        detected_keypoints = datum.poseKeypoints
+        annotated_frame = datum.cvOutputData
+        annotated_video_cap.write(annotated_frame)
+        cv2.imshow('frame anno', annotated_frame)
+        cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), annotated_frame)
         # Extracting points coordinates into csv file
         if not datum.poseKeypoints.shape == ():
-            first_person = output[0]
-            current_frame_array = []
-            coors = [math.nan] * int(len(body_parts) / 3)
+            first_person_keypoints = detected_keypoints[0]
+            current_frame_keypoints = np.array([frame_counter])
             # make representation of each relevant point
-            for i, body_part in enumerate(first_person):
+            for i, body_part in enumerate(first_person_keypoints):
                 if i < len(body_parts) / 3:  # take only 8 first points which are relevant to our detection
-                    xCoor = body_part[0]
-                    yCoor = body_part[1]
-                    score = body_part[2]
-                    if xCoor == 0:
-                        xCoor = math.nan
-                    if yCoor == 0:
-                        yCoor = math.nan
-                    if score == 0:
-                        score = math.nan
-                    current_frame_array += [xCoor, yCoor, score]
-                    coors[i] = (xCoor, yCoor)
-            annotated_frame = get_annotated_frame(frame, coors)
-            cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), datum.cvOutputData)
-            annotated_video_cap.write(annotated_frame)
+                    xCoor = body_part[0] if body_part[0] != 0 else math.nan
+                    yCoor = body_part[1] if body_part[1] != 0 else math.nan
+                    score = body_part[2] if body_part[2] != 0 else math.nan
+                    body_part_keypoints = np.array([xCoor, yCoor, score])  # specific keypoint
+                    # concat to the keypoints detected in this frame
+                    current_frame_keypoints = np.append(current_frame_keypoints, body_part_keypoints)
 
-            # Concatenate record of current frame number
-            current_frame_array = [frame_counter] + current_frame_array
-            current_frame_df = pd.DataFrame(
-                current_frame_array).T  # make the array as a line to be concatenated to in the csv.
-            # Concatenate from left new feature of Number frame
-            current_frame_df.columns = ['Frame Number'] + body_parts
-            # if has no basic anomaly - append it to valid keypoints df. Otherwise - to invalid keypoints
-            is_valid = valid_frame(current_frame_df.loc[:, 'NeckX':])
-            if is_valid:  # Check the dataframe without the number frame property
-                valid_keypoints_df = pd.concat([valid_keypoints_df, current_frame_df], sort=False)
-                # Update csv file
-                valid_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv")
+            current_frame_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts,
+                                                      data=[current_frame_keypoints])
+            all_keypoints_df = pd.concat([all_keypoints_df, current_frame_keypoints_df], sort=False)
+            if valid_frame(current_frame_keypoints_df.loc[:,'NeckX':]):
+            # if True:
+                valid_frames_df = pd.concat([valid_frames_df, current_frame_keypoints_df], sort=False)
+                frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 1]])])
             else:
-                invalid_keypoints_df = pd.concat([invalid_keypoints_df, current_frame_df], sort=False)
-                # Update csv file
-                invalid_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv")
-
-            # Anyway append it to all keypoints
-            all_keypoints_df = pd.concat([all_keypoints_df, current_frame_df], sort=False)
-            # Update csv file
-            all_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv")
-
-            # and anyway add it to detected
-            current_detected_frame_array = [frame_counter, 0 if not is_valid else 1]
-            current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
-            current_detected_frame_df.columns = ['Frame Number', 'Detected']
-            frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
+                invalid_frames_df = pd.concat(
+                    [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
+                                                                                                  ([np.nan] * len(
+                                                                                                      body_parts))])],
+                    sort=False)
+                frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 0]])])
         else:
-            cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), datum.cvOutputData)
-            annotated_video_cap.write(frame)
-            nan_record = [frame_counter]
-            nan_record = nan_record + [math.nan] * len(body_parts)
-            nan_record_df = pd.DataFrame(nan_record).T
-            nan_record_df.columns = ['Frame Number'] + body_parts
-            all_keypoints_df = pd.concat([all_keypoints_df, nan_record_df], sort=False)
-            # Update csv file
-            all_keypoints_df_csv_path = output_dirs['analytical_data_path'] + "/all_keypoints.csv"
-            all_keypoints_df.to_csv(all_keypoints_df_csv_path)
-            current_detected_frame_array = [frame_counter, 0]
-            current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
-            current_detected_frame_df.columns = ['Frame Number', 'Detected']
-            frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
-
-        # if not args[0].no_display:
-        cv2.imshow("body from video", datum.cvOutputData)
-
-        key = cv2.waitKey(1)
+            all_keypoints_df = pd.concat(
+                [all_keypoints_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
+                                                                                             ([np.nan] * len(
+                                                                                                 body_parts))])],
+                sort=False)
+            invalid_frames_df = pd.concat(
+                [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
+                                                                                              ([np.nan] * len(
+                                                                                                  body_parts))])],
+                sort=False)
+            frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(columns=['Frame Number','Detected'],data=[[frame_counter, 0]])])
 
         frame_counter += 1
+        key = cv2.waitKey(1)
 
     # When everything done, release
     # the video capture object
     print("finished")
     cap.release()
-    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
     annotated_video_cap.release()
+    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
+    valid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv", index=False)
+    invalid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv", index=False)
+    frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv", index=False)
+    all_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv", index=False)
     # Closes all the frames
     cv2.destroyAllWindows()
 
-    return all_keypoints_df_csv_path
+    return output_dirs['analytical_data_path'] + "/all_keypoints.csv"
 
 
 # coors - coors is list of tuples and lines are list of lists of pairs
