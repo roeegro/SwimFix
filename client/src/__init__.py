@@ -16,7 +16,7 @@ login_manager = LoginManager(app)
 app.config['MYSQL_HOST'] = '65.19.141.67'
 app.config['MYSQL_USER'] = 'lironabr'
 app.config['MYSQL_PASSWORD'] = 'h3dChhmg'
-app.config['MYSQL_DB'] = 'lironabr_forums'
+app.config['MYSQL_DB'] = 'lironabr_swimming_project'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 from . import routes
