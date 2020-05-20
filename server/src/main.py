@@ -65,13 +65,13 @@ def wait_analyze_video():
             print(filename)
             video_path = '../videos/' + filename
             print(video_path)
-            print("Analysing path...")
             all_keypoints_csv_path = facade.get_keypoints_csv_from_video(video_path, params)
             interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
             facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
             facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
             facade.get_average_swimming_period_from_csv(interpolated_keypoints_path)
             zip_path = facade.zip_output()
+            print('finish with zip output')
             os.remove(video_path)
             print("Removed video")
             # else:
