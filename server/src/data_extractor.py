@@ -210,7 +210,7 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
         detected_keypoints = datum.poseKeypoints
         annotated_frame = datum.cvOutputData
         annotated_video_cap.write(annotated_frame)
-        cv2.imshow('frame anno', annotated_frame)
+        cv2.imshow('Annotated frame', annotated_frame)
         cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), annotated_frame)
         # Extracting points coordinates into csv file
         if not datum.poseKeypoints.shape == ():
@@ -229,8 +229,8 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
             current_frame_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts,
                                                       data=[current_frame_keypoints])
             all_keypoints_df = pd.concat([all_keypoints_df, current_frame_keypoints_df], sort=False)
-            if valid_frame(current_frame_keypoints_df.loc[:,'NeckX':]):
-            # if True:
+            if valid_frame(current_frame_keypoints_df.loc[:, 'NeckX':]):
+                # if True:
                 valid_frames_df = pd.concat([valid_frames_df, current_frame_keypoints_df], sort=False)
                 frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 1]])])
             else:
@@ -251,7 +251,9 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
                                                                                               ([np.nan] * len(
                                                                                                   body_parts))])],
                 sort=False)
-            frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(columns=['Frame Number','Detected'],data=[[frame_counter, 0]])])
+            frame_detected_df = pd.concat(
+                [frame_detected_df, pd.DataFrame(columns=['Frame Number', 'Detected'], data=[[frame_counter, 0]])],
+                sort=False)
 
         frame_counter += 1
         key = cv2.waitKey(1)
@@ -261,7 +263,7 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     print("finished")
     cap.release()
     annotated_video_cap.release()
-    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
+    # shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
     valid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv", index=False)
     invalid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv", index=False)
     frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv", index=False)

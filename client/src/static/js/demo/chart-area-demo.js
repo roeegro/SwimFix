@@ -37,10 +37,12 @@ function make_chart_from_csv(csv_path) {
 }
 
 function make_chart(csv_name,data) {
-    console.log(csv_name)
     columns = d3.keys(data[0])
     columns.forEach(column => {
+        if(column =="" || column == "Frame Number" )
+            return;
         var frame_range = []
+        // Load frame Numberes
         for (i = 0; i < data.length; i++) {
             var frame_num = (data[i])["Frame Number"]
             frame_range.push(frame_num)
@@ -306,7 +308,6 @@ function make_chart(csv_name,data) {
             });
 
         }
-        console.log('event binding for graph name : ' + canvas_id)
         document.getElementById(canvas_id).onclick = function (evt) {
             var activePoints = myLineChart.getElementAtEvent(evt);
             // make sure click was on an actual point
@@ -316,7 +317,6 @@ function make_chart(csv_name,data) {
                 var label = myLineChart.data.labels[clickedElementindex];
                 var value = myLineChart.data.datasets[clickedDatasetIndex].data[clickedElementindex];
                 console.log("dataset id : " + clickedDatasetIndex + " element index " + clickedElementindex + " Clicked: " + label + " - " + value)
-                // console.log("Clicked: " + label + " - " + value);
                 setImage(clickedElementindex)
             }
         };
@@ -325,6 +325,7 @@ function make_chart(csv_name,data) {
 }
 
 function setImage(index){
+    console.log(index)
     frame_element = document.getElementById('current frame to show')
     frame_element.setAttribute('src', '/static/output1/annotated_frames/annotated_frame_' + index  +'.jpg')
 }

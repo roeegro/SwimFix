@@ -96,13 +96,13 @@ def previous_feedback(zip_name):
                                          expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
                                                               'interpolated_all_keypoints'])
         frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
-        for path in frames_paths:
-            print(path.split('.')[0].split('_')[-1])
         sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
         frames_paths = sorted(frames_paths, key=sort_lambda)
         frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+        first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
         data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
-        return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames= frames_paths_dict, isAdmin=is_admin())
+        return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
+                               isAdmin=is_admin(), first_frame_number=first_frame_num)
     except:
         return previous_feedbacks()
 
