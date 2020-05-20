@@ -234,7 +234,6 @@ def get_keypoints_csv_from_video(video_path, params):
         datum.cvInputData = resized_frame
         opWrapper.emplaceAndPop([datum])
         output = datum.poseKeypoints
-
         # Extracting points coordinates into csv file
         if not datum.poseKeypoints.shape == ():
             first_person = output[0]
