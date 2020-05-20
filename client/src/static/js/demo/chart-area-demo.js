@@ -1,7 +1,7 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
-var csv_name = null
+// var csv_name = null
 
 function number_format(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');
@@ -32,11 +32,12 @@ function make_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
-    d3.csv(csv_path).then(make_chart)
+    d3.csv(csv_path).then(make_chart.bind(csv_name,csv_name))
     return 0
 }
 
-function make_chart(data) {
+function make_chart(csv_name,data) {
+    console.log(csv_name)
     columns = d3.keys(data[0])
     columns.forEach(column => {
         var frame_range = []
@@ -126,6 +127,7 @@ function make_chart(data) {
                     }],
                 },
                 options: {
+                    bezierCurve: true,
                     maintainAspectRatio: false,
                     layout: {
                         padding: {
@@ -235,6 +237,7 @@ function make_chart(data) {
                         }],
                 },
                 options: {
+                    bezierCurve: true,
                     maintainAspectRatio: false,
                     layout: {
                         padding: {
