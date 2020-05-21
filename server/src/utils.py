@@ -41,7 +41,7 @@ def get_src_path():
 
 
 def get_body_parts():
-    return ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', 'RShoulderX', 'RShoulderY',
+    return ['NoseX', 'NoseY','NoseScore','NeckX', 'NeckY', 'NeckScore', 'RShoulderX', 'RShoulderY',
             'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
             'LShoulderY', 'LShoulderScore',
             'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']

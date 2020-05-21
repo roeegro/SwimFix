@@ -1,7 +1,8 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
-var csv_name = null
+// var csv_name = null
+
 function number_format(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');
     // *     return: '1 234,56'
@@ -31,14 +32,17 @@ function make_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
-    d3.csv(csv_path).then(make_chart)
+    d3.csv(csv_path).then(make_chart.bind(csv_name,csv_name))
     return 0
 }
 
-function make_chart(data) {
+function make_chart(csv_name,data) {
     columns = d3.keys(data[0])
     columns.forEach(column => {
+        if(column =="" || column == "Frame Number" )
+            return;
         var frame_range = []
+        // Load frame Numberes
         for (i = 0; i < data.length; i++) {
             var frame_num = (data[i])["Frame Number"]
             frame_range.push(frame_num)
@@ -58,27 +62,28 @@ function make_chart(data) {
 
         var charts_node = document.getElementById('Charts')
         var canvas_tag = document.createElement("canvas")
+        var canvas_id = column + " graph"
         if (should_plot_multiple_graphs == true) {
-            canvas_tag.setAttribute("id", body_part_name + " graph")
-        }
-        else {
-            canvas_tag.setAttribute("id", column + " graph")
+            canvas_tag.setAttribute("id", body_part_name + ' Graph from csv : ' + csv_name)
+            canvas_id = body_part_name + ' Graph from csv : ' + csv_name
+        } else {
+            canvas_tag.setAttribute("id", column + ' Graph from csv : ' + csv_name)
+            canvas_id = column + ' Graph from csv : ' + csv_name
         }
 
         var div_wrapper_for_canvas = document.createElement('div')
-        div_wrapper_for_canvas.setAttribute('class', 'chart-bar')
+        div_wrapper_for_canvas.setAttribute('class', 'chart-area')
         div_wrapper_for_canvas.appendChild(canvas_tag)
 
         var div_card_body = document.createElement('div')
-        div_card_body.setAttribute('class', 'card-body')
+        div_card_body.setAttribute('class', 'cardliron-body')
         div_card_body.appendChild(div_wrapper_for_canvas)
 
         var h6_tag = document.createElement('h6')
         h6_tag.setAttribute('class', 'm-0 font-weight-bold text-primary')
         if (should_plot_multiple_graphs == true) {
             h6_tag.innerText = body_part_name + ' Graph from csv : ' + csv_name
-        }
-        else{
+        } else {
             h6_tag.innerText = column + ' Graph from csv : ' + csv_name
         }
 
@@ -87,7 +92,7 @@ function make_chart(data) {
         card_header_div_tag.appendChild(h6_tag)
 
         var card_shadow_div = document.createElement('div')
-        card_shadow_div.setAttribute('class', 'card shadow mb-4')
+        card_shadow_div.setAttribute('class', 'cardliron shadow mb-4')
 
         card_shadow_div.appendChild(card_header_div_tag)
         card_shadow_div.appendChild(div_card_body)
@@ -101,9 +106,9 @@ function make_chart(data) {
             var curr_data = (data[i])[column]
             y1_axis.push(curr_data)
         }
-
+        var myLineChart = null
         if (!should_plot_multiple_graphs) {
-            var myLineChart = new Chart(canvas_tag, {
+            myLineChart = new Chart(canvas_tag, {
                 type: 'line',
                 data: {
                     labels: frame_range,
@@ -113,7 +118,7 @@ function make_chart(data) {
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(78, 115, 223, 1)",
                         pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBackgroundColor: "rgba(255, 255, 255, 1)",
                         pointBorderColor: "rgba(78, 115, 223, 1)",
                         pointHoverRadius: 3,
                         pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -124,6 +129,7 @@ function make_chart(data) {
                     }],
                 },
                 options: {
+                    bezierCurve: true,
                     maintainAspectRatio: false,
                     layout: {
                         padding: {
@@ -196,8 +202,8 @@ function make_chart(data) {
                 var curr_data = (data[i])[match_keypoint_column]
                 y2_axis.push(curr_data)
             }
-            columns.splice(columns.indexOf(match_keypoint_column),1) // remove it because we don't want to plot this column again.
-            var myLineChart = new Chart(canvas_tag, {
+            columns.splice(columns.indexOf(match_keypoint_column), 1) // remove it because we don't want to plot this column again.
+            myLineChart = new Chart(canvas_tag, {
                 type: 'line',
                 data: {
                     labels: frame_range,
@@ -207,7 +213,7 @@ function make_chart(data) {
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(78, 115, 223, 1)",
                         pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBackgroundColor: "rgba(255, 255, 255, 1)",
                         pointBorderColor: "rgba(78, 115, 223, 1)",
                         pointHoverRadius: 3,
                         pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -216,23 +222,24 @@ function make_chart(data) {
                         pointBorderWidth: 2,
                         data: y1_axis,
                     },
-                    {
-                        label: match_keypoint_column,
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(255, 0, 0, 1)",
-                        pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointBorderColor: "rgba(255, 0, 0, 1)",
-                        pointHoverRadius: 3,
-                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2,
-                        data: y2_axis,
-                    }],
+                        {
+                            label: match_keypoint_column,
+                            lineTension: 0.3,
+                            backgroundColor: "rgba(78, 115, 223, 0.05)",
+                            borderColor: "rgba(255, 0, 0, 1)",
+                            pointRadius: 3,
+                            pointBackgroundColor: "rgba(255, 255, 255, 1)",
+                            pointBorderColor: "rgba(255, 0, 0, 1)",
+                            pointHoverRadius: 3,
+                            pointHoverBackgroundColor: "rgba(255, 0, 0, 1)",
+                            pointHoverBorderColor: "rgba(255, 0, 0, 1)",
+                            pointHitRadius: 10,
+                            pointBorderWidth: 2,
+                            data: y2_axis,
+                        }],
                 },
                 options: {
+                    bezierCurve: true,
                     maintainAspectRatio: false,
                     layout: {
                         padding: {
@@ -299,6 +306,26 @@ function make_chart(data) {
                     }
                 }
             });
+
         }
+        document.getElementById(canvas_id).onclick = function (evt) {
+            var activePoints = myLineChart.getElementAtEvent(evt);
+            // make sure click was on an actual point
+            if (activePoints.length > 0) {
+                var clickedDatasetIndex = activePoints[0]._datasetIndex;
+                var clickedElementindex = activePoints[0]._index;
+                var label = myLineChart.data.labels[clickedElementindex];
+                var value = myLineChart.data.datasets[clickedDatasetIndex].data[clickedElementindex];
+                console.log("dataset id : " + clickedDatasetIndex + " element index " + clickedElementindex + " Clicked: " + label + " - " + value)
+                setImage(parseInt(label))
+            }
+        };
     })
+
+}
+
+function setImage(index){
+    console.log(index)
+    frame_element = document.getElementById('current frame to show')
+    frame_element.setAttribute('src', '/static/output1/annotated_frames/annotated_frame_' + index  +'.jpg')
 }

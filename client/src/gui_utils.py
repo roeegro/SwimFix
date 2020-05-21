@@ -5,7 +5,6 @@ from shutil import copyfile
 import shutil
 import time
 from zipfile import ZipFile
-
 from client.src import mysql
 
 
@@ -36,44 +35,59 @@ def upload_video_file(upload_folder, file):
     send_file_to_server(new_video_paths)
 
 
-def get_all_csvs_paths(zip_name, expected_csvs_names = ['all_keypoints','angles','detected_keypoints','interpolated_all_keypoints']):
-    csvs_paths = list()
+def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], expected_file_names=None):
+    returned_file_paths = list()
     relative_zip_dir = '/static/output1/'
     zip_dir = os.getcwd() + relative_zip_dir
-    os.chdir(zip_dir)
-
-    if not os.path.exists('csvs'):
-        os.makedirs('csvs')
+    if not os.path.exists(zip_dir + found_files_dir_name):
+        os.makedirs(zip_dir + found_files_dir_name)
     else:
-        for file in os.listdir(zip_dir + 'csvs'):
-            os.remove(zip_dir + 'csvs/' + file)
+        for file in os.listdir(zip_dir + found_files_dir_name):
+            os.remove(zip_dir + found_files_dir_name + '/' + file)
 
-    with ZipFile('{}.zip'.format(zip_name), 'r') as zipObj:
+    with ZipFile('{}.zip'.format(zip_dir + zip_name), 'r') as zipObj:
         # Get a list of all archived file names from the zip
         listOfFileNames = zipObj.namelist()
         # Iterate over the file names
         for fileName in listOfFileNames:
-            # Check filename endswith csv
-            if fileName.endswith('.csv'):
+            # Check extension
+            file_extension = fileName.split('.')[-1]
+            if file_extension in extensions_of_files_to_find:
                 # Extract a single file from zip
                 name_of_file_with_extension = fileName.split('/')[-1]
                 name_of_file_without_extension = name_of_file_with_extension.split('.')[0]
-                if name_of_file_without_extension in expected_csvs_names: # check if we want this csv
-                    zipObj.extract(fileName, 'csvs')
+                if expected_file_names is None or name_of_file_without_extension in expected_file_names:  # check if we want this csv
+                    # print('filename {} , extension {} is extracted'.format(fileName, file_extension))
+                    zipObj.extract(fileName, zip_dir + found_files_dir_name)
                     try:
-                        shutil.move('csvs/{}'.format(fileName), 'csvs')
+                        shutil.move(zip_dir + found_files_dir_name + '/{}'.format(fileName),
+                                    zip_dir + found_files_dir_name)
                     except:
                         continue
-    for file in os.listdir('csvs'):
-        if not file.endswith('.csv'):
-            shutil.rmtree('csvs/{}'.format(file))
+    for file in os.listdir(zip_dir + found_files_dir_name):
+        file_extension = file.split('.')[-1]
+        if not file_extension in extensions_of_files_to_find:
+            shutil.rmtree(zip_dir + found_files_dir_name + '/{}'.format(file))
         else:
-            csvs_paths.append(relative_zip_dir + 'csvs/{}'.format(file))
+            returned_file_paths.append(relative_zip_dir + found_files_dir_name + '/{}'.format(file))
 
-    if len(csvs_paths) == 0:
-        shutil.rmtree('csvs')
-    os.chdir('../..')
-    return zip_dir + 'csvs', csvs_paths
+    if len(returned_file_paths) == 0:
+        shutil.rmtree(zip_dir + found_files_dir_name)
+    return returned_file_paths
+
+
+def get_previous_feedbacks_groiser():
+    previous_feedbacks = []
+    path_to_outputs = './static/output1'
+    for filename in os.listdir(path_to_outputs):
+        path = path_to_outputs + '/' + str(filename)
+        record_dict = dict()
+        record_dict['date'] = time.ctime(os.path.getctime(path))
+        record_dict['zip'] = path
+        record_dict['zip_name'] = filename
+        record_dict['zip_name_without_extension'] = filename.split('.')[0]
+        previous_feedbacks.append(record_dict)
+    return previous_feedbacks
 
 
 def get_previous_feedbacks(user_id):

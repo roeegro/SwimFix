@@ -449,6 +449,18 @@ hr {
     height: auto
 }
 
+
+.img-sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  width: 35%;
+  float:left;
+  top:40px;
+  padding-left: auto;
+
+}
+
+
 .img-thumbnail {
     padding: .25rem;
     background-color: #fff;
@@ -4280,6 +4292,22 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 .card-body {
     flex: 1 1 auto;
     padding: 1.25rem
+}
+.cardliron {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 1024px;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #e3e6f0;
+    border-radius: .35rem
+}
+.cardliron-body {
+    flex: 1 1 auto;
+    width: 1024px;
+    padding: 1.25rem;
 }
 
 .card-title {
@@ -9686,6 +9714,12 @@ a:focus {
     background-color: #f8f9fc;
     width: 100%;
     overflow-x: hidden
+}
+
+#wrapper #content-wrapper-sticky {
+    background-color: #f8f9fc;
+    width: 100%;
+
 }
 
 #wrapper #content-wrapper #content {

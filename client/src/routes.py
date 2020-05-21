@@ -7,10 +7,12 @@ from test_generator import run
 from . import app, db, bcrypt
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
+IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
 
 def is_admin():
     return session.get('isAdmin') if session and session.get('logged_in') else False
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -19,12 +21,12 @@ def allowed_file(filename):
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
-    return render_template('about.html',isAdmin=is_admin())
+    return render_template('about.html', isAdmin=is_admin())
 
 
 @app.route('/forgot-password')
 def forgot_password():
-    return render_template('forgot-password.html',isAdmin=is_admin())
+    return render_template('forgot-password.html', isAdmin=is_admin())
 
 
 @app.route('/add-test', methods=['GET', 'POST'])
@@ -38,19 +40,19 @@ def add_test():
 @app.route('/admin-index', methods=['GET', 'POST'])
 def admin_index():
     if is_admin():
-        return render_template('admin-index.html',isAdmin=is_admin())
+        return render_template('admin-index.html', isAdmin=is_admin())
     flash("You are not authorized to access this page", 'failure')
     return redirect(url_for('index'))
 
 
 @app.route('/charts')
 def charts():
-    return render_template('charts.html',isAdmin=is_admin())
+    return render_template('charts.html', isAdmin=is_admin())
 
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html',isAdmin=is_admin())
+    return render_template('index.html', isAdmin=is_admin())
 
 
 @app.route("/load-video", methods=['GET', 'POST'])
@@ -60,12 +62,12 @@ def load_video():
         if file and allowed_file(file.filename):
             upload_video_file(app.config['UPLOAD_FOLDER'], file)
             userID = session.get('ID') if session and session.get('logged_in') else 0
-            upload_file_sql(file.filename.split('.')[0],userID)
+            upload_file_sql(file.filename.split('.')[0], userID)
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
             return previous_feedbacks()
         else:
             flash('Failed to upload video file. Please try again', 'failure')
-    return render_template('load-video.html',isAdmin=is_admin())
+    return render_template('load-video.html', isAdmin=is_admin())
 
 
 def upload_file_sql(filename, user_id=0):
@@ -81,17 +83,28 @@ def upload_file_sql(filename, user_id=0):
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks():
-    user_id= session.get('ID') if session and session.get('logged_in') else 0
-    data_to_pass = get_previous_feedbacks(user_id)
-    return render_template('previous-feedbacks.html', data=data_to_pass,isAdmin=is_admin())
+    local_use = True
+    user_id = session.get('ID') if session and session.get('logged_in') else 0
+    data_to_pass = get_previous_feedbacks(user_id) if not local_use else get_previous_feedbacks_groiser()  # stab
+    return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
 
 
 @app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
 def previous_feedback(zip_name):
-    csvs_dir, csvs_paths = get_all_csvs_paths(zip_name)
-    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
-    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass,isAdmin=is_admin())
-
+    try:
+        csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                         expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
+                                                              'interpolated_all_keypoints'])
+        frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
+        sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+        frames_paths = sorted(frames_paths, key=sort_lambda)
+        frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+        first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+        data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+        return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
+                               isAdmin=is_admin(), first_frame_number=first_frame_num)
+    except:
+        return previous_feedbacks()
 
 
 # Forum
@@ -131,7 +144,8 @@ def forum(page):
     if len(topics) == 0 and page != 0:
         return redirect("/forum/" + str(page - 1))
 
-    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists,isAdmin=is_admin())
+    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists,
+                           isAdmin=is_admin())
 
 
 @app.route("/forum/topic/<forumPage>/<topicID>/<page>")
@@ -300,4 +314,4 @@ def plug_and_play():
                 flash('Failed to upload python file. Please try again', 'failure')
         else:
             flash('Failed to upload python file. Please try again', 'failure')
-    return render_template('plug-and-play.html',isAdmin=is_admin())
+    return render_template('plug-and-play.html', isAdmin=is_admin())

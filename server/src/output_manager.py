@@ -3,6 +3,7 @@ import shutil
 from datetime import datetime
 import utils
 import pandas as pd
+import zipfile
 
 from utils import path_without_suffix, get_src_path, get_file_name_for_backslash
 
@@ -59,6 +60,16 @@ def zip_output():
     time_path = output_dirs_dict['time_path'].split('/')[-1]
     date_path = output_dirs_dict['date_path'].split('/')[-1]
     zip_name = '{}_{}_{}'.format(filename, date_path, time_path)
+
+    # zipf = zipfile.ZipFile(zip_name, 'w')
+
+    # for folder, subfolders, files in os.walk(zip_out_path):
+    #     for file in files:
+    #         zipf.write(os.path.join(folder, file),
+    #                           os.path.relpath(os.path.join(folder, file), zip_out_path),
+    #                           compress_type=zipfile.ZIP_DEFLATED)
+    #
+    # zipf.close()
     shutil.make_archive(zip_name, 'zip')
     os.chdir(get_src_path())
     return zip_out_path + '/{}.zip'.format(zip_name)
@@ -69,9 +80,12 @@ def delete_generate_dirs():
 
 
 def send_zip(src_zip, dest_path, delete_output_folder=False):
+    print('begin to send zip')
     shutil.move(src_zip, dest_path)
+    print('moved zip')
     if delete_output_folder:
         delete_generate_dirs()
+        print('deleted generate dirs')
 
 
 def get_output_dirs_dict():

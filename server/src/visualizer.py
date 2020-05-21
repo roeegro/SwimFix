@@ -86,7 +86,7 @@ def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True)
     df.reset_index(drop=True, inplace=True)
     x = df[x_col].values
     if y_cols is None:
-        y_cols = df.columns.difference([x_col, 'Unnamed: 0']).values
+        y_cols = df.columns.difference([x_col]).values
     elif y_cols is str:
         y_cols = [y_cols]
     for y_col in y_cols:
