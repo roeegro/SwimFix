@@ -72,11 +72,11 @@ function make_chart(csv_name,data) {
         }
 
         var div_wrapper_for_canvas = document.createElement('div')
-        div_wrapper_for_canvas.setAttribute('class', 'chart-bar')
+        div_wrapper_for_canvas.setAttribute('class', 'chart-area')
         div_wrapper_for_canvas.appendChild(canvas_tag)
 
         var div_card_body = document.createElement('div')
-        div_card_body.setAttribute('class', 'card-body')
+        div_card_body.setAttribute('class', 'cardliron-body')
         div_card_body.appendChild(div_wrapper_for_canvas)
 
         var h6_tag = document.createElement('h6')
@@ -92,7 +92,7 @@ function make_chart(csv_name,data) {
         card_header_div_tag.appendChild(h6_tag)
 
         var card_shadow_div = document.createElement('div')
-        card_shadow_div.setAttribute('class', 'card shadow mb-4')
+        card_shadow_div.setAttribute('class', 'cardliron shadow mb-4')
 
         card_shadow_div.appendChild(card_header_div_tag)
         card_shadow_div.appendChild(div_card_body)
@@ -118,7 +118,7 @@ function make_chart(csv_name,data) {
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(78, 115, 223, 1)",
                         pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBackgroundColor: "rgba(255, 255, 255, 1)",
                         pointBorderColor: "rgba(78, 115, 223, 1)",
                         pointHoverRadius: 3,
                         pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -213,7 +213,7 @@ function make_chart(csv_name,data) {
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(78, 115, 223, 1)",
                         pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBackgroundColor: "rgba(255, 255, 255, 1)",
                         pointBorderColor: "rgba(78, 115, 223, 1)",
                         pointHoverRadius: 3,
                         pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -228,11 +228,11 @@ function make_chart(csv_name,data) {
                             backgroundColor: "rgba(78, 115, 223, 0.05)",
                             borderColor: "rgba(255, 0, 0, 1)",
                             pointRadius: 3,
-                            pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                            pointBackgroundColor: "rgba(255, 255, 255, 1)",
                             pointBorderColor: "rgba(255, 0, 0, 1)",
                             pointHoverRadius: 3,
-                            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                            pointHoverBackgroundColor: "rgba(255, 0, 0, 1)",
+                            pointHoverBorderColor: "rgba(255, 0, 0, 1)",
                             pointHitRadius: 10,
                             pointBorderWidth: 2,
                             data: y2_axis,
