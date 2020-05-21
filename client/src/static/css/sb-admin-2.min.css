@@ -449,6 +449,14 @@ hr {
     height: auto
 }
 
+
+.img-sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+
+
 .img-thumbnail {
     padding: .25rem;
     background-color: #fff;
@@ -9686,6 +9694,12 @@ a:focus {
     background-color: #f8f9fc;
     width: 100%;
     overflow-x: hidden
+}
+
+#wrapper #content-wrapper-sticky {
+    background-color: #f8f9fc;
+    width: 100%;
+
 }
 
 #wrapper #content-wrapper #content {

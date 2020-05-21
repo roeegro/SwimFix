@@ -317,7 +317,7 @@ function make_chart(csv_name,data) {
                 var label = myLineChart.data.labels[clickedElementindex];
                 var value = myLineChart.data.datasets[clickedDatasetIndex].data[clickedElementindex];
                 console.log("dataset id : " + clickedDatasetIndex + " element index " + clickedElementindex + " Clicked: " + label + " - " + value)
-                setImage(clickedElementindex)
+                setImage(parseInt(label))
             }
         };
     })
