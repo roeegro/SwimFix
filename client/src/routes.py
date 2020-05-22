@@ -74,7 +74,7 @@ def load_video():
                     s.connect((SERVER_IP, SERVER_PORT))
                     msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
                     s.sendall(msg.encode('utf-8'))
-                    start_msg = s.recv(1024) # for 'start' message
+                    start_msg = s.recv(1024)  # for 'start' message
                     print(3)
                     if start_msg.decode('utf-8') != 'start':
                         flash('Failed to upload video file. Please try again', 'failure')
@@ -85,7 +85,7 @@ def load_video():
                     l = f.read(1024)
                     while l:
                         s.send(l)
-                        print('Sent '+ repr(l))
+                        print('Sent ' + repr(l))
                         l = f.read(1024)
                     f.close()
             print(5)
@@ -292,10 +292,17 @@ def login():
         msg = 'login username: {} password: {}'.format(_username, _passwd)
         s.sendall(msg.encode('utf-8'))
         data = s.recv(1024)
+        data = data.decode('utf-8')
         print(data)
-    return redirect(url_for('index'))
+    if data.split(' ')[0] != "Fail:":
+        session['ID'] = data[0]
+        session['username'] = data[1]
+        session['logged_in'] = data[2]
+        session['isAdmin'] = data[3]
+        flash(u"You're now logged in!", "success")
+        return redirect(url_for('index'))
 
-    # flash(u"Incorrect login", "danger")
+    flash(u"Incorrect login", "danger")
     return redirect(url_for('login'))
 
 
@@ -309,9 +316,6 @@ def register():
     _passwd = request.form['password']
     _email = request.form['email']
 
-    if len(_username) < 2 or len(_username) > 20:
-        flash(u"Incorrect username lenght!", "danger")
-        return redirect(url_for('panel'))
 
     # cur = mysql.connection.cursor()
     # res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (_username, _email))
@@ -331,9 +335,13 @@ def register():
         msg = 'register username: {} password: {} email: {}'.format(_username, _passwd, _email)
         s.sendall(msg.encode('utf-8'))
         data = s.recv(1024)
+        data = data.decode("utf-8")
         print(data)
+        if data.split(' ')[0] == "Fail:":
+            flash(data, "danger")
+            return redirect(url_for('register'))
 
-    flash(u"You're now registered!", "info")
+    flash(u"You're now registered!", "success")
     return redirect(url_for('login'))
 
 

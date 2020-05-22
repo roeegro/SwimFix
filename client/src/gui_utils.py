@@ -11,7 +11,7 @@ from client.src import mysql
 def create_dir_if_not_exists(directory):
     if not os.path.exists(directory):
         os.mkdir(directory)
-        print('Created dir' + directory)
+        print('Created dir ' + directory)
 
 
 def send_file_to_server(video_paths):
@@ -28,6 +28,7 @@ def send_file_to_server(video_paths):
 
 def upload_video_file(upload_folder, file):
     create_dir_if_not_exists('partial_movies')
+    create_dir_if_not_exists(upload_folder)
     filename = file.filename
     video_path = os.path.join(upload_folder, filename)
     file.save(video_path)
