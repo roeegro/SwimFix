@@ -1,10 +1,11 @@
 from flask_login import login_user, logout_user, current_user
+import socket
 from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
 from client.src.models import User
 from test_generator import run
-from . import app, db, bcrypt
+from . import app, db, bcrypt, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
@@ -258,6 +259,12 @@ def login():
             session['logged_in'] = True
             session['isAdmin'] = (user['ISADMIN'] == 1)
             flash(u"You're now logged in!", "info")
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((SERVER_IP, SERVER_PORT))
+                msg = 'username: {} was connected right now'.format(user)
+                s.sendall(msg.encode('utf-8'))
+                data = s.recv(1024)
+                print(data)
             return redirect(url_for('index'))
 
     flash(u"Incorrect login", "danger")

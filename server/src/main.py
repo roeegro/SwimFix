@@ -7,6 +7,9 @@ import argparse
 import facade
 import time
 import shutil
+import socket
+import MySQLdb
+from requests import get
 
 # import preprocessor
 # setup
@@ -58,6 +61,17 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
+HOST = '10.0.0.12'  # Standard loopback interface address (localhost)
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+
+MYSQL_HOST = '65.19.141.67'
+MYSQL_PORT = 3306
+MYSQL_USER = 'lironabr'
+MYSQL_PASSWORD = 'h3dChhmg'
+MYSQL_DB = 'lironabr_swimming_project'
+MYSQL_CURSORCLASS = 'DictCursor'
+mysql = MySQLdb.connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB)
+
 
 def wait_analyze_video():
     while True:
@@ -84,5 +98,35 @@ def wait_analyze_video():
         time.sleep(1)
 
 
+def request_parser(data):
+    print(data)
+    # print('Users data in db')
+    # cur = mysql.cursor()
+    # cur.execute("SELECT * FROM USERS")
+    # res = cur.fetchall()
+    # print(res)
+
+
+def accept_request():
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            print(HOST)
+            ip = get('https://api.ipify.org').text
+            print(ip)
+            s.bind((HOST, PORT))
+            print('bind. start listening')
+            s.listen()
+            conn, addr = s.accept()
+            with conn:
+                print('Connected by', addr)
+                while True:
+                    data = conn.recv(1024)
+                    request_parser(data)
+                    if not data:
+                        break
+                    conn.sendall(data)
+
+
 if __name__ == '__main__':
-    wait_analyze_video()
+    # wait_analyze_video()
+    accept_request()
