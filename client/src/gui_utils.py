@@ -39,13 +39,15 @@ def upload_video_file(upload_folder, file):
 
 def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], expected_file_names=None):
     returned_file_paths = list()
-    relative_zip_dir = '/static/output1/'
+    relative_zip_dir = '/static/output/'
     zip_dir = os.getcwd() + relative_zip_dir
-    if not os.path.exists(zip_dir + found_files_dir_name):
-        os.makedirs(zip_dir + found_files_dir_name)
+    relative_output_dir = '/static/temp/'
+    output_dir = os.getcwd() + relative_output_dir
+    if not os.path.exists(output_dir + found_files_dir_name):
+        os.makedirs(output_dir + found_files_dir_name)
     else:
-        for file in os.listdir(zip_dir + found_files_dir_name):
-            os.remove(zip_dir + found_files_dir_name + '/' + file)
+        for file in os.listdir(output_dir + found_files_dir_name):
+            os.remove(output_dir + found_files_dir_name + '/' + file)
 
     with ZipFile('{}.zip'.format(zip_dir + zip_name), 'r') as zipObj:
         # Get a list of all archived file names from the zip
@@ -60,27 +62,67 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
                 name_of_file_without_extension = name_of_file_with_extension.split('.')[0]
                 if expected_file_names is None or name_of_file_without_extension in expected_file_names:  # check if we want this csv
                     # print('filename {} , extension {} is extracted'.format(fileName, file_extension))
-                    zipObj.extract(fileName, zip_dir + found_files_dir_name)
+                    zipObj.extract(fileName, output_dir + found_files_dir_name)
                     try:
-                        shutil.move(zip_dir + found_files_dir_name + '/{}'.format(fileName),
-                                    zip_dir + found_files_dir_name)
+                        shutil.move(output_dir + found_files_dir_name + '/{}'.format(fileName),
+                                    output_dir + found_files_dir_name)
                     except:
                         continue
-    for file in os.listdir(zip_dir + found_files_dir_name):
+
+    for file in os.listdir(output_dir + found_files_dir_name):
         file_extension = file.split('.')[-1]
         if not file_extension in extensions_of_files_to_find:
-            shutil.rmtree(zip_dir + found_files_dir_name + '/{}'.format(file))
+            shutil.rmtree(output_dir + found_files_dir_name + '/{}'.format(file))
         else:
-            returned_file_paths.append(relative_zip_dir + found_files_dir_name + '/{}'.format(file))
+            print(relative_output_dir + found_files_dir_name + '/{}'.format(file))
+            returned_file_paths.append(relative_output_dir + found_files_dir_name + '/{}'.format(file))
 
-    if len(returned_file_paths) == 0:
-        shutil.rmtree(zip_dir + found_files_dir_name)
     return returned_file_paths
+
+
+    # returned_file_paths = list()
+    # relative_zip_dir = '/static/output/'
+    # zip_dir = os.getcwd() + relative_zip_dir
+    # if not os.path.exists(zip_dir + found_files_dir_name):
+    #     os.makedirs(zip_dir + found_files_dir_name)
+    # else:
+    #     for file in os.listdir(zip_dir + found_files_dir_name):
+    #         os.remove(zip_dir + found_files_dir_name + '/' + file)
+    #
+    # with ZipFile('{}.zip'.format(zip_dir + zip_name), 'r') as zipObj:
+    #     # Get a list of all archived file names from the zip
+    #     listOfFileNames = zipObj.namelist()
+    #     # Iterate over the file names
+    #     for fileName in listOfFileNames:
+    #         # Check extension
+    #         file_extension = fileName.split('.')[-1]
+    #         if file_extension in extensions_of_files_to_find:
+    #             # Extract a single file from zip
+    #             name_of_file_with_extension = fileName.split('/')[-1]
+    #             name_of_file_without_extension = name_of_file_with_extension.split('.')[0]
+    #             if expected_file_names is None or name_of_file_without_extension in expected_file_names:  # check if we want this csv
+    #                 # print('filename {} , extension {} is extracted'.format(fileName, file_extension))
+    #                 zipObj.extract(fileName, zip_dir + found_files_dir_name)
+    #                 try:
+    #                     shutil.move(zip_dir + found_files_dir_name + '/{}'.format(fileName),
+    #                                 zip_dir + found_files_dir_name)
+    #                 except:
+    #                     continue
+    # for file in os.listdir(zip_dir + found_files_dir_name):
+    #     file_extension = file.split('.')[-1]
+    #     if not file_extension in extensions_of_files_to_find:
+    #         shutil.rmtree(zip_dir + found_files_dir_name + '/{}'.format(file))
+    #     else:
+    #         returned_file_paths.append(relative_zip_dir + found_files_dir_name + '/{}'.format(file))
+    #
+    # if len(returned_file_paths) == 0:
+    #     shutil.rmtree(zip_dir + found_files_dir_name)
+    # return returned_file_paths
 
 
 def get_previous_feedbacks_groiser():
     previous_feedbacks = []
-    path_to_outputs = './static/output1'
+    path_to_outputs = './static/output'
     for filename in os.listdir(path_to_outputs):
         path = path_to_outputs + '/' + str(filename)
         record_dict = dict()
@@ -94,7 +136,7 @@ def get_previous_feedbacks_groiser():
 
 def get_previous_feedbacks(user_id):
     previous_feedbacks = []
-    path_to_outputs = './static/output1'
+    path_to_outputs = './static/output'
     cur = mysql.connection.cursor()
     cur.execute('''
             SELECT FILES.ID, FILES.NAME, FILES.CREATION_DATE, FILES.CREATORID

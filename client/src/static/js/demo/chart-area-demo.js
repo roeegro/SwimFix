@@ -325,7 +325,6 @@ function make_chart(csv_name,data) {
 }
 
 function setImage(index){
-    console.log(index)
     frame_element = document.getElementById('current frame to show')
-    frame_element.setAttribute('src', '/static/output1/annotated_frames/annotated_frame_' + index  +'.jpg')
+    frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index  +'.jpg')
 }
