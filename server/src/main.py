@@ -115,7 +115,7 @@ def accept_request():
                 data = conn.recv(1024)
                 answer = main_parser(data,conn,params)
                 if not answer:
-                    break
+                    continue
                 conn.sendall(answer.encode('utf-8'))
 
 

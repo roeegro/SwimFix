@@ -23,11 +23,6 @@ def login(data, conn, params):
 
     if res > 0:
         user = cur.fetchone()
-        print(user)
-        print('hash')
-        print(user['PASSWORD_HASH'])
-        print('password')
-        print(password)
         if bcrypt.checkpw(password.encode('utf-8'), user['PASSWORD_HASH'].encode('utf-8')):
             return '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] == 1)
 
@@ -39,17 +34,17 @@ def register(data, conn, params):
     username = data[data.index('username:') + 1]
     password = data[data.index('password:') + 1]
     email = data[data.index('email:') + 1]
-    cur = mysql.connection.cursor()
+    cur = mysql.cursor()
     res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (username, email))
 
     if res != 0:
-        return 'Fail: User already exists'
+        return 'Fail: User or email already exists'
 
-    password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+    password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
                 (username, email, password_hash))
 
-    mysql.connection.commit()
+    mysql.commit()
     cur.close()
     return 'Success: User Registered'
 
