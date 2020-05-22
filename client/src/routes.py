@@ -61,9 +61,35 @@ def load_video():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            upload_video_file(app.config['UPLOAD_FOLDER'], file)
+            videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
+            print(1)
             userID = session.get('ID') if session and session.get('logged_in') else 0
-            upload_file_sql(file.filename.split('.')[0], userID)
+            for video_path in videos_paths_to_upload:
+                video_name = video_path.split('/')[-1]
+                # to create the output dir from the server
+                create_dir_if_not_exists('output')
+                create_dir_if_not_exists('../../server/videos/')
+                print(2)
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((SERVER_IP, SERVER_PORT))
+                    msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
+                    s.sendall(msg.encode('utf-8'))
+                    start_msg = s.recv(1024) # for 'start' message
+                    print(3)
+                    if start_msg.decode('utf-8') != 'start':
+                        flash('Failed to upload video file. Please try again', 'failure')
+                        return render_template('load-video.html', isAdmin=is_admin())
+                    f = open(video_path, 'rb')
+                    print(4)
+                    # send the file
+                    l = f.read(1024)
+                    while l:
+                        s.send(l)
+                        print('Sent '+ repr(l))
+                        l = f.read(1024)
+                    f.close()
+            print(5)
+            # upload_file_sql(file.filename.split('.')[0], userID)
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
             return previous_feedbacks()
         else:
@@ -87,6 +113,7 @@ def previous_feedbacks():
     local_use = True
     user_id = session.get('ID') if session and session.get('logged_in') else 0
     data_to_pass = get_previous_feedbacks(user_id) if not local_use else get_previous_feedbacks_groiser()  # stab
+
     return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
 
 
@@ -102,6 +129,7 @@ def previous_feedback(zip_name):
         frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
         first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
         data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+
         return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
                                isAdmin=is_admin(), first_frame_number=first_frame_num)
     except:
@@ -247,27 +275,27 @@ def login():
     _username = request.form['username']
     _passwd = request.form['password']
 
-    cur = mysql.connection.cursor()
-    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (_username,))
+    # cur = mysql.connection.cursor()
+    # res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (_username,))
+    #
+    # if res > 0:
+    #     user = cur.fetchone()
+    #
+    #     if bcrypt.check_password_hash(user['PASSWORD_HASH'], _passwd):
+    #         session['ID'] = user['ID']
+    #         session['username'] = user['USERNAME']
+    #         session['logged_in'] = True
+    #         session['isAdmin'] = (user['ISADMIN'] == 1)
+    #         flash(u"You're now logged in!", "info")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'login username: {} password: {}'.format(_username, _passwd)
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        print(data)
+    return redirect(url_for('index'))
 
-    if res > 0:
-        user = cur.fetchone()
-
-        if bcrypt.check_password_hash(user['PASSWORD_HASH'], _passwd):
-            session['ID'] = user['ID']
-            session['username'] = user['USERNAME']
-            session['logged_in'] = True
-            session['isAdmin'] = (user['ISADMIN'] == 1)
-            flash(u"You're now logged in!", "info")
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((SERVER_IP, SERVER_PORT))
-                msg = 'username: {} was connected right now'.format(user)
-                s.sendall(msg.encode('utf-8'))
-                data = s.recv(1024)
-                print(data)
-            return redirect(url_for('index'))
-
-    flash(u"Incorrect login", "danger")
+    # flash(u"Incorrect login", "danger")
     return redirect(url_for('login'))
 
 
@@ -285,19 +313,26 @@ def register():
         flash(u"Incorrect username lenght!", "danger")
         return redirect(url_for('panel'))
 
-    cur = mysql.connection.cursor()
-    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (_username, _email))
+    # cur = mysql.connection.cursor()
+    # res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (_username, _email))
+    #
+    # if res != 0:
+    #     flash(u"User exists!", "danger")
+    #     return redirect(url_for('panel'))
+    #
+    # passwordHash = bcrypt.generate_password_hash(_passwd).decode('utf-8')
+    # cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
+    #             (_username, _email, passwordHash))
+    #
+    # mysql.connection.commit()
+    # cur.close()
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'register username: {} password: {} email: {}'.format(_username, _passwd, _email)
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        print(data)
 
-    if res != 0:
-        flash(u"User exists!", "danger")
-        return redirect(url_for('panel'))
-
-    passwordHash = bcrypt.generate_password_hash(_passwd).decode('utf-8')
-    cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
-                (_username, _email, passwordHash))
-
-    mysql.connection.commit()
-    cur.close()
     flash(u"You're now registered!", "info")
     return redirect(url_for('login'))
 

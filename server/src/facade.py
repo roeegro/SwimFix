@@ -52,6 +52,10 @@ def get_keypoints_csv_from_video(video_path, params):
     return data_extractor.get_keypoints_csv_from_video(video_path, params)
 
 
+def get_output_dir():
+    return output_manager.get_output_dirs_dict()
+
+
 def zip_output():
     zip_path = output_manager.zip_output()
     output_manager.send_zip(zip_path, "../../client/src/static/output1")

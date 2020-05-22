@@ -10,6 +10,7 @@ import shutil
 import socket
 import MySQLdb
 from requests import get
+from client_requests_parser import main_parser
 
 # import preprocessor
 # setup
@@ -63,14 +64,14 @@ for i in range(0, len(args[1])):
 
 HOST = '10.0.0.12'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
-
-MYSQL_HOST = '65.19.141.67'
-MYSQL_PORT = 3306
-MYSQL_USER = 'lironabr'
-MYSQL_PASSWORD = 'h3dChhmg'
-MYSQL_DB = 'lironabr_swimming_project'
-MYSQL_CURSORCLASS = 'DictCursor'
-mysql = MySQLdb.connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB)
+#
+# MYSQL_HOST = '65.19.141.67'
+# MYSQL_PORT = 3306
+# MYSQL_USER = 'lironabr'
+# MYSQL_PASSWORD = 'h3dChhmg'
+# MYSQL_DB = 'lironabr_swimming_project'
+# MYSQL_CURSORCLASS = 'DictCursor'
+# mysql = MySQLdb.connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB)
 
 
 def wait_analyze_video():
@@ -98,15 +99,6 @@ def wait_analyze_video():
         time.sleep(1)
 
 
-def request_parser(data):
-    print(data)
-    # print('Users data in db')
-    # cur = mysql.cursor()
-    # cur.execute("SELECT * FROM USERS")
-    # res = cur.fetchall()
-    # print(res)
-
-
 def accept_request():
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -119,12 +111,12 @@ def accept_request():
             conn, addr = s.accept()
             with conn:
                 print('Connected by', addr)
-                while True:
-                    data = conn.recv(1024)
-                    request_parser(data)
-                    if not data:
-                        break
-                    conn.sendall(data)
+                # while True:
+                data = conn.recv(1024)
+                answer = main_parser(data,conn,params)
+                if not answer:
+                    break
+                conn.sendall(answer.encode('utf-8'))
 
 
 if __name__ == '__main__':

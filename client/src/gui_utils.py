@@ -32,7 +32,8 @@ def upload_video_file(upload_folder, file):
     video_path = os.path.join(upload_folder, filename)
     file.save(video_path)
     new_video_paths = preprocessor.video_cutter(video_path)
-    send_file_to_server(new_video_paths)
+    # send_file_to_server(new_video_paths)
+    return new_video_paths
 
 
 def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], expected_file_names=None):

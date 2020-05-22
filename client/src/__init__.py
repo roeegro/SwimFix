@@ -19,6 +19,7 @@ app.config['MYSQL_PASSWORD'] = 'h3dChhmg'
 app.config['MYSQL_DB'] = 'lironabr_swimming_project'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
+# mysql=''
 SERVER_IP = '10.0.0.12'
 SERVER_PORT = 65432
 from . import routes

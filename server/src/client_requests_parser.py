@@ -1,0 +1,149 @@
+import MySQLdb
+import bcrypt
+import MySQLdb.cursors
+import facade
+
+MYSQL_HOST = '65.19.141.67'
+MYSQL_PORT = 3306
+MYSQL_USER = 'lironabr'
+MYSQL_PASSWORD = 'h3dChhmg'
+MYSQL_DB = 'lironabr_swimming_project'
+MYSQL_CURSORCLASS = 'DictCursor'
+mysql = MySQLdb.Connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB,
+                        cursorclass=MySQLdb.cursors.DictCursor)
+
+
+def login(data, conn, params):
+    print('LOGIN')
+    print(data)
+    username = data[data.index('username:') + 1]
+    password = data[data.index('password:') + 1]
+    cur = mysql.cursor()
+    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (username,))
+
+    if res > 0:
+        user = cur.fetchone()
+        print(user)
+        print('hash')
+        print(user['PASSWORD_HASH'])
+        print('password')
+        print(password)
+        if bcrypt.checkpw(password.encode('utf-8'), user['PASSWORD_HASH'].encode('utf-8')):
+            return '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] == 1)
+
+    return 'Fail: Incorrect Login'
+
+
+def register(data, conn, params):
+    print('REGISTER')
+    username = data[data.index('username:') + 1]
+    password = data[data.index('password:') + 1]
+    email = data[data.index('email:') + 1]
+    cur = mysql.connection.cursor()
+    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (username, email))
+
+    if res != 0:
+        return 'Fail: User already exists'
+
+    password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+    cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
+                (username, email, password_hash))
+
+    mysql.connection.commit()
+    cur.close()
+    return 'Success: User Registered'
+
+
+def download(data, conn, params):
+    pass
+
+
+def view_graphs(data, conn, params):
+    pass
+
+
+def view_forum(data, conn, params):
+    pass
+
+
+def forum_post(data, conn, params):
+    pass
+
+
+def forum_comment(data, conn, params):
+    pass
+
+
+def analyze_video(data, conn, params):
+    pass
+
+
+def add_test(data, conn, params):
+    pass
+
+
+def run_test(data, conn, params):
+    pass
+
+
+def upload(data, conn, params):
+    user_id = data[data.index('user_id:') + 1]
+    cur = mysql.cursor()
+    cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+
+    username = cur.fetchone()['USERNAME']
+    filename = data[data.index('filename:') + 1]
+    # for handshake
+    msg = 'start'
+    conn.send(msg.encode('utf-8'))
+    videos_path = '../videos/'
+    path_to_video = videos_path + filename
+    with open(path_to_video, 'wb') as f:
+        while True:
+            print('receiving data...')
+            data = conn.recv(1024)
+            if not data:
+                break
+            # write data to a file
+            f.write(data)
+    print('Successfully get the file')
+    print("Analysing path...")
+
+    facade.create_output_dir_for_movie_of_user(path_to_video, username)
+    all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
+    interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
+    facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
+    facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
+    facade.get_average_swimming_period_from_csv(interpolated_keypoints_path)
+    zip_path = facade.zip_output()
+    cur.execute('''
+        INSERT INTO FILES(NAME, CREATORID)
+        VALUE (%s, %s)
+        ''', (filename, user_id))
+    mysql.commit()
+    cur.close()
+
+
+def upload_file_sql(filename, user_id=0):
+    cur = mysql.connection.cursor()
+    cur.execute('''
+        INSERT INTO FILES(NAME, CREATORID)
+        VALUE (%s, %s)
+        ''', (filename, user_id))
+    mysql.connection.commit()
+    cur.close()
+    return
+
+
+requests_dict = {'login': login, 'register': register, 'download': download, 'view_graphs': view_graphs,
+                 'view_forum': view_forum,
+                 'forum_post': forum_post, 'forum_comment': forum_comment, 'analyze_video': analyze_video,
+                 'add_test': add_test, 'run_test': run_test, 'upload': upload}
+
+
+def main_parser(data, conn, params):
+    data = data.decode('utf-8')
+    data_lst = (data.split(' '))
+    print('decoded data :')
+    print(data)
+    return (requests_dict[data_lst[0]])(data_lst[1:], conn, params)
