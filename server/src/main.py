@@ -65,6 +65,7 @@ def wait_analyze_video():
             video_path = '../videos/' + filename
             try:
                 print("Analysing path...")
+                facade.create_output_dir_for_movie_of_user(video_path)
                 all_keypoints_csv_path = facade.get_keypoints_csv_from_video(video_path, params)
                 interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
                 facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)

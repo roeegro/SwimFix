@@ -16,6 +16,12 @@ def create_graph_from_csv(csv_path, y_cols, x_col='Frame Number', mult_figures=T
     visualizer.create_graph(csv_path, y_cols, x_col, mult_figures)
 
 
+def create_output_dir_for_movie_of_user(video_path, username="defaultUser"):
+    video_name = utils.get_file_name(video_path)
+    video_name = utils.path_without_suffix(video_name)
+    output_manager.generate_dirs_for_output_of_movie(video_name, username=username)
+
+
 def interpolate_csv(csv_path, y=None, x='Frame Number'):
     return data_extractor.generate_interpolated_csv(csv_path, y, x)
 
@@ -56,7 +62,7 @@ def zip_output():
 def main():
     all_keypoints_df_csv_path = '../../all_keypoints.csv'
     video_path = 'MVI_8027.MOV'
-    output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
+    # output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
     interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
     get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
     get_detected_keypoints_by_frame(all_keypoints_df_csv_path)

@@ -180,7 +180,7 @@ body_parts = utils.get_body_parts()
 def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     video_name = utils.get_file_name(video_path)
     video_name = utils.path_without_suffix(video_name)
-    output_dirs = output_manager.generate_dirs_for_output_of_movie(video_name)
+    output_dirs = output_manager.get_output_dirs_dict()  # must be created before calling to this function.
     size = (600, 480)
     annotated_video_cap = cv2.VideoWriter('annotated_video.avi', cv2.VideoWriter_fourcc(*'MP4V'), 30, size)
 
@@ -263,7 +263,7 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     print("finished")
     cap.release()
     annotated_video_cap.release()
-    # shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
+    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
     valid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv", index=False)
     invalid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv", index=False)
     frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv", index=False)

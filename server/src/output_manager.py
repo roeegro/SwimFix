@@ -11,18 +11,19 @@ expected_output_dirs_dict = {}
 output_dirs_dict = {}
 
 
-def generate_dirs_for_output_of_movie(movName):
-    name = utils.path_without_suffix(movName)
-    dict_to_return = output_dirs_dict
+def generate_dirs_for_output_of_movie(movName, username='defaultUser'):
+    video_name = utils.path_without_suffix(movName)
+    new_output_dirs_dict = dict()
     outputs_dir = get_src_path() + "/../output"
     if not os.path.exists(outputs_dir):
         os.mkdir(outputs_dir)
     os.chdir(outputs_dir)
-    if not os.path.exists(name):
-        os.mkdir(name)
-    os.chdir(name)
-    # time_created = datetime.utcnow().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
-    # time_created = datetime.date().strftime('%d-%m-%Y__%H_%M_%S_%f')[:-3]
+    if not os.path.exists(username):
+        os.mkdir(username)
+    os.chdir(username)
+    if not os.path.exists(video_name):
+        os.mkdir(video_name)
+    os.chdir(video_name)
     date = datetime.now()
     curr_date = date.strftime('%Y-%m-%d')
     if not os.path.exists(curr_date):
@@ -38,41 +39,45 @@ def generate_dirs_for_output_of_movie(movName):
     os.mkdir(analytical_data_dir_name)
     os.mkdir(figures_dir_name)
     os.mkdir(frames_dir_name)
-    dict_to_return["output_dir"] = outputs_dir
-    dict_to_return["output_movie_dir"] = outputs_dir + "/" + name
-    dict_to_return["date_path"] = outputs_dir + "/" + name + "/" + curr_date
-    dict_to_return["time_path"] = outputs_dir + "/" + name + "/" + curr_date + "/" + curr_time
-    dict_to_return[
-        "analytical_data_path"] = outputs_dir + "/" + name + "/" + curr_date + "/" + curr_time + "/" + analytical_data_dir_name
-    dict_to_return[
-        "figures_path"] = outputs_dir + "/" + name + "/" + curr_date + "/" + curr_time + "/" + figures_dir_name
-    dict_to_return[
-        "frames_path"] = outputs_dir + "/" + name + "/" + curr_date + "/" + curr_time + "/" + frames_dir_name
-    dict_to_return['annotated_video'] = outputs_dir + "/" + name + "/" + curr_date + "/" + curr_time + "/" + "annotated_video.mp4"
+    new_output_dirs_dict["output_dir"] = outputs_dir
+    new_output_dirs_dict["username_dir"] = outputs_dir + "/" + username
+    new_output_dirs_dict["output_movie_dir"] = outputs_dir + "/" + username + "/" + video_name
+    new_output_dirs_dict["date_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date
+    new_output_dirs_dict[
+        "time_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time
+    new_output_dirs_dict[
+        "analytical_data_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + analytical_data_dir_name
+    new_output_dirs_dict[
+        "figures_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + figures_dir_name
+    new_output_dirs_dict[
+        "frames_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + frames_dir_name
+    new_output_dirs_dict[
+        'annotated_video'] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + "annotated_video.mp4"
     os.chdir(get_src_path())
-    return dict_to_return
+    global output_dirs_dict
+    output_dirs_dict = new_output_dirs_dict
 
 
 def zip_output():
     filename = get_file_name_for_backslash(output_dirs_dict['output_movie_dir'])
-    zip_out_path = output_dirs_dict['time_path']
-    os.chdir(zip_out_path)
-    time_path = output_dirs_dict['time_path'].split('/')[-1]
-    date_path = output_dirs_dict['date_path'].split('/')[-1]
-    zip_name = '{}_{}_{}'.format(filename, date_path, time_path)
+    zip_out_path = output_dirs_dict['username_dir']
+    folder_to_compress = output_dirs_dict['time_path']
+    time = output_dirs_dict['time_path'].split('/')[-1]
+    date = output_dirs_dict['date_path'].split('/')[-1]
+    zip_name = '{}_{}_{}.zip'.format(filename, date, time)
+    make_archive(folder_to_compress, zip_out_path, zip_name)
 
-    # zipf = zipfile.ZipFile(zip_name, 'w')
+    # shutil.make_archive(zip_name, 'zip', zip_out_path, folder_to_compress)
+    return zip_out_path + '/{}'.format(zip_name)
 
-    # for folder, subfolders, files in os.walk(zip_out_path):
-    #     for file in files:
-    #         zipf.write(os.path.join(folder, file),
-    #                           os.path.relpath(os.path.join(folder, file), zip_out_path),
-    #                           compress_type=zipfile.ZIP_DEFLATED)
-    #
-    # zipf.close()
-    shutil.make_archive(zip_name, 'zip')
-    os.chdir(get_src_path())
-    return zip_out_path + '/{}.zip'.format(zip_name)
+
+def make_archive(source, destination, zip_name):
+    destination += "/" + zip_name
+    base_name = '.'.join(destination.split('.')[:-1])
+    format = destination.split('.')[-1]
+    root_dir = os.path.dirname(source)
+    base_dir1 = os.path.basename(source.strip(os.sep))
+    shutil.make_archive(base_name, format, root_dir, base_dir1)
 
 
 def delete_generate_dirs():
@@ -137,3 +142,7 @@ def analytical_df_to_csv(df, filename):
 
 def get_frames_dir():
     return output_dirs_dict['frames_path']
+
+
+def get_output_dirs_dict():
+    return output_dirs_dict
