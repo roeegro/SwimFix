@@ -62,36 +62,30 @@ def load_video():
         file = request.files['file']
         if file and allowed_file(file.filename):
             videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
-            print(1)
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
                 video_name = video_path.split('/')[-1]
                 # to create the output dir from the server
                 create_dir_if_not_exists('output')
                 create_dir_if_not_exists('../../server/videos/')
-                print(2)
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.connect((SERVER_IP, SERVER_PORT))
                     msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
                     s.sendall(msg.encode('utf-8'))
                     start_msg = s.recv(1024)  # for 'start' message
-                    print(3)
                     if start_msg.decode('utf-8') != 'start':
                         flash('Failed to upload video file. Please try again', 'failure')
                         return render_template('load-video.html', isAdmin=is_admin())
                     f = open(video_path, 'rb')
-                    print(4)
                     # send the file
                     l = f.read(1024)
                     while l:
                         s.send(l)
-                        print('Sent ' + repr(l))
+                        print("Sending data")
                         l = f.read(1024)
                     f.close()
-            print(5)
-            # upload_file_sql(file.filename.split('.')[0], userID)
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            return previous_feedbacks()
+            return redirect(url_for('previous_feedbacks'))
         else:
             flash('Failed to upload video file. Please try again', 'failure')
     return render_template('load-video.html', isAdmin=is_admin())
