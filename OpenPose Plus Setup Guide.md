@@ -1,5 +1,5 @@
-<center>OpenPose-Plus Setup Guide</center>
-=================================
+# OpenPose-Plus Setup Guide
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
@@ -103,5 +103,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTQ5MDU1MjA4LDEyMDUyMDY1NzZdfQ==
+eyJoaXN0b3J5IjpbLTM4NzA2NjYyOSw1NDkwNTUyMDgsMTIwNT
+IwNjU3Nl19
 -->
