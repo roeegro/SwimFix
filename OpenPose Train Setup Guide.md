@@ -8,9 +8,9 @@
    * [Data Annotation](#step-1---data-annotation)
    * [Data Augmentation](#step-2---data-augmentation)
    * [LMDB File Generation](#step-3---lmdb-file-generation)
-5. [Training](#training)
-6. [Validation](#validation)
-7. [Testing](#testing)
+4. [Training](#training)
+5. [Validation](#validation)
+6. [Testing](#testing)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -159,5 +159,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0MjE4MTQ0MDIsMTc3OTc3Nzg2MV19
+eyJoaXN0b3J5IjpbLTE2NzQ3ODI2ODcsMTc3OTc3Nzg2MV19
 -->
