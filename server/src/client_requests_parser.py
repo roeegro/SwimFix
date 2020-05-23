@@ -74,7 +74,7 @@ def view_feedbacks_list(data, conn, params):
         movie_name = result['NAME']
         [date, time] = str(creation_date).split(' ')[0:2]
         time = time.replace(':', '-')
-        to_add = '{}_{}_{}'.format(movie_name, date, time) + ','
+        to_add = '{}__{}_{}'.format(movie_name, date, time) + ','
         answer += to_add
     print(answer)
     return answer
@@ -91,16 +91,20 @@ def view_graphs(data, conn, params):
     cur.execute("SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {}".format(filename, user_id))
     if res == 0:
         return "Fail"
-    creation_date = cur.fetchone()['CREATION_DATE']
+    res = cur.fetchone()
+    print('res')
+    print(res)
+    creation_date = res['CREATION_DATE']
     [date, time] = str(creation_date).split(' ')[0:2]
     time = time.replace(':', '-')
     creation_date_to_search = date + '/' + time
     path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
     zip_location = '../temp'
     print(
-        'zip location : {} , content in : {} , will be called : {} '.format(zip_location, path_to_search_in, filename))
+        'ZIPING PROCESS : zip location : {} , content in : {} , will be called : {} '.format(zip_location, path_to_search_in, filename))
     make_archive(path_to_search_in, zip_location, filename + ".zip")
     file_path_to_send = zip_location + '/' + filename + ".zip"
+    print('file path to send: {}'.format(file_path_to_send))
     f = open(file_path_to_send, 'rb')
     l = f.read(1024)
     while l:

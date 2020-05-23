@@ -61,6 +61,7 @@ def load_video():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
+            print('full file is {} '.format(file.filename))
             videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
@@ -72,6 +73,7 @@ def load_video():
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.connect((SERVER_IP, SERVER_PORT))
                     msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
+                    print('UPLOAD {} '.format(msg))
                     s.sendall(msg.encode('utf-8'))
                     start_msg = s.recv(1024)  # for 'start' message
                     if start_msg.decode('utf-8') != 'start':
@@ -116,15 +118,17 @@ def previous_feedbacks():
         files_details = data.decode('utf-8')
 
     files_details = files_details.split(',')
-    print(files_details)
+    # print(files_details)
     data_to_pass = list()
     for file_detail in files_details:
         try:
-            splited_file_detail = file_detail.split('_')
+            name_and_date = file_detail.split('__')
+            zip_date = name_and_date[1]
             new_data = dict()
-            new_data['date'] = splited_file_detail[-2] + splited_file_detail[-1]
-            new_data['zip_name'] = file_detail.split('.')[0]  # with no extension
-            new_data['zip'] = file_detail
+            new_data['date'] = zip_date
+            new_data['zip_name'] = name_and_date[0]  # with no extension
+            # new_data['zip'] = file_detail
+            print('new data')
             print(new_data)
             data_to_pass.append(new_data)
         except:
@@ -142,9 +146,11 @@ def previous_feedback(zip_name):
         zip_name_to_send = zip_name.split('.')[0]
         print(zip_name_to_send)
         msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
-        print('msg = {}'.format(msg))
+        print('PREVIOUS FEEDBACK msg = {}'.format(msg))
         s.sendall(msg.encode('utf-8'))
+        
         path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(zip_name)
+        print('path to zip is : {}'.format(path_to_zip))
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
             while data:
