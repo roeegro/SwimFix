@@ -3,7 +3,7 @@ import socket
 from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
-from client.src.models import User
+from functools import reduce
 from test_generator import run
 from . import app, db, bcrypt, SERVER_IP, SERVER_PORT
 
@@ -64,7 +64,8 @@ def load_video():
             videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
-                video_name = video_path.split('/')[-1]
+                print(video_path)
+                video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
                 # to create the output dir from the server
                 create_dir_if_not_exists('output')
                 create_dir_if_not_exists('../../server/videos/')
@@ -85,7 +86,7 @@ def load_video():
                         l = f.read(1024)
                     f.close()
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            return redirect(url_for('previous_feedbacks'))
+            return redirect(url_for('index'))
         else:
             flash('Failed to upload video file. Please try again', 'failure')
     return render_template('load-video.html', isAdmin=is_admin())
@@ -104,30 +105,67 @@ def upload_file_sql(filename, user_id=0):
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks():
-    local_use = True
+    # connect and ask for all list
     user_id = session.get('ID') if session and session.get('logged_in') else 0
-    data_to_pass = get_previous_feedbacks(user_id) if not local_use else get_previous_feedbacks_groiser()  # stab
+    data_recieved = ''
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_feedbacks_list user_id: {}'.format(user_id)
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        files_details = data.decode('utf-8')
+
+    files_details = files_details.split(',')
+    print(files_details)
+    data_to_pass = list()
+    for file_detail in files_details:
+        try:
+            splited_file_detail = file_detail.split('_')
+            new_data = dict()
+            new_data['date'] = splited_file_detail[-2] + splited_file_detail[-1]
+            new_data['zip_name'] = file_detail.split('.')[0]  # with no extension
+            new_data['zip'] = file_detail
+            print(new_data)
+            data_to_pass.append(new_data)
+        except:
+            continue
 
     return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
 
 
 @app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
 def previous_feedback(zip_name):
-    try:
-        csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
-                                         expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
-                                                              'interpolated_all_keypoints'])
-        frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
-        sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
-        frames_paths = sorted(frames_paths, key=sort_lambda)
-        frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
-        first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
-        data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+    user_id = session.get('ID') if session and session.get('logged_in') else 0
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        # s.setblocking(0)  # non blocking
+        s.connect((SERVER_IP, SERVER_PORT))
+        zip_name_to_send = zip_name.split('.')[0]
+        print(zip_name_to_send)
+        msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
+        print('msg = {}'.format(msg))
+        s.sendall(msg.encode('utf-8'))
+        path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(zip_name)
+        with open(path_to_zip, 'wb') as f:
+            data = s.recv(1024)
+            while data:
+                print('getting zip into temp directory ...')
+                f.write(data)
+                data = s.recv(1024)
+            print('finish receiving data')
 
-        return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
-                               isAdmin=is_admin(), first_frame_number=first_frame_num)
-    except:
-        return previous_feedbacks()
+    csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                     expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
+                                                          'interpolated_all_keypoints'])
+
+    frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
+    sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+    frames_paths = sorted(frames_paths, key=sort_lambda)
+    frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+    first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+
+    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
+                           isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
 # Forum
@@ -269,18 +307,6 @@ def login():
     _username = request.form['username']
     _passwd = request.form['password']
 
-    # cur = mysql.connection.cursor()
-    # res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (_username,))
-    #
-    # if res > 0:
-    #     user = cur.fetchone()
-    #
-    #     if bcrypt.check_password_hash(user['PASSWORD_HASH'], _passwd):
-    #         session['ID'] = user['ID']
-    #         session['username'] = user['USERNAME']
-    #         session['logged_in'] = True
-    #         session['isAdmin'] = (user['ISADMIN'] == 1)
-    #         flash(u"You're now logged in!", "info")
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
         msg = 'login username: {} password: {}'.format(_username, _passwd)
@@ -309,21 +335,6 @@ def register():
     _username = form.username.data
     _passwd = request.form['password']
     _email = request.form['email']
-
-
-    # cur = mysql.connection.cursor()
-    # res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (_username, _email))
-    #
-    # if res != 0:
-    #     flash(u"User exists!", "danger")
-    #     return redirect(url_for('panel'))
-    #
-    # passwordHash = bcrypt.generate_password_hash(_passwd).decode('utf-8')
-    # cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
-    #             (_username, _email, passwordHash))
-    #
-    # mysql.connection.commit()
-    # cur.close()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
         msg = 'register username: {} password: {} email: {}'.format(_username, _passwd, _email)

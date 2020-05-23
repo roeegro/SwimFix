@@ -39,7 +39,7 @@ def upload_video_file(upload_folder, file):
 
 def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], expected_file_names=None):
     returned_file_paths = list()
-    relative_zip_dir = '/static/output/'
+    relative_zip_dir = '/static/temp/'
     zip_dir = os.getcwd() + relative_zip_dir
     relative_output_dir = '/static/temp/'
     output_dir = os.getcwd() + relative_output_dir

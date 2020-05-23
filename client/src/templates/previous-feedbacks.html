@@ -14,8 +14,8 @@
                     <thead>
                     <tr>
                         <th>Upload Date</th>
-                        <th>Zip</th>
-                        <th>Page</th>
+<!--                        <th>Zip</th>-->
+                        <th>Charts Page</th>
                     </tr>
                     </thead>
                     <tbody id="previous_feedbacks_tbl_body">
@@ -24,12 +24,18 @@
                     {% for item in data %}
                     <tr>
                         <td>{{ item.date }}</td>
+<!--                        <td>-->
+<!--                            <a href={{ item.zip_name }} download> {{ item.zip_name }}</a>-->
+<!--                        </td>-->
                         <td>
-                            <a href={{ item.zip }} download> {{ item.zip_name }}</a>
+<!--                            <a href="{{url_for('previous_feedback', zip_name = item.zip_name_without_extension)}}"> View-->
+<!--                                graphs</a>-->
+                            <a href="{{url_for('previous_feedback', zip_name = item.zip_name)}}" > Get Graphs for this file </a>
+
                         </td>
-                        <td>
-                            <a href= "{{url_for('previous_feedback', zip_name = item.zip_name_without_extension)}}"> View graphs</a>
-                        </td>
+<!--                        <td>-->
+<!--                            <a href="previous_feedback({{item.date}})"> Get Graphs from server</a>-->
+<!--                        </td>-->
                     </tr>
                     {% endfor %}
                 </table>

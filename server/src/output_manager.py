@@ -26,10 +26,12 @@ def generate_dirs_for_output_of_movie(movName, username='defaultUser'):
     os.chdir(video_name)
     date = datetime.now()
     curr_date = date.strftime('%Y-%m-%d')
+
     if not os.path.exists(curr_date):
         os.mkdir(curr_date)
     os.chdir(curr_date)
-    curr_time = date.strftime('%H-%M-%S-%f')
+    curr_time = date.strftime('%H-%M-%S')
+
     if not os.path.exists(curr_time):
         os.mkdir(curr_time)
     os.chdir(curr_time)
@@ -74,7 +76,7 @@ def zip_output():
 def make_archive(source, destination, zip_name):
     destination += "/" + zip_name
     base_name = '.'.join(destination.split('.')[:-1])
-    format = destination.split('.')[-1]
+    format = zip_name.split('.')[-1]
     root_dir = os.path.dirname(source)
     base_dir1 = os.path.basename(source.strip(os.sep))
     shutil.make_archive(base_name, format, root_dir, base_dir1)
@@ -101,30 +103,6 @@ def get_expected_output_dirs_dict():
     return expected_output_dirs_dict
 
 
-# def get_output_dir(key):
-#     return output_dirs_dict[key]
-#
-#
-# def get_expected_output_dir(key):
-#     return expected_output_dirs_dict[key]
-#
-#
-# def get_output_csv(key, csv_name='all_keypoints.csv'):
-#     return output_dirs_dict[key]['analytical_data_path'] + '/' + csv_name
-#
-#
-# def get_output_figure(key, fig_name):
-#     return output_dirs_dict[key]['figures_path'] + '/' + fig_name
-#
-#
-# def get_expected_output_csv(key, csv_name='all_keypoints.csv'):
-#     return expected_output_dirs_dict[key]['analytical_data_path'] + '/' + csv_name
-#
-#
-# def get_expected_output_figure(key, fig_name):
-#     return expected_output_dirs_dict[key]['figures_path'] + '/' + fig_name
-
-
 def get_analytics_dir():
     return output_dirs_dict['analytical_data_path']
 
@@ -144,5 +122,7 @@ def get_frames_dir():
     return output_dirs_dict['frames_path']
 
 
-def get_output_dirs_dict():
-    return output_dirs_dict
+def get_output_dir_path(key=None):
+    if key is None:
+        return output_dirs_dict
+    return output_dirs_dict[key]

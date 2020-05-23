@@ -1,7 +1,10 @@
+import datetime
+
 import MySQLdb
 import bcrypt
 import MySQLdb.cursors
 import facade
+from output_manager import make_archive
 
 MYSQL_HOST = '65.19.141.67'
 MYSQL_PORT = 3306
@@ -53,8 +56,60 @@ def download(data, conn, params):
     pass
 
 
+def view_feedbacks_list(data, conn, params):
+    print('VIEW_FEEDBACK_LIST')
+    user_id = data[data.index('user_id:') + 1]
+    cur = mysql.cursor()
+    res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+    if res == 0:
+        return "Fail"
+    username = cur.fetchone()['USERNAME']
+
+    cur = mysql.cursor()
+    cur.execute("SELECT * FROM FILES WHERE CREATORID = {}".format(user_id))
+    results = cur.fetchall()
+    answer = ''
+    for result in results:
+        creation_date = result['CREATION_DATE']
+        movie_name = result['NAME']
+        [date, time] = str(creation_date).split(' ')[0:2]
+        time = time.replace(':', '-')
+        to_add = '{}_{}_{}'.format(movie_name, date, time) + ','
+        answer += to_add
+    print(answer)
+    return answer
+
+
 def view_graphs(data, conn, params):
-    pass
+    user_id = data[data.index('user_id:') + 1]
+    filename = data[data.index('filename:') + 1]
+    cur = mysql.cursor()
+    res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+    if res == 0:
+        return "Fail"
+    username = cur.fetchone()['USERNAME']
+    cur.execute("SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {}".format(filename, user_id))
+    if res == 0:
+        return "Fail"
+    creation_date = cur.fetchone()['CREATION_DATE']
+    [date, time] = str(creation_date).split(' ')[0:2]
+    time = time.replace(':', '-')
+    creation_date_to_search = date + '/' + time
+    path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
+    zip_location = '../temp'
+    print(
+        'zip location : {} , content in : {} , will be called : {} '.format(zip_location, path_to_search_in, filename))
+    make_archive(path_to_search_in, zip_location, filename + ".zip")
+    file_path_to_send = zip_location + '/' + filename + ".zip"
+    f = open(file_path_to_send, 'rb')
+    l = f.read(1024)
+    while l:
+        conn.send(l)
+        print('sending zip...')
+        l = f.read(1024)
+    f.close()
+    print('sent all zip')
+    return "success"
 
 
 def view_forum(data, conn, params):
@@ -111,10 +166,15 @@ def upload(data, conn, params):
     facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
     facade.get_average_swimming_period_from_csv(interpolated_keypoints_path)
     zip_path = facade.zip_output()
+    creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
+    creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
+    creation_time = creation_time.replace('-', ':')
+    date_time_as_str = creation_date + " " + creation_time
+    date_time_obj = datetime.datetime.strptime(date_time_as_str, '%Y-%m-%d %H:%M:%S')
     cur.execute('''
-        INSERT INTO FILES(NAME, CREATORID)
-        VALUE (%s, %s)
-        ''', (filename, user_id))
+        INSERT INTO FILES(NAME, CREATORID, CREATION_DATE)
+        VALUE (%s, %s, %s)
+        ''', (filename, user_id, date_time_obj))
     mysql.commit()
     cur.close()
 
@@ -130,7 +190,8 @@ def upload_file_sql(filename, user_id=0):
     return
 
 
-requests_dict = {'login': login, 'register': register, 'download': download, 'view_graphs': view_graphs,
+requests_dict = {'login': login, 'register': register, 'download': download, 'view_feedbacks_list': view_feedbacks_list,
+                 'view_graphs': view_graphs,
                  'view_forum': view_forum,
                  'forum_post': forum_post, 'forum_comment': forum_comment, 'analyze_video': analyze_video,
                  'add_test': add_test, 'run_test': run_test, 'upload': upload}
@@ -139,6 +200,7 @@ requests_dict = {'login': login, 'register': register, 'download': download, 'vi
 def main_parser(data, conn, params):
     data = data.decode('utf-8')
     data_lst = (data.split(' '))
+    print('request type: {}'.format(data_lst[0]))
     print('decoded data :')
     print(data)
     return (requests_dict[data_lst[0]])(data_lst[1:], conn, params)
