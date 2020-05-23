@@ -4,12 +4,12 @@
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
 3. [Custom Model Training](#custom-model-training)
-	- [Training Configuration](#training-configuration)
-	- [Additional steps for training on Windows](#additional-steps-for-training-on-windows)
-4. [Our Training Recap](#our-training-recap)
-	- [Our Configuration](#configuration)
-	- [Our Data](#our-data)
-	- [Our Results](#our-results)
+   * [Training Configuration](#training-configuration)
+   * [Additional steps for training on Windows](#additional-steps-for-training-on-windows)
+5. [Our Training Recap](#our-training-recap)
+   * [Our Configuration](#configuration)
+   * [Our Data](#our-data)
+   *  [Our Results](#our-results)
 ## Introduction
 This is a complete guide for setting up the [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) which is another pose-estimataion library we experienced with in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we used a forked version of the original library which you can find [here](https://github.com/bela127/openpose-plus).
@@ -103,5 +103,5 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIwNTIwNjU3Nl19
+eyJoaXN0b3J5IjpbNTQ5MDU1MjA4LDEyMDUyMDY1NzZdfQ==
 -->
