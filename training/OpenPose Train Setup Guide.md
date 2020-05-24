@@ -71,7 +71,7 @@ By default, the script performs this operations on the `custom.json` annotations
 - Deletes redundant fields from the json structure
 - Removes annotations with no keypoints/no segmentation,
 - Removes unannotated data (After filters some annotations in the previous operation)
-- Performs reindexing of the data so that the new indexes ranges from 1 to N
+- Performs reindexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
 ### Step 3 - Data Augmentation
 For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
 Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
@@ -172,5 +172,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4OTI5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbMTM1NjMyNTQxMiwtMTg5MjkzNjY5NF19
 -->
