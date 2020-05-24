@@ -35,6 +35,17 @@ pip3 install pycocotools
 The default model is VGG19 used in the OpenPose paper.
 To customize the model, simply changing it in `models.py`.
 
+### Custom Data
+In case you wish to train a model on your own data you need to create 
+For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`
+
+1. Use the above annotator in order to annotate your data in the correct format.<br>Please check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
+2.  Export the annotated data to a JSON file in a [COCO Format](http://cocodataset.org/#format-data) to `dataset/COCO/cocoapi/annotations/` folder and name it `person_keypoints_custom.json` .
+3. Copy the [dataset folder](#step-0---data-import) from step 0 to `dataset/COCO/cocoapi/images/` folder.
+
+At the end of this step you should have:
+- An annotations JSON file located in `dataset/COCO/cocoapi/annotations/person_keypoints_custom.json`
+- A [dataset folder](#step-0---data-import) with the raw images located in `dataset/COCO/cocoapi/images/custom`
 ### Training Configuration
 You can use `train_config.py` to configure the training. `config.DATA.train_data` can be:
 * `coco`: training data is COCO dataset only (original default)
@@ -103,6 +114,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM4NzA2NjYyOSw1NDkwNTUyMDgsMTIwNT
-IwNjU3Nl19
+eyJoaXN0b3J5IjpbLTE1MDQxNDE1NzksLTM4NzA2NjYyOSw1ND
+kwNTUyMDgsMTIwNTIwNjU3Nl19
 -->
