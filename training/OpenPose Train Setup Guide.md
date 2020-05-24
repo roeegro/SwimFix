@@ -65,13 +65,13 @@ At the end of this step you should have:
 ### Step 2 - Data Filtering and Reindexing
 In this section we will filter out some data and update the coressponding annotations json file accordingly.
 
-Go to the [utils] (https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `json_ops.py`
+Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `json_ops.py`
 
 By default, the script performs this operations on the `custom.json` annotations file in the following order:
-- Deletes redundant fields from the json structure
-- Removes annotations with no keypoints/no segmentation,
-- Removes unannotated data (After filters some annotations in the previous operation)
-- Performs reindexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
+- Deletes redundant fields from the json structure.
+- Removes annotations with no keypoints/no segmentation (i.e. area=0).
+- Removes unannotated images (After filters some annotations in the previous operation).
+- Performs reindexing of the data so that the new indexes range from 1 to N where N is the number of images.
 ### Step 3 - Data Augmentation
 For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
 Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
@@ -172,5 +172,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM1NjMyNTQxMiwtMTg5MjkzNjY5NF19
+eyJoaXN0b3J5IjpbNDk4NjQwNDE4LC0xODkyOTM2Njk0XX0=
 -->
