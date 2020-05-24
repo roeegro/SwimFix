@@ -41,15 +41,13 @@ In case you wish to train a model on your own data you need to create an annotat
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`.
  We recommend you to use it as well - you can check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
 
-Follow this steps:
-
 1. Use the above annotator (or any other annotator) in order to annotate your data in the correct format.
 2.  Export the annotated data to a JSON file in a  to `data/your_data/` folder and name it `coco.json` .
 3. Copy your data to a new folder in `data/your_data` and name it `images`.
 
 At the end of this step you should have:
-- An annotations JSON file located in `dataset/COCO/cocoapi/annotations/person_keypoints_custom.json`
-- A [dataset folder](#step-0---data-import) with the raw images located in `dataset/COCO/cocoapi/images/custom`
+- An annotations JSON file located in `data/your_data/coco.json`
+- A dataset folder with the raw images located in `data/your_data/images`
 ### Training Configuration
 You can use `train_config.py` to configure the training. `config.DATA.train_data` can be:
 * `coco`: training data is COCO dataset only (original default)
@@ -118,6 +116,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyODYxNDI2NDcsLTM4NzA2NjYyOSw1ND
-kwNTUyMDgsMTIwNTIwNjU3Nl19
+eyJoaXN0b3J5IjpbLTUwMzk1MDkzMCwtMzg3MDY2NjI5LDU0OT
+A1NTIwOCwxMjA1MjA2NTc2XX0=
 -->
