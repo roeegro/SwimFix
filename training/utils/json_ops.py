@@ -6,7 +6,7 @@ import os
 # We assume the openpose training and cooc-annotator repositories
 # are located at the same level with the client, server, utils dirs
 openpose_train_path = "../openpose_train/"
-annotator_path = "../coco-annotator/"
+annotator_path = "../../coco-annotator/"
 coco_skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10], [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
 
 '''
@@ -87,20 +87,19 @@ def copy_rename_img(img, dst_path):
 
 
 if __name__ == '__main__':
+
     openpose_train_annots_path = openpose_train_path + "dataset/COCO/cocoapi/annotations/"
-    openpose_train_raziel_dataset_path = openpose_train_path + "dataset/COCO/cocoapi/images/coco"
-    if not os.path.exists(openpose_train_raziel_dataset_path):
-        os.mkdir(openpose_train_raziel_dataset_path)
+    openpose_train_custom_dataset_path = openpose_train_path + "dataset/COCO/cocoapi/images/custom"
+    if not os.path.exists(openpose_train_custom_dataset_path):
+        os.mkdir(openpose_train_custom_dataset_path)
 
-    # annotator_dataset_path = openpose_train_path + "datasets/Raziel Dataset"
-
-    filtered_json_path = openpose_train_annots_path + "person_keypoints_raziel.json"
-    filter_json(openpose_train_annots_path + "Raziel Dataset.json",
+    filtered_json_path = openpose_train_annots_path + "person_keypoints_custom.json"
+    filter_json(openpose_train_annots_path + "custom.json",
                 ['height', 'width', 'id', 'path', 'image_id', 'segmentation', 'bbox', 'keypoints',
                  "annotated", "file_name", "num_keypoints", "area", "iscrowd", "category_id"],
                 filtered_json_path)
     #
-    add_imgs_to_train_dataset(filtered_json_path, openpose_train_raziel_dataset_path)
+    add_imgs_to_train_dataset(filtered_json_path, openpose_train_custom_dataset_path)
 
     json_field_len(filtered_json_path, "images")
     json_field_len(filtered_json_path, "annotations")
