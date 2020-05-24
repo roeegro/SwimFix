@@ -42,7 +42,7 @@ In case you wish to train a model on your own data you need to create an annotat
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`.
  We recommend you to use it as well - you can check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
 
-1. Use the above annotator (or any other annotator) in order to annotate your data in the correct format.
+1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
 2. Export the annotated data as `coco.json` to `data/your_data/` folder.
 3. Copy your data to a new folder in `data/your_data` and name it `images`.
 
@@ -115,6 +115,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 ```
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMjQzNDA3NzYsLTM4NzA2NjYyOSw1ND
-kwNTUyMDgsMTIwNTIwNjU3Nl19
+eyJoaXN0b3J5IjpbLTk4Mjc4NDgzNywtMTIyNDM0MDc3NiwtMz
+g3MDY2NjI5LDU0OTA1NTIwOCwxMjA1MjA2NTc2XX0=
 -->
