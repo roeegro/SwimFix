@@ -55,7 +55,7 @@ For annotating our data we used the [coco-annotator](https://github.com/jsbroks/
  We recommend you to use it as well - you can check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
-2.  Export the annotations to a JSON file in a to `dataset/COCO/cocoapi/annotations/` folder and name it ` .
+2.  Export the annotations file as `person_keypoints_custom.json` to the `dataset/COCO/cocoapi/annotations/` folder.
 3. Copy the [dataset folder](#step-0---data-import) from step 0 to `dataset/COCO/cocoapi/images/` folder.
 
 At the end of this step you should have:
@@ -160,6 +160,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ0NDU3NDI5NiwtOTUwNjc4NjAzLC0xNj
-c0NzgyNjg3LDE3Nzk3Nzc4NjFdfQ==
+eyJoaXN0b3J5IjpbNTg0MjM1MDY2LC05NTA2Nzg2MDMsLTE2Nz
+Q3ODI2ODcsMTc3OTc3Nzg2MV19
 -->
