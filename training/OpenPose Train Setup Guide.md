@@ -90,7 +90,7 @@ By the end of this step you should have a `coco_negatives.json` and `custom.json
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
 - To generate the lmdb file, run  `python c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
-- We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly. Just run it and it should print the dimension of your data.
+- We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
 By the end of this step you should have `lmdb_coco` and `lmdb_background` folders in the `dataset` folder, each consists of `data.mdb` and `lock.mdb` files which represents the training data that contains at least one person and zero persons respectivly, as a LMDB file.
 
@@ -116,5 +116,6 @@ In this section we will walk through the training process, assuming you followed
 
 ## Testing
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
+eyJoaXN0b3J5IjpbNTI1NTMxNzk2LC0zMTExNDAxMTUsLTE4OT
+I5MzY2OTRdfQ==
 -->
