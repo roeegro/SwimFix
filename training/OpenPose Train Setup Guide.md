@@ -6,8 +6,9 @@
 3. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
    * [Data Import](#step-0---data-import)
    * [Data Annotation](#step-1---data-annotation)
-   * [Data Augmentation](#step-2---data-augmentation)
-   * [LMDB File Generation](#step-3---lmdb-file-generation)
+   * [Data Filtering and Reindexing](#step-2---data-filtering-and-reindexing)
+   * [Data Augmentation](#step-3---data-augmentation)
+   * [LMDB File Generation](#step-4---lmdb-file-generation)
 4. [Training](#training)
 5. [Validation](#validation)
 6. [Testing](#testing)
@@ -69,9 +70,9 @@ Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/trainin
 
 By default, the script performs this operations on the `custom.json` annotations file in the following order:
 - Deletes redundant fields from the json structure.
-- Removes annotations with no keypoints/no segmentation (i.e. area=0).
-- Removes unannotated images (After filters some annotations in the previous operation).
-- Performs reindexing of the data so that the new indexes range from 1 to N where N is the number of images.
+- Removes annotations with no keypoints/no segmentation, (i.e. area=0).
+- Removes unannotated images
+- Performs reindexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
 ### Step 3 - Data Augmentation
 For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
 Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
@@ -172,5 +173,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDk4NjQwNDE4LC0xODkyOTM2Njk0XX0=
+eyJoaXN0b3J5IjpbMTk0Njc1NTc4MiwtMTg5MjkzNjY5NF19
 -->
