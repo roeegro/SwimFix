@@ -109,14 +109,12 @@ After our first optimization, we achieved 50FPS(float32) on 1070Ti.
 We also have a Python binding for the engine. The current binding relies on
 the external tf-pose-estimation project. We are working on providing the Python binding for our high-performance
 C++ implementation. For now, to enable the binding, please build C++ library for post processing by:
-
 ```bash
 ./scripts/install-pafprocess.sh
 # swig is required. Run `conda install -c anaconda swig` to install swig.
 ```
-
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTcwNDIwNjM5NiwtMzg3MDY2NjI5LDU0OT
-A1NTIwOCwxMjA1MjA2NTc2XX0=
+eyJoaXN0b3J5IjpbLTEyMjQzNDA3NzYsLTM4NzA2NjYyOSw1ND
+kwNTUyMDgsMTIwNTIwNjU3Nl19
 -->
