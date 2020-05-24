@@ -4,10 +4,11 @@
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
 3. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
-   * [Data Import](#step-0---data-import)
+   * [Initialization](#step-0---initialization)
    * [Data Annotation](#step-1---data-annotation)
-   * [Data Augmentation](#step-2---data-augmentation)
-   * [LMDB File Generation](#step-3---lmdb-file-generation)
+   * [Data Filtering and Reindexing](#step-2---data-filtering-and-reindexing)
+   * [Data Augmentation](#step-3---data-augmentation)
+   * [LMDB File Generation](#step-4---lmdb-file-generation)
 4. [Training](#training)
 5. [Validation](#validation)
 6. [Testing](#testing)
@@ -47,7 +48,7 @@ In this section we will explain how we annotated our own custom data and geneter
 >
 >In case you are are using Ubuntu you may not need a Docker for the annotation and Matlab for the augmentation.
 
-### Step 0 - Data import
+### Step 0 - Initialization
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
 
 ### Step 1 - Data Annotation
@@ -62,22 +63,34 @@ At the end of this step you should have:
 - An annotations JSON file located in `dataset/COCO/cocoapi/annotations/person_keypoints_custom.json`
 - A [dataset folder](#step-0---data-import) with the raw images located in `dataset/COCO/cocoapi/images/custom`
 
-### Step 2 - Data Augmentation
+### Step 2 - Data Filtering and Reindexing
+In this section we will filter out some data and update the coressponding annotations json file accordingly.
+
+Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `json_ops.py`
+
+By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs this operations on the `custom.json` annotations file in the following order:
+- Deletes redundant fields from the json structure.
+- Removes annotations with no keypoints/no segmentation, (i.e. area=0).
+- Removes unannotated images
+- Performs reindexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
+### Step 3 - Data Augmentation
 For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
-Before running anything, make sure you have the `common` folder (which is located in the `training` folder) in the Matlab path.
-1. Place the [dataset folder](#step-0---data-import) in the `dataset/COCO/cocoapi/images/`  folder if you havn't done so yet.
-2.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the LMDB with the images with no people on them.
-3.  Run  `a2_coco_jsonToMat.m`  in Matlab to convert the annotation format from json to mat in  `dataset/COCO/mat/`.
-4.  Run  `a3_coco_matToMasks.m`  in Matlab to obatin the mask images for unlabeled person. You can use 'parfor' in Matlab to speed up the code.
-5.  Run  `a4_coco_matToRefinedJson.m`  to generate a json file in  `dataset/COCO/json/`  directory. The json files contain raw informations needed for training.
+Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
+
+Before running anything, make sure you have the `common` and `private` folders (which is located in the `training` folder) in the Matlab path.
+Do expect for some errors regarding paths in to `cocoapi` 
+1.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the LMDB with the images with no people on them.
+2.  Run  `a2_coco_jsonToMat.m`  in Matlab to convert the annotation format from json to mat in  `dataset/COCO/mat/`.
+3.  Run  `a3_coco_matToMasks.m`  in Matlab to obatin the mask images for unlabeled person. You can use 'parfor' in Matlab to speed up the code.
+4.  Run  `a4_coco_matToRefinedJson.m`  to generate a json file in  `dataset/COCO/json/`  directory. The json files contain raw informations needed for training.
 
 By the end of this step you should have a `coco_negatives.json` and `custom.json` files in the `dataset/COCO/json/` directory
 
-### Step 3 - LMDB File Generation
+### Step 4 - LMDB File Generation
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
 - To generate the lmdb file, run  `python c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
-- We created a modified LMDB reader Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly. It is located in the `SwimmingProject\utils` folder under the name `lmdb_reader.py`
+- We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly. Just run it and it should print the dimension of your data.
 
 By the end of this step you should have `lmdb_coco` and `lmdb_background` folders in the `dataset` folder, each consists of `data.mdb` and `lock.mdb` files which represents the training data that contains at least one person and zero persons respectivly, as a LMDB file.
 
@@ -102,64 +115,6 @@ In this section we will walk through the training process, assuming you followed
 ## Validation
 
 ## Testing
-
-# Markdown extensions
-
-StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
-
-> **ProTip:** You can disable any **Markdown extension** in the **File properties** dialog.
-
-
-## SmartyPants
-
-SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
-
-|                |ASCII                          |HTML                         |
-|----------------|-------------------------------|-----------------------------|
-|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
-|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
-|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
-
-
-## KaTeX
-
-You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
-
-
-## UML diagrams
-
-You can render UML diagrams using [Mermaid](https://mermaidjs.github.io/). For example, this will produce a sequence diagram:
-
-```mermaid
-sequenceDiagram
-Alice ->> Bob: Hello Bob, how are you?
-Bob-->>John: How about you John?
-Bob--x Alice: I am good thanks!
-Bob-x John: I am good thanks!
-Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
-
-Bob-->Alice: Checking with John...
-Alice->John: Yes... John, how are you?
-```
-
-And this will produce a flow chart:
-
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
-```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTg0MjM1MDY2LC05NTA2Nzg2MDMsLTE2Nz
-Q3ODI2ODcsMTc3OTc3Nzg2MV19
+eyJoaXN0b3J5IjpbLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->

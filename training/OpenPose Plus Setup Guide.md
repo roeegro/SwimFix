@@ -115,6 +115,5 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 ```
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk4Mjc4NDgzNywtMTIyNDM0MDc3NiwtMz
-g3MDY2NjI5LDU0OTA1NTIwOCwxMjA1MjA2NTc2XX0=
+eyJoaXN0b3J5IjpbLTk4Mjc4NDgzN119
 -->
