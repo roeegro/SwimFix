@@ -4,9 +4,10 @@
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
 3. [Custom Model Training](#custom-model-training)
+   * [Custom Data](#custom-data)
    * [Training Configuration](#training-configuration)
    * [Additional steps for training on Windows](#additional-steps-for-training-on-windows)
-5. [Our Training Recap](#our-training-recap)
+4. [Our Training Recap](#our-training-recap)
    * [Our Configuration](#configuration)
    * [Our Data](#our-data)
    *  [Our Results](#our-results)
@@ -36,7 +37,7 @@ The default model is VGG19 used in the OpenPose paper.
 To customize the model, simply changing it in `models.py`.
 
 ### Custom Data
-In case you wish to train a model on your own data you need to create an annotation file in JSON format for that data. Make sure to annotate in the [COCO Format](http://cocodataset.org/#format-data).
+In case you wish to train a model on your own data you need to create an annotation file in [COCO Format](http://cocodataset.org/#format-data).
 
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`.
  We recommend you to use it as well - you can check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
@@ -116,6 +117,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUwMzk1MDkzMCwtMzg3MDY2NjI5LDU0OT
+eyJoaXN0b3J5IjpbMTkwMjA1NDE0MSwtMzg3MDY2NjI5LDU0OT
 A1NTIwOCwxMjA1MjA2NTc2XX0=
 -->
