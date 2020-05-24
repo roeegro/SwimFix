@@ -38,7 +38,7 @@ To customize the model, simply changing it in `models.py`.
 ### Custom Data
 In case you wish to train a model on your own data you need to create an annotation file in JSON format for that data. Make sure to annotate in the [COCO Format](http://cocodataset.org/#format-data).
 
-For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`. We recommend you to use it as well. In case you please check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
+For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`. We recommend you to use it as well. Please check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the correct format.
 2.  Export the annotated data to a JSON file in a  to `data/your_data/` folder and name it `coco.json` .
@@ -115,6 +115,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ0MDc0MzgzNSwtMzg3MDY2NjI5LDU0OT
+eyJoaXN0b3J5IjpbMTEwNzYwMTg1MSwtMzg3MDY2NjI5LDU0OT
 A1NTIwOCwxMjA1MjA2NTc2XX0=
 -->
