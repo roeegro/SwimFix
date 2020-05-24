@@ -4,7 +4,7 @@
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
 3. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
-   * [Data Import](#step-0---data-import)
+   * [Initialization](#step-0---initialization)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-reindexing)
    * [Data Augmentation](#step-3---data-augmentation)
@@ -90,7 +90,7 @@ By the end of this step you should have a `coco_negatives.json` and `custom.json
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
 - To generate the lmdb file, run  `python c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
-- We created a modified LMDB reader Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly. It is located in the `SwimmingProject\utils` folder under the name `lmdb_reader.py`
+- We created a modified LMDB reader Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly. It is located in the  [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils)  folder under the name `lmdb_reader.py`
 
 By the end of this step you should have `lmdb_coco` and `lmdb_background` folders in the `dataset` folder, each consists of `data.mdb` and `lock.mdb` files which represents the training data that contains at least one person and zero persons respectivly, as a LMDB file.
 
@@ -173,5 +173,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk0Njc1NTc4MiwtMTg5MjkzNjY5NF19
+eyJoaXN0b3J5IjpbLTIxNzY2Mzc2MSwtMTg5MjkzNjY5NF19
 -->
