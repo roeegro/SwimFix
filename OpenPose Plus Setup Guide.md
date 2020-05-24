@@ -36,11 +36,11 @@ The default model is VGG19 used in the OpenPose paper.
 To customize the model, simply changing it in `models.py`.
 
 ### Custom Data
-In case you wish to train a model on your own data you need to create an annotation file in JSON format for that data.
+In case you wish to train a model on your own data you need to create an annotation file in JSON format for that data. Make sure to annotate in the [COCO Format](http://cocodataset.org/#format-data).
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`
 
 1. Use the above annotator in order to annotate your data in the correct format.<br>Please check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
-2.  Export the annotated data to a JSON file in a [COCO Format](http://cocodataset.org/#format-data) to `dataset/COCO/cocoapi/annotations/` folder and name it `person_keypoints_custom.json` .
+2.  Export the annotated data to a JSON file in a  to `data/your_data/` folder and name it `person_keypoints_custom.json` .
 3. Copy the [dataset folder](#step-0---data-import) from step 0 to `dataset/COCO/cocoapi/images/` folder.
 
 At the end of this step you should have:
@@ -114,6 +114,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5OTQ3MzYxMTUsLTM4NzA2NjYyOSw1ND
-kwNTUyMDgsMTIwNTIwNjU3Nl19
+eyJoaXN0b3J5IjpbLTM5MDk3NDM1OSwtMzg3MDY2NjI5LDU0OT
+A1NTIwOCwxMjA1MjA2NTc2XX0=
 -->
