@@ -47,7 +47,7 @@ In this section we will explain how we annotated our own custom data and geneter
 >
 >In case you are are using Ubuntu you may not need a Docker for the annotation and Matlab for the augmentation.
 
-### Step 0 - Data import
+### Step 0 - Initialization
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
 
 ### Step 1 - Data Annotation
@@ -62,18 +62,30 @@ At the end of this step you should have:
 - An annotations JSON file located in `dataset/COCO/cocoapi/annotations/person_keypoints_custom.json`
 - A [dataset folder](#step-0---data-import) with the raw images located in `dataset/COCO/cocoapi/images/custom`
 
-### Step 2 - Data Augmentation
+### Step 2 - Data Filtering and Reindexing
+In this section we will filter out some data and update the coressponding annotations json file accordingly.
+
+Go to the [utils] (https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `json_ops.py`
+
+By default, the script performs this operations on the `custom.json` annotations file in the following order:
+- Deletes redundant fields from the json structure
+- Removes annotations with no keypoints/no segmentation,
+- Removes unannotated data (After filters some annotations in the previous operation)
+- Performs reindexing of the data so that the new indexes ranges from 1 to N
+### Step 3 - Data Augmentation
 For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
-Before running anything, make sure you have the `common` folder (which is located in the `training` folder) in the Matlab path.
-1. Place the [dataset folder](#step-0---data-import) in the `dataset/COCO/cocoapi/images/`  folder if you havn't done so yet.
-2.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the LMDB with the images with no people on them.
-3.  Run  `a2_coco_jsonToMat.m`  in Matlab to convert the annotation format from json to mat in  `dataset/COCO/mat/`.
-4.  Run  `a3_coco_matToMasks.m`  in Matlab to obatin the mask images for unlabeled person. You can use 'parfor' in Matlab to speed up the code.
-5.  Run  `a4_coco_matToRefinedJson.m`  to generate a json file in  `dataset/COCO/json/`  directory. The json files contain raw informations needed for training.
+Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
+
+Before running anything, make sure you have the `common` and `private` folders (which is located in the `training` folder) in the Matlab path.
+Do expect for some errors regarding paths in to `cocoapi` 
+1.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the LMDB with the images with no people on them.
+2.  Run  `a2_coco_jsonToMat.m`  in Matlab to convert the annotation format from json to mat in  `dataset/COCO/mat/`.
+3.  Run  `a3_coco_matToMasks.m`  in Matlab to obatin the mask images for unlabeled person. You can use 'parfor' in Matlab to speed up the code.
+4.  Run  `a4_coco_matToRefinedJson.m`  to generate a json file in  `dataset/COCO/json/`  directory. The json files contain raw informations needed for training.
 
 By the end of this step you should have a `coco_negatives.json` and `custom.json` files in the `dataset/COCO/json/` directory
 
-### Step 3 - LMDB File Generation
+### Step 4 - LMDB File Generation
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
 - To generate the lmdb file, run  `python c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
@@ -160,6 +172,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTg0MjM1MDY2LC05NTA2Nzg2MDMsLTE2Nz
-Q3ODI2ODcsMTc3OTc3Nzg2MV19
+eyJoaXN0b3J5IjpbLTE4OTI5MzY2OTRdfQ==
 -->
