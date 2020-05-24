@@ -36,7 +36,7 @@ The default model is VGG19 used in the OpenPose paper.
 To customize the model, simply changing it in `models.py`.
 
 ### Custom Data
-In case you wish to train a model on your own data you need to create 
+In case you wish to train a model on your own data you need to create an annotation file in JSON format for that data.
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`
 
 1. Use the above annotator in order to annotate your data in the correct format.<br>Please check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
@@ -114,6 +114,6 @@ C++ implementation. For now, to enable the binding, please build C++ library for
 
 See [tf-pose](https://github.com/ildoonet/tf-pose-estimation/tree/master/tf_pose/pafprocess) for details.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1MDQxNDE1NzksLTM4NzA2NjYyOSw1ND
+eyJoaXN0b3J5IjpbLTE5OTQ3MzYxMTUsLTM4NzA2NjYyOSw1ND
 kwNTUyMDgsMTIwNTIwNjU3Nl19
 -->
