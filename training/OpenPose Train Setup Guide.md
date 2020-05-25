@@ -128,7 +128,9 @@ In this section we will walk through the training process, assuming you followed
 	   We recommend you to stick with the default setup as this one worked for us.
 3) Pre-trained weights setup:
 	- Create a new directory `dataset/vgg/`
-	- Go to  [VGG-19 model](https://gist.github.com/ksimonyan/3785162f95cd2d5fee77)  and download the [caffemodel](http://www.robots.ox.ac.uk/~vgg/software/very_deep/caffe/VGG_ILSVRC_19_layers.caffemodel) into  `dataset/vgg/`  as  `dataset/vgg/VGG_ILSVRC_19_layers.caffemodel` and   from [https://gist.github.com/ksimonyan/3785162f95cd2d5fee77#file-vgg_ilsvrc_19_layers_deploy-prototxt](https://gist.github.com/ksimonyan/3785162f95cd2d5fee77#file-vgg_ilsvrc_19_layers_deploy-prototxt) 
+	- Download into `dataset/vgg/` the [caffemodel](http://www.robots.ox.ac.uk/~vgg/software/very_deep/caffe/VGG_ILSVRC_19_layers.caffemodel)   as  `dataset/vgg/VGG_ILSVRC_19_layers.caffemodel` and the [prototxt](https://gist.githubusercontent.com/ksimonyan/3785162f95cd2d5fee77/raw/f43eeefc869d646b449aa6ce66f87bf987a1c9b5/VGG_ILSVRC_19_layers_deploy.prototxt)
+
+Go to  [VGG-19 model](https://gist.github.com/ksimonyan/3785162f95cd2d5fee77)  and d
 
 [https://gist.githubusercontent.com/ksimonyan/3785162f95cd2d5fee77/raw/f43eeefc869d646b449aa6ce66f87bf987a1c9b5/VGG_ILSVRC_19_layers_deploy.prototxt](https://gist.githubusercontent.com/ksimonyan/3785162f95cd2d5fee77/raw/f43eeefc869d646b449aa6ce66f87bf987a1c9b5/VGG_ILSVRC_19_layers_deploy.prototxt)
 as `dataset/vgg/vgg_deploy.prototxt`. The first 10 layers are used as backbone.
@@ -160,7 +162,7 @@ as `dataset/vgg/vgg_deploy.prototxt`. The first 10 layers are used as backbone.
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMxNDA0NDc5NywtMzU3MTUxMjE2LC0xOD
+eyJoaXN0b3J5IjpbLTUwMTU1NzM0NywtMzU3MTUxMjE2LC0xOD
 E0Njg0NzQyLDUyNTUzMTc5NiwtMzExMTQwMTE1LC0xODkyOTM2
 Njk0XX0=
 -->
