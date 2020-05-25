@@ -37,7 +37,9 @@ Make sure you have those and before continuing:
         - Ubuntu 18 ([**cuDNN 7.5**](https://developer.nvidia.com/cudnn)): Download and install it from the [Nvidia website](https://developer.nvidia.com/cudnn).
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
-- All the required git repositories must be cloned in the root folder. Please clone those by running `clone_training_repos.bat` or `clone_training_repos.sh`  from the command line/terminal.
+- All the required git repositories must be cloned in the root folder. Please clone those by running `clone_training_repos.bat` or `clone_training_repos.sh`  from the command line/terminal. The relevant ones for our guide are:
+			- OpenPose Train
+			- 
 - Python 3.6
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
@@ -136,6 +138,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDQ0NjE3MjkyLC0xODE0Njg0NzQyLDUyNT
-UzMTc5NiwtMzExMTQwMTE1LC0xODkyOTM2Njk0XX0=
+eyJoaXN0b3J5IjpbMTI0OTYwNzcxMSwtMTgxNDY4NDc0Miw1Mj
+U1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
