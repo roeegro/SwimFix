@@ -120,12 +120,22 @@ In this section we will walk through the training process, assuming you followed
 ## Our results
 
 ## Known issues
-|Error					|Reason								    |Solution Link
+|Error					|Reason								 |Solution Link
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
 |`"Isn't this fun?"`            |"Isn't this fun?"            |
 |Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, -
+
+
+
+
+```markdown
+| fffff      |                       |           |
+|------------|-----------------------|-----------|
+| `ImportError: dynamic module does not define module export function (PyInit__caffe)`  | sfdffsfffffffffffffff | sdfsfsdsf |
+| sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
+```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQwNDk3Mjg4MSw1MjU1MzE3OTYsLTMxMT
-E0MDExNSwtMTg5MjkzNjY5NF19
+eyJoaXN0b3J5IjpbLTE4MTQ2ODQ3NDIsNTI1NTMxNzk2LC0zMT
+ExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
 -->
