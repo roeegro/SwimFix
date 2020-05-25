@@ -120,8 +120,12 @@ In this section we will walk through the training process, assuming you followed
 ## Our results
 
 ## Known issues
-
+|Error							 | Solution|
+|-------------------------------|-----------------------------|
+`ImportError: dynamic module does not define module export function (PyInit__caffe)`            |'Isn't this fun?'            |
+|`"Isn't this fun?"`            |"Isn't this fun?"            |
+|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, -
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MDk3NDgxNzcsNTI1NTMxNzk2LC0zMT
+eyJoaXN0b3J5IjpbLTE5OTU5Njk2MDgsNTI1NTMxNzk2LC0zMT
 ExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
 -->
