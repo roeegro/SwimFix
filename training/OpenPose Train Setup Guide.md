@@ -46,9 +46,9 @@ start clone_training_repos.bat [Windows]
 sh clone_training_repos.sh [Linux]
 ```
 The relevant ones for our guide are:
-- [OpenPose Train](https://github.com/tommarz/openpose_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository with a few changes and fixes we made for our own model training with custom data.
-- [OpenPose Caffe Train](https://github.com/tommarz/openpose_caffe_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train) repository with a few changes we made for our machine.
-- 
+- [openpose_train](https://github.com/tommarz/openpose_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository with a few changes and fixes we made for our own model training with custom data.
+- [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train) repository with a few changes we made for our machine. This library is used by the library above to run a modified caffe 
+- [coco-annotator](https://github.com/jsbroks/coco-annotator)
 
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
@@ -149,6 +149,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzUxNTUxMzEyLC0xODE0Njg0NzQyLDUyNT
-UzMTc5NiwtMzExMTQwMTE1LC0xODkyOTM2Njk0XX0=
+eyJoaXN0b3J5IjpbMTYwMTY3NzkzMiwtMTgxNDY4NDc0Miw1Mj
+U1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
