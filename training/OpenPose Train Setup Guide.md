@@ -49,7 +49,7 @@ The cloned repositories are:
 - [openpose_train](https://github.com/tommarz/openpose_train) - The main training library.
 - [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) - Used by the main `openopose_train` library for the training of the model on the NVIDIA GPU.
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) - The annotation tool for our data.
-- [](https://github.com/tommarz/openpose-plus)
+- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library which is not used in this guide. If you wish to use it, please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide,
 
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
@@ -150,6 +150,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTY3MzkwMTMwLC0xODE0Njg0NzQyLDUyNT
+eyJoaXN0b3J5IjpbMjcxNzU0NzUyLC0xODE0Njg0NzQyLDUyNT
 UzMTc5NiwtMzExMTQwMTE1LC0xODkyOTM2Njk0XX0=
 -->
