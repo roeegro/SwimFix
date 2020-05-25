@@ -50,6 +50,8 @@ In this section we will explain how we annotated our own custom data and geneter
 >
 >In case you are are using Ubuntu you may not need a Docker for the annotation and Matlab for the augmentation.
 
+
+
 ### Step 0 - Initialization
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
 
@@ -138,6 +140,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY3Nzk5MTkxMCwtMTgxNDY4NDc0Miw1Mj
+eyJoaXN0b3J5IjpbLTE2NTQzMjMxMCwtMTgxNDY4NDc0Miw1Mj
 U1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
