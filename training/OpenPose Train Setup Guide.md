@@ -37,16 +37,19 @@ Make sure you have those and before continuing:
         - Ubuntu 18 ([**cuDNN 7.5**](https://developer.nvidia.com/cudnn)): Download and install it from the [Nvidia website](https://developer.nvidia.com/cudnn).
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
-- Clone the required git repositories:
+-  Python 3.6
+## External Repositores
+
+Clone the required git repositories:
 ```
 cd training
 start clone_training_repos.bat [Windows]
 sh clone_training_repos.sh [Linux]
 ```
-- The relevant ones for our guide are:
-	* [OpenPose Train](https://github.com/tommarz/openpose_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository with a few changes and fixes we made for our own model training with custom data.
-	* [OpenPose Caffe Train](https://github.com/tommarz/openpose_caffe_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train) repository with a few changes we made for our machine.
-- Python 3.6
+The relevant ones for our guide are:
+- [OpenPose Train](https://github.com/tommarz/openpose_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository with a few changes and fixes we made for our own model training with custom data.
+- [OpenPose Caffe Train](https://github.com/tommarz/openpose_caffe_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train) repository with a few changes we made for our machine.
+
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
 >**Note:** For this section and this section **only** we used a Windows 10 machine with:
@@ -146,6 +149,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExNzc1NDc1MTksLTE4MTQ2ODQ3NDIsNT
+eyJoaXN0b3J5IjpbLTEwNjQzOTA0NzMsLTE4MTQ2ODQ3NDIsNT
 I1NTMxNzk2LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
 -->
