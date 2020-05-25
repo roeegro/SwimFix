@@ -119,8 +119,9 @@ In this section we will walk through the training process, assuming you followed
 
 ## Our results
 
+## Known issues
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYxMzA0OTk2LDUyNTUzMTc5NiwtMzExMT
-QwMTE1LC0xODkyOTM2Njk0XX0=
+eyJoaXN0b3J5IjpbLTE5MDk3NDgxNzcsNTI1NTMxNzk2LC0zMT
+ExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
 -->
