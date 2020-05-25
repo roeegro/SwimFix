@@ -111,12 +111,12 @@ By the end of this step you should have `lmdb_coco` and `lmdb_background` folder
 ## Training
 In this section we will walk through the training process, assuming you followed the instructions above successfully.
 1) Compile our modified Caffe:
-    -   Go to `training\openpose_caffe_train`
-    - Make sure the `Makefile.config.example` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda), then change the filename to `Makefile.config`
+    -  Go to `training\openpose_caffe_train`
+    - Make sure the `Makefile.config.example` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda and OpenCV 3), then change the filename to `Makefile.config`
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
 2) Generate the training model:
-	- Go to training\openpose_train
-	- - Generate the Caffe ProtoTxt and shell file for training by running  `python d_setLayers.py`.
+	- Go to `training\openpose_train`
+	- Generate the Caffe ProtoTxt and shell file for training by running  `python d_setLayers.py`.
 	    -   Set  `sCaffeFolder`  to the path of  [OpenPose Caffe Train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train).
 	    -   Set  `sAddFoot`  to 1 or 0 to enable/disable combined body-foot.
 	    -   Set  `sAddMpii`,  `sAddFace`  and  `sAddHands`  to 1 or 0 to enable/disable boyd mpii/face/hands (if 1, then all the above must be also 1).
@@ -155,6 +155,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1MzIyMzczOTQsLTE4MTQ2ODQ3NDIsNT
-I1NTMxNzk2LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbLTM1NzE1MTIxNiwtMTgxNDY4NDc0Miw1Mj
+U1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
