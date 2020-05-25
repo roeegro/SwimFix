@@ -98,7 +98,7 @@ By the end of this step you should have `lmdb_coco` and `lmdb_background` folder
 In this section we will walk through the training process, assuming you followed the instructions above successfully.
 1) Download and compile our modified Caffe:
     -   OpenPose Caffe Training:  [github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train).
-    - Make sure the Makefile.config.example is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda)
+    - Make sure the `Makefile.config.example` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda), then change the filename to `Makefile.config`
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
 2) Generate the Caffe ProtoTxt and shell file for training by running  `python d_setLayers.py`.
     -   Set  `sCaffeFolder`  to the path of  [OpenPose Caffe Train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train).
@@ -116,7 +116,10 @@ In this section we will walk through the training process, assuming you followed
 ## Validation
 
 ## Testing
+
+## Our results
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwMzI3OTQ4MzYsNTI1NTMxNzk2LC0zMT
-ExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbLTIyNTY0MzM0Niw1MjU1MzE3OTYsLTMxMT
+E0MDExNSwtMTg5MjkzNjY5NF19
 -->
