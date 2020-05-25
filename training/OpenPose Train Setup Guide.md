@@ -46,8 +46,8 @@ start clone_training_repos.bat [Windows]
 sh clone_training_repos.sh [Linux]
 ```
 The relevant ones for our guide are:
-- [openpose_train](https://github.com/tommarz/openpose_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository with a few changes and fixes we made for our own model training with custom data.
-- [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) which is used for the creating and training of the model.
+- [openpose_train](https://github.com/tommarz/openpose_train) which is the main training library
+- [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) which is used by the main `openopose_train` library for the training of the model on the NVIDIA GPU.
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) which 
 
 ## Data Preperation and Preprocessing
@@ -149,6 +149,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTMwODA2OTU0LC0xODE0Njg0NzQyLDUyNT
-UzMTc5NiwtMzExMTQwMTE1LC0xODkyOTM2Njk0XX0=
+eyJoaXN0b3J5IjpbLTEzODAyNzI5MzIsLTE4MTQ2ODQ3NDIsNT
+I1NTMxNzk2LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
 -->
