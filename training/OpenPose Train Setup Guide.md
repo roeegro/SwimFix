@@ -39,7 +39,7 @@ Make sure you have those and before continuing:
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
 - All the required git repositories must be cloned in the root folder. Please clone those by running `clone_training_repos.bat` or `clone_training_repos.sh`  from the command line/terminal. The relevant ones for our guide are:
 			- OpenPose Train
-			- 
+			- [OpenPose Caffe Train](https://github.com/tommarz/openpose_caffe_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train) with a few changes we made for our machine.
 - Python 3.6
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
@@ -138,6 +138,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI0OTYwNzcxMSwtMTgxNDY4NDc0Miw1Mj
+eyJoaXN0b3J5IjpbMjAyMTYzMDE4MCwtMTgxNDY4NDc0Miw1Mj
 U1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
