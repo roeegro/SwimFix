@@ -37,7 +37,7 @@ Make sure you have those and before continuing:
         - Ubuntu 18 ([**cuDNN 7.5**](https://developer.nvidia.com/cudnn)): Download and install it from the [Nvidia website](https://developer.nvidia.com/cudnn).
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
-- All the required git repositories must be cloned in the root folder. Please clone those by running `clone_training_repos.bat` or `clone_training_repos.sh`  from the command line/terminal. The relevant ones for our guide are:
+- All the required git repositories must be cloned. Please clone those by running `clone_training_repos.bat` or `clone_training_repos.sh`  from the command line/terminal. The relevant ones for our guide are:
 	* [OpenPose Train](https://github.com/tommarz/openpose_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository with a few changes and fixes we made for our own model training with custom data.
 	* [OpenPose Caffe Train](https://github.com/tommarz/openpose_caffe_train) which is a forked version of [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train) repository with a few changes we made for our machine.
 - Python 3.6
@@ -50,7 +50,7 @@ In this section we will explain how we annotated our own custom data and geneter
 >
 >In case you are are using Ubuntu you may not need a Docker for the annotation and Matlab for the augmentation.
 
-
+In these steps, our working directory is `openpose_train` which 
 
 ### Step 0 - Initialization
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
@@ -140,6 +140,6 @@ In this section we will walk through the training process, assuming you followed
 | sfsfdfsfsd | sfdfsssssssssss       | sdfdsf    |
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NTQzMjMxMCwtMTgxNDY4NDc0Miw1Mj
+eyJoaXN0b3J5IjpbLTg0NjgyNzE1NCwtMTgxNDY4NDc0Miw1Mj
 U1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
