@@ -27,7 +27,7 @@ def login(data, conn, params):
     if res > 0:
         user = cur.fetchone()
         if bcrypt.checkpw(password.encode('utf-8'), user['PASSWORD_HASH'].encode('utf-8')):
-            return '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] == 1)
+            return '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] != 0)
 
     return 'Fail: Incorrect Login'
 
@@ -133,7 +133,37 @@ def analyze_video(data, conn, params):
 
 
 def add_test(data, conn, params):
-    pass
+    msg = 'start'
+    conn.send(msg.encode('utf-8'))
+    expected_videos_path = '../excepted_data/videos/'
+    expected_csvs_path = '../excepted_data/csvs/'
+    new_expected_video_path = expected_videos_path + data[data.index('video_path:') + 1]
+    new_expcted_csv_path = expected_csvs_path + data[data.index('csv_path:') + 1]
+    msg = 'start'
+    conn.send(msg.encode('utf-8'))
+    with open(new_expected_video_path, 'wb') as video_file:
+        while True:
+            print('receiving video...')
+            data = conn.recv(1024)
+            if not data:
+                break
+            # write data to a file
+            video_file.write(data)
+            try:
+                msg = data.decode('utf-8')
+                if msg == 'end first': # move to next file
+                    break
+            except:
+                continue
+    print('-------------------start with csv -------------------')
+    with open(new_expcted_csv_path, 'wb') as csv_file:
+        while True:
+            print('receiving csv...')
+            data = conn.recv(1024)
+            if not data:
+                break
+            # write data to a file
+            csv_file.write(data)
 
 
 def run_test(data, conn, params):

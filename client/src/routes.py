@@ -4,7 +4,7 @@ from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
 from functools import reduce
-from test_generator import run
+from test_generator import run, success_sending_flag
 from . import app, db, bcrypt, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
@@ -35,6 +35,10 @@ def add_test():
     try:
         run()
     finally:
+        if success_sending_flag:
+            flash('The test files were uploaded successfully', 'success')
+        else:
+            flash('Failed to upload test files', 'failure')
         return redirect(url_for("admin_index"))
 
 
@@ -53,6 +57,7 @@ def charts():
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    print('is admin = {}'.format(is_admin()))
     return render_template('index.html', isAdmin=is_admin())
 
 
@@ -68,8 +73,8 @@ def load_video():
                 print(video_path)
                 video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
                 # to create the output dir from the server
-                create_dir_if_not_exists('output')
-                create_dir_if_not_exists('../../server/videos/')
+                # create_dir_if_not_exists('output')
+                # create_dir_if_not_exists('../../server/videos/')
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.connect((SERVER_IP, SERVER_PORT))
                     msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
@@ -148,7 +153,7 @@ def previous_feedback(zip_name):
         msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
         print('PREVIOUS FEEDBACK msg = {}'.format(msg))
         s.sendall(msg.encode('utf-8'))
-        
+
         path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(zip_name)
         print('path to zip is : {}'.format(path_to_zip))
         with open(path_to_zip, 'wb') as f:

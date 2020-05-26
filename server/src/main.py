@@ -62,8 +62,10 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
-HOST = '10.0.0.12'  # Standard loopback interface address (localhost)
+HOST = '10.0.0.8'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+
+
 #
 # MYSQL_HOST = '65.19.141.67'
 # MYSQL_PORT = 3306
@@ -113,7 +115,8 @@ def accept_request():
                 print('Connected by', addr)
                 # while True:
                 data = conn.recv(1024)
-                answer = main_parser(data,conn,params)
+                answer = main_parser(data, conn, params)
+                print('answer is : {}'.format(answer))
                 if not answer:
                     continue
                 conn.sendall(answer.encode('utf-8'))
