@@ -24,10 +24,11 @@ The system takes as input
 Our client-side consists of a Flask based web client
 ## Inference System
 Our server-side consists of a inference system based on the OpenPose library.
+To install OpenPose
 ## Training Infrastructure
 We created a training infrastructure for training your own custom model on your own data.
 ## Results
 In this section we will showcase some of our results
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAwODQxNzk2MV19
+eyJoaXN0b3J5IjpbMTM5MTI5NzI1MiwyMDA4NDE3OTYxXX0=
 -->
