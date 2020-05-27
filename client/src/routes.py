@@ -3,6 +3,8 @@ import socket
 from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
+import _thread
+import threading
 from functools import reduce
 from test_generator import run, success_sending_flag
 from . import app, db, bcrypt, SERVER_IP, SERVER_PORT
@@ -32,14 +34,16 @@ def forgot_password():
 
 @app.route('/add-test', methods=['GET', 'POST'])
 def add_test():
-    try:
-        run()
-    finally:
-        if success_sending_flag:
-            flash('The test files were uploaded successfully', 'success')
-        else:
-            flash('Failed to upload test files', 'failure')
-        return redirect(url_for("admin_index"))
+    add_test_thread = threading.Thread(target=run)
+    add_test_thread.start()
+    while add_test_thread.is_alive():
+        time.sleep(5)
+
+    if success_sending_flag:
+        flash('The test files were uploaded successfully', 'success')
+    else:
+        flash('Failed to upload test files', 'failure')
+    return redirect(url_for("admin_index"))
 
 
 @app.route('/admin-index', methods=['GET', 'POST'])

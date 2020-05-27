@@ -76,7 +76,7 @@ def main():
     video_path = 'MVI_8027.MOV'
     # output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
     # interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
-    filter_and_interpolate(all_keypoints_df_csv_path)
+    # filter_and_interpolate(all_keypoints_df_csv_path)
     # get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
     #
     # get_detected_keypoints_by_frame(all_keypoints_df_csv_path)

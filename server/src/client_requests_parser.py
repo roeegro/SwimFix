@@ -101,7 +101,9 @@ def view_graphs(data, conn, params):
     path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
     zip_location = '../temp'
     print(
-        'ZIPING PROCESS : zip location : {} , content in : {} , will be called : {} '.format(zip_location, path_to_search_in, filename))
+        'ZIPING PROCESS : zip location : {} , content in : {} , will be called : {} '.format(zip_location,
+                                                                                             path_to_search_in,
+                                                                                             filename))
     make_archive(path_to_search_in, zip_location, filename + ".zip")
     file_path_to_send = zip_location + '/' + filename + ".zip"
     print('file path to send: {}'.format(file_path_to_send))
@@ -133,37 +135,31 @@ def analyze_video(data, conn, params):
 
 
 def add_test(data, conn, params):
-    msg = 'start'
-    conn.send(msg.encode('utf-8'))
     expected_videos_path = '../excepted_data/videos/'
     expected_csvs_path = '../excepted_data/csvs/'
-    new_expected_video_path = expected_videos_path + data[data.index('video_path:') + 1]
-    new_expcted_csv_path = expected_csvs_path + data[data.index('csv_path:') + 1]
+    extension = data[data.index('file_extension:') + 1]
+    file_size = int(data[data.index('file_size:') + 1])
+    if extension == 'avi':
+        specific_expected_dir = expected_videos_path
+    elif extension == 'csv':
+        specific_expected_dir = expected_csvs_path
+    else:
+        print('ERROR - CAN NOT RECOGNIZE PATH')
+        return
+
+    new_expected_file_path = specific_expected_dir + data[data.index('file_path:') + 1]
     msg = 'start'
     conn.send(msg.encode('utf-8'))
-    with open(new_expected_video_path, 'wb') as video_file:
-        while True:
-            print('receiving video...')
+    counter = 0
+    with open(new_expected_file_path, 'wb') as f:
+        while file_size > counter:
             data = conn.recv(1024)
             if not data:
                 break
             # write data to a file
-            video_file.write(data)
-            try:
-                msg = data.decode('utf-8')
-                if msg == 'end first': # move to next file
-                    break
-            except:
-                continue
-    print('-------------------start with csv -------------------')
-    with open(new_expcted_csv_path, 'wb') as csv_file:
-        while True:
-            print('receiving csv...')
-            data = conn.recv(1024)
-            if not data:
-                break
-            # write data to a file
-            csv_file.write(data)
+            f.write(data)
+            counter += 1024
+            print('receiving data...')
 
 
 def run_test(data, conn, params):
@@ -182,20 +178,23 @@ def upload(data, conn, params):
     conn.send(msg.encode('utf-8'))
     videos_path = '../videos/'
     path_to_video = videos_path + filename
-    with open(path_to_video, 'wb') as f:
-        while True:
-            print('receiving data...')
-            data = conn.recv(1024)
-            if not data:
-                break
-            # write data to a file
-            f.write(data)
+    counter = 0
+    f = open(path_to_video, 'wb')
+    data = conn.recv(1024)
+    while data:
+        print('receiving data for time {}...'.format(counter))
+        if not data:
+            break
+        # write data to a file
+        f.write(data)
+        data = conn.recv(1024)
+    f.close()
     print('Successfully get the file')
     print("Analysing path...")
 
     facade.create_output_dir_for_movie_of_user(path_to_video, username)
     all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
-    facade.filter_and_interpolate(all_keypoints_csv_path,filename)
+    facade.filter_and_interpolate(all_keypoints_csv_path, filename)
     interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
     facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
     facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)

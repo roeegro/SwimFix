@@ -1,7 +1,7 @@
 import math
 import shutil
 import socket
-
+import time
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtWidgets, uic, QtCore
@@ -363,9 +363,14 @@ def red_btn_pressed():
         delete_frames_folder()
         output_video_path = create_video()
         csv_path = get_video_name() + "_expected.csv"
-        send_test_files_to_server(output_video_path, csv_path)
-    finally:
-        return
+        send_test_files_to_server(output_video_path)
+        print('sent video')
+        time.sleep(15) # in order to let the server to prepare
+        send_test_files_to_server(csv_path)
+        print('sent all')
+        success_sending_flag = True
+    except:
+        success_sending_flag = False
 
 
 def reset_guidata_object():
@@ -433,32 +438,38 @@ def undo_btn_pressed():
         return
 
 
+def get_size_of_file_path(file_path):
+    f = open(file_path, 'rb')
+    f.seek(0, 2)  # moves the file object's position to the end of the file.
+    size = f.tell()
+    f.close()
+    return size
+
+
 # Helpers
-def send_test_files_to_server(output_video_path, csv_path):
+def send_test_files_to_server(file_path):
     global success_sending_flag
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
-        msg = 'add_test video_path: {} csv_path: {} '.format(output_video_path, csv_path)
-        s.sendall(msg.encode('utf-8'))
-        start_msg = s.recv(1024)  # for 'start' message
-        if start_msg.decode('utf-8') != 'start':
+        file_size_in_bytes = get_size_of_file_path(file_path)
+        msg = 'add_test file_path: {} file_extension: {} file_size: {}'.format(file_path, file_path.split('.')[-1],
+                                                                               file_size_in_bytes)
+        s.send(msg.encode('utf-8'))
+        msg = None
+        while msg != 'start':
+            start_msg = s.recv(1024)  # for 'start' message
+            msg = start_msg.decode('utf-8')
             success_sending_flag = False
-            return
-        for file_path in [output_video_path, csv_path]:
-            f = open(file_path, 'rb')
-            # send the file
+        f = open(file_path, 'rb')
+        # send the file
+        l = f.read(1024)
+        while l:
+            s.send(l)
+            # print("Sending data of {}".format(file_path))
             l = f.read(1024)
-            while l:
-                s.send(l)
-                print("Sending data of {}".format(file_path))
-                l = f.read(1024)
-            f.close()
-            if file_path != csv_path:
-                print('------------------end with first file-------------------------------')
-                msg = 'end first'
-                s.sendall(msg.encode('utf-8'))  # for end first msg message
-            # os.remove(file_path)
-        success_sending_flag = True
+        f.close()
+
+    success_sending_flag = True
 
 
 def build_keypoints_tbl_for_request_frame(requested_frame_number):
