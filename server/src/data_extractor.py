@@ -317,7 +317,6 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
     df = pd.read_csv(csv_path)
     if output_path is None:
         output_path = output_manager.get_analytics_dir()
-        # output_path = '../..'
     if y_cols is None:
         cols = list(filter(lambda name: 'Score' not in name, df.columns.values))
         y_cols = cols.copy()
@@ -353,7 +352,7 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
             try:
                 interval_df.loc[interval['frames_to_inerpolate'], interval_df.columns] = np.nan
             except:
-                continue
+                continue  # for some perfect intervals which we don't have to fix.
             for col_name in side_cols:
                 interval_df[col_name].interpolate(method='cubic', inplace=True)
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
@@ -385,7 +384,6 @@ def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length,
 def try_merge_between_intervals(interval_list_per_hand, max_distance_between_intervals=10):
     merged_intervals_list_for_hand = list()
     should_skip_next_interval = False
-    # index = 0
     for index in range(len(interval_list_per_hand)):
         if should_skip_next_interval:
             should_skip_next_interval = False
@@ -407,7 +405,6 @@ def try_merge_between_intervals(interval_list_per_hand, max_distance_between_int
 
 def get_frames_numbers_without_infromation(df_to_show, intervals_list):
     frames_out_of_wanted_ranges = df_to_show.index.tolist()
-    print(intervals_list)
     for interval in intervals_list:
         start_interval_frame = interval['start']
         end_interval_frame = interval['end']
