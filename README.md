@@ -29,6 +29,12 @@ To install OpenPose
 We created a training infrastructure for training your own custom model on your own data.
 ## Results
 In this section we will showcase some of our results
+## Useful Links
+https://github.com/h2non/filetype.py/issues/17
+https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
+https://github.com/facebook/prophet/issues/418
+https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM5MTI5NzI1MiwyMDA4NDE3OTYxXX0=
+eyJoaXN0b3J5IjpbMTE5NzgxNTE2OSwxMzkxMjk3MjUyLDIwMD
+g0MTc5NjFdfQ==
 -->
