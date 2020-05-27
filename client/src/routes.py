@@ -16,7 +16,7 @@ IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
 
 def is_admin():
-    return session.get('isAdmin') if session and session.get('logged_in') else False
+    return session.get('isAdmin') if session else False
 
 
 def allowed_file(filename):
@@ -63,7 +63,6 @@ def charts():
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    print('is admin = {}'.format(is_admin()))
     return render_template('index.html', isAdmin=is_admin())
 
 
@@ -105,15 +104,15 @@ def load_video():
     return render_template('load-video.html', isAdmin=is_admin())
 
 
-def upload_file_sql(filename, user_id=0):
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        INSERT INTO FILES(NAME, CREATORID)
-        VALUE (%s, %s)
-        ''', (filename, user_id))
-    mysql.connection.commit()
-    cur.close()
-    return
+# def upload_file_sql(filename, user_id=0):
+#     cur = mysql.connection.cursor()
+#     cur.execute('''
+#         INSERT INTO FILES(NAME, CREATORID)
+#         VALUE (%s, %s)
+#         ''', (filename, user_id))
+#     mysql.connection.commit()
+#     cur.close()
+#     return
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
@@ -274,15 +273,15 @@ def topic(forumPage, topicID, page):
 
 # Create post, topic
 
-def createPostFunction(content, topicID, userID=0):
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
-        VALUE (%s, %s, %s)
-        ''', (content, userID, topicID))
-    mysql.connection.commit()
-    cur.close()
-    return
+# def createPostFunction(content, topicID, userID=0):
+#     cur = mysql.connection.cursor()
+#     cur.execute('''
+#         INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
+#         VALUE (%s, %s, %s)
+#         ''', (content, userID, topicID))
+#     mysql.connection.commit()
+#     cur.close()
+#     return
 
 
 @app.route("/forum/createPost", methods=['POST'])
@@ -360,8 +359,9 @@ def login():
     msg = 'login username: {} password: {}'.format(_username, _passwd)
 
     answer = send_msg_to_server(msg).decode("utf-8")
-
-    if answer.split(' ')[0] != "Fail:":
+    print("Answer is : " + answer)
+    answer = answer.split()
+    if answer[0] != "Fail:":
         session['ID'] = answer[0]
         session['username'] = answer[1]
         session['logged_in'] = answer[2]

@@ -33,7 +33,7 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-        {% if isAdmin %}
+        {% if isAdmin == 'True' %}
         <!-- Nav Item - Tables -->
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('admin_index') }}">
@@ -167,6 +167,6 @@
 
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fas fa-angle-up"></i></a>
 
 </html>
