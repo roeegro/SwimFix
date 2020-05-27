@@ -6,6 +6,13 @@ import visualizer
 import os
 
 
+def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, filename=None):
+    interpolated_and_filtered_csv_path = data_extractor.filter_and_interpolate(csv_path)
+    visualizer.plot_multi_graphs_from_other_csvs(['../../MVI_8027_expected.csv', interpolated_and_filtered_csv_path],
+                                                 y_cols, x_col, mult_figures)
+    return interpolated_and_filtered_csv_path
+
+
 def interpolate_and_plot(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, filename=None):
     interpolated_csv_path = data_extractor.generate_interpolated_csv(csv_path, y_cols, x_col, filename)
     visualizer.create_graph(interpolated_csv_path, y_cols, x_col, mult_figures)
@@ -67,10 +74,12 @@ def main():
     all_keypoints_df_csv_path = '../../all_keypoints.csv'
     video_path = 'MVI_8027.MOV'
     # output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
-    interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
-    get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
-    get_detected_keypoints_by_frame(all_keypoints_df_csv_path)
-    get_average_swimming_period_from_csv(interpolated_keypoints_path)
+    # interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
+    filter_and_interpolate(all_keypoints_df_csv_path)
+    # get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
+    #
+    # get_detected_keypoints_by_frame(all_keypoints_df_csv_path)
+    # get_average_swimming_period_from_csv(interpolated_keypoints_path)
 
 
 if __name__ == '__main__':

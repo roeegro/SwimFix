@@ -195,6 +195,7 @@ def upload(data, conn, params):
 
     facade.create_output_dir_for_movie_of_user(path_to_video, username)
     all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
+    facade.filter_and_interpolate(all_keypoints_csv_path)
     interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
     facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
     facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)

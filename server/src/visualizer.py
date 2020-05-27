@@ -168,3 +168,37 @@ def autolabel(rects, ax):
                     xytext=(0, 3),  # 3 points vertical offset
                     textcoords="offset points",
                     ha='center', va='bottom')
+
+
+# Assumption : The shape of all asked dfs must be the same, and columns are the same.
+def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True):
+    figures_path = output_manager.get_figures_dir()
+    # print('figures dir = {}'.format(figures_path))
+    analytics_path = output_manager.get_analytics_dir()
+    if csv_paths is str:
+        create_graph(csv_paths, y_cols, x_col, mult_figures)
+    else:
+        dfs = [pd.read_csv(csv_path).set_index(x_col) for csv_path in csv_paths]
+        print(dfs[0])
+        x = dfs[0][x_col].values if x_col != 'Frame Number' else dfs[0].index
+        print('XXXXXXXXXXX')
+        print(x)
+        if y_cols is None:
+            y_cols = dfs[0].columns.difference([x_col]).values
+        elif y_cols is str:
+            y_cols = [y_cols]
+        for y_col in y_cols:
+            # print('y_col = {} '.format(y_col))
+            y_values = [df[y_col].values for df in dfs]
+            dict_for_df = {x_col: x}
+            # print('values of all ys in the same column = {}'.format(y_values))
+            for index, y_value in enumerate(y_values):
+                # print('values of all ys in specific column = {}'.format(y_value))
+                plt.plot(x, y_value)
+                # print([y_col + ' from ' + csv_path for csv_path in csv_paths])
+                plt.legend([y_col + ' from ' + csv_path.split('/')[-1] for csv_path in csv_paths])
+                dict_for_df.update({y_col + '_from_' + csv_paths[index].split('/')[-1]: y_value})
+            df_to_new_csv = pd.DataFrame(data=dict_for_df).set_index(x_col)
+            df_to_new_csv.to_csv(analytics_path + "/{}_comparison.csv".format(y_col))
+            plt.savefig(figures_path + "/{}_by_{}_comparison".format(y_col, x_col))
+            plt.close()

@@ -309,3 +309,109 @@ def valid_frame(current_frame_df):
             number_of_detected_body_parts > number_of_body_parts * 0.6 and neck_detected):
         return True
     return False
+
+
+# filter frames where openpose is more confident with its results, and interpolate them.
+def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename=None, output_path=None,
+                           min_interval_length=3, score_threshold=0.4):
+    df = pd.read_csv(csv_path)
+    if output_path is None:
+        output_path = output_manager.get_analytics_dir()
+        # output_path = '../..'
+    if y_cols is None:
+        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))
+        y_cols = cols.copy()
+        y_cols.remove(x_col)
+        path = output_path + '/interpolated_and_filtered_' + utils.path_without_suffix(
+            utils.get_file_name(csv_path)) + '.csv'
+    elif type(y_cols) == str:
+        y_cols = [y_cols]
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    else:
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    if filename is not None:
+        path = output_path + '/' + filename + '.csv'
+
+    df['Frame Number'].astype('int64')
+    df = df.set_index('Frame Number')
+
+    df_to_show = df.drop(columns=df.columns.difference(cols), axis=1)
+    sides = ['L', 'R']
+    intervals_list = list()
+    for side in sides:
+        interval_list_per_hand = get_relevant_intervals_for_hand(df, side,
+                                                                 min_interval_length, score_threshold)
+        merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
+        side_cols = list(filter(lambda name: name.startswith(side), y_cols))
+        for interval in merged_interval_list_per_hand:
+            intervals_list.append(interval)
+            start_interval_frame = int(interval['start'])
+            end_interval_frame = int(interval['end'])
+            interval_df = df.loc[start_interval_frame:end_interval_frame, side_cols]
+            try:
+                interval_df.loc[interval['frames_to_inerpolate'], interval_df.columns] = np.nan
+            except:
+                continue
+            for col_name in side_cols:
+                interval_df[col_name].interpolate(method='cubic', inplace=True)
+                df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
+                    interval['frames_to_inerpolate'], col_name]  # update df
+    frames_out_of_wanted_ranges = get_frames_numbers_without_infromation(df_to_show, intervals_list)
+    df_to_show.loc[frames_out_of_wanted_ranges, df_to_show.columns] = np.nan
+    df_to_show.to_csv(path)
+    return path
+
+
+def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length, score_threshold):
+    current_interval_len_counter = 0
+    intervals_list_for_hand = list()
+    start_interval_frame_number = all_keypoints_df.index.min()
+    for index, row in all_keypoints_df.iterrows():
+        if all_keypoints_df[side + 'ElbowScore'][index] > score_threshold:
+            if current_interval_len_counter == 0:
+                start_interval_frame_number = index
+            current_interval_len_counter += 1
+        elif current_interval_len_counter > min_interval_length:
+            intervals_list_for_hand.append({'start': start_interval_frame_number, 'end': index - 1})
+            start_interval_frame_number = index
+            current_interval_len_counter = 0
+        else:
+            current_interval_len_counter = 0
+    return intervals_list_for_hand
+
+
+def try_merge_between_intervals(interval_list_per_hand, max_distance_between_intervals=10):
+    merged_intervals_list_for_hand = list()
+    should_skip_next_interval = False
+    # index = 0
+    for index in range(len(interval_list_per_hand)):
+        if should_skip_next_interval:
+            should_skip_next_interval = False
+            index += 1
+            continue
+        if index == len(interval_list_per_hand) - 1:
+            merged_intervals_list_for_hand.append(interval_list_per_hand[index])
+        elif interval_list_per_hand[index + 1]['start'] - interval_list_per_hand[index][
+            'end'] > max_distance_between_intervals:
+            merged_intervals_list_for_hand.append(interval_list_per_hand[index])
+        else:
+            merged_intervals_list_for_hand.append({'start': interval_list_per_hand[index][
+                'start'], 'end': interval_list_per_hand[index + 1]['end'], 'frames_to_inerpolate': np.arange(
+                interval_list_per_hand[index]['end'] + 1, interval_list_per_hand[index + 1]['start'])})
+            should_skip_next_interval = True
+            index += 1
+    return merged_intervals_list_for_hand
+
+
+def get_frames_numbers_without_infromation(df_to_show, intervals_list):
+    frames_out_of_wanted_ranges = df_to_show.index.tolist()
+    print(intervals_list)
+    for interval in intervals_list:
+        start_interval_frame = interval['start']
+        end_interval_frame = interval['end']
+        frames_in_interval = np.arange(start_interval_frame, end_interval_frame + 1)
+        frames_out_of_wanted_ranges = [frame_num for frame_num in frames_out_of_wanted_ranges if
+                                       frame_num not in frames_in_interval]
+    return frames_out_of_wanted_ranges
