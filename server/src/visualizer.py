@@ -186,15 +186,24 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
             y_cols = [y_cols]
         for y_col in y_cols:
             # print('y_col = {} '.format(y_col))
+
+            fig, ax = plt.subplots()
             y_values = [df[y_col].values for df in dfs]
-            dict_for_df = {x_col: x}
             # print('values of all ys in the same column = {}'.format(y_values))
             for index, y_value in enumerate(y_values):
+                dict_for_df = {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index}
                 # print('values of all ys in specific column = {}'.format(y_value))
-                plt.plot(x, y_value)
+                x_axis_of_current_csv = dfs[index][x_col] if x_col != 'Frame Number' else dfs[index].index
+                x_y_as_series = pd.Series(index=x_axis_of_current_csv,data=y_value)
+                # plt.plot(x, y_value)
+                ax.plot(x_y_as_series,label=csv_paths[index].split('/')[-1])
                 # print([y_col + ' from ' + csv_path for csv_path in csv_paths])
-                plt.legend([y_col + ' from ' + csv_path.split('/')[-1] for csv_path in csv_paths])
+                # plt.legend([y_col + ' from ' + csv_path.split('/')[-1] for csv_path in csv_paths])
                 dict_for_df.update({y_col + '_from_' + csv_paths[index].split('/')[-1]: y_value})
+            legend = ax.legend(loc='best', fontsize='x-large')
+            plt.xlabel(x_col)
+            plt.ylabel('location in frame')
+            plt.title("{} comparison".format(y_col))
             df_to_new_csv = pd.DataFrame(data=dict_for_df).set_index(x_col)
             df_to_new_csv.to_csv(analytics_path + "/{}_comparison.csv".format(y_col))
             plt.savefig(figures_path + "/{}_by_{}_comparison".format(y_col, x_col))
