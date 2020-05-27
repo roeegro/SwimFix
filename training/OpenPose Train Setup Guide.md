@@ -147,9 +147,25 @@ The first 10 layers are used as backbone.
 |Error					|Reason								 |Solution Link
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
+|`  Could NOT find Protobuf (missing: Protobuf_INCLUDE_DIR)`|When trying to build OpenPose|https://gist.github.com/diegopacheco/cd795d36e6ebcd2537cd18174865887b
 
+
+## Installation commands
+Please install the following libraries:
+```
+sudo apt-get install
+libprotobuf-dev
+libleveldb-dev
+libsnappy-dev
+libopencv-dev
+libhdf5-serial-dev
+protobuf-compiler
+libboost-all-dev
+libatlas-base-dev
+python-numpy
+```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk0NTc5NjY4NCwxMzI0ODA5NDYsLTM1Nz
-E1MTIxNiwtMTgxNDY4NDc0Miw1MjU1MzE3OTYsLTMxMTE0MDEx
-NSwtMTg5MjkzNjY5NF19
+eyJoaXN0b3J5IjpbLTE2NzczMDQ0NDcsLTk0NTc5NjY4NCwxMz
+I0ODA5NDYsLTM1NzE1MTIxNiwtMTgxNDY4NDc0Miw1MjU1MzE3
+OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
