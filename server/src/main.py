@@ -62,18 +62,8 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
-HOST = '192.168.1.240'  # Standard loopback interface address (localhost)
+HOST = '10.0.0.8'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
-
-
-#
-# MYSQL_HOST = '65.19.141.67'
-# MYSQL_PORT = 3306
-# MYSQL_USER = 'lironabr'
-# MYSQL_PASSWORD = 'h3dChhmg'
-# MYSQL_DB = 'lironabr_swimming_project'
-# MYSQL_CURSORCLASS = 'DictCursor'
-# mysql = MySQLdb.connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB)
 
 
 def wait_analyze_video():

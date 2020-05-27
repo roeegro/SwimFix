@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 
 import output_manager
-import utils
 
 
 def show_avg_angle_diff(dict_of_avg_angle_for_test, dict_of_avg_angle_for_tested):
@@ -173,7 +172,6 @@ def autolabel(rects, ax):
 # Assumption : The shape of all asked dfs must be the same, and columns are the same.
 def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True):
     figures_path = output_manager.get_figures_dir()
-    # print('figures dir = {}'.format(figures_path))
     analytics_path = output_manager.get_analytics_dir()
     if csv_paths is str:
         create_graph(csv_paths, y_cols, x_col, mult_figures)
@@ -185,22 +183,15 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
         elif y_cols is str:
             y_cols = [y_cols]
         for y_col in y_cols:
-            # print('y_col = {} '.format(y_col))
-
             fig, ax = plt.subplots()
             y_values = [df[y_col].values for df in dfs]
-            # print('values of all ys in the same column = {}'.format(y_values))
             for index, y_value in enumerate(y_values):
                 dict_for_df = {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index}
-                # print('values of all ys in specific column = {}'.format(y_value))
                 x_axis_of_current_csv = dfs[index][x_col] if x_col != 'Frame Number' else dfs[index].index
                 x_y_as_series = pd.Series(index=x_axis_of_current_csv,data=y_value)
-                # plt.plot(x, y_value)
                 ax.plot(x_y_as_series,label=csv_paths[index].split('/')[-1])
-                # print([y_col + ' from ' + csv_path for csv_path in csv_paths])
-                # plt.legend([y_col + ' from ' + csv_path.split('/')[-1] for csv_path in csv_paths])
                 dict_for_df.update({y_col + '_from_' + csv_paths[index].split('/')[-1]: y_value})
-            legend = ax.legend(loc='best', fontsize='x-large')
+            legend = ax.legend(loc='best', fontsize='medium')
             plt.xlabel(x_col)
             plt.ylabel('location in frame')
             plt.title("{} comparison".format(y_col))

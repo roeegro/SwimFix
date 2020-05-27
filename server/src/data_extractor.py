@@ -339,10 +339,12 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
     df_to_show = df.drop(columns=df.columns.difference(cols), axis=1)
     sides = ['L', 'R']
     intervals_list = list()
+    intervals_per_side = dict()
     for side in sides:
         interval_list_per_hand = get_relevant_intervals_for_hand(df, side,
                                                                  min_interval_length, score_threshold)
         merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
+        intervals_per_side[side] = merged_interval_list_per_hand
         side_cols = list(filter(lambda name: name.startswith(side), y_cols))
         for interval in merged_interval_list_per_hand:
             intervals_list.append(interval)
@@ -357,8 +359,7 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                 interval_df[col_name].interpolate(method='cubic', inplace=True)
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
                     interval['frames_to_inerpolate'], col_name]  # update df
-    frames_out_of_wanted_ranges = get_frames_numbers_without_infromation(df_to_show, intervals_list)
-    df_to_show.loc[frames_out_of_wanted_ranges, df_to_show.columns] = np.nan
+    filter_frames_without_reliable_info(df_to_show, intervals_per_side)
     df_to_show.to_csv(path)
     return path
 
@@ -403,12 +404,26 @@ def try_merge_between_intervals(interval_list_per_hand, max_distance_between_int
     return merged_intervals_list_for_hand
 
 
-def get_frames_numbers_without_infromation(df_to_show, intervals_list):
+def filter_frames_without_reliable_info(df_to_show, intervals_per_side):
+    right_side_columns = list(filter(lambda name: name.startswith('R'), df_to_show.columns))
+    left_side_columns = list(filter(lambda name: name.startswith('L'), df_to_show.columns))
     frames_out_of_wanted_ranges = df_to_show.index.tolist()
-    for interval in intervals_list:
-        start_interval_frame = interval['start']
-        end_interval_frame = interval['end']
-        frames_in_interval = np.arange(start_interval_frame, end_interval_frame + 1)
-        frames_out_of_wanted_ranges = [frame_num for frame_num in frames_out_of_wanted_ranges if
-                                       frame_num not in frames_in_interval]
-    return frames_out_of_wanted_ranges
+    reliable_intervals_for_right_side = intervals_per_side['R']
+    reliable_intervals_for_left_side = intervals_per_side['L']
+    for frame in frames_out_of_wanted_ranges:
+        found_in_right = False
+        found_in_left = False
+        for interval in reliable_intervals_for_right_side:
+            if frame in np.arange(interval['start'],interval['end']+1):
+                found_in_right = True
+                break
+        for interval in reliable_intervals_for_left_side:
+            if frame in np.arange(interval['start'],interval['end']+1):
+                found_in_left = True
+                break
+
+        if not found_in_right:
+            df_to_show.loc[[frame], right_side_columns] = np.nan
+        if not found_in_left:
+            df_to_show.loc[[frame], left_side_columns] = np.nan
+
