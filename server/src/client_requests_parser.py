@@ -22,6 +22,7 @@ def login(data, conn, params):
     print(data)
     username = data[data.index('username:') + 1]
     password = data[data.index('password:') + 1]
+    mysql.ping(True)
     cur = mysql.cursor()
     res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (username,))
 
@@ -38,11 +39,12 @@ def register(data, conn, params):
     username = data[data.index('username:') + 1]
     password = data[data.index('password:') + 1]
     email = data[data.index('email:') + 1]
+    mysql.ping(True)
     cur = mysql.cursor()
     res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (username, email))
 
     if res != 0:
-        return 'Fail: User or email already exists'
+        return 'Fail: User or email already exists'.encode("utf-8")
 
     password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
@@ -50,7 +52,7 @@ def register(data, conn, params):
 
     mysql.commit()
     cur.close()
-    return 'Success: User Registered'
+    return 'Success: User Registered'.encode("utf-8")
 
 
 def download(data, conn, params):
@@ -60,12 +62,14 @@ def download(data, conn, params):
 def view_feedbacks_list(data, conn, params):
     print('VIEW_FEEDBACK_LIST')
     user_id = data[data.index('user_id:') + 1]
+    mysql.ping(True)
     cur = mysql.cursor()
     res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
     if res == 0:
-        return "Fail"
+        return "Fail".encode("utf-8")
     username = cur.fetchone()['USERNAME']
 
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute("SELECT * FROM FILES WHERE CREATORID = {}".format(user_id))
     results = cur.fetchall()
@@ -78,12 +82,13 @@ def view_feedbacks_list(data, conn, params):
         to_add = '{}__{}_{}'.format(movie_name, date, time) + ','
         answer += to_add
     print(answer)
-    return answer
+    return answer.encode("utf-8")
 
 
 def view_graphs(data, conn, params):
     user_id = data[data.index('user_id:') + 1]
     filename = data[data.index('filename:') + 1]
+    mysql.ping(True)
     cur = mysql.cursor()
     res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
     if res == 0:
@@ -116,12 +121,13 @@ def view_graphs(data, conn, params):
         l = f.read(1024)
     f.close()
     print('sent all zip')
-    return "success"
+    return "success".encode("utf-8")
 
 
 def forum_view_page(data, conn, params):
     offset = int(data[data.index('offset:') + 1])
     limit = int(data[data.index('limit:') + 1])
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute('''
             SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
@@ -138,7 +144,7 @@ def forum_view_page(data, conn, params):
 
 def forum_topic_name(data, conn, params):
     topic_id = data[data.index('topic_id:') + 1]
-
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute('''
             SELECT TOPICS.NAME, TOPICS.ISPINNED
@@ -154,6 +160,7 @@ def forum_view_topic(data, conn, params):
     topicID = data[data.index('topic_id:') + 1]
     page = int(data[data.index('page:') + 1])
     limit = int(data[data.index('limit:') + 1])
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute('''
             SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
@@ -170,6 +177,7 @@ def forum_create_topic(data, conn, params):
     user_id = data[data.index('user_id:') + 1]
     title = data[data.index('title:') + 1]
     content = ' '.join(data[data.index('content:') + 1:])
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute('''
                 INSERT INTO TOPICS(NAME, CREATORID)
@@ -190,6 +198,7 @@ def forum_create_post(data, conn, params):
 
 
 def createPostFunction(content, topicID, userID=0):
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute('''
         INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
@@ -238,6 +247,7 @@ def run_test(data, conn, params):
 
 def upload(data, conn, params):
     user_id = data[data.index('user_id:') + 1]
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
 
@@ -284,6 +294,7 @@ def upload(data, conn, params):
 
 
 def upload_file_sql(filename, user_id=0):
+    mysql.ping(True)
     cur = mysql.cursor()
     cur.execute('''
         INSERT INTO FILES(NAME, CREATORID)
