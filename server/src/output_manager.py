@@ -126,3 +126,22 @@ def get_output_dir_path(key=None):
     if key is None:
         return output_dirs_dict
     return output_dirs_dict[key]
+
+
+def get_excepted_data_path():
+    return "../excepted_data"
+
+
+def get_excepted_csvs_path():
+    return get_excepted_data_path() + "/csvs"
+
+
+def get_excepted_videos_path():
+    return get_excepted_data_path() + "/videos"
+
+
+def get_excepted_csv_path_for_movie(video_full_name):
+    video_name = video_full_name.split('_from')[0]
+    all_excepted_csvs_path = get_excepted_csvs_path()
+    wanted_path = all_excepted_csvs_path + '/' + video_name + '_expected.csv'
+    return wanted_path if os.path.exists(wanted_path) else None

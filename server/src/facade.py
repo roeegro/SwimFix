@@ -3,14 +3,15 @@ import data_extractor
 import output_manager
 import utils
 import visualizer
-import os
 
 
-def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, filename=None):
-    interpolated_and_filtered_csv_path = data_extractor.filter_and_interpolate(csv_path)
-    visualizer.plot_multi_graphs_from_other_csvs(['../../MVI_8027_expected.csv', interpolated_and_filtered_csv_path],
-                                                 y_cols, x_col, mult_figures)
-    return interpolated_and_filtered_csv_path
+def filter_and_interpolate(csv_path, video_full_name, y_cols=None, x_col='Frame Number', mult_figures=True):
+    filtered_and_interpolated_csv_path = data_extractor.filter_and_interpolate(csv_path)
+    expected_csv_for_movie_path = output_manager.get_excepted_csv_path_for_movie(video_full_name)
+    csvs_paths_to_compare = filtered_and_interpolated_csv_path if expected_csv_for_movie_path is None else [
+        expected_csv_for_movie_path, filtered_and_interpolated_csv_path]
+    visualizer.plot_multi_graphs_from_other_csvs(csvs_paths_to_compare, y_cols, x_col, mult_figures)
+    return filtered_and_interpolated_csv_path
 
 
 def interpolate_and_plot(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, filename=None):
