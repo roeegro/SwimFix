@@ -62,7 +62,7 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
-HOST = '10.0.0.8'  # Standard loopback interface address (localhost)
+HOST = '192.168.1.240'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 
@@ -118,8 +118,8 @@ def accept_request():
                 answer = main_parser(data, conn, params)
                 print('answer is : {}'.format(answer))
                 if not answer:
-                    continue
-                conn.sendall(answer.encode('utf-8'))
+                    answer= "Done".encode("utf-8")
+                conn.sendall(answer)
 
 
 if __name__ == '__main__':
