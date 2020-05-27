@@ -1,3 +1,5 @@
+import pickle
+
 from flask_login import login_user, logout_user, current_user
 import socket
 from gui_utils import *
@@ -187,31 +189,34 @@ def previous_feedback(zip_name):
 @app.route("/forum/<page>")
 def forum(page):
     page = int(page)
-    cur = mysql.connection.cursor()
     limit = 30
     offset = limit * page
     nextPageExists = False
+    msg = 'forum_view_page offset: {} limit: {}'.format(offset, limit)
+    topics = pickle.loads(send_msg_to_server(msg))
     pinned = {}
-    if page == 0:
-        cur.execute('''
-            SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-            FROM TOPICS
-            INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-            LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-            WHERE TOPICS.ISPINNED = TRUE
-            GROUP BY TOPICS.ID
-            ORDER BY LASTPOST DESC;''')
-        pinned = cur.fetchall()
-    cur.execute('''
-        SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-        FROM TOPICS
-        INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-        LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-        WHERE TOPICS.ISPINNED = FALSE
-        GROUP BY TOPICS.ID
-        ORDER BY LASTPOST DESC
-        LIMIT %s, %s''', (offset, limit + 1,))
-    topics = cur.fetchall()
+
+    # cur = mysql.connection.cursor()
+    # if page == 0:
+    #     cur.execute('''
+    #         SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
+    #         FROM TOPICS
+    #         INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
+    #         LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
+    #         WHERE TOPICS.ISPINNED = TRUE
+    #         GROUP BY TOPICS.ID
+    #         ORDER BY LASTPOST DESC;''')
+    #     pinned = cur.fetchall()
+    # cur.execute('''
+    #     SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
+    #     FROM TOPICS
+    #     INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
+    #     LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
+    #     WHERE TOPICS.ISPINNED = FALSE
+    #     GROUP BY TOPICS.ID
+    #     ORDER BY LASTPOST DESC
+    #     LIMIT %s, %s''', (offset, limit + 1,))
+    # topics = cur.fetchall()
 
     if len(topics) > limit:
         nextPageExists = True
@@ -229,24 +234,35 @@ def topic(forumPage, topicID, page):
     page = int(page)
     limit = 10
     nextPageExists = False
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        SELECT TOPICS.NAME, TOPICS.ISPINNED
-        FROM TOPICS
-        WHERE TOPICS.ID = %s;''', (topicID,))
-    topic = cur.fetchone()
-    if not topic:
+
+    msg = 'forum_topic_name topic_id: {}'.format(topicID)
+    name = send_msg_to_server(msg).decode("utf-8")
+
+    # cur = mysql.connection.cursor()
+    # cur.execute('''
+    #     SELECT TOPICS.NAME, TOPICS.ISPINNED
+    #     FROM TOPICS
+    #     WHERE TOPICS.ID = %s;''', (topicID,))
+    # topic = cur.fetchone()
+    # if not topic:
+    #     return redirect("/forum/" + forumPage)
+    if not name:
         return redirect("/forum/" + forumPage)
-    name = topic['NAME']
-    isPinned = int(topic['ISPINNED'])
-    cur.execute('''
-        SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
-        FROM POSTS
-        INNER JOIN USERS ON POSTS.CREATORID = USERS.ID
-        WHERE POSTS.TOPICID = %s
-        ORDER BY POSTS.CREATION_DATE
-        LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
-    posts = cur.fetchall()
+    # name = topic['NAME']
+    # isPinned = int(topic['ISPINNED'])
+    isPinned = 0
+    msg = 'forum_view_topic topic_id: {} page: {} limit: {}'.format(topicID, page, limit)
+    posts = pickle.loads(send_msg_to_server(msg))
+
+    # cur.execute('''
+    #     SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
+    #     FROM POSTS
+    #     INNER JOIN USERS ON POSTS.CREATORID = USERS.ID
+    #     WHERE POSTS.TOPICID = %s
+    #     ORDER BY POSTS.CREATION_DATE
+    #     LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
+    # posts = cur.fetchall()
+
     if len(posts) > limit:
         nextPageExists = True
     if len(posts) == 0 and page != 0:
@@ -280,7 +296,9 @@ def createPost():
         flash(u"Post must contain content!", "danger")
     else:
         userID = session.get('ID') if session and session.get('logged_in') else 0
-        createPostFunction(content, topicID, userID)
+        msg = 'forum_create_post user_id: {} topic_id: {} content: {}'.format(userID, topicID, content)
+        send_msg_to_server(msg)
+        # createPostFunction(content, topicID, userID)
     return redirect("/forum/topic/0/" + topicID + "/" + page)
 
 
@@ -294,17 +312,34 @@ def createTopic():
     if not content or not title:
         flash(u"Topic must contain content and title!", "danger")
     else:
-        cur = mysql.connection.cursor()
-        cur.execute('''
-            INSERT INTO TOPICS(NAME, CREATORID)
-            VALUE (%s, %s)
-            ''', (title, userID))
-        mysql.connection.commit()
-        topicID = cur.lastrowid
-        cur.close()
-        createPostFunction(content, topicID, userID)
+        msg = 'forum_create_topic user_id: {} title: {} content: {}'.format(userID, title, content)
+        topicID = send_msg_to_server(msg).decode("utf-8")
+
+        # cur = mysql.connection.cursor()
+        # cur.execute('''
+        #     INSERT INTO TOPICS(NAME, CREATORID)
+        #     VALUE (%s, %s)
+        #     ''', (title, userID))
+        # mysql.connection.commit()
+        # topicID = cur.lastrowid
+        # cur.close()
+        # createPostFunction(content, topicID, userID)
         return redirect("/forum/topic/0/" + str(topicID) + "/0")
     return redirect("/forum")
+
+
+def send_msg_to_server(msg):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        s.sendall(msg.encode('utf-8'))
+        answer = b''
+        part_answer = s.recv(1024)
+        while part_answer:
+            print('getting answer from server..')
+            answer += part_answer
+            part_answer = s.recv(1024)
+        print(answer)
+        return answer
 
 
 # Login / Register / Logout scripts
@@ -322,18 +357,15 @@ def login():
     _username = request.form['username']
     _passwd = request.form['password']
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((SERVER_IP, SERVER_PORT))
-        msg = 'login username: {} password: {}'.format(_username, _passwd)
-        s.sendall(msg.encode('utf-8'))
-        data = s.recv(1024)
-        data = data.decode('utf-8')
-        print(data)
-    if data.split(' ')[0] != "Fail:":
-        session['ID'] = data[0]
-        session['username'] = data[1]
-        session['logged_in'] = data[2]
-        session['isAdmin'] = data[3]
+    msg = 'login username: {} password: {}'.format(_username, _passwd)
+
+    answer = send_msg_to_server(msg).decode("utf-8")
+
+    if answer.split(' ')[0] != "Fail:":
+        session['ID'] = answer[0]
+        session['username'] = answer[1]
+        session['logged_in'] = answer[2]
+        session['isAdmin'] = answer[3]
         flash(u"You're now logged in!", "success")
         return redirect(url_for('index'))
 

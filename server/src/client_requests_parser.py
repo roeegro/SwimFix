@@ -1,4 +1,5 @@
 import datetime
+import pickle
 
 import MySQLdb
 import bcrypt
@@ -27,9 +28,9 @@ def login(data, conn, params):
     if res > 0:
         user = cur.fetchone()
         if bcrypt.checkpw(password.encode('utf-8'), user['PASSWORD_HASH'].encode('utf-8')):
-            return '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] != 0)
+            return '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] != 0).encode("utf-8")
 
-    return 'Fail: Incorrect Login'
+    return 'Fail: Incorrect Login'.encode("utf-8")
 
 
 def register(data, conn, params):
@@ -118,16 +119,85 @@ def view_graphs(data, conn, params):
     return "success"
 
 
-def view_forum(data, conn, params):
-    pass
+def forum_view_page(data, conn, params):
+    offset = int(data[data.index('offset:') + 1])
+    limit = int(data[data.index('limit:') + 1])
+    cur = mysql.cursor()
+    cur.execute('''
+            SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
+            FROM TOPICS
+            INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
+            LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
+            WHERE TOPICS.ISPINNED = FALSE
+            GROUP BY TOPICS.ID
+            ORDER BY LASTPOST DESC
+            LIMIT %s, %s''', (offset, limit + 1,))
+    topics = cur.fetchall()
+    return pickle.dumps(topics)
 
 
-def forum_post(data, conn, params):
-    pass
+def forum_topic_name(data, conn, params):
+    topic_id = data[data.index('topic_id:') + 1]
+
+    cur = mysql.cursor()
+    cur.execute('''
+            SELECT TOPICS.NAME, TOPICS.ISPINNED
+            FROM TOPICS
+            WHERE TOPICS.ID = %s;''', (topic_id,))
+    topic = cur.fetchone()
+    if not topic:
+        return None
+    return topic['NAME'].encode("utf-8")
 
 
-def forum_comment(data, conn, params):
-    pass
+def forum_view_topic(data, conn, params):
+    topicID = data[data.index('topic_id:') + 1]
+    page = int(data[data.index('page:') + 1])
+    limit = int(data[data.index('limit:') + 1])
+    cur = mysql.cursor()
+    cur.execute('''
+            SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
+            FROM POSTS
+            INNER JOIN USERS ON POSTS.CREATORID = USERS.ID
+            WHERE POSTS.TOPICID = %s
+            ORDER BY POSTS.CREATION_DATE
+            LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
+    posts = cur.fetchall()
+    return pickle.dumps(posts)
+
+
+def forum_create_topic(data, conn, params):
+    user_id = data[data.index('user_id:') + 1]
+    title = data[data.index('title:') + 1]
+    content = ' '.join(data[data.index('content:') + 1:])
+    cur = mysql.cursor()
+    cur.execute('''
+                INSERT INTO TOPICS(NAME, CREATORID)
+                VALUE (%s, %s)
+                ''', (title, user_id))
+    mysql.commit()
+    topicID = cur.lastrowid
+    cur.close()
+    createPostFunction(content, topicID, user_id)
+    return str(topicID).encode("utf-8")
+
+
+def forum_create_post(data, conn, params):
+    user_id = data[data.index('user_id:') + 1]
+    topic_id = data[data.index('topic_id:') + 1]
+    content = ' '.join(data[data.index('content:') + 1:])
+    createPostFunction(content, topic_id, user_id)
+
+
+def createPostFunction(content, topicID, userID=0):
+    cur = mysql.cursor()
+    cur.execute('''
+        INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
+        VALUE (%s, %s, %s)
+        ''', (content, userID, topicID))
+    mysql.commit()
+    cur.close()
+    return
 
 
 def analyze_video(data, conn, params):
@@ -214,20 +284,22 @@ def upload(data, conn, params):
 
 
 def upload_file_sql(filename, user_id=0):
-    cur = mysql.connection.cursor()
+    cur = mysql.cursor()
     cur.execute('''
         INSERT INTO FILES(NAME, CREATORID)
         VALUE (%s, %s)
         ''', (filename, user_id))
-    mysql.connection.commit()
+    mysql.commit()
     cur.close()
     return
 
 
 requests_dict = {'login': login, 'register': register, 'download': download, 'view_feedbacks_list': view_feedbacks_list,
                  'view_graphs': view_graphs,
-                 'view_forum': view_forum,
-                 'forum_post': forum_post, 'forum_comment': forum_comment, 'analyze_video': analyze_video,
+                 'forum_view_page': forum_view_page, 'forum_view_topic': forum_view_topic,
+                 'forum_topic_name': forum_topic_name,
+                 'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post,
+                 'analyze_video': analyze_video,
                  'add_test': add_test, 'run_test': run_test, 'upload': upload}
 
 
