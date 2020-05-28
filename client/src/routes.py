@@ -138,6 +138,7 @@ def previous_feedbacks():
             new_data = dict()
             new_data['date'] = zip_date
             new_data['zip_name'] = name_and_date[0]  # with no extension
+            new_data['movie_name'] = name_and_date[0].split('_from')[0]
             data_to_pass.append(new_data)
         except:
             continue

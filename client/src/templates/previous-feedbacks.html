@@ -14,7 +14,7 @@
                     <thead>
                     <tr>
                         <th>Upload Date</th>
-<!--                        <th>Zip</th>-->
+                        <th>Video Name</th>
                         <th>Charts Page</th>
                     </tr>
                     </thead>
@@ -24,6 +24,7 @@
                     {% for item in data %}
                     <tr>
                         <td>{{ item.date }}</td>
+                        <td>{{ item.movie_name }}</td>
                         <td>
                             <a href="{{url_for('previous_feedback', zip_name = item.zip_name)}}" > Get Graphs for this file </a>
 
