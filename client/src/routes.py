@@ -1,17 +1,22 @@
+import pickle
+
 from flask_login import login_user, logout_user, current_user
+import socket
 from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session
 from forms import RegistrationForm, LoginForm
-from client.src.models import User
-from test_generator import run
-from . import app, db, bcrypt
+import _thread
+import threading
+from functools import reduce
+from test_generator import run, success_sending_flag
+from . import app, db, bcrypt, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
 
 def is_admin():
-    return session.get('isAdmin') if session and session.get('logged_in') else False
+    return session.get('isAdmin') if session else False
 
 
 def allowed_file(filename):
@@ -31,10 +36,16 @@ def forgot_password():
 
 @app.route('/add-test', methods=['GET', 'POST'])
 def add_test():
-    try:
-        run()
-    finally:
-        return redirect(url_for("admin_index"))
+    add_test_thread = threading.Thread(target=run)
+    add_test_thread.start()
+    while add_test_thread.is_alive():
+        time.sleep(5)
+
+    if success_sending_flag:
+        flash('The test files were uploaded successfully', 'success')
+    else:
+        flash('Failed to upload test files', 'failure')
+    return redirect(url_for("admin_index"))
 
 
 @app.route('/admin-index', methods=['GET', 'POST'])
@@ -60,82 +71,151 @@ def load_video():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            upload_video_file(app.config['UPLOAD_FOLDER'], file)
+            print('full file is {} '.format(file.filename))
+            videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
             userID = session.get('ID') if session and session.get('logged_in') else 0
-            upload_file_sql(file.filename.split('.')[0], userID)
+            for video_path in videos_paths_to_upload:
+                print(video_path)
+                video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
+                # to create the output dir from the server
+                # create_dir_if_not_exists('output')
+                # create_dir_if_not_exists('../../server/videos/')
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((SERVER_IP, SERVER_PORT))
+                    msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
+                    print('UPLOAD {} '.format(msg))
+                    s.sendall(msg.encode('utf-8'))
+                    start_msg = s.recv(1024)  # for 'start' message
+                    if start_msg.decode('utf-8') != 'start':
+                        flash('Failed to upload video file. Please try again', 'failure')
+                        return render_template('load-video.html', isAdmin=is_admin())
+                    f = open(video_path, 'rb')
+                    # send the file
+                    l = f.read(1024)
+                    while l:
+                        s.send(l)
+                        print("Sending data")
+                        l = f.read(1024)
+                    f.close()
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            return previous_feedbacks()
+            return redirect(url_for('index'))
         else:
             flash('Failed to upload video file. Please try again', 'failure')
     return render_template('load-video.html', isAdmin=is_admin())
 
 
-def upload_file_sql(filename, user_id=0):
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        INSERT INTO FILES(NAME, CREATORID)
-        VALUE (%s, %s)
-        ''', (filename, user_id))
-    mysql.connection.commit()
-    cur.close()
-    return
+# def upload_file_sql(filename, user_id=0):
+#     cur = mysql.connection.cursor()
+#     cur.execute('''
+#         INSERT INTO FILES(NAME, CREATORID)
+#         VALUE (%s, %s)
+#         ''', (filename, user_id))
+#     mysql.connection.commit()
+#     cur.close()
+#     return
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks():
-    local_use = True
+    # connect and ask for all list
     user_id = session.get('ID') if session and session.get('logged_in') else 0
-    data_to_pass = get_previous_feedbacks(user_id) if not local_use else get_previous_feedbacks_groiser()  # stab
+    data_recieved = ''
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_feedbacks_list user_id: {}'.format(user_id)
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        files_details = data.decode('utf-8')
+
+    files_details = files_details.split(',')
+    # print(files_details)
+    data_to_pass = list()
+    for file_detail in files_details:
+        try:
+            name_and_date = file_detail.split('__')
+            zip_date = name_and_date[1]
+            new_data = dict()
+            new_data['date'] = zip_date
+            new_data['zip_name'] = name_and_date[0]  # with no extension
+            # new_data['zip'] = file_detail
+            print('new data')
+            print(new_data)
+            data_to_pass.append(new_data)
+        except:
+            continue
+
     return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
 
 
 @app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
 def previous_feedback(zip_name):
-    try:
-        csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
-                                         expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
-                                                              'interpolated_all_keypoints'])
-        frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
-        sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
-        frames_paths = sorted(frames_paths, key=sort_lambda)
-        frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
-        first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
-        data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
-        return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
-                               isAdmin=is_admin(), first_frame_number=first_frame_num)
-    except:
-        return previous_feedbacks()
+    user_id = session.get('ID') if session and session.get('logged_in') else 0
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        # s.setblocking(0)  # non blocking
+        s.connect((SERVER_IP, SERVER_PORT))
+        zip_name_to_send = zip_name.split('.')[0]
+        print(zip_name_to_send)
+        msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
+        print('PREVIOUS FEEDBACK msg = {}'.format(msg))
+        s.sendall(msg.encode('utf-8'))
+
+        path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(zip_name)
+        print('path to zip is : {}'.format(path_to_zip))
+        with open(path_to_zip, 'wb') as f:
+            data = s.recv(1024)
+            while data:
+                print('getting zip into temp directory ...')
+                f.write(data)
+                data = s.recv(1024)
+            print('finish receiving data')
+
+    csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                     expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
+                                                          'interpolated_all_keypoints'])
+
+    frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
+    sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+    frames_paths = sorted(frames_paths, key=sort_lambda)
+    frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+    first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+
+    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
+                           isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
 # Forum
 @app.route("/forum/<page>")
 def forum(page):
     page = int(page)
-    cur = mysql.connection.cursor()
     limit = 30
     offset = limit * page
     nextPageExists = False
+    msg = 'forum_view_page offset: {} limit: {}'.format(offset, limit)
+    topics = pickle.loads(send_msg_to_server(msg))
     pinned = {}
-    if page == 0:
-        cur.execute('''
-            SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-            FROM TOPICS
-            INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-            LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-            WHERE TOPICS.ISPINNED = TRUE
-            GROUP BY TOPICS.ID
-            ORDER BY LASTPOST DESC;''')
-        pinned = cur.fetchall()
-    cur.execute('''
-        SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-        FROM TOPICS
-        INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-        LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-        WHERE TOPICS.ISPINNED = FALSE
-        GROUP BY TOPICS.ID
-        ORDER BY LASTPOST DESC
-        LIMIT %s, %s''', (offset, limit + 1,))
-    topics = cur.fetchall()
+
+    # cur = mysql.connection.cursor()
+    # if page == 0:
+    #     cur.execute('''
+    #         SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
+    #         FROM TOPICS
+    #         INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
+    #         LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
+    #         WHERE TOPICS.ISPINNED = TRUE
+    #         GROUP BY TOPICS.ID
+    #         ORDER BY LASTPOST DESC;''')
+    #     pinned = cur.fetchall()
+    # cur.execute('''
+    #     SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
+    #     FROM TOPICS
+    #     INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
+    #     LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
+    #     WHERE TOPICS.ISPINNED = FALSE
+    #     GROUP BY TOPICS.ID
+    #     ORDER BY LASTPOST DESC
+    #     LIMIT %s, %s''', (offset, limit + 1,))
+    # topics = cur.fetchall()
 
     if len(topics) > limit:
         nextPageExists = True
@@ -153,24 +233,35 @@ def topic(forumPage, topicID, page):
     page = int(page)
     limit = 10
     nextPageExists = False
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        SELECT TOPICS.NAME, TOPICS.ISPINNED
-        FROM TOPICS
-        WHERE TOPICS.ID = %s;''', (topicID,))
-    topic = cur.fetchone()
-    if not topic:
+
+    msg = 'forum_topic_name topic_id: {}'.format(topicID)
+    name = send_msg_to_server(msg).decode("utf-8")
+
+    # cur = mysql.connection.cursor()
+    # cur.execute('''
+    #     SELECT TOPICS.NAME, TOPICS.ISPINNED
+    #     FROM TOPICS
+    #     WHERE TOPICS.ID = %s;''', (topicID,))
+    # topic = cur.fetchone()
+    # if not topic:
+    #     return redirect("/forum/" + forumPage)
+    if not name:
         return redirect("/forum/" + forumPage)
-    name = topic['NAME']
-    isPinned = int(topic['ISPINNED'])
-    cur.execute('''
-        SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
-        FROM POSTS
-        INNER JOIN USERS ON POSTS.CREATORID = USERS.ID
-        WHERE POSTS.TOPICID = %s
-        ORDER BY POSTS.CREATION_DATE
-        LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
-    posts = cur.fetchall()
+    # name = topic['NAME']
+    # isPinned = int(topic['ISPINNED'])
+    isPinned = 0
+    msg = 'forum_view_topic topic_id: {} page: {} limit: {}'.format(topicID, page, limit)
+    posts = pickle.loads(send_msg_to_server(msg))
+
+    # cur.execute('''
+    #     SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
+    #     FROM POSTS
+    #     INNER JOIN USERS ON POSTS.CREATORID = USERS.ID
+    #     WHERE POSTS.TOPICID = %s
+    #     ORDER BY POSTS.CREATION_DATE
+    #     LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
+    # posts = cur.fetchall()
+
     if len(posts) > limit:
         nextPageExists = True
     if len(posts) == 0 and page != 0:
@@ -182,15 +273,15 @@ def topic(forumPage, topicID, page):
 
 # Create post, topic
 
-def createPostFunction(content, topicID, userID=0):
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
-        VALUE (%s, %s, %s)
-        ''', (content, userID, topicID))
-    mysql.connection.commit()
-    cur.close()
-    return
+# def createPostFunction(content, topicID, userID=0):
+#     cur = mysql.connection.cursor()
+#     cur.execute('''
+#         INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
+#         VALUE (%s, %s, %s)
+#         ''', (content, userID, topicID))
+#     mysql.connection.commit()
+#     cur.close()
+#     return
 
 
 @app.route("/forum/createPost", methods=['POST'])
@@ -204,7 +295,9 @@ def createPost():
         flash(u"Post must contain content!", "danger")
     else:
         userID = session.get('ID') if session and session.get('logged_in') else 0
-        createPostFunction(content, topicID, userID)
+        msg = 'forum_create_post user_id: {} topic_id: {} content: {}'.format(userID, topicID, content)
+        send_msg_to_server(msg)
+        # createPostFunction(content, topicID, userID)
     return redirect("/forum/topic/0/" + topicID + "/" + page)
 
 
@@ -218,17 +311,34 @@ def createTopic():
     if not content or not title:
         flash(u"Topic must contain content and title!", "danger")
     else:
-        cur = mysql.connection.cursor()
-        cur.execute('''
-            INSERT INTO TOPICS(NAME, CREATORID)
-            VALUE (%s, %s)
-            ''', (title, userID))
-        mysql.connection.commit()
-        topicID = cur.lastrowid
-        cur.close()
-        createPostFunction(content, topicID, userID)
+        msg = 'forum_create_topic user_id: {} title: {} content: {}'.format(userID, title, content)
+        topicID = send_msg_to_server(msg).decode("utf-8")
+
+        # cur = mysql.connection.cursor()
+        # cur.execute('''
+        #     INSERT INTO TOPICS(NAME, CREATORID)
+        #     VALUE (%s, %s)
+        #     ''', (title, userID))
+        # mysql.connection.commit()
+        # topicID = cur.lastrowid
+        # cur.close()
+        # createPostFunction(content, topicID, userID)
         return redirect("/forum/topic/0/" + str(topicID) + "/0")
     return redirect("/forum")
+
+
+def send_msg_to_server(msg):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        s.sendall(msg.encode('utf-8'))
+        answer = b''
+        part_answer = s.recv(1024)
+        while part_answer:
+            print('getting answer from server..')
+            answer += part_answer
+            part_answer = s.recv(1024)
+        print(answer)
+        return answer
 
 
 # Login / Register / Logout scripts
@@ -246,19 +356,18 @@ def login():
     _username = request.form['username']
     _passwd = request.form['password']
 
-    cur = mysql.connection.cursor()
-    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (_username,))
+    msg = 'login username: {} password: {}'.format(_username, _passwd)
 
-    if res > 0:
-        user = cur.fetchone()
-
-        if bcrypt.check_password_hash(user['PASSWORD_HASH'], _passwd):
-            session['ID'] = user['ID']
-            session['username'] = user['USERNAME']
-            session['logged_in'] = True
-            session['isAdmin'] = (user['ISADMIN'] == 1)
-            flash(u"You're now logged in!", "info")
-            return redirect(url_for('index'))
+    answer = send_msg_to_server(msg).decode("utf-8")
+    print("Answer is : " + answer)
+    answer = answer.split()
+    if answer[0] != "Fail:":
+        session['ID'] = answer[0]
+        session['username'] = answer[1]
+        session['logged_in'] = answer[2]
+        session['isAdmin'] = answer[3]
+        flash(u"You're now logged in!", "success")
+        return redirect(url_for('index'))
 
     flash(u"Incorrect login", "danger")
     return redirect(url_for('login'))
@@ -273,25 +382,18 @@ def register():
     _username = form.username.data
     _passwd = request.form['password']
     _email = request.form['email']
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'register username: {} password: {} email: {}'.format(_username, _passwd, _email)
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        data = data.decode("utf-8")
+        print(data)
+        if data.split(' ')[0] == "Fail:":
+            flash(data, "danger")
+            return redirect(url_for('register'))
 
-    if len(_username) < 2 or len(_username) > 20:
-        flash(u"Incorrect username lenght!", "danger")
-        return redirect(url_for('panel'))
-
-    cur = mysql.connection.cursor()
-    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (_username, _email))
-
-    if res != 0:
-        flash(u"User exists!", "danger")
-        return redirect(url_for('panel'))
-
-    passwordHash = bcrypt.generate_password_hash(_passwd).decode('utf-8')
-    cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
-                (_username, _email, passwordHash))
-
-    mysql.connection.commit()
-    cur.close()
-    flash(u"You're now registered!", "info")
+    flash(u"You're now registered!", "success")
     return redirect(url_for('login'))
 
 

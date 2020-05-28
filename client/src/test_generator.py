@@ -1,5 +1,7 @@
 import math
 import shutil
+import socket
+import time
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtWidgets, uic, QtCore
@@ -10,7 +12,12 @@ import filetype
 import os
 import cv2
 import pandas as pd
+# from . import SERVER_PORT, SERVER_IP
 from pip._vendor.pkg_resources import parse_requirements
+
+from client.src import SERVER_IP, SERVER_PORT
+
+success_sending_flag = False
 
 
 class GuiData():
@@ -26,6 +33,7 @@ class GuiData():
     original_frames = list()
     resolution_ratio = (0, 0)
     selected_item_val = None
+    movie_extension = None
 
 
 def run():
@@ -275,6 +283,7 @@ def load_video_btn_pressed():
             kind = filetype.guess(file_path)
             if str(kind.mime).split('/')[0] == 'video':
                 GuiData.video_path = file_path
+                GuiData.movie_extension = file_path.split('.')[-1]
                 GuiData.frames_number = generate_frames_from_video(file_path)
                 get_msg_lbl().setText("Generation succeeded")
                 gui_setup()
@@ -352,11 +361,16 @@ def prev_btn_pressed():
 def red_btn_pressed():
     try:
         delete_frames_folder()
-        output_video_name = create_video()
-        csv_name = get_video_name() + "_expected.csv"
-        add_data_to_excepted_csvs(output_video_name, csv_name)
-    finally:
-        return
+        output_video_path = create_video()
+        csv_path = get_video_name() + "_expected.csv"
+        send_test_files_to_server(output_video_path)
+        print('sent video')
+        time.sleep(15) # in order to let the server to prepare
+        send_test_files_to_server(csv_path)
+        print('sent all')
+        success_sending_flag = True
+    except:
+        success_sending_flag = False
 
 
 def reset_guidata_object():
@@ -424,10 +438,38 @@ def undo_btn_pressed():
         return
 
 
+def get_size_of_file_path(file_path):
+    f = open(file_path, 'rb')
+    f.seek(0, 2)  # moves the file object's position to the end of the file.
+    size = f.tell()
+    f.close()
+    return size
+
+
 # Helpers
-def add_data_to_excepted_csvs(output_video_name, csv_name):
-    shutil.move(os.getcwd() + '/' + output_video_name, '../../server/excepted_data/videos')
-    shutil.move(os.getcwd() + '/' + csv_name, '../../server/excepted_data/csvs')
+def send_test_files_to_server(file_path):
+    global success_sending_flag
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        file_size_in_bytes = get_size_of_file_path(file_path)
+        msg = 'add_test file_path: {} file_extension: {} file_size: {}'.format(file_path, file_path.split('.')[-1],
+                                                                               file_size_in_bytes)
+        s.send(msg.encode('utf-8'))
+        msg = None
+        while msg != 'start':
+            start_msg = s.recv(1024)  # for 'start' message
+            msg = start_msg.decode('utf-8')
+            success_sending_flag = False
+        f = open(file_path, 'rb')
+        # send the file
+        l = f.read(1024)
+        while l:
+            s.send(l)
+            # print("Sending data of {}".format(file_path))
+            l = f.read(1024)
+        f.close()
+
+    success_sending_flag = True
 
 
 def build_keypoints_tbl_for_request_frame(requested_frame_number):
@@ -711,6 +753,10 @@ def get_load_video_btn():
 
 def get_msg_lbl():
     return GuiData.dlg.msg_lbl
+
+
+def get_movie_extension():
+    return GuiData.movie_extension
 
 
 def get_next_button():

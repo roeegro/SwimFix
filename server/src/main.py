@@ -7,6 +7,10 @@ import argparse
 import facade
 import time
 import shutil
+import socket
+import MySQLdb
+from requests import get
+from client_requests_parser import main_parser
 
 # import preprocessor
 # setup
@@ -58,6 +62,9 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
+HOST = '10.0.0.8'  # Standard loopback interface address (localhost)
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+
 
 def wait_analyze_video():
     while True:
@@ -65,6 +72,7 @@ def wait_analyze_video():
             video_path = '../videos/' + filename
             try:
                 print("Analysing path...")
+                facade.create_output_dir_for_movie_of_user(video_path)
                 all_keypoints_csv_path = facade.get_keypoints_csv_from_video(video_path, params)
                 interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
                 facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
@@ -83,5 +91,27 @@ def wait_analyze_video():
         time.sleep(1)
 
 
+def accept_request():
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            print(HOST)
+            ip = get('https://api.ipify.org').text
+            print(ip)
+            s.bind((HOST, PORT))
+            print('bind. start listening')
+            s.listen()
+            conn, addr = s.accept()
+            with conn:
+                print('Connected by', addr)
+                # while True:
+                data = conn.recv(1024)
+                answer = main_parser(data, conn, params)
+                print('answer is : {}'.format(answer))
+                if not answer:
+                    answer= "Done".encode("utf-8")
+                conn.sendall(answer)
+
+
 if __name__ == '__main__':
-    wait_analyze_video()
+    # wait_analyze_video()
+    accept_request()

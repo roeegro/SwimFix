@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 
 import output_manager
-import utils
 
 
 def show_avg_angle_diff(dict_of_avg_angle_for_test, dict_of_avg_angle_for_tested):
@@ -168,3 +167,35 @@ def autolabel(rects, ax):
                     xytext=(0, 3),  # 3 points vertical offset
                     textcoords="offset points",
                     ha='center', va='bottom')
+
+
+# Assumption : The shape of all asked dfs must be the same, and columns are the same.
+def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True):
+    figures_path = output_manager.get_figures_dir()
+    analytics_path = output_manager.get_analytics_dir()
+    if csv_paths is str:
+        create_graph(csv_paths, y_cols, x_col, mult_figures)
+    else:
+        dfs = [pd.read_csv(csv_path).set_index(x_col) for csv_path in csv_paths]
+        x = dfs[0][x_col].values if x_col != 'Frame Number' else dfs[0].index
+        if y_cols is None:
+            y_cols = dfs[0].columns.difference([x_col]).values
+        elif y_cols is str:
+            y_cols = [y_cols]
+        for y_col in y_cols:
+            fig, ax = plt.subplots()
+            y_values = [df[y_col].values for df in dfs]
+            for index, y_value in enumerate(y_values):
+                dict_for_df = {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index}
+                x_axis_of_current_csv = dfs[index][x_col] if x_col != 'Frame Number' else dfs[index].index
+                x_y_as_series = pd.Series(index=x_axis_of_current_csv,data=y_value)
+                ax.plot(x_y_as_series,label=csv_paths[index].split('/')[-1])
+                dict_for_df.update({y_col + '_from_' + csv_paths[index].split('/')[-1]: y_value})
+            legend = ax.legend(loc='best', fontsize='medium')
+            plt.xlabel(x_col)
+            plt.ylabel('location in frame')
+            plt.title("{} comparison".format(y_col))
+            df_to_new_csv = pd.DataFrame(data=dict_for_df).set_index(x_col)
+            df_to_new_csv.to_csv(analytics_path + "/{}_comparison.csv".format(y_col))
+            plt.savefig(figures_path + "/{}_by_{}_comparison".format(y_col, x_col))
+            plt.close()

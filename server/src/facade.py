@@ -3,7 +3,15 @@ import data_extractor
 import output_manager
 import utils
 import visualizer
-import os
+
+
+def filter_and_interpolate(csv_path, video_full_name, y_cols=None, x_col='Frame Number', mult_figures=True):
+    filtered_and_interpolated_csv_path = data_extractor.filter_and_interpolate(csv_path)
+    expected_csv_for_movie_path = output_manager.get_excepted_csv_path_for_movie(video_full_name)
+    csvs_paths_to_compare = filtered_and_interpolated_csv_path if expected_csv_for_movie_path is None else [
+        expected_csv_for_movie_path, filtered_and_interpolated_csv_path]
+    visualizer.plot_multi_graphs_from_other_csvs(csvs_paths_to_compare, y_cols, x_col, mult_figures)
+    return filtered_and_interpolated_csv_path
 
 
 def interpolate_and_plot(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, filename=None):
@@ -14,6 +22,12 @@ def interpolate_and_plot(csv_path, y_cols=None, x_col='Frame Number', mult_figur
 
 def create_graph_from_csv(csv_path, y_cols, x_col='Frame Number', mult_figures=True):
     visualizer.create_graph(csv_path, y_cols, x_col, mult_figures)
+
+
+def create_output_dir_for_movie_of_user(video_path, username="defaultUser"):
+    video_name = utils.get_file_name(video_path)
+    video_name = utils.path_without_suffix(video_name)
+    output_manager.generate_dirs_for_output_of_movie(video_name, username=username)
 
 
 def interpolate_csv(csv_path, y=None, x='Frame Number'):
@@ -46,9 +60,13 @@ def get_keypoints_csv_from_video(video_path, params):
     return data_extractor.get_keypoints_csv_from_video(video_path, params)
 
 
+def get_output_dir_path(key=None):
+    return output_manager.get_output_dir_path(key)
+
+
 def zip_output():
     zip_path = output_manager.zip_output()
-    output_manager.send_zip(zip_path, "../../client/src/static/output1")
+    output_manager.send_zip(zip_path, "../../client/src/static/output")
     print('finish to send zip')
     return zip_path
 
@@ -56,11 +74,13 @@ def zip_output():
 def main():
     all_keypoints_df_csv_path = '../../all_keypoints.csv'
     video_path = 'MVI_8027.MOV'
-    output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
-    interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
-    get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
-    get_detected_keypoints_by_frame(all_keypoints_df_csv_path)
-    get_average_swimming_period_from_csv(interpolated_keypoints_path)
+    # output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
+    # interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
+    # filter_and_interpolate(all_keypoints_df_csv_path)
+    # get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
+    #
+    # get_detected_keypoints_by_frame(all_keypoints_df_csv_path)
+    # get_average_swimming_period_from_csv(interpolated_keypoints_path)
 
 
 if __name__ == '__main__':

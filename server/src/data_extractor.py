@@ -180,7 +180,7 @@ body_parts = utils.get_body_parts()
 def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     video_name = utils.get_file_name(video_path)
     video_name = utils.path_without_suffix(video_name)
-    output_dirs = output_manager.generate_dirs_for_output_of_movie(video_name)
+    output_dirs = output_manager.get_output_dirs_dict()  # must be created before calling to this function.
     size = (600, 480)
     annotated_video_cap = cv2.VideoWriter('annotated_video.avi', cv2.VideoWriter_fourcc(*'MP4V'), 30, size)
 
@@ -263,7 +263,7 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     print("finished")
     cap.release()
     annotated_video_cap.release()
-    # shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
+    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
     valid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv", index=False)
     invalid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv", index=False)
     frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv", index=False)
@@ -309,3 +309,121 @@ def valid_frame(current_frame_df):
             number_of_detected_body_parts > number_of_body_parts * 0.6 and neck_detected):
         return True
     return False
+
+
+# filter frames where openpose is more confident with its results, and interpolate them.
+def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename=None, output_path=None,
+                           min_interval_length=3, score_threshold=0.4):
+    df = pd.read_csv(csv_path)
+    if output_path is None:
+        output_path = output_manager.get_analytics_dir()
+    if y_cols is None:
+        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))
+        y_cols = cols.copy()
+        y_cols.remove(x_col)
+        path = output_path + '/interpolated_and_filtered_' + utils.path_without_suffix(
+            utils.get_file_name(csv_path)) + '.csv'
+    elif type(y_cols) == str:
+        y_cols = [y_cols]
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    else:
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    if filename is not None:
+        path = output_path + '/' + filename + '.csv'
+
+    df['Frame Number'].astype('int64')
+    df = df.set_index('Frame Number')
+
+    df_to_show = df.drop(columns=df.columns.difference(cols), axis=1)
+    sides = ['L', 'R']
+    intervals_list = list()
+    intervals_per_side = dict()
+    for side in sides:
+        interval_list_per_hand = get_relevant_intervals_for_hand(df, side,
+                                                                 min_interval_length, score_threshold)
+        merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
+        intervals_per_side[side] = merged_interval_list_per_hand
+        side_cols = list(filter(lambda name: name.startswith(side), y_cols))
+        for interval in merged_interval_list_per_hand:
+            intervals_list.append(interval)
+            start_interval_frame = int(interval['start'])
+            end_interval_frame = int(interval['end'])
+            interval_df = df.loc[start_interval_frame:end_interval_frame, side_cols]
+            try:
+                interval_df.loc[interval['frames_to_inerpolate'], interval_df.columns] = np.nan
+            except:
+                continue  # for some perfect intervals which we don't have to fix.
+            for col_name in side_cols:
+                interval_df[col_name].interpolate(method='cubic', inplace=True)
+                df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
+                    interval['frames_to_inerpolate'], col_name]  # update df
+    filter_frames_without_reliable_info(df_to_show, intervals_per_side)
+    df_to_show.to_csv(path)
+    return path
+
+
+def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length, score_threshold):
+    current_interval_len_counter = 0
+    intervals_list_for_hand = list()
+    start_interval_frame_number = all_keypoints_df.index.min()
+    for index, row in all_keypoints_df.iterrows():
+        if all_keypoints_df[side + 'ElbowScore'][index] > score_threshold:
+            if current_interval_len_counter == 0:
+                start_interval_frame_number = index
+            current_interval_len_counter += 1
+        elif current_interval_len_counter > min_interval_length:
+            intervals_list_for_hand.append({'start': start_interval_frame_number, 'end': index - 1})
+            start_interval_frame_number = index
+            current_interval_len_counter = 0
+        else:
+            current_interval_len_counter = 0
+    return intervals_list_for_hand
+
+
+def try_merge_between_intervals(interval_list_per_hand, max_distance_between_intervals=10):
+    merged_intervals_list_for_hand = list()
+    should_skip_next_interval = False
+    for index in range(len(interval_list_per_hand)):
+        if should_skip_next_interval:
+            should_skip_next_interval = False
+            index += 1
+            continue
+        if index == len(interval_list_per_hand) - 1:
+            merged_intervals_list_for_hand.append(interval_list_per_hand[index])
+        elif interval_list_per_hand[index + 1]['start'] - interval_list_per_hand[index][
+            'end'] > max_distance_between_intervals:
+            merged_intervals_list_for_hand.append(interval_list_per_hand[index])
+        else:
+            merged_intervals_list_for_hand.append({'start': interval_list_per_hand[index][
+                'start'], 'end': interval_list_per_hand[index + 1]['end'], 'frames_to_inerpolate': np.arange(
+                interval_list_per_hand[index]['end'] + 1, interval_list_per_hand[index + 1]['start'])})
+            should_skip_next_interval = True
+            index += 1
+    return merged_intervals_list_for_hand
+
+
+def filter_frames_without_reliable_info(df_to_show, intervals_per_side):
+    right_side_columns = list(filter(lambda name: name.startswith('R'), df_to_show.columns))
+    left_side_columns = list(filter(lambda name: name.startswith('L'), df_to_show.columns))
+    frames_out_of_wanted_ranges = df_to_show.index.tolist()
+    reliable_intervals_for_right_side = intervals_per_side['R']
+    reliable_intervals_for_left_side = intervals_per_side['L']
+    for frame in frames_out_of_wanted_ranges:
+        found_in_right = False
+        found_in_left = False
+        for interval in reliable_intervals_for_right_side:
+            if frame in np.arange(interval['start'],interval['end']+1):
+                found_in_right = True
+                break
+        for interval in reliable_intervals_for_left_side:
+            if frame in np.arange(interval['start'],interval['end']+1):
+                found_in_left = True
+                break
+
+        if not found_in_right:
+            df_to_show.loc[[frame], right_side_columns] = np.nan
+        if not found_in_left:
+            df_to_show.loc[[frame], left_side_columns] = np.nan
+
