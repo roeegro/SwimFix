@@ -127,6 +127,9 @@ def previous_feedbacks():
         data = s.recv(1024)
         files_details = data.decode('utf-8')
 
+    if files_details == 'Fail':
+        return render_template('previous-feedbacks.html', data=list(), isAdmin=is_admin())
+
     files_details = files_details.split(',')
     # print(files_details)
     data_to_pass = list()

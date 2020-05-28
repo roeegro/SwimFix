@@ -64,7 +64,7 @@ def view_feedbacks_list(data, conn, params):
     user_id = data[data.index('user_id:') + 1]
     mysql.ping(True)
     cur = mysql.cursor()
-    res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+    res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = {}".format(user_id))
     if res == 0:
         return "Fail".encode("utf-8")
     username = cur.fetchone()['USERNAME']
@@ -81,7 +81,6 @@ def view_feedbacks_list(data, conn, params):
         time = time.replace(':', '-')
         to_add = '{}__{}_{}'.format(movie_name, date, time) + ','
         answer += to_add
-    print(answer)
     return answer.encode("utf-8")
 
 
