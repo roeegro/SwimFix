@@ -109,7 +109,10 @@ def accept_request():
                 print('answer is : {}'.format(answer))
                 if not answer:
                     answer= "Done".encode("utf-8")
-                conn.sendall(answer)
+                try:
+                    conn.sendall(answer)
+                except:
+                    continue
 
 
 if __name__ == '__main__':

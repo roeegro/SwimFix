@@ -290,6 +290,7 @@ def upload(data, conn, params):
         ''', (filename, user_id, date_time_obj))
     mysql.commit()
     cur.close()
+    return "success".encode('utf-8')
 
 
 def upload_file_sql(filename, user_id=0):

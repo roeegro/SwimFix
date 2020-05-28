@@ -173,7 +173,7 @@ def autolabel(rects, ax):
 def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True):
     figures_path = output_manager.get_figures_dir()
     analytics_path = output_manager.get_analytics_dir()
-    if csv_paths is str:
+    if type(csv_paths) is str:
         create_graph(csv_paths, y_cols, x_col, mult_figures)
     else:
         dfs = [pd.read_csv(csv_path).set_index(x_col) for csv_path in csv_paths]

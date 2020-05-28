@@ -157,6 +157,8 @@ def video_cutter(video_path=0):
             continue
 
         new_start_time = math.floor(start_time) - 2
+        if new_start_time < 0:
+            new_start_time = 0
         new_end_time = math.ceil(end_time)
         start_frame = int(new_start_time * fps)
         target_path = output_dir + video_name + '_from_frame_' + str(start_frame) + '.mp4'
@@ -169,6 +171,10 @@ def video_cutter(video_path=0):
         new_videos_paths.append(target_path)
 
     print(new_videos_paths)
+    if new_videos_paths == []:
+        target_path = output_dir + video_name + '_from_frame_' + str(0) + '.mp4'
+        extract_subclip(video_path, 0, math.ceil(frame_counter * fps), target_path)
+        new_videos_paths.append(target_path)
     return new_videos_paths
 
 
