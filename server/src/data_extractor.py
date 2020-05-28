@@ -3,15 +3,12 @@ import math
 import cv2
 import numpy as np
 from scipy import interpolate
-import extract_frames as f
 import output_manager
 import utils
 import pandas as pd
-# import main
+
 from main import *
 
-
-#
 
 def generate_vectors_csv(csv_path, filename='vectors.csv'):
     df = pd.read_csv(csv_path)
@@ -263,7 +260,7 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     print("finished")
     cap.release()
     annotated_video_cap.release()
-    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
+    shutil.move('annotated_video.avi', output_dirs['annotated_video'])
     valid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv", index=False)
     invalid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv", index=False)
     frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv", index=False)
@@ -272,27 +269,6 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     cv2.destroyAllWindows()
 
     return output_dirs['analytical_data_path'] + "/all_keypoints.csv"
-
-
-# coors - coors is list of tuples and lines are list of lists of pairs
-# returns an annotated frame
-def get_annotated_frame(frame, coors, lines=[[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [1, 5], [5, 6], [6, 7]]):
-    annotated_frame = frame
-    for line in lines:
-        from_kp_index = line[0]
-        to_kp_index = line[1]
-        from_point = coors[from_kp_index]
-        to_point = coors[to_kp_index]
-        if not math.isnan(from_point[0]) and not math.isnan(from_point[1]):
-            annotated_frame = cv2.circle(annotated_frame, from_point, 1, (0, 255, 0), thickness=1)
-        if not math.isnan(to_point[0]) and not math.isnan(to_point[1]):
-            annotated_frame = cv2.circle(annotated_frame, coors[to_kp_index], 1, (0, 255, 0), thickness=1)
-        try:
-            annotated_frame = cv2.line(annotated_frame, to_point, from_point, (0, 255, 0),
-                                       thickness=1)
-        except:
-            continue
-    return annotated_frame
 
 
 # Basic check if frame is valid to be included in the analytical data
@@ -414,11 +390,11 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side):
         found_in_right = False
         found_in_left = False
         for interval in reliable_intervals_for_right_side:
-            if frame in np.arange(interval['start'],interval['end']+1):
+            if frame in np.arange(interval['start'], interval['end'] + 1):
                 found_in_right = True
                 break
         for interval in reliable_intervals_for_left_side:
-            if frame in np.arange(interval['start'],interval['end']+1):
+            if frame in np.arange(interval['start'], interval['end'] + 1):
                 found_in_left = True
                 break
 
@@ -426,4 +402,3 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side):
             df_to_show.loc[[frame], right_side_columns] = np.nan
         if not found_in_left:
             df_to_show.loc[[frame], left_side_columns] = np.nan
-

@@ -72,11 +72,9 @@ def load_video():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            print('full file is {} '.format(file.filename))
             videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
-                print(video_path)
                 video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
                 # to create the output dir from the server
                 # create_dir_if_not_exists('output')
@@ -132,7 +130,6 @@ def previous_feedbacks():
         return render_template('previous-feedbacks.html', data=list(), isAdmin=is_admin())
 
     files_details = files_details.split(',')
-    # print(files_details)
     data_to_pass = list()
     for file_detail in files_details:
         try:
@@ -141,9 +138,6 @@ def previous_feedbacks():
             new_data = dict()
             new_data['date'] = zip_date
             new_data['zip_name'] = name_and_date[0]  # with no extension
-            # new_data['zip'] = file_detail
-            print('new data')
-            print(new_data)
             data_to_pass.append(new_data)
         except:
             continue
@@ -158,13 +152,11 @@ def previous_feedback(zip_name):
         # s.setblocking(0)  # non blocking
         s.connect((SERVER_IP, SERVER_PORT))
         zip_name_to_send = zip_name.split('.')[0]
-        print(zip_name_to_send)
         msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
         print('PREVIOUS FEEDBACK msg = {}'.format(msg))
         s.sendall(msg.encode('utf-8'))
 
         path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(zip_name)
-        print('path to zip is : {}'.format(path_to_zip))
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
             while data:
@@ -175,7 +167,7 @@ def previous_feedback(zip_name):
 
     csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
                                      expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
-                                                          'interpolated_all_keypoints'])
+                                                          'interpolated_all_keypoints','interpolated_and_filtered_all_keypoints'])
 
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
@@ -338,10 +330,8 @@ def send_msg_to_server(msg):
         answer = b''
         part_answer = s.recv(1024)
         while part_answer:
-            print('getting answer from server..')
             answer += part_answer
             part_answer = s.recv(1024)
-        print(answer)
         return answer
 
 
@@ -349,10 +339,6 @@ def send_msg_to_server(msg):
 @app.route('/', methods=['GET', 'POST'])
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    # if session and session['logged_in']:
-    #     print(session['logged_in'])
-    #     return redirect(url_for('index'))
-
     form = LoginForm(request.form)
     if not form.validate_on_submit():
         return render_template('login.html', title='Login', form=form)
@@ -363,7 +349,6 @@ def login():
     msg = 'login username: {} password: {}'.format(_username, _passwd)
 
     answer = send_msg_to_server(msg).decode("utf-8")
-    print("Answer is : " + answer)
     answer = answer.split()
     if answer[0] != "Fail:":
         session['ID'] = answer[0]
@@ -392,7 +377,6 @@ def register():
         s.sendall(msg.encode('utf-8'))
         data = s.recv(1024)
         data = data.decode("utf-8")
-        print(data)
         if data.split(' ')[0] == "Fail:":
             flash(data, "danger")
             return redirect(url_for('register'))

@@ -67,8 +67,6 @@ def view_feedbacks_list(data, conn, params):
     res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = {}".format(user_id))
     if res == 0:
         return "Fail".encode("utf-8")
-    username = cur.fetchone()['USERNAME']
-
     mysql.ping(True)
     cur = mysql.cursor()
     cur.execute("SELECT * FROM FILES WHERE CREATORID = {}".format(user_id))
@@ -97,21 +95,14 @@ def view_graphs(data, conn, params):
     if res == 0:
         return "Fail"
     res = cur.fetchone()
-    print('res')
-    print(res)
     creation_date = res['CREATION_DATE']
     [date, time] = str(creation_date).split(' ')[0:2]
     time = time.replace(':', '-')
     creation_date_to_search = date + '/' + time
     path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
     zip_location = '../temp'
-    print(
-        'ZIPING PROCESS : zip location : {} , content in : {} , will be called : {} '.format(zip_location,
-                                                                                             path_to_search_in,
-                                                                                             filename))
     make_archive(path_to_search_in, zip_location, filename + ".zip")
     file_path_to_send = zip_location + '/' + filename + ".zip"
-    print('file path to send: {}'.format(file_path_to_send))
     f = open(file_path_to_send, 'rb')
     l = f.read(1024)
     while l:
@@ -248,7 +239,7 @@ def upload(data, conn, params):
     user_id = data[data.index('user_id:') + 1]
     mysql.ping(True)
     cur = mysql.cursor()
-    cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+    cur.execute("SELECT USERNAME FROM USERS WHERE ID = {}".format(user_id))
 
     username = cur.fetchone()['USERNAME']
     filename = data[data.index('filename:') + 1]

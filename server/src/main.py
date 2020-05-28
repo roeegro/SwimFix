@@ -66,31 +66,6 @@ HOST = '10.0.0.8'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 
-def wait_analyze_video():
-    while True:
-        for filename in os.listdir('../videos')[:1]:
-            video_path = '../videos/' + filename
-            try:
-                print("Analysing path...")
-                facade.create_output_dir_for_movie_of_user(video_path)
-                all_keypoints_csv_path = facade.get_keypoints_csv_from_video(video_path, params)
-                interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
-                facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
-                facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
-                facade.get_average_swimming_period_from_csv(interpolated_keypoints_path)
-                zip_path = facade.zip_output()
-                print('Zipped the output in path: ', zip_path)
-                # else:
-                #     raise ValueError("%s isn't a file!" % filename)
-            except Exception as e:
-                print("Server got an error while processing video {} : {}".format(filename, e))
-            finally:
-                os.remove(video_path)
-                print("Removed video")
-        print("Waiting...")
-        time.sleep(1)
-
-
 def accept_request():
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -108,7 +83,7 @@ def accept_request():
                 answer = main_parser(data, conn, params)
                 print('answer is : {}'.format(answer))
                 if not answer:
-                    answer= "Done".encode("utf-8")
+                    answer = "Done".encode("utf-8")
                 try:
                     conn.sendall(answer)
                 except:
@@ -116,5 +91,4 @@ def accept_request():
 
 
 if __name__ == '__main__':
-    # wait_analyze_video()
     accept_request()

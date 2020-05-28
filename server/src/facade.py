@@ -24,7 +24,7 @@ def create_graph_from_csv(csv_path, y_cols, x_col='Frame Number', mult_figures=T
     visualizer.create_graph(csv_path, y_cols, x_col, mult_figures)
 
 
-def create_output_dir_for_movie_of_user(video_path, username="defaultUser"):
+def create_output_dir_for_movie_of_user(video_path, username="guest"):
     video_name = utils.get_file_name(video_path)
     video_name = utils.path_without_suffix(video_name)
     output_manager.generate_dirs_for_output_of_movie(video_name, username=username)

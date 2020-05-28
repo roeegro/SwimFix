@@ -17,12 +17,6 @@ def get_files_in_dir(path):
     return files
 
 
-def get_id_of_file(path):
-    filename = path_without_suffix(path.split('/')[-1])
-    id = filename.split('_')[-1]
-    return id
-
-
 def get_file_name(path):
     return path.split('/')[-1]
 

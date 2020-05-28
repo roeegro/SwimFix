@@ -3,15 +3,13 @@ import shutil
 from datetime import datetime
 import utils
 import pandas as pd
-import zipfile
-
-from utils import path_without_suffix, get_src_path, get_file_name_for_backslash
+from utils import get_src_path, get_file_name_for_backslash
 
 expected_output_dirs_dict = {}
 output_dirs_dict = {}
 
 
-def generate_dirs_for_output_of_movie(movName, username='defaultUser'):
+def generate_dirs_for_output_of_movie(movName, username='guest'):
     video_name = utils.path_without_suffix(movName)
     new_output_dirs_dict = dict()
     outputs_dir = get_src_path() + "/../output"
@@ -68,8 +66,6 @@ def zip_output():
     date = output_dirs_dict['date_path'].split('/')[-1]
     zip_name = '{}_{}_{}.zip'.format(filename, date, time)
     make_archive(folder_to_compress, zip_out_path, zip_name)
-
-    # shutil.make_archive(zip_name, 'zip', zip_out_path, folder_to_compress)
     return zip_out_path + '/{}'.format(zip_name)
 
 
@@ -116,10 +112,6 @@ def analytical_df_to_csv(df, filename):
     outp_path = analytical_dir_path + '/' + filename
     pd.DataFrame.to_csv(df, outp_path, index=False)
     return outp_path
-
-
-def get_frames_dir():
-    return output_dirs_dict['frames_path']
 
 
 def get_output_dir_path(key=None):
