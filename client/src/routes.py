@@ -44,15 +44,15 @@ def add_test():
     if success_sending_flag:
         flash('The test files were uploaded successfully', 'success')
     else:
-        flash('Failed to upload test files', 'failure')
+        flash('Failed to upload test files', 'info')
     return redirect(url_for("admin_index"))
 
 
 @app.route('/admin-index', methods=['GET', 'POST'])
 def admin_index():
-    if is_admin():
+    if is_admin() == 'True':
         return render_template('admin-index.html', isAdmin=is_admin())
-    flash("You are not authorized to access this page", 'failure')
+    flash("You are not authorized to access this page", 'danger')
     return redirect(url_for('index'))
 
 
