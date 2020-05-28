@@ -144,10 +144,11 @@ The first 10 layers are used as backbone.
 ## Our results
 
 ## Known issues
-|Error					|Reason								 |Solution Link
+|Error					|Reason								 |Solution
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
 |`  Could NOT find Protobuf (missing: Protobuf_INCLUDE_DIR)`|When trying to build OpenPose|https://gist.github.com/diegopacheco/cd795d36e6ebcd2537cd18174865887b
+|# Check failed: error == cudaSuccess (2 vs. 0) out of memory | During model training | Lower batch size  
 
 
 ## Installation commands
@@ -165,7 +166,7 @@ libatlas-base-dev
 python-numpy
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NzczMDQ0NDcsLTk0NTc5NjY4NCwxMz
-I0ODA5NDYsLTM1NzE1MTIxNiwtMTgxNDY4NDc0Miw1MjU1MzE3
-OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
+eyJoaXN0b3J5IjpbMjAzMjU2MjQxLC05NDU3OTY2ODQsMTMyND
+gwOTQ2LC0zNTcxNTEyMTYsLTE4MTQ2ODQ3NDIsNTI1NTMxNzk2
+LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
 -->
