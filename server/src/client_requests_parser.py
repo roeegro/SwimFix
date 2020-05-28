@@ -1,6 +1,6 @@
 import datetime
 import pickle
-
+import os
 import MySQLdb
 import bcrypt
 import MySQLdb.cursors
@@ -101,6 +101,8 @@ def view_graphs(data, conn, params):
     creation_date_to_search = date + '/' + time
     path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
     zip_location = '../temp'
+    if os.path.exists(zip_location):
+        os.mkdir(zip_location)
     make_archive(path_to_search_in, zip_location, filename + ".zip")
     file_path_to_send = zip_location + '/' + filename + ".zip"
     f = open(file_path_to_send, 'rb')
@@ -247,6 +249,8 @@ def upload(data, conn, params):
     msg = 'start'
     conn.send(msg.encode('utf-8'))
     videos_path = '../videos/'
+    if os.path.exists(videos_path):
+        os.mkdir(videos_path)
     path_to_video = videos_path + filename
     counter = 0
     f = open(path_to_video, 'wb')
