@@ -366,7 +366,9 @@ def red_btn_pressed():
         send_test_files_to_server(output_video_path)
         print('sent video')
         time.sleep(15) # in order to let the server to prepare
+        os.remove(output_video_path)
         send_test_files_to_server(csv_path)
+        os.remove(csv_path)
         print('sent all')
         success_sending_flag = True
     except:

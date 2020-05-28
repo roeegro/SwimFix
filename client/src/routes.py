@@ -9,7 +9,7 @@ import _thread
 import threading
 from functools import reduce
 from test_generator import run, success_sending_flag
-from . import app, db, bcrypt, SERVER_IP, SERVER_PORT
+from . import app, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']

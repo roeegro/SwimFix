@@ -5,7 +5,6 @@ from shutil import copyfile
 import shutil
 import time
 from zipfile import ZipFile
-from client.src import mysql
 
 
 def create_dir_if_not_exists(directory):
@@ -91,35 +90,6 @@ def get_previous_feedbacks_groiser():
         record_dict['zip'] = path
         record_dict['zip_name'] = filename
         record_dict['zip_name_without_extension'] = filename.split('.')[0]
-        previous_feedbacks.append(record_dict)
-    return previous_feedbacks
-
-
-def get_previous_feedbacks(user_id):
-    previous_feedbacks = []
-    path_to_outputs = './static/output'
-    cur = mysql.connection.cursor()
-    cur.execute('''
-            SELECT FILES.ID, FILES.NAME, FILES.CREATION_DATE, FILES.CREATORID
-            FROM FILES
-            WHERE FILES.CREATORID = %s
-            ORDER BY FILES.CREATION_DATE;
-            ''', (user_id,))
-    files = cur.fetchall()
-    if not files:
-        return []
-    print(files)
-    users_filenames = [row["NAME"] for row in files]
-    users_files_creation = [row["CREATION_DATE"] for row in files]
-    for filename in os.listdir(path_to_outputs):
-        filename_no_extention = filename.split('.')[0]
-        if filename_no_extention not in users_filenames: continue
-        path = path_to_outputs + '/' + str(filename)
-        record_dict = dict()
-        # record_dict['date'] = time.ctime(os.path.getctime(path))
-        record_dict['date'] = users_files_creation[users_filenames.index(filename_no_extention)]
-        record_dict['zip'] = path
-        record_dict['zip_name'] = filename
         previous_feedbacks.append(record_dict)
     return previous_feedbacks
 
