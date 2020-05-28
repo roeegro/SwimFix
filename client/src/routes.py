@@ -8,7 +8,7 @@ from forms import RegistrationForm, LoginForm
 import _thread
 import threading
 from functools import reduce
-from test_generator import run, success_sending_flag
+from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
@@ -40,11 +40,12 @@ def add_test():
     add_test_thread.start()
     while add_test_thread.is_alive():
         time.sleep(5)
-
-    if success_sending_flag:
-        flash('The test files were uploaded successfully', 'success')
+    from test_generator import success_sending_flag
+    time.sleep(5)
+    if not success_sending_flag:
+        flash('Failed to upload test files', 'danger')
     else:
-        flash('Failed to upload test files', 'info')
+        flash('The test files were uploaded successfully', 'success')
     return redirect(url_for("admin_index"))
 
 

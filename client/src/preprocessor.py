@@ -3,7 +3,8 @@
 # import the necessary packages
 # import math
 import math
-
+import sys
+from sys import platform
 from imutils.video import VideoStream
 import imutils
 import time
@@ -18,8 +19,9 @@ output_dir = "partial_movies/"
 
 # if the video_path argument is 0, then we are reading from webcam
 def get_video_name_from_path(video_path):
+    video_path = video_path.replace('\\', '/')
     video_name = video_path.split('/')[-1]
-    video_name = video_name.split('\\')[-1]
+    # video_name = video_name.split('\\')[-1]
     video_name = video_name.split('.')[0]
     return video_name
 

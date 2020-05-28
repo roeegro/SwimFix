@@ -12,12 +12,11 @@ import filetype
 import os
 import cv2
 import pandas as pd
-# from . import SERVER_PORT, SERVER_IP
-from pip._vendor.pkg_resources import parse_requirements
+# from . import SERVER_PORT, SERVER_IP,success_sending_flag
 
 from client.src import SERVER_IP, SERVER_PORT
 
-success_sending_flag = False
+success_sending_flag = None
 
 
 class GuiData():
@@ -360,6 +359,7 @@ def prev_btn_pressed():
 
 def red_btn_pressed():
     try:
+        global success_sending_flag
         delete_frames_folder()
         output_video_path = create_video()
         csv_path = get_video_name() + "_expected.csv"
@@ -450,7 +450,6 @@ def get_size_of_file_path(file_path):
 
 # Helpers
 def send_test_files_to_server(file_path):
-    global success_sending_flag
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
         file_size_in_bytes = get_size_of_file_path(file_path)
@@ -461,7 +460,6 @@ def send_test_files_to_server(file_path):
         while msg != 'start':
             start_msg = s.recv(1024)  # for 'start' message
             msg = start_msg.decode('utf-8')
-            success_sending_flag = False
         f = open(file_path, 'rb')
         # send the file
         l = f.read(1024)
@@ -470,8 +468,6 @@ def send_test_files_to_server(file_path):
             # print("Sending data of {}".format(file_path))
             l = f.read(1024)
         f.close()
-
-    success_sending_flag = True
 
 
 def build_keypoints_tbl_for_request_frame(requested_frame_number):
@@ -496,7 +492,7 @@ def create_csv():
     if not GuiData.all_keypoints_csv_path is None:  # There is an existing csv to copy from
         # copy the selected one to cwd
         original_csv_as_df = pd.read_csv(GuiData.all_keypoints_csv_path)
-        csv_path = os.getcwd() + "\\" + video_name + "_expected.csv"
+        csv_path = os.getcwd() + "/" + video_name + "_expected.csv"
         original_csv_as_df.to_csv(csv_path, index=False)
         GuiData.all_keypoints_csv_path = csv_path  # keep it for write every frame keypoints coordinates.
         return
@@ -512,7 +508,7 @@ def create_csv():
             except:
                 continue
     df = pd.DataFrame(columns=body_parts)
-    csv_path = os.getcwd() + "\\" + video_name + "_expected.csv"
+    csv_path = os.getcwd() + "/" + video_name + "_expected.csv"
     df.to_csv(csv_path, index=False)
     GuiData.all_keypoints_csv_path = csv_path  # keep it for write every frame keypoints coordinates.
 
@@ -586,7 +582,7 @@ def generate_frames_from_video(video_path):
             break
         height, width, _ = image.shape
         GuiData.resolution_ratio = (frame_label_width / width, frame_label_height / height)
-        cv2.imwrite(get_frame_dir() + "\\frame_%d.jpg" % count, image)  # save frame as JPEG file
+        cv2.imwrite(get_frame_dir() + "/frame_%d.jpg" % count, image)  # save frame as JPEG file
         GuiData.frames_for_final_video.append(image)
         GuiData.original_frames.append(image)
         GuiData.stabbed_points_per_frame.append(dict())
@@ -721,12 +717,12 @@ def get_finish_line_def_btn():
 
 
 def get_frame(curr_frame):
-    frame_path = get_frame_dir() + '\\frame_{}.jpg'.format(curr_frame)
+    frame_path = get_frame_dir() + '/frame_{}.jpg'.format(curr_frame)
     return frame_path
 
 
 def get_frame_dir():
-    return os.getcwd() + '\\frames'
+    return os.getcwd() + '/frames'
 
 
 def get_from_keypoint_cmbox():
