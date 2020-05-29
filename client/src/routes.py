@@ -103,6 +103,52 @@ def load_video():
     return render_template('load-video.html', isAdmin=is_admin())
 
 
+def get_size_of_file_path(file_path):
+    f = open(file_path, 'rb')
+    f.seek(0, 2)  # moves the file object's position to the end of the file.
+    size = f.tell()
+    f.close()
+    return size
+
+
+@app.route("/run-test", methods=['GET', 'POST'])
+def run_test():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file, should_take_full_video=True)
+            for video_path in videos_paths_to_upload:
+                video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((SERVER_IP, SERVER_PORT))
+                    msg = 'run_test filename: {} file_size: {}'.format(video_name, get_size_of_file_path(video_path))
+                    s.sendall(msg.encode('utf-8'))
+                    start_msg = s.recv(1024)  # for 'start' message
+                    while start_msg.decode('utf-8') != 'start':
+                        if start_msg.decode('utf-8') == 'not found':
+                            flash('No test found for this video', 'info')
+                            return render_template('run-test.html')
+                        start_msg = s.recv(1024)
+                    f = open(video_path, 'rb')
+                    # send the file
+                    l = f.read(1024)
+                    while l:
+                        s.send(l)
+                        print("Sending data")
+                        l = f.read(1024)
+                    f.close()
+
+            flash('The file {} was uploaded successfully'.format(file.filename), 'success')
+            return redirect(url_for('admin_index'))
+        else:
+            flash('Failed to upload video file. Please try again', 'failure')
+    return render_template('run-test.html')
+
+
 # def upload_file_sql(filename, user_id=0):
 #     cur = mysql.connection.cursor()
 #     cur.execute('''
@@ -168,7 +214,8 @@ def previous_feedback(zip_name):
 
     csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
                                      expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
-                                                          'interpolated_all_keypoints','interpolated_and_filtered_all_keypoints'])
+                                                          'interpolated_all_keypoints',
+                                                          'interpolated_and_filtered_all_keypoints'])
 
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])

@@ -62,7 +62,7 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
-HOST = '10.0.0.8'  # Standard loopback interface address (localhost)
+HOST = '10.0.0.10'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 

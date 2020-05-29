@@ -26,7 +26,7 @@ def get_video_name_from_path(video_path):
     return video_name
 
 
-def video_cutter(video_path=0):
+def video_cutter(video_path=0, should_take_full_video=False):
     if video_path == 0:
         vs = VideoStream(src=0).start()
         time.sleep(2.0)
@@ -177,6 +177,12 @@ def video_cutter(video_path=0):
         target_path = output_dir + video_name + '_from_frame_' + str(0) + '.mp4'
         extract_subclip(video_path, 0, math.ceil(frame_counter * fps), target_path)
         new_videos_paths.append(target_path)
+
+    if should_take_full_video:
+        target_path = output_dir + video_name + '_from_frame_' + str(0) + '.mp4'
+        extract_subclip(video_path, 0, math.ceil(frame_counter * fps), target_path)
+        return [target_path]
+
     return new_videos_paths
 
 

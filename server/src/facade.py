@@ -83,5 +83,8 @@ def main():
     # get_average_swimming_period_from_csv(interpolated_keypoints_path)
 
 
+def run_test():
+    return 1
+
 if __name__ == '__main__':
     main()

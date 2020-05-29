@@ -5,7 +5,7 @@ import MySQLdb
 import bcrypt
 import MySQLdb.cursors
 import facade
-from output_manager import make_archive
+from output_manager import make_archive, get_excepted_csv_path_for_movie
 
 MYSQL_HOST = '65.19.141.67'
 MYSQL_PORT = 3306
@@ -234,7 +234,21 @@ def add_test(data, conn, params):
 
 
 def run_test(data, conn, params):
-    pass
+    print('RUN_TEST')
+    print(data)
+    file_size = int(data[data.index('file_size:') + 1])
+    filename = data[data.index('filename:') + 1]
+    expected_csv_path = get_excepted_csv_path_for_movie(filename)
+    if expected_csv_path is None:
+        return str("not found").encode('utf-8')
+    msg = 'start'
+    conn.send(msg.encode('utf-8'))
+    byte_counter = 0
+    while byte_counter < file_size:
+        data1 = conn.recv(1024)
+        byte_counter += 1024
+        print(byte_counter)
+    return str("success").encode("utf-8")
 
 
 def upload(data, conn, params):
