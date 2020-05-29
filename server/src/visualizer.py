@@ -41,8 +41,8 @@ def show_avg_angle_diff(dict_of_avg_angle_for_test, dict_of_avg_angle_for_tested
     plt.show()
 
 
-def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True):
-    output_path = output_manager.get_figures_dir()
+def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, output_path=None):
+    output_path = output_manager.get_figures_dir() if output_path is None else output_path
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     x = df[x_col].values
@@ -66,8 +66,8 @@ def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True)
     plt.close()
 
 
-def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
-    output_path = output_manager.get_figures_dir()
+def plot_frame_detection(csv_path, y_cols=None, mult_figures=True, output_path=None):
+    output_path = output_manager.get_figures_dir() if output_path is None else output_path
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     frames = df['Frame Number'].values
@@ -90,8 +90,8 @@ def plot_frame_detection(csv_path, y_cols=None, mult_figures=True):
     plt.close()
 
 
-def plot_histogram_from_dict(data_dicts, xlabel, ylabel, filename=None):
-    output_path = output_manager.get_figures_dir()
+def plot_histogram_from_dict(data_dicts, xlabel, ylabel, filename=None, output_path=None):
+    output_path = output_manager.get_figures_dir() if output_path is None else output_path
     if filename is None:
         filename = ylabel + '_of_' + xlabel + '_histogram'
     if isinstance(data_dicts, dict) or len(data_dicts) == 1:
@@ -109,8 +109,8 @@ def plot_histogram_from_dict(data_dicts, xlabel, ylabel, filename=None):
     plt.close()
 
 
-def plot_scatter_from_dict(data_dict, xlabel, ylabel, filename=None):
-    output_path = output_manager.get_figures_dir()
+def plot_scatter_from_dict(data_dict, xlabel, ylabel, filename=None, output_path=None):
+    output_path = output_manager.get_figures_dir() if output_path is None else output_path
     plt.scatter(data_dict.keys(), data_dict.values())
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -132,9 +132,12 @@ def autolabel(rects, ax):
 
 
 # Assumption : The columns must be the same when using this function for more than one csv path.
-def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True):
-    figures_path = output_manager.get_figures_dir()
-    analytics_path = output_manager.get_analytics_dir()
+def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True,
+                                      output_path=None):
+    figures_path = output_manager.get_figures_dir() if output_path is None else output_path
+    print('fig = {}'.format(figures_path))
+    analytics_path = output_manager.get_analytics_dir() if output_path is None else output_path
+    print('analytics = {}'.format(analytics_path))
     if type(csv_paths) is str:
         create_graph(csv_paths, y_cols, x_col, mult_figures)
     else:
@@ -156,8 +159,10 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
             legend = ax.legend(loc='best', fontsize='medium')
             plt.xlabel(x_col)
             plt.ylabel('location in frame')
-            plt.title(str(y_col) + " comparison")
+            specific_y_col = y_col
+            title = specific_y_col + ' comparison'
+            plt.title = title
             df_to_new_csv = pd.DataFrame(data=dict_for_df).set_index(x_col)
-            df_to_new_csv.to_csv(analytics_path + "/" + str(y_col) + "_comparison.csv")
-            plt.savefig(figures_path + "/" + str(y_col) + "_by_" + str(x_col) + "_comparison")
-            plt.close()
+            df_to_new_csv.to_csv(analytics_path + '/' + specific_y_col + '_comparison.csv')
+            plt.savefig(figures_path + '/' + specific_y_col + '_by_' + x_col + '_comparison')
+            plt.close(fig)

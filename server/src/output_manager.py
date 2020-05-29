@@ -107,8 +107,8 @@ def get_figures_dir():
     return output_dirs_dict['figures_path']
 
 
-def analytical_df_to_csv(df, filename):
-    analytical_dir_path = output_dirs_dict['analytical_data_path']
+def analytical_df_to_csv(df, filename, output_path=None):
+    analytical_dir_path = output_dirs_dict['analytical_data_path'] if output_path is None else output_path
     outp_path = analytical_dir_path + '/' + filename
     pd.DataFrame.to_csv(df, outp_path, index=False)
     return outp_path
@@ -139,11 +139,18 @@ def get_excepted_csv_path_for_movie(video_full_name):
     return wanted_path if os.path.exists(wanted_path) else None
 
 
-def build_test_dir(filename):
-    test_dir = '../test'
+def build_test_environment_dir(filename):
+    test_dir = '../tests'
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
-    movie_test_dir = test_dir + '/' + filename
-    if not os.path.exists(movie_test_dir):
-        os.mkdir(movie_test_dir)
-    return movie_test_dir
+    movie_test_env_dir = test_dir + '/' + filename
+    if not os.path.exists(movie_test_env_dir):
+        os.mkdir(movie_test_env_dir)
+    movie_ground_truth_data_dir = movie_test_env_dir + '/ground_truth_data'
+    if not os.path.exists(movie_ground_truth_data_dir):
+        os.mkdir(movie_ground_truth_data_dir)
+    movie_test_results_dir = movie_test_env_dir + '/test_results'
+    if not os.path.exists(movie_test_results_dir):
+        os.mkdir(movie_test_results_dir)
+
+    return movie_ground_truth_data_dir, movie_test_results_dir

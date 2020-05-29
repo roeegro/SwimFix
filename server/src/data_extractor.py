@@ -10,7 +10,7 @@ import pandas as pd
 from main import *
 
 
-def generate_vectors_csv(csv_path, filename='vectors.csv'):
+def generate_vectors_csv(csv_path, filename='vectors.csv', output_path=None):
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     vectors_df = pd.DataFrame(
@@ -37,7 +37,7 @@ def generate_vectors_csv(csv_path, filename='vectors.csv'):
                          'LForearmX': frame['LElbowX'] - frame['LWristX'],
                          'LForearmY': frame['RElbowY'] - frame['RWristY'], }
         vectors_df = vectors_df.append(frame_vectors, ignore_index=True)
-    outp_path = output_manager.get_analytics_dir() + '/' + filename
+    outp_path = output_manager.get_analytics_dir() + '/' + filename if output_path is None else output_path + '/' + filename
     pd.DataFrame.to_csv(vectors_df, outp_path, index=False)
     return outp_path
 
@@ -75,7 +75,7 @@ def angle_between(v1, v2):
     # return np.arccos(np.dot(v1_u, v2_u))
 
 
-def generate_angles_csv(csv_path, filename='angles.csv'):
+def generate_angles_csv(csv_path, filename='angles.csv', output_path=None):
     vectors_df = pd.read_csv(csv_path)
     angles_df = pd.DataFrame(columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng'])
     for idx, frame in vectors_df.iterrows():
@@ -93,12 +93,12 @@ def generate_angles_csv(csv_path, filename='angles.csv'):
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
-    outp_path = output_manager.analytical_df_to_csv(angles_df, filename)
+    outp_path = output_manager.analytical_df_to_csv(angles_df, filename, output_path=output_path)
     # pd.DataFrame.to_csv(angles_df, filname, index=False)
     return outp_path
 
 
-def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
+def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None, output_path=None):
     df = pd.read_csv(csv_path)
     if score_cols is None:
         if filename is None:
@@ -109,7 +109,7 @@ def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
             filename = 'is_' + '_'.join(score_cols) + 'detected.csv'
         score_cols = list(map(utils.keypoint_to_score, score_cols))
     is_detected_cols = list(map(lambda x: x.replace('Score', ''), score_cols))
-    path = output_manager.get_analytics_dir() + '/' + filename
+    path = output_manager.get_analytics_dir() + '/' + filename if output_path is None else output_path + '/' + filename
     is_detected_df = pd.DataFrame(columns=['Frame Number'] + is_detected_cols)
     for idx, frame in df.iterrows():
         is_detected_frame = {'Frame Number': frame['Frame Number']}

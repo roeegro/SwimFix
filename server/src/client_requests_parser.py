@@ -236,18 +236,21 @@ def add_test(data, conn, params):
 
 
 def run_test(data, conn, params):
-    print('RUN_TEST')
-    print(data)
     filename = data[data.index('filename:') + 1]
     expected_all_kp_csv_path = output_manager.get_excepted_csv_path_for_movie(filename)
     if expected_all_kp_csv_path is None:
         return str("not found").encode('utf-8')
-    print("Running openpose for all video")
     upload(data, conn, params)  # Run openpose to create the actual all keypoints csv
     actual_all_kp_csv_path = output_manager.get_analytics_dir() + '/all_keypoints.csv'
     movie_name = filename.split('_from')[0]
-    movie_test_dir = output_manager.build_test_dir(movie_name)
-    tester.compare_csvs(actual_all_kp_csv_path, expected_all_kp_csv_path, movie_test_dir)
+    movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(movie_name)
+
+    # facade.filter_and_interpolate(expected_all_kp_csv_path, filename, output_path=movie_ground_truth_data_dir)
+
+    facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
+                                             output_path=movie_ground_truth_data_dir)
+    facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
+    tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,filename)
     return str("success").encode("utf-8")
 
 
@@ -283,10 +286,10 @@ def upload(data, conn, params):
     facade.create_output_dir_for_movie_of_user(path_to_video, username)
     all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
     facade.filter_and_interpolate(all_keypoints_csv_path, filename)
-    interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
-    facade.get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
+    # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
+    facade.get_angles_csv_from_keypoints_csv(all_keypoints_csv_path)
     facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
-    facade.get_average_swimming_period_from_csv(interpolated_keypoints_path)
+    facade.get_average_swimming_period_from_csv(all_keypoints_csv_path)
     zip_path = facade.zip_output()
     creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
     creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
