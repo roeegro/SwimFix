@@ -121,11 +121,13 @@ def run_test():
         file = request.files['file']
         if file and allowed_file(file.filename):
             videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file, should_take_full_video=True)
+            userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
                 video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.connect((SERVER_IP, SERVER_PORT))
-                    msg = 'run_test filename: {} file_size: {}'.format(video_name, get_size_of_file_path(video_path))
+                    msg = 'run_test user_id: {} filename: {} file_size: {}'.format(userID, video_name,
+                                                                                   get_size_of_file_path(video_path))
                     s.sendall(msg.encode('utf-8'))
                     start_msg = s.recv(1024)  # for 'start' message
                     while start_msg.decode('utf-8') != 'start':

@@ -1,3 +1,5 @@
+import math
+
 import output_manager
 import utils
 import visualizer
@@ -5,7 +7,7 @@ import data_analyser
 import data_extractor
 from sklearn.metrics import mean_squared_error
 import pandas as pd
-import mth
+import math
 import facade
 
 
@@ -62,7 +64,7 @@ def start_test(out_path):
     pass
 
 
-def compare_csvs(actual_csv_path, expected_csv_path, out_path, tolerance=1, col_names=None):
+def compare_csvs(actual_csv_path, expected_csv_path, out_path, filename='comparison.csv', tolerance=1, col_names=None):
     actual_df = pd.read_csv(actual_csv_path)
     expected_df = pd.read_csv(expected_csv_path)
     if col_names is None:
@@ -90,10 +92,11 @@ def compare_csvs(actual_csv_path, expected_csv_path, out_path, tolerance=1, col_
         if compared_row['tolerated'] == 1:
             tolerated_count += 1
         compared_df = compared_df.append(compared_row, ignore_index=True)
-    compared_df.to_csv(out_path, index=False)
-    acc_dic = {'accuracy': round(tolerated_count/len(compared_df), 3)}
+    compared_df.to_csv(out_path + '/' + filename, index=False)
+    acc_dic = {'accuracy': round(tolerated_count / len(compared_df), 3)}
     for col in col_names:
-        acc_dic[col + '_accuracy'] = round(len(compared_df.loc[compared_df[col] == 1])/len(compared_df), 3)
+        acc_dic[col + '_accuracy'] = round(len(compared_df.loc[compared_df[col] == 1]) / len(compared_df), 3)
+    print(acc_dic)
     return acc_dic
 
 

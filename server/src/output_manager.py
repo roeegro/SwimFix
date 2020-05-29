@@ -137,3 +137,13 @@ def get_excepted_csv_path_for_movie(video_full_name):
     all_excepted_csvs_path = get_excepted_csvs_path()
     wanted_path = all_excepted_csvs_path + '/' + video_name + '_expected.csv'
     return wanted_path if os.path.exists(wanted_path) else None
+
+
+def build_test_dir(filename):
+    test_dir = '../test'
+    if not os.path.exists(test_dir):
+        os.mkdir(test_dir)
+    movie_test_dir = test_dir + '/' + filename
+    if not os.path.exists(movie_test_dir):
+        os.mkdir(movie_test_dir)
+    return movie_test_dir
