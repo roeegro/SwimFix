@@ -22,7 +22,8 @@
 </head>
 
 <body id="page-top">
-<img id="current frame to show" class="img-sticky">
+<canvas id="current frame to show" class="img-sticky"></canvas>
+<!--<img id="current frame to show" class="img-sticky">-->
 
 <!-- Page Wrapper -->
 <div id="wrapper">
@@ -42,7 +43,7 @@
                 <div class="row">
                     <script src="/static/js/demo/chart-area-demo.js"></script>
                     <script>
-                        setImage(parseInt("{{first_frame_number}}"))
+                        load_img(parseInt("{{first_frame_number}}"))
                     </script>
                 </div>
                 <!-- Content Row -->

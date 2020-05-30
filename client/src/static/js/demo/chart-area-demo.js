@@ -1,6 +1,7 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
+
 // var csv_name = null
 
 function number_format(number, decimals, dec_point, thousands_sep) {
@@ -32,14 +33,14 @@ function make_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
-    d3.csv(csv_path).then(make_chart.bind(csv_name,csv_name))
+    d3.csv(csv_path).then(make_chart.bind(csv_name, csv_name))
     return 0
 }
 
-function make_chart(csv_name,data) {
+function make_chart(csv_name, data) {
     columns = d3.keys(data[0])
     columns.forEach(column => {
-        if(column =="" || column == "Frame Number" )
+        if (column == "" || column == "Frame Number")
             return;
         var frame_range = []
         // Load frame Numberes
@@ -317,14 +318,99 @@ function make_chart(csv_name,data) {
                 var label = myLineChart.data.labels[clickedElementindex];
                 var value = myLineChart.data.datasets[clickedDatasetIndex].data[clickedElementindex];
                 console.log("dataset id : " + clickedDatasetIndex + " element index " + clickedElementindex + " Clicked: " + label + " - " + value)
-                setImage(parseInt(label))
+                load_img(parseInt(label))
             }
         };
     })
 
 }
 
-function setImage(index){
+function setImage(index) {
     frame_element = document.getElementById('current frame to show')
-    frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index  +'.jpg')
+    frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg')
+}
+
+
+function drawLine(id, xMin, xMax, yMin, yMax) {
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+    ctx.lineWidth = "3"
+    ctx.moveTo(xMin, yMin);
+    ctx.lineTo(xMax, yMax);
+    ctx.stroke();
+}
+
+function load_img(index) {
+    // var labels = {{ labels|tojson|safe }};
+    var c = document.getElementById("current frame to show");
+    var ctx = c.getContext("2d");
+    var drawLine = function (id, xMin, xMax, yMin, yMax) {
+        ctx.strokeStyle = 'rgba(0, 255, 0,0.4)'
+        ctx.beginPath();
+        ctx.lineWidth = "10"
+        ctx.moveTo(xMin, yMin);
+        ctx.lineTo(xMax, yMax);
+        ctx.stroke();
+    };
+    var image = new Image();
+    // console.log(image);
+    image.onload = function (e) {
+        ctx.canvas.width = image.width;
+        ctx.canvas.height = image.height;
+        c.width = image.width;
+        c.height = image.height;
+        ctx.drawImage(image, 0, 0);
+        console.log("clicked");
+    };
+    image.style.display = "block";
+    image.src = "/static/temp/annotated_frames/annotated_frame_" + index + ".jpg";
+
+    var clicked = false;
+    var fPoint = {};
+    c.onclick = function (e) {
+        console.log(clicked);
+        if (!clicked) {
+            var x = (image.width / c.scrollWidth) * e.offsetX;
+            var y = (image.height / c.scrollHeight) * e.offsetY;
+            console.log(e);
+            ctx.strokeStyle = 'rgba(0, 255, 0,0.4)';
+            ctx.fillStyle = 'rgba(0, 255, 0,0.4)';
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
+            ctx.fill();
+            fPoint = {
+                x: x,
+                y: y
+            };
+        } else {
+            var x = (image.width / c.scrollWidth) * e.offsetX;
+            var y = (image.height / c.scrollHeight) * e.offsetY;
+            var xMin;
+            var xMax;
+            var yMin;
+            var yMin;
+            if (x > fPoint.x) {
+                xMax = x;
+                xMin = fPoint.x;
+            } else {
+                xMax = fPoint.x;
+                xMin = x;
+            }
+            if (y > fPoint.y) {
+                yMax = y;
+                yMin = fPoint.y;
+            } else {
+                yMax = fPoint.y;
+                yMin = y;
+            }
+            drawLine(2, xMin, xMax, yMin, yMax)
+            fPoint = {};
+            // window.location.replace("/add/" + (labels.length + 1) +
+            //     "?xMin=" + xMin +
+            //     "&xMax=" + xMax +
+            //     "&yMin=" + yMin +
+            //     "&yMax=" + yMax);
+        }
+        clicked = !clicked;
+    };
 }
