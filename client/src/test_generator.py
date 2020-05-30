@@ -12,7 +12,7 @@ import filetype
 import os
 import cv2
 import pandas as pd
-# from . import SERVER_PORT, SERVER_IP,success_sending_flag
+import threading
 
 from client.src import SERVER_IP, SERVER_PORT
 
@@ -63,6 +63,7 @@ def gui_setup():
     get_undo_btn().setEnabled(False)
     get_load_csv_btn().setEnabled(False)
     get_clean_all_btn().setEnabled(False)
+    get_save_btn().setEnabled(False)
 
     get_current_frame_label().setText(str(0))
     get_image_label().setScaledContents(True)
@@ -94,6 +95,8 @@ def gui_setup():
     get_undo_btn().clicked.connect(undo_btn_pressed)
     get_load_csv_btn().clicked.connect(load_csv_btn_pressed)
     get_clean_all_btn().clicked.connect(clean_all_btn_pressed)
+    get_save_btn().clicked.connect(save_btn_pressed)
+
     # Window settings
 
     dlg.showMaximized()
@@ -205,6 +208,7 @@ def finish_line_def_btn_pressed():
 
     get_next_button().setEnabled(True)
     get_prev_button().setEnabled(True)
+    get_save_btn().setEnabled(True)
     get_undo_btn().setEnabled(True)
     get_clean_all_btn().setEnabled(True)
     get_add_line_btn().setEnabled(False)
@@ -357,22 +361,32 @@ def prev_btn_pressed():
         edit_shown_frame()
 
 
-def red_btn_pressed():
+def save_btn_pressed():
     try:
+        get_msg_lbl().setText("Uploading is done. Please wait...")
         global success_sending_flag
         delete_frames_folder()
         output_video_path = create_video()
         csv_path = get_video_name() + "_expected.csv"
         send_test_files_to_server(output_video_path)
         print('sent video')
-        time.sleep(15) # in order to let the server to prepare
+        time.sleep(15)  # in order to let the server to prepare
         os.remove(output_video_path)
         send_test_files_to_server(csv_path)
         os.remove(csv_path)
         print('sent all')
         success_sending_flag = True
+        get_msg_lbl().setText("Uploading succeeded")
+
     except:
+        get_msg_lbl().setText("Uploading failed")
         success_sending_flag = False
+
+
+def red_btn_pressed():
+    global success_sending_flag
+    if success_sending_flag is None:
+        success_sending_flag = 'exit'
 
 
 def reset_guidata_object():
@@ -408,7 +422,7 @@ def set_default_setting_btn_pressed():
         lines_tbl.setItem(row_counter, 1, QTableWidgetItem(body_parts[i + 1]))
         row_counter += 1
 
-    # connect left shoulder with chest
+    # connect left shoulder with Neck
     lines_tbl.setRowCount(row_counter + 1)
     lines_tbl.setItem(row_counter, 0, QTableWidgetItem(body_parts[1]))
     lines_tbl.setItem(row_counter, 1, QTableWidgetItem(body_parts[5]))
@@ -417,6 +431,7 @@ def set_default_setting_btn_pressed():
     finish_line_def_btn_pressed()
     get_next_button().setEnabled(True)
     get_prev_button().setEnabled(True)
+    get_save_btn().setEnabled(True)
     get_insert_row_btn().setEnabled(False)
     get_finish_body_parts_def_btn().setEnabled(False)
     get_finish_line_def_btn().setEnabled(False)
@@ -693,7 +708,7 @@ def get_all_keypoints_csv_path():
 
 
 def get_body_parts():
-    return ['Neck', 'Chest', 'RShoulder', 'RElbow', 'RWrist', 'LShoulder', 'LElbow', 'LWrist']
+    return ['Nose', 'Neck', 'RShoulder', 'RElbow', 'RWrist', 'LShoulder', 'LElbow', 'LWrist']
 
 
 def get_body_coors_tbl():
@@ -768,6 +783,9 @@ def get_prev_button():
 def get_undo_btn():
     return GuiData.dlg.undo_btn
 
+
+def get_save_btn():
+    return GuiData.dlg.save_btn
 
 def get_set_default_setting_btn():
     return GuiData.dlg.set_default_setting_btn

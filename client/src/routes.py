@@ -40,8 +40,12 @@ def add_test():
     add_test_thread.start()
     while add_test_thread.is_alive():
         time.sleep(5)
+    # add_test_thread.join()
     from test_generator import success_sending_flag
     time.sleep(5)
+    if success_sending_flag == 'exit':
+        flash('No test uploaded to the server', 'info')
+        return redirect(url_for("admin_index"))
     if not success_sending_flag:
         flash('Failed to upload test files', 'danger')
     else:
