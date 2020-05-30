@@ -36,6 +36,9 @@ def forgot_password():
 
 @app.route('/add-test', methods=['GET', 'POST'])
 def add_test():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
     add_test_thread = threading.Thread(target=run)
     add_test_thread.start()
     while add_test_thread.is_alive():
@@ -447,6 +450,9 @@ def logout():
 
 @app.route("/plug-and-play", methods=['POST', 'GET'])
 def plug_and_play():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
     if request.method == 'POST':
         file = request.files['file']
         if file:
