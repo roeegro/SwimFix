@@ -150,12 +150,18 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
         for y_col in y_cols:
             fig, ax = plt.subplots()
             y_values = [df[y_col].values for df in dfs]
+            dict_for_df = dict()
             for index, y_value in enumerate(y_values):
-                dict_for_df = {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index}
+                if index == 0:
+                    dict_for_df.update(
+                        {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index})
                 x_axis_of_current_csv = dfs[index][x_col] if x_col != 'Frame Number' else dfs[index].index
-                x_y_as_series = pd.Series(index=x_axis_of_current_csv, data=y_value)
+                np_nans = np.empty(len(dict_for_df[x_col]))
+                np_nans[:] = np.nan
+                x_y_as_series = pd.Series(index=dict_for_df[x_col], data=np_nans)
+                x_y_as_series.update(pd.Series(data=y_value, index=x_axis_of_current_csv))
                 ax.plot(x_y_as_series, label=csv_paths[index].split('/')[-1])
-                dict_for_df.update({y_col + '_from_' + csv_paths[index].split('/')[-1]: y_value})
+                dict_for_df.update({y_col + '_from_' + csv_paths[index].split('/')[-1]: x_y_as_series.values})
             legend = ax.legend(loc='best', fontsize='medium')
             plt.xlabel(x_col)
             plt.ylabel('location in frame')

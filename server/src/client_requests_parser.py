@@ -105,7 +105,7 @@ def view_graphs(data, conn, params):
     zip_location = '../temp'
     if not os.path.exists(zip_location):
         os.mkdir(zip_location)
-    make_archive(path_to_search_in, zip_location, filename + ".zip")
+    output_manager.make_archive(path_to_search_in, zip_location, filename + ".zip")
     file_path_to_send = zip_location + '/' + filename + ".zip"
     f = open(file_path_to_send, 'rb')
     l = f.read(1024)

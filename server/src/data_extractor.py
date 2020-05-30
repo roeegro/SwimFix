@@ -335,9 +335,51 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                 interval_df[col_name].interpolate(method='cubic', inplace=True)
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
                     interval['frames_to_inerpolate'], col_name]  # update df
-    filter_frames_without_reliable_info(df_to_show, intervals_per_side)
+
+    filter_frames_without_reliable_info(df_to_show, intervals_per_side,sides)
+
+    intervals_per_body_part = dict()
+    for body_part in ['Nose', 'Neck']:
+        interval_list_per_body_part = get_relevant_intervals_for_body_part(df, body_part, min_interval_length,
+                                                                           score_threshold)
+        merged_interval_list_per_body_part = try_merge_between_intervals(interval_list_per_body_part)
+        body_cols = list(filter(lambda name: name.startswith(body_part), y_cols))
+        intervals_per_body_part[body_part] = merged_interval_list_per_body_part
+        for interval in merged_interval_list_per_body_part:
+            intervals_list.append(interval)
+            start_interval_frame = int(interval['start'])
+            end_interval_frame = int(interval['end'])
+            interval_df = df.loc[start_interval_frame:end_interval_frame, body_cols]
+            try:
+                interval_df.loc[interval['frames_to_inerpolate'], interval_df.columns] = np.nan
+            except:
+                continue  # for some perfect intervals which we don't have to fix.
+            for col_name in body_cols:
+                interval_df[col_name].interpolate(method='cubic', inplace=True)
+                df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
+                    interval['frames_to_inerpolate'], col_name]  # update df
+
+    filter_frames_without_reliable_info(df_to_show, intervals_per_body_part,['Nose', 'Neck'])
     df_to_show.to_csv(path)
     return path
+
+
+def get_relevant_intervals_for_body_part(all_keypoints_df, body_part, min_interval_length, score_threshold):
+    current_interval_len_counter = 0
+    intervals_list_for_hand = list()
+    start_interval_frame_number = all_keypoints_df.index.min()
+    for index, row in all_keypoints_df.iterrows():
+        if all_keypoints_df[body_part + 'Score'][index] > score_threshold:
+            if current_interval_len_counter == 0:
+                start_interval_frame_number = index
+            current_interval_len_counter += 1
+        elif current_interval_len_counter > min_interval_length:
+            intervals_list_for_hand.append({'start': start_interval_frame_number, 'end': index - 1})
+            start_interval_frame_number = index
+            current_interval_len_counter = 0
+        else:
+            current_interval_len_counter = 0
+    return intervals_list_for_hand
 
 
 def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length, score_threshold):
@@ -380,12 +422,15 @@ def try_merge_between_intervals(interval_list_per_hand, max_distance_between_int
     return merged_intervals_list_for_hand
 
 
-def filter_frames_without_reliable_info(df_to_show, intervals_per_side):
-    right_side_columns = list(filter(lambda name: name.startswith('R'), df_to_show.columns))
-    left_side_columns = list(filter(lambda name: name.startswith('L'), df_to_show.columns))
+def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys_list):
+    print(intervals_per_side.keys())
+    right_side_columns = list(filter(lambda name: name.startswith(two_keys_list[1]), df_to_show.columns))
+    print('cols for right : {}'.format(right_side_columns))
+    left_side_columns = list(filter(lambda name: name.startswith(two_keys_list[0]), df_to_show.columns))
+    print('cols for left : {}'.format(left_side_columns))
     frames_out_of_wanted_ranges = df_to_show.index.tolist()
-    reliable_intervals_for_right_side = intervals_per_side['R']
-    reliable_intervals_for_left_side = intervals_per_side['L']
+    reliable_intervals_for_right_side = intervals_per_side[two_keys_list[1]]
+    reliable_intervals_for_left_side = intervals_per_side[two_keys_list[0]]
     for frame in frames_out_of_wanted_ranges:
         found_in_right = False
         found_in_left = False
@@ -402,3 +447,8 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side):
             df_to_show.loc[[frame], right_side_columns] = np.nan
         if not found_in_left:
             df_to_show.loc[[frame], left_side_columns] = np.nan
+
+
+
+if __name__ == '__main__':
+    filter_and_interpolate('../output/tom/MVI_8027_from_frame_60/2020-05-28/15-00-23/analytical_data/all_keypoints.csv')
