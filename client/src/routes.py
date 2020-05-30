@@ -3,7 +3,7 @@ import pickle
 from flask_login import login_user, logout_user, current_user
 import socket
 from gui_utils import *
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, jsonify
 from forms import RegistrationForm, LoginForm
 import _thread
 import threading
@@ -465,3 +465,16 @@ def plug_and_play():
         else:
             flash('Failed to upload python file. Please try again', 'failure')
     return render_template('plug-and-play.html', isAdmin=is_admin())
+
+
+# Helpers
+
+@app.route("/_pass_data/", methods=['GET', 'POST'])
+def _pass_data():
+    print('the data')
+    data = request.data.decode('utf-8')
+    print(data)
+    img_record = data.split(',')[-1]
+    current_url_record = data.split(',')[0]
+    zip_name = current_url_record.split(':')[-1][1:-1].split('/')[-1]
+    return jsonify({'data': url_for('previous_feedback', zip_name=zip_name)})

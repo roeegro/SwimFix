@@ -2,7 +2,8 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
-// var csv_name = null
+var current_img = null;
+
 
 function number_format(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');
@@ -353,7 +354,7 @@ function load_img(index) {
         ctx.stroke();
     };
     var image = new Image();
-    // console.log(image);
+
     image.onload = function (e) {
         ctx.canvas.width = image.width;
         ctx.canvas.height = image.height;
@@ -383,34 +384,34 @@ function load_img(index) {
                 y: y
             };
         } else {
-            var x = (image.width / c.scrollWidth) * e.offsetX;
-            var y = (image.height / c.scrollHeight) * e.offsetY;
-            var xMin;
-            var xMax;
-            var yMin;
-            var yMin;
-            if (x > fPoint.x) {
-                xMax = x;
-                xMin = fPoint.x;
-            } else {
-                xMax = fPoint.x;
-                xMin = x;
-            }
-            if (y > fPoint.y) {
-                yMax = y;
-                yMin = fPoint.y;
-            } else {
-                yMax = fPoint.y;
-                yMin = y;
-            }
-            drawLine(2, xMin, xMax, yMin, yMax)
+            var x2 = (image.width / c.scrollWidth) * e.offsetX;
+            var y2 = (image.height / c.scrollHeight) * e.offsetY;
+
+            drawLine(2, fPoint.x, x2, fPoint.y, y2)
             fPoint = {};
-            // window.location.replace("/add/" + (labels.length + 1) +
-            //     "?xMin=" + xMin +
-            //     "&xMax=" + xMax +
-            //     "&yMin=" + yMin +
-            //     "&yMax=" + yMax);
         }
+
         clicked = !clicked;
     };
+
+    current_img = image;
+}
+
+
+function sendFixes() {
+    var c = document.getElementById("current frame to show");
+    var ctx = c.getContext("2d");
+    var data = {'current_url' : document.URL , 'img' : ctx};
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: '/_pass_data/',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        success: function (result) {
+            jQuery("#clash").html(result);
+        }, error: function (result) {
+            console.log(result);
+        }
+    });
 }
