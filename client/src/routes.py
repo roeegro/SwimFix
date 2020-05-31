@@ -1,13 +1,12 @@
+from io import StringIO
 import pickle
-
-from flask_login import login_user, logout_user, current_user
 import socket
 from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session, jsonify
 from forms import RegistrationForm, LoginForm
-import _thread
 import threading
-from functools import reduce
+import re
+
 from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
 
@@ -471,10 +470,37 @@ def plug_and_play():
 
 @app.route("/_pass_data/", methods=['GET', 'POST'])
 def _pass_data():
-    print('the data')
-    data = request.data.decode('utf-8')
-    print(data)
-    img_record = data.split(',')[-1]
-    current_url_record = data.split(',')[0]
-    zip_name = current_url_record.split(':')[-1][1:-1].split('/')[-1]
-    return jsonify({'data': url_for('previous_feedback', zip_name=zip_name)})
+    data_as_json = request.get_json()
+    image_b64 = data_as_json['img']
+    path_to_save_img_in = os.getcwd() + data_as_json['current img path']
+    import base64
+    image_data = re.sub('^data:image/.+;base64,', '', image_b64)
+    image_data = base64.b64decode(image_data)
+    userID = session.get('ID') if session and session.get('logged_in') else 0
+    filename = path_to_save_img_in.split('/')[-1]
+    zip_name = data_as_json['current url'].split('/')[-1]
+    with open(path_to_save_img_in, "wb") as f:
+        f.write(image_data)
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'upload_image_fix user_id: {} video_name: {} filename: {} file_size: {}'.format(userID, zip_name, filename,
+                                                                                      get_size_of_file_path(
+                                                                                          path_to_save_img_in))
+        print(msg)
+        s.sendall(msg.encode('utf-8'))
+        start_msg = s.recv(1024)  # for 'start' message
+        while start_msg.decode('utf-8') != 'start':
+            if start_msg.decode('utf-8') == 'not found':
+                flash('No test found for this video', 'info')
+                return render_template('run-test.html')
+            start_msg = s.recv(1024)
+        print('path to read from {}'.format(path_to_save_img_in))
+        with open(path_to_save_img_in, "rb") as f:
+            l = f.read(1024)
+            while l:
+                s.send(l)
+                print("Sending data")
+                l = f.read(1024)
+
+    return jsonify({'returned_url': url_for('previous_feedback', zip_name=zip_name)})

@@ -2,7 +2,7 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
-var current_img = null;
+var current_img_path = '';
 
 
 function number_format(number, decimals, dec_point, thousands_sep) {
@@ -326,10 +326,6 @@ function make_chart(csv_name, data) {
 
 }
 
-function setImage(index) {
-    frame_element = document.getElementById('current frame to show')
-    frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg')
-}
 
 
 function drawLine(id, xMin, xMax, yMin, yMax) {
@@ -342,7 +338,8 @@ function drawLine(id, xMin, xMax, yMin, yMax) {
 }
 
 function load_img(index) {
-    // var labels = {{ labels|tojson|safe }};
+    current_img_path = '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg'
+    console.log(current_img_path)
     var c = document.getElementById("current frame to show");
     var ctx = c.getContext("2d");
     var drawLine = function (id, xMin, xMax, yMin, yMax) {
@@ -393,15 +390,17 @@ function load_img(index) {
 
         clicked = !clicked;
     };
-
-    current_img = image;
 }
 
 
 function sendFixes() {
     var c = document.getElementById("current frame to show");
     var ctx = c.getContext("2d");
-    var data = {'current_url' : document.URL , 'img' : ctx};
+    var imgData = ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height)
+    console.log(current_img_path)
+    imgData_url = c.toDataURL()
+    var data = {'current url' : document.URL , 'img' : imgData_url , 'current img path' : current_img_path};
+    // data = {'current_url' : document.URL , 'img' : 44}
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
@@ -409,9 +408,12 @@ function sendFixes() {
         dataType: 'json',
         data: JSON.stringify(data),
         success: function (result) {
-            jQuery("#clash").html(result);
+            console.log(2)
+            console.log(result['returned_url'])
+            jQuery("#clash").html(result['returned_url']);
         }, error: function (result) {
-            console.log(result);
+            console.log(3)
+            console.log(result['returned_url']);
         }
     });
 }

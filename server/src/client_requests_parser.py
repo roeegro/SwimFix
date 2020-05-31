@@ -8,6 +8,7 @@ import facade
 # from output_manager import make_archive, get_excepted_csv_path_for_movie
 import output_manager
 import tester
+import shutil
 
 MYSQL_HOST = '65.19.141.67'
 MYSQL_PORT = 3306
@@ -250,8 +251,58 @@ def run_test(data, conn, params):
     facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
                                              output_path=movie_ground_truth_data_dir)
     facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
-    tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,filename)
+    tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir, filename)
     return str("success").encode("utf-8")
+
+
+def upload_image_fix(data, conn, params):
+    file_size = int(data[data.index('file_size:') + 1])
+    user_id = data[data.index('user_id:') + 1]
+    video_name = data[data.index('video_name:') + 1]
+    filename = data[data.index('filename:') + 1]
+    video_name_with_no_extension = video_name.split('.')[0]
+    mysql.ping(True)
+    cur = mysql.cursor()
+    res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+    if res == 0:
+        return "Fail"
+    username = cur.fetchone()['USERNAME']
+    print('wanted username : {}'.format(username))
+    res = cur.execute("SELECT CREATION_DATE FROM FILES WHERE CREATORID = {}".format(user_id))
+    if res == 0:
+        return "Fail"
+    results = cur.fetchall()
+    path_to_uploaded_img = os.getcwd() + '/../temp/{}'.format(filename)
+
+    msg = 'start'
+    conn.send(msg.encode('utf-8'))
+    with open(path_to_uploaded_img, 'wb') as f:
+        counter = 0
+        while file_size > counter:
+            print(counter)
+            data = conn.recv(1024)
+            if not data:
+                break
+            # write data to a file
+            f.write(data)
+            counter += 1024
+            print('receiving data...')
+    for result in results:
+        try:
+            creation_date = result['CREATION_DATE']
+            [date, time] = str(creation_date).split(' ')[0:2]
+            time = time.replace(':', '-')
+            path_to_update = '/../output/{}/{}/{}/{}/frames/{}'.format(username, video_name_with_no_extension, date,
+                                                                       time,
+                                                                       filename)
+
+            print('next path to update to is:')
+            print(path_to_update)
+            # shutil.rmtree(os.getcwd() + path_to_update)
+            shutil.copy(path_to_uploaded_img, os.getcwd() + path_to_update)
+        except:
+            continue
+    os.remove(path_to_uploaded_img)
 
 
 def upload(data, conn, params):
@@ -323,7 +374,7 @@ requests_dict = {'login': login, 'register': register, 'download': download, 'vi
                  'forum_topic_name': forum_topic_name,
                  'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post,
                  'analyze_video': analyze_video,
-                 'add_test': add_test, 'run_test': run_test, 'upload': upload}
+                 'add_test': add_test, 'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix}
 
 
 def main_parser(data, conn, params):
