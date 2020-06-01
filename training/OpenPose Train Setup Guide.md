@@ -38,7 +38,7 @@ Make sure you have those and before continuing:
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
 -  Python 3.6
-## Required Repositores
+## Required Third-Party Repositories
 Before we get started, please clone the required git repositories:
 ```
 cd training
@@ -148,25 +148,29 @@ The first 10 layers are used as backbone.
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
 |`  Could NOT find Protobuf (missing: Protobuf_INCLUDE_DIR)`|When trying to build OpenPose|https://gist.github.com/diegopacheco/cd795d36e6ebcd2537cd18174865887b
-|# Check failed: error == cudaSuccess (2 vs. 0) out of memory | During model training | Lower batch size  
+|# `Check failed: error == cudaSuccess (2 vs. 0) out of memory` | During model training | Lower batch size  
 
-
+(We lowered from 10 to 1 on 6GB GPU (NVIDIA RTX 2060 MSI)
+|`Install protobuf` | | https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
+|`Install FFMPEG` | When running client|https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
+|`Could NOT find OpenSSL`| When installing CMake|[solutoin](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library)
+| `Could NOT find Atlas (missing: Atlas_CBLAS_INCLUDE_DIR)` | When building OpenPose with CMake |https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/305
 ## Installation commands
 Please install the following libraries:
 ```
 sudo apt-get install
-libprotobuf-dev
-libleveldb-dev
-libsnappy-dev
-libopencv-dev
-libhdf5-serial-dev
-protobuf-compiler
-libboost-all-dev
-libatlas-base-dev
-python-numpy
+ libprotobuf-dev
+ libleveldb-dev
+ libsnappy-dev
+ libopencv-dev
+ libhdf5-serial-dev
+ protobuf-compiler
+ libboost-all-dev
+ libatlas-base-dev
+ python-numpy
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAzMjU2MjQxLC05NDU3OTY2ODQsMTMyND
-gwOTQ2LC0zNTcxNTEyMTYsLTE4MTQ2ODQ3NDIsNTI1NTMxNzk2
-LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbLTQ3NTQ2ODUzMSwyMDMyNTYyNDEsLTk0NT
+c5NjY4NCwxMzI0ODA5NDYsLTM1NzE1MTIxNiwtMTgxNDY4NDc0
+Miw1MjU1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
