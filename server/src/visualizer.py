@@ -135,9 +135,7 @@ def autolabel(rects, ax):
 def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True,
                                       output_path=None):
     figures_path = output_manager.get_figures_dir() if output_path is None else output_path
-    print('fig = {}'.format(figures_path))
     analytics_path = output_manager.get_analytics_dir() if output_path is None else output_path
-    print('analytics = {}'.format(analytics_path))
     if type(csv_paths) is str:
         create_graph(csv_paths, y_cols, x_col, mult_figures)
     else:

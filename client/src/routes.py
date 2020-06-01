@@ -1,13 +1,12 @@
+from io import StringIO
 import pickle
-
-from flask_login import login_user, logout_user, current_user
 import socket
 from gui_utils import *
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, jsonify
 from forms import RegistrationForm, LoginForm
-import _thread
 import threading
-from functools import reduce
+import re
+
 from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
 
@@ -158,15 +157,78 @@ def run_test():
     return render_template('run-test.html')
 
 
-# def upload_file_sql(filename, user_id=0):
-#     cur = mysql.connection.cursor()
-#     cur.execute('''
-#         INSERT INTO FILES(NAME, CREATORID)
-#         VALUE (%s, %s)
-#         ''', (filename, user_id))
-#     mysql.connection.commit()
-#     cur.close()
-#     return
+@app.route('/tests-results', methods=['GET', 'POST'])
+def tests_results():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    # connect and ask for all list
+    data_recieved = ''
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_tests_list'
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        files_details = data.decode('utf-8')
+
+    if files_details == 'Fail':
+        return render_template('tests-results.html', data=list(), isAdmin=is_admin())
+    print('available tests are : {}'.format(files_details))
+    files_details = files_details.split(',')
+    data_to_pass = list()
+    for file_detail in files_details[:-1]:
+        try:
+            new_data = dict()
+            new_data['video_name'] = file_detail
+            data_to_pass.append(new_data)
+        except:
+            continue
+
+    return render_template('tests-results.html', data=data_to_pass, isAdmin=is_admin())
+
+
+@app.route('/test-results/<video_name>', methods=['GET', 'POST'])
+def test_results(video_name):
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_test_results filename: {}'.format(video_name)
+        s.sendall(msg.encode('utf-8'))
+
+        path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(video_name)
+        with open(path_to_zip, 'wb') as f:
+            data = s.recv(1024)
+            while data:
+                print('getting test zip into temp directory ...')
+                f.write(data)
+                data = s.recv(1024)
+            print('finish receiving data')
+
+    csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                     expected_file_names=['LElbowY_comparison', 'RElbowY_comparison',
+                                                          'LWristY_comparison', 'RWristY_comparison',
+                                                          'LShoulderY_comparison', 'RShoulderY_comparison',
+                                                          'NoseY_comparison', 'NeckY_comparison',
+                                                          'LElbowX_comparison', 'RElbowX_comparison',
+                                                          'LWristX_comparison', 'RWristX_comparison',
+                                                          'LShoulderX_comparison', 'RShoulderX_comparison',
+                                                          'NoseX_comparison', 'NeckX_comparison'
+                                                          ])
+
+    frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'])
+    sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+    frames_paths = sorted(frames_paths, key=sort_lambda)
+    print(frames_paths)
+    frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+    first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+    return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
+                           isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
@@ -465,3 +527,44 @@ def plug_and_play():
         else:
             flash('Failed to upload python file. Please try again', 'failure')
     return render_template('plug-and-play.html', isAdmin=is_admin())
+
+
+# Helpers
+
+@app.route("/_pass_data/", methods=['GET', 'POST'])
+def _pass_data():
+    data_as_json = request.get_json()
+    image_b64 = data_as_json['img']
+    path_to_save_img_in = os.getcwd() + data_as_json['current img path']
+    import base64
+    image_data = re.sub('^data:image/.+;base64,', '', image_b64)
+    image_data = base64.b64decode(image_data)
+    userID = session.get('ID') if session and session.get('logged_in') else 0
+    filename = path_to_save_img_in.split('/')[-1]
+    zip_name = data_as_json['current url'].split('/')[-1]
+    with open(path_to_save_img_in, "wb") as f:
+        f.write(image_data)
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'upload_image_fix user_id: {} video_name: {} filename: {} file_size: {}'.format(userID, zip_name,
+                                                                                              filename,
+                                                                                              get_size_of_file_path(
+                                                                                                  path_to_save_img_in))
+        print(msg)
+        s.sendall(msg.encode('utf-8'))
+        start_msg = s.recv(1024)  # for 'start' message
+        while start_msg.decode('utf-8') != 'start':
+            if start_msg.decode('utf-8') == 'not found':
+                flash('No test found for this video', 'info')
+                return render_template('run-test.html')
+            start_msg = s.recv(1024)
+        print('path to read from {}'.format(path_to_save_img_in))
+        with open(path_to_save_img_in, "rb") as f:
+            l = f.read(1024)
+            while l:
+                s.send(l)
+                print("Sending data")
+                l = f.read(1024)
+
+    return jsonify({'returned_url': url_for('previous_feedback', zip_name=zip_name)})

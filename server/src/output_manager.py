@@ -83,12 +83,9 @@ def delete_generate_dirs():
 
 
 def send_zip(src_zip, dest_path, delete_output_folder=False):
-    print('begin to send zip')
     shutil.move(src_zip, dest_path)
-    print('moved zip')
     if delete_output_folder:
         delete_generate_dirs()
-        print('deleted generate dirs')
 
 
 def get_output_dirs_dict():
@@ -149,8 +146,13 @@ def build_test_environment_dir(filename):
     movie_ground_truth_data_dir = movie_test_env_dir + '/ground_truth_data'
     if not os.path.exists(movie_ground_truth_data_dir):
         os.mkdir(movie_ground_truth_data_dir)
+
+    movie_frames_dir = movie_test_env_dir + '/frames'
+    if not os.path.exists(movie_frames_dir):
+        os.mkdir(movie_frames_dir)
+
     movie_test_results_dir = movie_test_env_dir + '/test_results'
     if not os.path.exists(movie_test_results_dir):
         os.mkdir(movie_test_results_dir)
 
-    return movie_ground_truth_data_dir, movie_test_results_dir
+    return movie_frames_dir,movie_ground_truth_data_dir, movie_test_results_dir

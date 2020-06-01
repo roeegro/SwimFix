@@ -423,11 +423,8 @@ def try_merge_between_intervals(interval_list_per_hand, max_distance_between_int
 
 
 def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys_list):
-    print(intervals_per_side.keys())
     right_side_columns = list(filter(lambda name: name.startswith(two_keys_list[1]), df_to_show.columns))
-    print('cols for right : {}'.format(right_side_columns))
     left_side_columns = list(filter(lambda name: name.startswith(two_keys_list[0]), df_to_show.columns))
-    print('cols for left : {}'.format(left_side_columns))
     frames_out_of_wanted_ranges = df_to_show.index.tolist()
     reliable_intervals_for_right_side = intervals_per_side[two_keys_list[1]]
     reliable_intervals_for_left_side = intervals_per_side[two_keys_list[0]]

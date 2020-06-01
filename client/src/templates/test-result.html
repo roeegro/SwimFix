@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'admin-index.html' %}
 {% block content %}
 
 <head>
@@ -22,12 +22,12 @@
 </head>
 
 <body id="page-top">
+
+
 <div class="img-sticky">
-    <canvas id="current frame to show"></canvas>
-    <button type="button" id='save changes' onclick="sendFixes()">Save fixes</button>
+    <img id="current frame to show">
 </div>
 
-<!--<img id="current frame to show" class="img-sticky">-->
 
 <!-- Page Wrapper -->
 <div id="wrapper">
@@ -47,7 +47,7 @@
                 <div class="row">
                     <script src="/static/js/demo/chart-area-demo.js"></script>
                     <script>
-                        load_img(parseInt("{{first_frame_number}}"))
+                        setImage(parseInt("{{first_frame_number}}"))
                     </script>
                 </div>
                 <!-- Content Row -->
@@ -58,7 +58,7 @@
                         <script src="/static/vendor/chart.js/Chart.min.js"></script>
                         <script src="/static/js/d3.min.js"></script>
                         <script>
-                            make_chart_from_csv("{{item.path}}")
+                            make_comparison_chart_from_csv("{{item.path}}")
                         </script>
                         {% endfor %}
                     </div>
