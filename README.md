@@ -3,7 +3,7 @@
 ## Introduction
 This is a official git repository for the graduation project of our B.S.C<span>.Sc. in Software Engineering in Ben Gurion University of the Negev located in Be'er Sheva, Israel.
 We developed a system for improving front crawl swimming which relies on pose estimation of the swimmer.
-The system takes as input 
+The system takes as input a video of swimming in a front crawl setting and outputs an evaluation for the swimmer to improve upon.
 
 ## Features
 - **Functionality**:
@@ -44,6 +44,6 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA0MDc3MzQyMiwxMTk3ODE1MTY5LDEzOT
+eyJoaXN0b3J5IjpbLTE3NTQ4MTA1MywxMTk3ODE1MTY5LDEzOT
 EyOTcyNTIsMjAwODQxNzk2MV19
 -->
