@@ -230,9 +230,16 @@ def test_results(video_name):
                                                           'NoseX_comparison', 'NeckX_comparison'
                                                           ])
 
-    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+    frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'])
+    sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+    frames_paths = sorted(frames_paths, key=sort_lambda)
+    frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+    first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
 
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
     return render_template('test-result.html', data=data_to_pass)
+    return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
+                           isAdmin=is_admin(), first_frame_number=0)
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])

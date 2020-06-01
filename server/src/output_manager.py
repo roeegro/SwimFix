@@ -153,4 +153,4 @@ def build_test_environment_dir(filename):
     if not os.path.exists(movie_test_results_dir):
         os.mkdir(movie_test_results_dir)
 
-    return movie_ground_truth_data_dir, movie_test_results_dir
+    return movie_test_env_dir,movie_ground_truth_data_dir, movie_test_results_dir
