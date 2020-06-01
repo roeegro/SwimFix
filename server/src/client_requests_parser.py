@@ -368,13 +368,47 @@ def upload_file_sql(filename, user_id=0):
     return
 
 
+def view_tests_list(data, conn, params):
+    print('view_tests_list')
+    answer = ''
+    path_to_look_at = '../tests'
+    test_list = os.listdir(path_to_look_at)
+    for test in test_list:
+        answer = answer + test + ','
+    print('answer is ')
+    print(answer)
+    return answer.encode("utf-8")
+
+
+def view_test_results(data, conn, params):
+    filename = data[data.index('filename:') + 1]
+    path_to_search_in = '../tests/{}'.format(filename)
+    print('search in {}'.format(path_to_search_in))
+    if not os.path.exists(path_to_search_in):
+        print('failed to find it')
+        return 'Fail'.encode('utf-8')
+    zip_location = '../temp'
+    output_manager.make_archive(path_to_search_in, zip_location, filename + ".zip")
+    file_path_to_send = zip_location + '/' + filename + ".zip"
+    f = open(file_path_to_send, 'rb')
+    l = f.read(1024)
+    while l:
+        conn.send(l)
+        print('sending zip...')
+        l = f.read(1024)
+    f.close()
+    print('sent all test zip')
+    return "success".encode("utf-8")
+
+
 requests_dict = {'login': login, 'register': register, 'download': download, 'view_feedbacks_list': view_feedbacks_list,
                  'view_graphs': view_graphs,
                  'forum_view_page': forum_view_page, 'forum_view_topic': forum_view_topic,
                  'forum_topic_name': forum_topic_name,
                  'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post,
                  'analyze_video': analyze_video,
-                 'add_test': add_test, 'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix}
+                 'add_test': add_test, 'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,
+                 'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
 
 
 def main_parser(data, conn, params):

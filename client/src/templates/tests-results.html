@@ -1,0 +1,37 @@
+{% extends 'admin-index.html' %}
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Test Results</h1>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="previous_feedbacks_tbl" class="table table-bordered" id="dataTable" width="100%"
+                       cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Video Name</th>
+                        <th>Results Page</th>
+                    </tr>
+                    </thead>
+                    <tbody id="previous_feedbacks_tbl_body">
+
+                    </tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>{{ item.video_name }}</td>
+                        <td>
+                            <a href="{{url_for('test_results', video_name = item.video_name)}}"> Go to see results for this test</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -168,6 +168,73 @@ def run_test():
 #     return
 
 
+@app.route('/tests-results', methods=['GET', 'POST'])
+def tests_results():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    # connect and ask for all list
+    data_recieved = ''
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_tests_list'
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        files_details = data.decode('utf-8')
+
+    if files_details == 'Fail':
+        return render_template('tests-results.html', data=list(), isAdmin=is_admin())
+    print('available tests are : {}'.format(files_details))
+    files_details = files_details.split(',')
+    data_to_pass = list()
+    for file_detail in files_details[:-1]:
+        try:
+            new_data = dict()
+            new_data['video_name'] = file_detail
+            data_to_pass.append(new_data)
+        except:
+            continue
+
+    return render_template('tests-results.html', data=data_to_pass, isAdmin=is_admin())
+
+
+@app.route('/test-results/<video_name>', methods=['GET', 'POST'])
+def test_results(video_name):
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_test_results filename: {}'.format(video_name)
+        s.sendall(msg.encode('utf-8'))
+
+        path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(video_name)
+        with open(path_to_zip, 'wb') as f:
+            data = s.recv(1024)
+            while data:
+                print('getting test zip into temp directory ...')
+                f.write(data)
+                data = s.recv(1024)
+            print('finish receiving data')
+
+    csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                     expected_file_names=['LElbowY_comparison', 'RElbowY_comparison',
+                                                          'LWristY_comparison', 'RWristY_comparison',
+                                                          'LShoulderY_comparison', 'RShoulderY_comparison',
+                                                          'NoseY_comparison', 'NeckY_comparison',
+                                                          'LElbowX_comparison', 'RElbowX_comparison',
+                                                          'LWristX_comparison', 'RWristX_comparison',
+                                                          'LShoulderX_comparison', 'RShoulderX_comparison',
+                                                          'NoseX_comparison', 'NeckX_comparison'
+                                                          ])
+
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+
+    return render_template('test-result.html', data=data_to_pass)
+
+
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks():
     # connect and ask for all list
@@ -484,9 +551,10 @@ def _pass_data():
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
-        msg = 'upload_image_fix user_id: {} video_name: {} filename: {} file_size: {}'.format(userID, zip_name, filename,
-                                                                                      get_size_of_file_path(
-                                                                                          path_to_save_img_in))
+        msg = 'upload_image_fix user_id: {} video_name: {} filename: {} file_size: {}'.format(userID, zip_name,
+                                                                                              filename,
+                                                                                              get_size_of_file_path(
+                                                                                                  path_to_save_img_in))
         print(msg)
         s.sendall(msg.encode('utf-8'))
         start_msg = s.recv(1024)  # for 'start' message
