@@ -157,17 +157,6 @@ def run_test():
     return render_template('run-test.html')
 
 
-# def upload_file_sql(filename, user_id=0):
-#     cur = mysql.connection.cursor()
-#     cur.execute('''
-#         INSERT INTO FILES(NAME, CREATORID)
-#         VALUE (%s, %s)
-#         ''', (filename, user_id))
-#     mysql.connection.commit()
-#     cur.close()
-#     return
-
-
 @app.route('/tests-results', methods=['GET', 'POST'])
 def tests_results():
     if not is_admin() == 'True':
@@ -233,13 +222,13 @@ def test_results(video_name):
     frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
     frames_paths = sorted(frames_paths, key=sort_lambda)
+    print(frames_paths)
     frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
     first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
 
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
-    return render_template('test-result.html', data=data_to_pass)
     return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
-                           isAdmin=is_admin(), first_frame_number=0)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])

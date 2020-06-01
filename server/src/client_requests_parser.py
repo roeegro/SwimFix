@@ -244,12 +244,15 @@ def run_test(data, conn, params):
     upload(data, conn, params)  # Run openpose to create the actual all keypoints csv
     actual_all_kp_csv_path = output_manager.get_analytics_dir() + '/all_keypoints.csv'
     movie_name = filename.split('_from')[0]
-    movie_test_env_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
+    movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
         movie_name)
 
     # facade.filter_and_interpolate(expected_all_kp_csv_path, filename, output_path=movie_ground_truth_data_dir)
     frames_dir_path = output_manager.get_output_dir_path('frames_path')
-    shutil.copytree(frames_dir_path,movie_test_env_dir)
+
+    from distutils.dir_util import copy_tree
+    copy_tree(frames_dir_path,movie_frames_dir)
+
     facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
                                              output_path=movie_ground_truth_data_dir)
     facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)

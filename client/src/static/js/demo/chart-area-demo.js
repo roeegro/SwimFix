@@ -5,35 +5,10 @@ Chart.defaults.global.defaultFontColor = '#858796';
 var current_img_path = '';
 
 
-function my_number_format(number){
+function number_format(number){
     if (Number.isInteger(number))
         return number.toString()
     return number.toFixed(3).toString()
-}
-
-function number_format(number, decimals, dec_point, thousands_sep) {
-    // *     example: number_format(1234.56, 2, ',', ' ');
-    // *     return: '1 234,56'
-    number = (number + '').replace(',', '').replace(' ', '');
-    var n = !isFinite(+number) ? 0 : +number,
-        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-        s = '',
-        toFixedFix = function (n, prec) {
-            var k = Math.pow(10, prec);
-            return '' + Math.round(n * k) / k;
-        };
-    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-    if (s[0].length > 3) {
-        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-    }
-    if ((s[1] || '').length < prec) {
-        s[1] = s[1] || '';
-        s[1] += new Array(prec - s[1].length + 1).join('0');
-    }
-    return s.join(dec);
 }
 
 function make_chart_from_csv(csv_path) {
@@ -45,6 +20,7 @@ function make_chart_from_csv(csv_path) {
 }
 
 function setImage(index) {
+    console.log(index)
     frame_element = document.getElementById('current frame to show')
     frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg')
 }
@@ -54,20 +30,22 @@ function make_comparison_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
+    console.log(csv_name)
     d3.csv(csv_path).then(make_comparison_chart.bind(csv_name, csv_name))
     return 0
 }
 
 function make_comparison_chart(csv_name, data) {
     columns = d3.keys(data[0])
-    // console.log(columns)
+    console.log(columns)
+
     var frame_range = []
     // Load frame Numberes
     for (i = 0; i < data.length; i++) {
         var frame_num = (data[i])["Frame Number"]
         frame_range.push(frame_num)
     }
-    // console.log(frame_range)
+
     var charts_node = document.getElementById('Charts')
     var canvas_tag = document.createElement("canvas")
     var canvas_id = csv_name + " comparison graph"
@@ -95,7 +73,6 @@ function make_comparison_chart(csv_name, data) {
 
     charts_node.appendChild(card_shadow_div)
 
-    var ourDatasets = []
     var y1_axis = []
     var y2_axis = []
     for (i = 0; i < data.length; i++) {
@@ -169,9 +146,8 @@ function make_comparison_chart(csv_name, data) {
                         padding: 10,
                         // Include a dollar sign in the ticks
                         callback: function (value, index, values) {
-                            // console.log(typeof (number_format(value)))
-                            // console.log(number_format(value))
-                            return my_number_format(value, 2);
+                            console.log(index)
+                            return number_format(value, 2);
                         }
                     },
                     gridLines: {
@@ -203,7 +179,7 @@ function make_comparison_chart(csv_name, data) {
                 callbacks: {
                     label: function (tooltipItem, chart) {
                         var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                        return datasetLabel + ' ' + my_number_format(tooltipItem.yLabel);
+                        return datasetLabel + ' ' + number_format(tooltipItem.yLabel);
                     }
                 }
             }
@@ -348,7 +324,7 @@ function make_chart(csv_name, data) {
                                 padding: 10,
                                 // Include a dollar sign in the ticks
                                 callback: function (value, index, values) {
-                                    return my_number_format(value);
+                                    return number_format(value);
                                 }
                             },
                             gridLines: {
@@ -380,7 +356,7 @@ function make_chart(csv_name, data) {
                         callbacks: {
                             label: function (tooltipItem, chart) {
                                 var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                return datasetLabel + ' ' +  my_number_format(tooltipItem.yLabel);
+                                return datasetLabel + ' ' +  number_format(tooltipItem.yLabel);
                             }
                         }
                     }
@@ -458,7 +434,7 @@ function make_chart(csv_name, data) {
                                 padding: 10,
                                 // Include a dollar sign in the ticks
                                 callback: function (value, index, values) {
-                                    return my_number_format(value);
+                                    return number_format(value);
                                 }
                             },
                             gridLines: {
@@ -490,7 +466,7 @@ function make_chart(csv_name, data) {
                         callbacks: {
                             label: function (tooltipItem, chart) {
                                 var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                return datasetLabel + ' ' + my_number_format(tooltipItem.yLabel);
+                                return datasetLabel + ' ' + number_format(tooltipItem.yLabel);
                             }
                         }
                     }
@@ -515,15 +491,6 @@ function make_chart(csv_name, data) {
 
 }
 
-
-function drawLine(id, xMin, xMax, yMin, yMax) {
-    ctx.strokeStyle = "green";
-    ctx.beginPath();
-    ctx.lineWidth = "3"
-    ctx.moveTo(xMin, yMin);
-    ctx.lineTo(xMax, yMax);
-    ctx.stroke();
-}
 
 function load_img(index) {
     current_img_path = '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg'
