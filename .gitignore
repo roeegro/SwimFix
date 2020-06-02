@@ -131,6 +131,7 @@ dmypy.json
 *.MP4
 *.jpg
 *.avi
+
 server/openpose/.idea/inspectionProfiles/profiles_settings.xml
 server/openpose/.idea/misc.xml
 server/openpose/.idea/modules.xml
@@ -171,3 +172,4 @@ client/src/__pycache__/preprocessor.cpython-37.pyc
 
 
 /server/openpose/
+/server/openpose/.github/
