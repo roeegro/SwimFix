@@ -6,11 +6,11 @@ from flask import render_template, url_for, flash, redirect, request, session, j
 from forms import RegistrationForm, LoginForm
 import threading
 import re
-
+import os
 from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
 
@@ -79,6 +79,7 @@ def load_video():
         file = request.files['file']
         if file and allowed_file(file.filename):
             videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
+            print(videos_paths_to_upload)
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
                 video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
@@ -273,8 +274,10 @@ def previous_feedback(zip_name):
         msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
         print('PREVIOUS FEEDBACK msg = {}'.format(msg))
         s.sendall(msg.encode('utf-8'))
-
-        path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(zip_name)
+        zip_location = os.getcwd() + '/static/temp'
+        path_to_zip = zip_location + '/{}.zip'.format(zip_name)
+        if not os.path.exists(zip_location):
+            os.mkdir(zip_location)
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
             while data:
