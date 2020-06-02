@@ -28,10 +28,10 @@ try:
 
         else:
             # Change these variables to point to the correct folder (Release/x64 etc.)
-            sys.path.append('../../python')
+            sys.path.append('../openpose/build/python')
             # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the OpenPose/python module from there. This will install OpenPose and the python library at your desired installation path. Ensure that this is in your python path in order to use it.
             # sys.path.append('/usr/local/python')
-            # from openpose import pyopenpose as op
+            from openpose import pyopenpose as op
     except:
         print(
             'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
@@ -62,13 +62,14 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
-HOST = '10.0.0.10'  # Standard loopback interface address (localhost)
+HOST = '192.168.2.57'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 
 def accept_request():
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             print(HOST)
             ip = get('https://api.ipify.org').text
             print(ip)
@@ -86,7 +87,8 @@ def accept_request():
                     answer = "Done".encode("utf-8")
                 try:
                     conn.sendall(answer)
-                except:
+                except Exception as e:
+                    print(e)
                     continue
 
 
