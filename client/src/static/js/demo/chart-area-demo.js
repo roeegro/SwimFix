@@ -60,6 +60,7 @@ function make_comparison_chart(csv_name, data) {
 
     var h6_tag = document.createElement('h6')
     h6_tag.setAttribute('class', 'm-0 font-weight-bold text-primary')
+    h6_tag.innerText = ' Graph derived from csv : ' + csv_name
 
     var card_header_div_tag = document.createElement('div')
     card_header_div_tag.setAttribute('class', 'card-header py-3')
