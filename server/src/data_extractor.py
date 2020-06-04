@@ -371,7 +371,7 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
         merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
         print('after merging intervals')
         print(merged_interval_list_per_hand)
-        intervals_per_side[side] = merged_interval_list_per_hand
+        # intervals_per_side[side] = merged_interval_list_per_hand
         side_cols = list(filter(lambda name: name.startswith(side), y_cols))
         for interval in merged_interval_list_per_hand:
             intervals_list.append(interval)
@@ -386,6 +386,7 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                 interval_df[col_name].interpolate(method='cubic', inplace=True)
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
                     interval['frames_to_inerpolate'], col_name]  # update df
+        intervals_per_side[side] = try_extend_intervals_by_side(df, merged_interval_list_per_hand, side)
 
     filter_frames_without_reliable_info(df_to_show, intervals_per_side, sides)
 
@@ -396,7 +397,7 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
         # extended_interval_list_body_part = try_extend_intervals_by_body_part(df, interval_list_per_body_part, body_part)
         merged_interval_list_per_body_part = try_merge_between_intervals(interval_list_per_body_part)
         body_cols = list(filter(lambda name: name.startswith(body_part), y_cols))
-        intervals_per_body_part[body_part] = merged_interval_list_per_body_part
+        # intervals_per_body_part[body_part] = merged_interval_list_per_body_part
         for interval in merged_interval_list_per_body_part:
             intervals_list.append(interval)
             start_interval_frame = int(interval['start'])
@@ -410,7 +411,7 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                 interval_df[col_name].interpolate(method='cubic', inplace=True)
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
                     interval['frames_to_inerpolate'], col_name]  # update df
-
+        intervals_per_body_part[body_part] = try_extend_intervals_by_body_part(df, merged_interval_list_per_body_part, body_part)
     filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['Nose', 'Neck'])
     df_to_show.to_csv(path)
     return path
