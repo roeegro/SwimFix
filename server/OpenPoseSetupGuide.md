@@ -1,5 +1,5 @@
 
-# OpenPose Welcome Guide
+# OpenPose Setup Guide
 ## Introduction
 OpenPose is an open-source Pose Estimation library which is used in our project in order to estimate the swimmer's position mid-swimming and then use that estimation to evaluate the swimmer's front crawl performance and suggest ways to improve.
 ## How it works
@@ -23,10 +23,13 @@ cd build
 cmake ..
 ```
 Those command are based on [this](
-https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md) installation doc. In case you're having trouble or want to install differently, feel free to check it out.
+https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md) installation doc. In case you're having trouble or want to perfom the installation differently, please check it out.
 
 ## Quick Start
 Please check out [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/quick_start.md) quick start doc to get familiar with OpenPose and check that everything works fine.
+
+## Training
+For training OpenPose on your own data and creating a
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYxNjQzMzM0Ml19
+eyJoaXN0b3J5IjpbMTAzMTY2OTUxNiwtNjE2NDMzMzQyXX0=
 -->
