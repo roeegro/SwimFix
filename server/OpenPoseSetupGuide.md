@@ -29,7 +29,7 @@ https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/install
 Please check out [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/quick_start.md) quick start doc to get familiar with OpenPose and check that everything works fine.
 
 ## Training
-For training OpenPose on your own data and creating a
+For training OpenPose on custom data and creating your own model, please check out our compelete guide
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAzMTY2OTUxNiwtNjE2NDMzMzQyXX0=
+eyJoaXN0b3J5IjpbLTEwNjYwNDcxMzUsLTYxNjQzMzM0Ml19
 -->
