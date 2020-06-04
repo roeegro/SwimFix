@@ -33,10 +33,6 @@ def compare_col_from_csv(actual_csv_path, expected_csv_path, col_to_comp, comp_m
     return metric_result
 
 
-# Evaluation Metric is a numeric score for the performance of the swimmer
-# def compare_eval_metric_from_csv(actual_csv_path, expected_csv_path, eval_metric_func):
-
-
 def compare_avg_angle_from_csv(actual_csv_path, expected_csv_path, col_names):
     actual_avg_angle_dict = data_analyser.calc_avg_angle(actual_csv_path, col_names)
     expected_avg_angle_dict = data_analyser.calc_avg_angle(expected_csv_path, col_names)
@@ -48,16 +44,21 @@ def compare_avg_angle_from_csv(actual_csv_path, expected_csv_path, col_names):
     return actual_avg_angle_dict
 
 
-def start_test(actual_csvs_dir, expected_csvs_dir, output_path,filename):
+def start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename):
+    """ Compare between each pair of csv files from  expected and actual directories.
+
+    :param actual_csvs_dir: Path to actual results directory.
+    :param expected_csvs_dir: Path to expected results directory.
+    :param output_path: Path to store generated files in.
+    :param filename: Movie name for getting expected csv.
+    """
     for root, dirs_list, files_list in os.walk(expected_csvs_dir):
         for file_name in files_list:
             if os.path.splitext(file_name)[-1] == '.csv' and os.path.exists(actual_csvs_dir + '/' + file_name):
                 filename_without_extension = str(file_name).split('.')[0]
                 actual_csv_path = actual_csvs_dir + '/' + file_name
                 expected_csv_path = expected_csvs_dir + '/' + file_name
-                compare_csvs(actual_csv_path, expected_csv_path,output_path, filename=filename_without_extension)
-                # visualizer.plot_multi_graphs_from_other_csvs([expected_csv_path, actual_csv_path],
-                #                                              output_path=output_path)
+                compare_csvs(actual_csv_path, expected_csv_path, output_path, filename=filename_without_extension)
 
     interpolated_and_filtered_csv_path = actual_csvs_dir + '/interpolated_and_filtered_all_keypoints.csv'
     ground_truth_all_kp = output_manager.get_excepted_csv_path_for_movie(filename)
@@ -65,7 +66,17 @@ def start_test(actual_csvs_dir, expected_csvs_dir, output_path,filename):
                                                  output_path=output_path)
 
 
-def compare_csvs(actual_csv_path, expected_csv_path, output_path, filename='comparison.csv', tolerance=1, col_names=None):
+def compare_csvs(actual_csv_path, expected_csv_path, output_path, filename='comparison.csv', tolerance=1,
+                 col_names=None):
+    """ Gets 2 csvs paths and compare between them. Results are stored in generated csvs.
+
+    :param actual_csv_path: Path to actual results
+    :param expected_csv_path: Path to expected results
+    :param output_path: Path to store generated files in.
+    :param filename: Output file name.
+    :param tolerance: Max space for error between 2 records.
+    :param col_names: Column names to be compared.
+    """
     actual_df = pd.read_csv(actual_csv_path)
     expected_df = pd.read_csv(expected_csv_path)
     if col_names is None:
@@ -98,7 +109,7 @@ def compare_csvs(actual_csv_path, expected_csv_path, output_path, filename='comp
     acc_dic = {'accuracy': round(tolerated_count / len(compared_df), 3)}
     for col in col_names:
         acc_dic[col + '_accuracy'] = round(len(compared_df.loc[compared_df[col] == 1]) / len(compared_df), 3)
-    accuracy_statistics_df = pd.DataFrame(data=acc_dic,index=[0])
+    accuracy_statistics_df = pd.DataFrame(data=acc_dic, index=[0])
     accuracy_statistics_df.to_csv(output_path + '/' + filename + '_accuracy_statistics.csv')
 
 

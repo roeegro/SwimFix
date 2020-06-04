@@ -5,6 +5,15 @@ import pandas as pd
 
 
 def calc_avg_period(csv_path, col_names=None, min_period=1.5, frame_rate=30, maximum=True):
+    """ Calculate averagem period time from csv_path which contains all key points.
+
+    :param csv_path: Path to all key points csv file.
+    :param col_names: Columns to calculate by the avg period.
+    :param min_period: Minimum period time to consider it as a period time.
+    :param frame_rate: Frame rate of image to calculate time period in seconds
+    :param maximum:
+    :return: Average time period per body part.
+    """
     if col_names is None:
         col_names = ['RWristY', 'LWristY']
     df = pd.read_csv(csv_path)
@@ -36,6 +45,7 @@ def calc_avg_period(csv_path, col_names=None, min_period=1.5, frame_rate=30, max
 
 
 def calc_avg_angle(csv_path, col_names=None):
+    """ Returns dictionary of average angle per body part."""
     df = pd.read_csv(csv_path)
     if col_names is None:
         col_names = df.columns.difference(['Frame Number', 'Unnamed: 0']).values
@@ -47,6 +57,7 @@ def calc_avg_angle(csv_path, col_names=None):
 
 
 def calc_detected_frames_count_from_csv(detected_frames_csv_path, keypoints=None, with_acc=False):
+    """ Calculate what is the percentage of time that body part was detected."""
     df = pd.read_csv(detected_frames_csv_path)
     if keypoints is None:
         keypoints = df.columns.difference(['Frame Number', 'Unnamed: 0']).values

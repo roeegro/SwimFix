@@ -42,6 +42,14 @@ def show_avg_angle_diff(dict_of_avg_angle_for_test, dict_of_avg_angle_for_tested
 
 
 def create_graph(csv_path, y_cols=None, x_col='Frame Number', mult_figures=True, output_path=None):
+    """ Creates graph from csv path and save the figures in output path.
+
+    :param csv_path: Path to csv to derive figures from.
+    :param y_cols: Columns to generate figures from.
+    :param x_col: Column to be the x axis in figures.
+    :param mult_figures: Plot multifigures flag.
+    :param output_path: Path to save figures in.
+    """
     output_path = output_manager.get_figures_dir() if output_path is None else output_path
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
@@ -131,9 +139,17 @@ def autolabel(rects, ax):
                     ha='center', va='bottom')
 
 
-# Assumption : The columns must be the same when using this function for more than one csv path.
 def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True,
                                       output_path=None):
+    """ Plot single or multi figures from different csv files.
+        **Very important assumption** : The columns must be the same when using this function for more than one csv path.
+
+    :param csv_paths: List of csv files paths to derive graphs from, or string if there is only 1 csv file.
+    :param y_cols: Columns to compare
+    :param x_col: x axis in the figures.
+    :param mult_figures:
+    :param output_path: Path to save figures in.
+    """
     figures_path = output_manager.get_figures_dir() if output_path is None else output_path
     analytics_path = output_manager.get_analytics_dir() if output_path is None else output_path
     if type(csv_paths) is str:

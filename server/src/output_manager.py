@@ -9,8 +9,15 @@ expected_output_dirs_dict = {}
 output_dirs_dict = {}
 
 
-def generate_dirs_for_output_of_movie(movName, username='guest'):
-    video_name = utils.path_without_suffix(movName)
+def generate_dirs_for_output_of_movie(movie_name, username='guest'):
+    """ Generates a directory per movie, user, and upload time.
+        The hierarchy is Output Directory/Username/Upload Date/Upload Time
+        The paths are keeped in output_dirs_dict (Dictionary)
+
+    :param movie_name:
+    :param username:
+    """
+    video_name = utils.path_without_suffix(movie_name)
     new_output_dirs_dict = dict()
     outputs_dir = get_src_path() + "/../output"
     if not os.path.exists(outputs_dir):
@@ -82,12 +89,6 @@ def delete_generate_dirs():
     shutil.rmtree(output_dirs_dict['output_movie_dir'])
 
 
-def send_zip(src_zip, dest_path, delete_output_folder=False):
-    shutil.move(src_zip, dest_path)
-    if delete_output_folder:
-        delete_generate_dirs()
-
-
 def get_output_dirs_dict():
     return output_dirs_dict
 
@@ -130,6 +131,7 @@ def get_excepted_videos_path():
 
 
 def get_excepted_csv_path_for_movie(video_full_name):
+    """Checks if there is an expected csv file in server and returns the path to this file. Otherwise, returns None"""
     video_name = video_full_name.split('_from')[0]
     all_excepted_csvs_path = get_excepted_csvs_path()
     wanted_path = all_excepted_csvs_path + '/' + video_name + '_expected.csv'
@@ -137,6 +139,15 @@ def get_excepted_csv_path_for_movie(video_full_name):
 
 
 def build_test_environment_dir(filename):
+    """ Build test environment for specific movie with the filename specified.
+        The environment will include:
+        - Ground_truth : csv files with information derived from Server/expected_data/csvs/<filename>_expected
+        - Frames : Frame with annotations for this movie.
+        - Test Results: Directory with csv files for comparison between OpenPose results to the ground truth.
+
+    :param filename: Movie name.
+    :return: Triplet with paths to all directories the environment includes.
+    """
     test_dir = '../tests'
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
@@ -155,4 +166,4 @@ def build_test_environment_dir(filename):
     if not os.path.exists(movie_test_results_dir):
         os.mkdir(movie_test_results_dir)
 
-    return movie_frames_dir,movie_ground_truth_data_dir, movie_test_results_dir
+    return movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir

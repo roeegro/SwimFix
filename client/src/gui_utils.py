@@ -26,6 +26,13 @@ def send_file_to_server(video_paths):
 
 
 def upload_video_file(upload_folder, file, should_take_full_video=False):
+    """ Take a video file object and cut it to parts that contains only relevant parts to analyze.
+
+    :param upload_folder: Directory path where video parts are saved and prepared for sending to server.
+    :param file: Movie file got from browser.
+    :param should_take_full_video: Flag for decision if to cut video or not.
+    :return: List of paths to partial videos.
+    """
     create_dir_if_not_exists('partial_movies')
     create_dir_if_not_exists(upload_folder)
     filename = file.filename
@@ -38,6 +45,15 @@ def upload_video_file(upload_folder, file, should_take_full_video=False):
 
 
 def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], expected_file_names=None):
+    """ Get zip name to search in Client/crc/temp/zip name and extract to other directory in temp 'found_files_dir_name'
+        files with specific extension and with specific names.
+
+    :param zip_name:
+    :param found_files_dir_name:
+    :param extensions_of_files_to_find:
+    :param expected_file_names:
+    :return: List of files paths in the new directory for future use.
+    """
     returned_file_paths = list()
     relative_zip_dir = '/static/temp/'
     if not os.path.exists(os.getcwd() + '/static/temp'):
@@ -80,20 +96,6 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
             returned_file_paths.append(relative_output_dir + found_files_dir_name + '/{}'.format(file))
 
     return returned_file_paths
-
-
-def get_previous_feedbacks_groiser():
-    previous_feedbacks = []
-    path_to_outputs = './static/output'
-    for filename in os.listdir(path_to_outputs):
-        path = path_to_outputs + '/' + str(filename)
-        record_dict = dict()
-        record_dict['date'] = time.ctime(os.path.getctime(path))
-        record_dict['zip'] = path
-        record_dict['zip_name'] = filename
-        record_dict['zip_name_without_extension'] = filename.split('.')[0]
-        previous_feedbacks.append(record_dict)
-    return previous_feedbacks
 
 
 def upload_python_file(upload_folder, file):

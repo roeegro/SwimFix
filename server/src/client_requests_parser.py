@@ -251,7 +251,7 @@ def run_test(data, conn, params):
     frames_dir_path = output_manager.get_output_dir_path('frames_path')
 
     from distutils.dir_util import copy_tree
-    copy_tree(frames_dir_path,movie_frames_dir)
+    copy_tree(frames_dir_path, movie_frames_dir)
 
     facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
                                              output_path=movie_ground_truth_data_dir)
@@ -417,6 +417,13 @@ requests_dict = {'login': login, 'register': register, 'download': download, 'vi
 
 
 def main_parser(data, conn, params):
+    """ Parser for different types of requests. The requests and their handlers defined in the dictionary above.
+
+    :param data: The message got from client side.
+    :param conn: TCP socket
+    :param params: Dictionary with confiugrations for OpenPose activation.
+    :return:
+    """
     data = data.decode('utf-8')
     data_lst = (data.split(' '))
     print('request type: {}'.format(data_lst[0]))

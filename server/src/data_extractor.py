@@ -11,6 +11,13 @@ from main import *
 
 
 def generate_vectors_csv(csv_path, filename='vectors.csv', output_path=None):
+    """ Generates csv file with vectors from csv file contains all key points derived earlier.
+
+    :param csv_path: path to csv file contains all key points information derived before using this function.
+    :param filename: file name of generated file.
+    :param output_path: path to generated csv file to be located in.
+    :return: path to generated csv file to be located in.
+    """
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     vectors_df = pd.DataFrame(
@@ -43,10 +50,12 @@ def generate_vectors_csv(csv_path, filename='vectors.csv', output_path=None):
 
 
 def dotproduct(v1, v2):
+    """ Returns the dot product of 2 vectors.  """
     return sum((a * b) for a, b in zip(v1, v2))
 
 
 def length(v):
+    """ Returns the normal of vector.  """
     return math.sqrt(dotproduct(v, v))
 
 
@@ -76,6 +85,13 @@ def angle_between(v1, v2):
 
 
 def generate_angles_csv(csv_path, filename='angles.csv', output_path=None):
+    """ Generates a csv file contains relevant angles for swimmers, derived from csv_path contains vectors.
+
+    :param csv_path:  a path to csv that contains vectors.
+    :param filename: file name of the generated csv.
+    :param output_path: path to generated csv.
+    :return: path to generated csv.
+    """
     vectors_df = pd.read_csv(csv_path)
     angles_df = pd.DataFrame(columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng'])
     for idx, frame in vectors_df.iterrows():
@@ -126,6 +142,15 @@ def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None, ou
 
 
 def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filename=None, output_path=None):
+    """ Generates csv file contains all key points given in csv_path after interpolation of coordinates values.
+
+    :param csv_path: a path to csv contains all key points coordinates.
+    :param y_cols: columns of key points coordinates to be interpolated.
+    :param x_col: column from csv_path to be the index of the generated csv.
+    :param filename: file name for the generated csv file.
+    :param output_path: path to generate csv file to.
+    :return: path to the generated csv file.
+    """
     df = pd.read_csv(csv_path)
     if output_path is None:
         output_path = output_manager.get_analytics_dir()
@@ -169,12 +194,19 @@ def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filen
     return path
 
 
-body_parts = utils.get_body_parts()
+body_parts = utils.get_body_parts()  # all body parts to be used in our analysis.
 
 
-# Recieves args from main (including video path) and params to configure the library
-# Creates 3 csv files(all keypoints, valid and invalid ones) and emplace wire-frame.
-def get_keypoints_csv_from_video(video_path, params, from_frame=0):
+def get_keypoints_csv_from_video(video_path, params):
+    """ Generates csv files contains information about key points, derived from video located in video_path.
+        Key points detection is done by OpenPose library using configurations defined in params.
+        The function also generates video with annotation of OpenPose and frames of this video.
+        All those outputs are located in Server/output/<username>/<current date>/<current time>
+
+    :param video_path: path to video to be extracted key points from.
+    :param params: Dictionary contains OpenPose configurations.
+    :return: path to csv file that contains all key points extracted from video using OpenPose.
+    """
     video_name = utils.get_file_name(video_path)
     video_name = utils.path_without_suffix(video_name)
     output_dirs = output_manager.get_output_dirs_dict()  # must be created before calling to this function.
@@ -271,9 +303,12 @@ def get_keypoints_csv_from_video(video_path, params, from_frame=0):
     return output_dirs['analytical_data_path'] + "/all_keypoints.csv"
 
 
-# Basic check if frame is valid to be included in the analytical data
-# Checks if critic data (Elbows,Shoulders...) is 0
 def valid_frame(current_frame_df):
+    """ Checks if frame contains enough information to be included in 'valid_keypoints.csv'
+
+    :param current_frame_df: Pandas DataFrame contains row of key points extracted in some frame.
+    :return: True if frame contains enough information to be included in 'valid_keypoints.csv'. Otherwise-  False.
+    """
     number_of_detected_body_parts = 0
     frame = current_frame_df.iloc[0]
     neck_detected = (not (float)(frame[0]) == 0.) and (not (float)(frame[1]) == 0.)
@@ -287,9 +322,22 @@ def valid_frame(current_frame_df):
     return False
 
 
-# filter frames where openpose is more confident with its results, and interpolate them.
 def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename=None, output_path=None,
                            min_interval_length=3, score_threshold=0.4):
+    """ Gets path to csv file contains all key points in 'get_keypoints_csv_from_video'.
+        The function takes this file, build intervals for neck,nose,right side and left side with 'min_interval_length'
+        length contains key points with scores higher than 'score_threshold', extend each interval and merge between
+        some intervals, and filter key points coordinates which are not in some intervals.
+
+    :param csv_path: All key points csv path.
+    :param y_cols:
+    :param x_col: Index of input and output of csv path.
+    :param filename: File name of the generated csv file after the process.
+    :param output_path: Path of the generated csv file after the process.
+    :param min_interval_length: Minimum initial intervals length for some body part.
+    :param score_threshold: Minimum confidence score of some key point to be located in the interval.
+    :return: Path of the generated csv file after the process.
+    """
     df = pd.read_csv(csv_path)
     if output_path is None:
         output_path = output_manager.get_analytics_dir()
@@ -319,7 +367,10 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
     for side in sides:
         interval_list_per_hand = get_relevant_intervals_for_hand(df, side,
                                                                  min_interval_length, score_threshold)
-        merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
+        extended_interval_list_per_hand = try_extend_intervals_by_side(df, interval_list_per_hand, side)
+        merged_interval_list_per_hand = try_merge_between_intervals(extended_interval_list_per_hand)
+        print('after merging intervals')
+        print(merged_interval_list_per_hand)
         intervals_per_side[side] = merged_interval_list_per_hand
         side_cols = list(filter(lambda name: name.startswith(side), y_cols))
         for interval in merged_interval_list_per_hand:
@@ -336,13 +387,14 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
                     interval['frames_to_inerpolate'], col_name]  # update df
 
-    filter_frames_without_reliable_info(df_to_show, intervals_per_side,sides)
+    filter_frames_without_reliable_info(df_to_show, intervals_per_side, sides)
 
     intervals_per_body_part = dict()
     for body_part in ['Nose', 'Neck']:
         interval_list_per_body_part = get_relevant_intervals_for_body_part(df, body_part, min_interval_length,
                                                                            score_threshold)
-        merged_interval_list_per_body_part = try_merge_between_intervals(interval_list_per_body_part)
+        extended_interval_list_body_part = try_extend_intervals_by_body_part(df, interval_list_per_body_part, body_part)
+        merged_interval_list_per_body_part = try_merge_between_intervals(extended_interval_list_body_part)
         body_cols = list(filter(lambda name: name.startswith(body_part), y_cols))
         intervals_per_body_part[body_part] = merged_interval_list_per_body_part
         for interval in merged_interval_list_per_body_part:
@@ -359,12 +411,132 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
                     interval['frames_to_inerpolate'], col_name]  # update df
 
-    filter_frames_without_reliable_info(df_to_show, intervals_per_body_part,['Nose', 'Neck'])
+    filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['Nose', 'Neck'])
     df_to_show.to_csv(path)
     return path
 
 
+def try_extend_intervals_by_side(df, interval_list_per_hand, side):
+    """ Tries to extend intervals. For each interval, calculates the average distance of wrist Y coordinate
+        over frames in interval. Then, the function looks for frames next and before the interval that
+        change is smaller than avg. change and upward trend is identical to upward trend in the frames
+        key points inside the interval.
+
+    :param df: Pandas Dataframe of all key points derived from path given in 'filter_and_interpolate'.
+    :param interval_list_per_hand: list of initial intervals per hand from some side
+    :param side: 'L' - left hand side , 'R' - right hand side
+    :return: List with extended intervals.
+    """
+    extended_interval_list_per_hand = list()
+    relevant_body_parts = list(filter(lambda name: name.startswith(side), df.columns))
+    for interval in interval_list_per_hand:
+        start_interval_frame = int(interval['start'])
+        new_start_interval_frame = start_interval_frame
+        end_interval_frame = int(interval['end'])
+        new_end_interval_frame = end_interval_frame
+        interval_df = df.loc[start_interval_frame:end_interval_frame, relevant_body_parts]
+
+        # calculate avg distance
+        avg_distance = 0
+        for index, row in interval_df.iterrows():
+            if index == start_interval_frame:
+                continue
+            avg_distance += math.fabs(
+                float(interval_df[side + 'WristY'][index]) - float(interval_df[side + 'WristY'][index - 1]))
+        avg_distance = avg_distance / (len(interval_df) - 1)
+        # Look forward
+        forward_upward_trend = True if float(df[side + 'WristY'][end_interval_frame]) > float(
+            df[side + 'WristY'][end_interval_frame - 1]) else False
+        backward_upward_trend = True if float(df[side + 'WristY'][start_interval_frame + 1]) > float(
+            df[side + 'WristY'][start_interval_frame]) else False
+
+        try:
+            while math.fabs(float(df[side + 'WristY'][new_end_interval_frame]) - float(
+                    df[side + 'WristY'][new_end_interval_frame - 1])) < avg_distance and \
+                    float(df[side + 'WristY'][new_end_interval_frame]) > float(
+                df[side + 'WristY'][new_end_interval_frame - 1]) is forward_upward_trend:
+                new_end_interval_frame += 1
+        except:
+            new_end_interval_frame -= 1  # because we get out of bounds of df
+
+        # Look backward
+        try:
+            while math.fabs(float(df[side + 'WristY'][new_start_interval_frame]) - float(
+                    df[side + 'WristY'][new_start_interval_frame + 1])) < avg_distance and \
+                    (float(df[side + 'WristY'][new_start_interval_frame + 1]) - float(
+                        df[side + 'WristY'][new_start_interval_frame]) > 0) is backward_upward_trend:
+                new_start_interval_frame -= 1
+        except:
+            new_start_interval_frame += 1  # because we get out of bounds of df
+
+        extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame})
+    return extended_interval_list_per_hand
+
+
+def try_extend_intervals_by_body_part(df, interval_list_per_hand, body_part):
+    """ Similar to 'try_extend_intervals_by_side' but does the same for specific body_part"""
+    extended_interval_list_per_hand = list()
+    relevant_body_parts = list(filter(lambda name: name.startswith(body_part), df.columns))
+    for interval in interval_list_per_hand:
+        start_interval_frame = int(interval['start'])
+        new_start_interval_frame = start_interval_frame
+        end_interval_frame = int(interval['end'])
+        new_end_interval_frame = end_interval_frame
+        interval_df = df.loc[start_interval_frame:end_interval_frame, relevant_body_parts]
+
+        # calculate avg distance
+        avg_distance = 0
+        for index, row in interval_df.iterrows():
+            if index == start_interval_frame:
+                continue
+            avg_distance += math.fabs(
+                float(interval_df[body_part + 'Y'][index]) - float(interval_df[body_part + 'Y'][index - 1]))
+        avg_distance = avg_distance / (len(interval_df) - 1)
+
+        # Look forward
+        forward_upward_trend = True if float(df[body_part + 'Y'][end_interval_frame]) - float(
+            df[body_part + 'Y'][end_interval_frame - 1]) > 0 else False
+        backward_upward_trend = True if float(df[body_part + 'Y'][start_interval_frame + 1]) - float(
+            df[body_part + 'Y'][start_interval_frame]) > 0 else False
+        try:
+            while math.fabs(float(df[body_part + 'Y'][new_end_interval_frame]) - float(
+                    df[body_part + 'Y'][new_end_interval_frame - 1])) < avg_distance and \
+                    (float(df[body_part + 'Y'][new_end_interval_frame]) - float(
+                        df[body_part + 'Y'][new_end_interval_frame - 1]) > 0) is forward_upward_trend:
+                new_end_interval_frame += 1
+        except:
+            new_end_interval_frame -= 1  # because we get out of bounds of df
+        frames_to_interpolate = np.arange(end_interval_frame + 1,
+                                          new_end_interval_frame + 1)
+        # Look backward
+        try:
+            while math.fabs(float(df[body_part + 'Y'][new_start_interval_frame]) - float(
+                    df[body_part + 'Y'][new_start_interval_frame + 1])) < avg_distance and \
+                    (float(df[body_part + 'Y'][new_start_interval_frame + 1]) - float(
+                        df[body_part + 'Y'][new_start_interval_frame]) > 0) is backward_upward_trend:
+                new_start_interval_frame -= 1
+        except:
+            new_start_interval_frame += 1  # because we get out of bounds of df
+        # extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame,
+        #                                         'frames_to_inerpolate': np.sort(np.append(frames_to_interpolate , np.arange(
+        #                                             new_start_interval_frame,
+        #                                             start_interval_frame)))})
+        extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame})
+    # print('after extension of each interval')
+    # print(extended_interval_list_per_hand)
+    return extended_interval_list_per_hand
+
+
 def get_relevant_intervals_for_body_part(all_keypoints_df, body_part, min_interval_length, score_threshold):
+    """ Goes over all_keypoints_df and build intervals s.t |interval| > min_interval_length, and
+        foreach frame in interval: the score of body_part in frame is higher than score_threshold.
+
+    :param all_keypoints_df: Pandas Dataframe of all key points derived from path given in 'filter_and_interpolate'.
+    :param body_part: selected body_part to be build confident frames interval for.
+    :param min_interval_length: Minimum length for frames interval.
+    :param score_threshold: The score of body_part in frame is higher than score_threshold
+    :return: Intervals list for body part as described above.
+    """
     current_interval_len_counter = 0
     intervals_list_for_hand = list()
     start_interval_frame_number = all_keypoints_df.index.min()
@@ -383,6 +555,7 @@ def get_relevant_intervals_for_body_part(all_keypoints_df, body_part, min_interv
 
 
 def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length, score_threshold):
+    """ Similar to 'get_relevant_intervals_for_body_part' but does the same for some hand side."""
     current_interval_len_counter = 0
     intervals_list_for_hand = list()
     start_interval_frame_number = all_keypoints_df.index.min()
@@ -400,29 +573,42 @@ def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length,
     return intervals_list_for_hand
 
 
-def try_merge_between_intervals(interval_list_per_hand, max_distance_between_intervals=10):
+def try_merge_between_intervals(interval_list, max_distance_between_intervals=10):
+    """ Tries
+
+    :param interval_list: 
+    :param max_distance_between_intervals: 
+    :return: 
+    """
     merged_intervals_list_for_hand = list()
     should_skip_next_interval = False
-    for index in range(len(interval_list_per_hand)):
+    for index in range(len(interval_list)):
         if should_skip_next_interval:
             should_skip_next_interval = False
             index += 1
             continue
-        if index == len(interval_list_per_hand) - 1:
-            merged_intervals_list_for_hand.append(interval_list_per_hand[index])
-        elif interval_list_per_hand[index + 1]['start'] - interval_list_per_hand[index][
+        if index == len(interval_list) - 1:
+            merged_intervals_list_for_hand.append(interval_list[index])
+        elif interval_list[index + 1]['start'] - interval_list[index][
             'end'] > max_distance_between_intervals:
-            merged_intervals_list_for_hand.append(interval_list_per_hand[index])
+            merged_intervals_list_for_hand.append(interval_list[index])
         else:
-            merged_intervals_list_for_hand.append({'start': interval_list_per_hand[index][
-                'start'], 'end': interval_list_per_hand[index + 1]['end'], 'frames_to_inerpolate': np.arange(
-                interval_list_per_hand[index]['end'] + 1, interval_list_per_hand[index + 1]['start'])})
+            merged_intervals_list_for_hand.append({'start': interval_list[index][
+                'start'], 'end': interval_list[index + 1]['end'], 'frames_to_inerpolate': np.arange(
+                interval_list[index]['end'] + 1, interval_list[index + 1]['start'])})
             should_skip_next_interval = True
             index += 1
     return merged_intervals_list_for_hand
 
 
 def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys_list):
+    """ Gets pandas DataFrame df_to_show with all frames and keypoints and filters body parts
+        records of frames that are not in some interval from interval list intervals_per_side.
+
+    :param df_to_show: Pandas DataFrame which will be written to csv file. We will filter frames from this df.
+    :param intervals_per_side: Intervals list.
+    :param two_keys_list: Two body parts to filter by.
+    """
     right_side_columns = list(filter(lambda name: name.startswith(two_keys_list[1]), df_to_show.columns))
     left_side_columns = list(filter(lambda name: name.startswith(two_keys_list[0]), df_to_show.columns))
     frames_out_of_wanted_ranges = df_to_show.index.tolist()
@@ -444,7 +630,6 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys
             df_to_show.loc[[frame], right_side_columns] = np.nan
         if not found_in_left:
             df_to_show.loc[[frame], left_side_columns] = np.nan
-
 
 
 if __name__ == '__main__':
