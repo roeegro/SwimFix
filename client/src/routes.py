@@ -264,14 +264,16 @@ def previous_feedbacks():
     return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
 
 
-@app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
-def previous_feedback(zip_name):
+@app.route('/previous-feedback/<details>', methods=['GET', 'POST'])
+def previous_feedback(details):
+    [zip_name, date] = details.split('__')
+    print('date is : {}'.format(date))
     user_id = session.get('ID') if session and session.get('logged_in') else 0
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # s.setblocking(0)  # non blocking
         s.connect((SERVER_IP, SERVER_PORT))
         zip_name_to_send = zip_name.split('.')[0]
-        msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
+        msg = 'view_graphs user_id: {} filename: {} date: {}'.format(user_id, zip_name_to_send, date)
         print('PREVIOUS FEEDBACK msg = {}'.format(msg))
         s.sendall(msg.encode('utf-8'))
         zip_location = os.getcwd() + '/static/temp'
@@ -281,7 +283,7 @@ def previous_feedback(zip_name):
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
             while data:
-                print('getting zip into temp directory ...')
+                # print('getting zip into temp directory ...')
                 f.write(data)
                 data = s.recv(1024)
             print('finish receiving data')
@@ -569,5 +571,4 @@ def _pass_data():
                 s.send(l)
                 print("Sending data")
                 l = f.read(1024)
-
     return jsonify({'returned_url': url_for('previous_feedback', zip_name=zip_name)})

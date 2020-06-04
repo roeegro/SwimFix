@@ -367,8 +367,8 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
     for side in sides:
         interval_list_per_hand = get_relevant_intervals_for_hand(df, side,
                                                                  min_interval_length, score_threshold)
-        extended_interval_list_per_hand = try_extend_intervals_by_side(df, interval_list_per_hand, side)
-        merged_interval_list_per_hand = try_merge_between_intervals(extended_interval_list_per_hand)
+        # extended_interval_list_per_hand = try_extend_intervals_by_side(df, interval_list_per_hand, side)
+        merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
         print('after merging intervals')
         print(merged_interval_list_per_hand)
         intervals_per_side[side] = merged_interval_list_per_hand
@@ -393,8 +393,8 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
     for body_part in ['Nose', 'Neck']:
         interval_list_per_body_part = get_relevant_intervals_for_body_part(df, body_part, min_interval_length,
                                                                            score_threshold)
-        extended_interval_list_body_part = try_extend_intervals_by_body_part(df, interval_list_per_body_part, body_part)
-        merged_interval_list_per_body_part = try_merge_between_intervals(extended_interval_list_body_part)
+        # extended_interval_list_body_part = try_extend_intervals_by_body_part(df, interval_list_per_body_part, body_part)
+        merged_interval_list_per_body_part = try_merge_between_intervals(interval_list_per_body_part)
         body_cols = list(filter(lambda name: name.startswith(body_part), y_cols))
         intervals_per_body_part[body_part] = merged_interval_list_per_body_part
         for interval in merged_interval_list_per_body_part:
