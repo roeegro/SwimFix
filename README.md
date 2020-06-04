@@ -44,6 +44,5 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIzODg1NjEwNCwtMTc1NDgxMDUzLDExOT
-c4MTUxNjksMTM5MTI5NzI1MiwyMDA4NDE3OTYxXX0=
+eyJoaXN0b3J5IjpbMTIzODg1NjEwNF19
 -->
