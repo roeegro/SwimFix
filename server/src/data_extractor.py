@@ -103,8 +103,8 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None):
         LForearmVec = (frame['LForearmX'], frame['LForearmY'])
         neg = tuple([-1 * x for x in RChestVec])
         frame_angels = {'Frame Number': frame['Frame Number'],
-                        'RShoulderAng': angle(tuple([-1 * x for x in RChestVec]), RArmVec),
-                        'LShoulderAng': angle(tuple([-1 * x for x in LChestVec]), LArmVec),
+                        'RShoulderAng': angle(tuple([x for x in RChestVec]), RArmVec),
+                        'LShoulderAng': angle(tuple([x for x in LChestVec]), LArmVec),
                         'RElbowAng': angle(tuple([-1 * x for x in RArmVec]), RForearmVec),
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
