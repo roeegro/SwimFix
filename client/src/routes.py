@@ -472,7 +472,7 @@ def login():
 
     answer = send_msg_to_server(msg).decode("utf-8")
     answer = answer.split()
-    if answer[0] != "Fail:":
+    if answer[0] != "failure":
         session['ID'] = answer[0]
         session['username'] = answer[1]
         session['logged_in'] = answer[2]
@@ -497,10 +497,9 @@ def register():
         s.connect((SERVER_IP, SERVER_PORT))
         msg = 'register username: {} password: {} email: {}'.format(_username, _passwd, _email)
         s.sendall(msg.encode('utf-8'))
-        data = s.recv(1024)
-        data = data.decode("utf-8")
-        if data.split(' ')[0] == "Fail:":
-            flash(data, "danger")
+        data = s.recv(1024).decode("utf-8")
+        if data.split(' ')[0] == "failure":
+            flash('Fail: User or email already exists', "danger")
             return redirect(url_for('register'))
 
     flash(u"You're now registered!", "success")

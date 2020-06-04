@@ -69,28 +69,31 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 def accept_request():
     while True:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            print(HOST)
-            ip = get('https://api.ipify.org').text
-            print(ip)
-            s.bind((HOST, PORT))
-            print('bind. start listening')
-            s.listen()
-            conn, addr = s.accept()
-            with conn:
-                print('Connected by', addr)
-                # while True:
-                data = conn.recv(1024)
-                answer = main_parser(data, conn, params)
-                print('answer is : {}'.format(answer))
-                if not answer:
-                    answer = "Done".encode("utf-8")
-                try:
-                    conn.sendall(answer)
-                except Exception as e:
-                    print(e)
-                    continue
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                print(HOST)
+                ip = get('https://api.ipify.org').text
+                print(ip)
+                s.bind((HOST, PORT))
+                print('bind. start listening')
+                s.listen()
+                conn, addr = s.accept()
+                with conn:
+                    print('Connected by', addr)
+                    # while True:
+                    data = conn.recv(1024)
+                    answer = main_parser(data, conn, params)
+                    print('answer is : {}'.format(answer))
+                    if not answer:
+                        answer = "Done".encode("utf-8")
+                    try:
+                        conn.sendall(answer)
+                    except Exception as e:
+                        print(e)
+                        continue
+        except Exception as e:
+            print("An error occurred while trying to process the user's request: ", e)
 
 
 if __name__ == '__main__':
