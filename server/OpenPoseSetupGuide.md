@@ -29,10 +29,9 @@ https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/install
 Please check out [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/quick_start.md) quick start doc to get familiar with OpenPose and check that everything works fine.
 
 ## Training
-For training OpenPose on custom data and creating your own model, please check out [our](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) complete guide.
-This guide 
+For training OpenPose on custom data and creating your own model, please check out [our](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) complete guide, which is based on the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) OpenPose Training repository.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM0NjM5MDk3MiwtMTA2NjA0NzEzNSwtNj
-E2NDMzMzQyXX0=
+eyJoaXN0b3J5IjpbLTE2MzkxMTA4OTgsLTEwNjYwNDcxMzUsLT
+YxNjQzMzM0Ml19
 -->
