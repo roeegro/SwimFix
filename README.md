@@ -1,5 +1,5 @@
 
-# Pose Estimation Based System for Improving Front Crawl 
+# SwimFix - Pose Estimation Based System for Improving Front Crawl 
 ## Introduction
 This is a official git repository for the graduation project of our B.S.C<span>.Sc. in Software Engineering in Ben Gurion University of the Negev located in Be'er Sheva, Israel.
 We developed a system for improving front crawl swimming which relies on pose estimation of the swimmer.
@@ -44,6 +44,6 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NTQ4MTA1MywxMTk3ODE1MTY5LDEzOT
-EyOTcyNTIsMjAwODQxNzk2MV19
+eyJoaXN0b3J5IjpbLTI5ODY3NDc5LC0xNzU0ODEwNTMsMTE5Nz
+gxNTE2OSwxMzkxMjk3MjUyLDIwMDg0MTc5NjFdfQ==
 -->
