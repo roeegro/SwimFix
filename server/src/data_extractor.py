@@ -42,7 +42,7 @@ def generate_vectors_csv(csv_path, filename='vectors.csv', output_path=None):
                          'RForearmX': frame['RElbowX'] - frame['RWristX'],
                          'RForearmY': frame['RElbowY'] - frame['RWristY'],
                          'LForearmX': frame['LElbowX'] - frame['LWristX'],
-                         'LForearmY': frame['RElbowY'] - frame['RWristY'], }
+                         'LForearmY': frame['LElbowY'] - frame['LWristY'], }
         vectors_df = vectors_df.append(frame_vectors, ignore_index=True)
     outp_path = output_manager.get_analytics_dir() + '/' + filename if output_path is None else output_path + '/' + filename
     pd.DataFrame.to_csv(vectors_df, outp_path, index=False)
@@ -369,8 +369,6 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                                                                  min_interval_length, score_threshold)
         # extended_interval_list_per_hand = try_extend_intervals_by_side(df, interval_list_per_hand, side)
         merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
-        print('after merging intervals')
-        print(merged_interval_list_per_hand)
         # intervals_per_side[side] = merged_interval_list_per_hand
         side_cols = list(filter(lambda name: name.startswith(side), y_cols))
         for interval in merged_interval_list_per_hand:
@@ -523,8 +521,6 @@ def try_extend_intervals_by_body_part(df, interval_list_per_hand, body_part):
         #                                             new_start_interval_frame,
         #                                             start_interval_frame)))})
         extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame})
-    # print('after extension of each interval')
-    # print(extended_interval_list_per_hand)
     return extended_interval_list_per_hand
 
 
@@ -634,4 +630,5 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys
 
 
 if __name__ == '__main__':
-    filter_and_interpolate('../output/tom/MVI_8027_from_frame_60/2020-05-28/15-00-23/analytical_data/all_keypoints.csv')
+    # filter_and_interpolate('../output/tom/MVI_8027_from_frame_60/2020-05-28/15-00-23/analytical_data/all_keypoints.csv')
+    generate_vectors_csv('../output/roeegro/MVI_8027_from_frame_60/2020-06-05/01-00-36/analytical_data/interpolated_and_filtered_all_keypoints.csv',output_path=os.getcwd())
