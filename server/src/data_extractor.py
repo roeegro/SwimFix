@@ -84,7 +84,8 @@ def angle_between(v1, v2):
     # return np.arccos(np.dot(v1_u, v2_u))
 
 
-def generate_angles_csv(csv_path, filename='angles.csv', output_path=None):
+def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_distance=10,
+                        min_length=3):
     """ Generates a csv file contains relevant angles for swimmers, derived from csv_path contains vectors.
 
     :param csv_path:  a path to csv that contains vectors.
@@ -109,6 +110,36 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None):
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
+
+    for column in angles_df.columns[1:]:
+        counter = 0
+        start_interval = angles_df.index.min()
+        interval_list_per_this_column = list()
+        # Find intervals
+        for index in angles_df.index:
+            if math.isnan(angles_df[column][index]):
+                if counter >= min_length:
+                    interval_list_per_this_column.append({'start': int(start_interval), 'end': int(index)})
+                start_interval = index + 1
+                counter = 0
+            else:
+                counter += 1
+        # Merge between intervals
+        for interval_index in range(len(interval_list_per_this_column) - 1):
+            start_seond_interval = interval_list_per_this_column[interval_index + 1]['start']
+            # start_first_interval = interval_list_per_this_column[interval_index]['start']
+            end_first_interval = interval_list_per_this_column[interval_index]['end']
+            # end_second_interval = interval_list_per_this_column[interval_index + 1]['end']
+            if start_seond_interval - end_first_interval <= max_distance:
+                frames_to_interpolate = np.arange(end_first_interval + 1, start_seond_interval)
+                try:
+                    angles_df.loc[frames_to_interpolate, [column]] = np.nan
+                except:
+                    continue  # for some perfect intervals which we don't have to fix.
+                interval_df = angles_df.loc[end_first_interval - 2:start_seond_interval + 2, [column]]
+                interval_df[column].interpolate(method='cubic', inplace=True)
+                angles_df.loc[end_first_interval - 2:start_seond_interval + 2, [column]] = interval_df
+
     outp_path = output_manager.analytical_df_to_csv(angles_df, filename, output_path=output_path)
     # pd.DataFrame.to_csv(angles_df, filname, index=False)
     return outp_path
@@ -370,7 +401,7 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
         # extended_interval_list_per_hand = try_extend_intervals_by_side(df, interval_list_per_hand, side)
         merged_interval_list_per_hand = try_merge_between_intervals(interval_list_per_hand)
         # intervals_per_side[side] = merged_interval_list_per_hand
-        side_cols = list(filter(lambda name: name.startswith(side), y_cols))
+        side_cols = list(filter(lambda name: name.startswith(side) and not "Shoulder" in name, y_cols))
         for interval in merged_interval_list_per_hand:
             intervals_list.append(interval)
             start_interval_frame = int(interval['start'])
@@ -386,10 +417,10 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                     interval['frames_to_inerpolate'], col_name]  # update df
         intervals_per_side[side] = try_extend_intervals_by_side(df, merged_interval_list_per_hand, side)
 
-    filter_frames_without_reliable_info(df_to_show, intervals_per_side, sides)
+    filter_frames_without_reliable_info_for_sides(df_to_show, intervals_per_side, sides)
 
     intervals_per_body_part = dict()
-    for body_part in ['Nose', 'Neck']:
+    for body_part in ['Nose', 'Neck', 'LShoulder', 'RShoulder']:
         interval_list_per_body_part = get_relevant_intervals_for_body_part(df, body_part, min_interval_length,
                                                                            score_threshold)
         # extended_interval_list_body_part = try_extend_intervals_by_body_part(df, interval_list_per_body_part, body_part)
@@ -409,8 +440,10 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                 interval_df[col_name].interpolate(method='cubic', inplace=True)
                 df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
                     interval['frames_to_inerpolate'], col_name]  # update df
-        intervals_per_body_part[body_part] = try_extend_intervals_by_body_part(df, merged_interval_list_per_body_part, body_part)
+        intervals_per_body_part[body_part] = try_extend_intervals_by_body_part(df, merged_interval_list_per_body_part,
+                                                                               body_part)
     filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['Nose', 'Neck'])
+    filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['LShoulder', 'RShoulder'])
     df_to_show.to_csv(path)
     return path
 
@@ -598,6 +631,39 @@ def try_merge_between_intervals(interval_list, max_distance_between_intervals=10
     return merged_intervals_list_for_hand
 
 
+def filter_frames_without_reliable_info_for_sides(df_to_show, intervals_per_side, two_keys_list):
+    """ Gets pandas DataFrame df_to_show with all frames and keypoints and filters body parts
+        records of frames that are not in some interval from interval list intervals_per_side.
+
+    :param df_to_show: Pandas DataFrame which will be written to csv file. We will filter frames from this df.
+    :param intervals_per_side: Intervals list.
+    :param two_keys_list: Two body parts to filter by.
+    """
+    right_side_columns = list(
+        filter(lambda name: name.startswith(two_keys_list[1]) and not "Shoulder" in name, df_to_show.columns))
+    left_side_columns = list(
+        filter(lambda name: name.startswith(two_keys_list[0]) and not "Shoulder" in name, df_to_show.columns))
+    frames_out_of_wanted_ranges = df_to_show.index.tolist()
+    reliable_intervals_for_right_side = intervals_per_side[two_keys_list[1]]
+    reliable_intervals_for_left_side = intervals_per_side[two_keys_list[0]]
+    for frame in frames_out_of_wanted_ranges:
+        found_in_right = False
+        found_in_left = False
+        for interval in reliable_intervals_for_right_side:
+            if frame in np.arange(interval['start'], interval['end'] + 1):
+                found_in_right = True
+                break
+        for interval in reliable_intervals_for_left_side:
+            if frame in np.arange(interval['start'], interval['end'] + 1):
+                found_in_left = True
+                break
+
+        if not found_in_right:
+            df_to_show.loc[[frame], right_side_columns] = np.nan
+        if not found_in_left:
+            df_to_show.loc[[frame], left_side_columns] = np.nan
+
+
 def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys_list):
     """ Gets pandas DataFrame df_to_show with all frames and keypoints and filters body parts
         records of frames that are not in some interval from interval list intervals_per_side.
@@ -629,6 +695,54 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys
             df_to_show.loc[[frame], left_side_columns] = np.nan
 
 
+def generate_interpolated_angles_csv(angles_path, output_path=None, filename='interpolated_angles.csv', max_distance=10,
+                                     min_length=3):
+    """ Generates a csv file contains relevant angles for swimmers, derived from csv_path contains vectors.
+
+      :param csv_path:  a path to csv that contains vectors.
+      :param filename: file name of the generated csv.
+      :param output_path: path to generated csv.
+      :return: path to generated csv.
+      """
+    angles_df = pd.read_csv(angles_path)
+    for column in angles_df.columns:
+        counter = 0
+        start_interval = angles_df.index.min()
+        interval_list_per_this_column = list()
+        # Find intervals
+        for index in angles_df.index:
+            if math.isnan(angles_df[column][index]):
+                if counter >= min_length:
+                    interval_list_per_this_column.append({'start': int(start_interval), 'end': int(index)})
+                start_interval = index + 1
+                counter = 0
+            else:
+                counter += 1
+        # Merge between intervals
+        for interval_index in range(len(interval_list_per_this_column) - 1):
+            start_seond_interval = interval_list_per_this_column[interval_index + 1]['start']
+            start_first_interval = interval_list_per_this_column[interval_index]['start']
+            end_first_interval = interval_list_per_this_column[interval_index]['end']
+            end_second_interval = interval_list_per_this_column[interval_index + 1]['end']
+            if start_seond_interval - end_first_interval <= max_distance:
+                frames_to_interpolate = np.arange(end_first_interval + 1, start_seond_interval)
+                try:
+                    angles_df.loc[frames_to_interpolate, [column]] = np.nan
+                except:
+                    continue  # for some perfect intervals which we don't have to fix.
+                interval_df = angles_df.loc[end_first_interval - 2:start_seond_interval + 2, [column]]
+                interval_df[column].interpolate(method='cubic', inplace=True)
+                angles_df.loc[end_first_interval - 2:start_seond_interval + 2, [column]] = interval_df
+
+    outp_path = output_manager.analytical_df_to_csv(angles_df, filename, output_path=output_path)
+
+    return outp_path
+
+
 if __name__ == '__main__':
-    # filter_and_interpolate('../output/tom/MVI_8027_from_frame_60/2020-05-28/15-00-23/analytical_data/all_keypoints.csv')
-    generate_vectors_csv('../output/roeegro/MVI_8027_from_frame_60/2020-06-05/01-00-36/analytical_data/interpolated_and_filtered_all_keypoints.csv',output_path=os.getcwd())
+    interp_path = filter_and_interpolate(
+        '../output/tom/MVI_8027_from_frame_60/2020-05-28/15-00-23/analytical_data/all_keypoints.csv',
+        output_path=os.getcwd())
+    vectors_path = generate_vectors_csv(interp_path, output_path=os.getcwd())
+    angles_path = generate_angles_csv(vectors_path, output_path=os.getcwd())
+    angles_path = generate_interpolated_angles_csv(angles_path, output_path=os.getcwd())
