@@ -113,7 +113,7 @@ In this section we will walk through the training process, assuming you followed
 1) Compile our modified Caffe:
     -  Go to `training\openpose_caffe_train`
     - Make sure the `Makefile.config` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda and OpenCV 3)
-    - The original config file is `Makefile.config.example` - in case you want to use it modify the config file, do it on the `.example` and then copy the filename as `Makefile.config` by running `cp Makefile.config.example Makefile.config`
+    - The original config file is `Makefile.config.example` in case you want to use it or modify it. When you are done, run `cp Makefile.config.example Makefile.config` to copy it to the config file.
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
 2) Generate the training model:
 	- Go to `training\openpose_train`
@@ -171,8 +171,8 @@ sudo apt-get install
  python-numpy
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjU0NTM1ODgxLC00NzU0Njg1MzEsMjAzMj
-U2MjQxLC05NDU3OTY2ODQsMTMyNDgwOTQ2LC0zNTcxNTEyMTYs
-LTE4MTQ2ODQ3NDIsNTI1NTMxNzk2LC0zMTExNDAxMTUsLTE4OT
-I5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbLTE4ODk2MDIxMjEsLTQ3NTQ2ODUzMSwyMD
+MyNTYyNDEsLTk0NTc5NjY4NCwxMzI0ODA5NDYsLTM1NzE1MTIx
+NiwtMTgxNDY4NDc0Miw1MjU1MzE3OTYsLTMxMTE0MDExNSwtMT
+g5MjkzNjY5NF19
 -->
