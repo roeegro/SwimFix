@@ -112,7 +112,7 @@ By the end of this step you should have `lmdb_coco` and `lmdb_background` folder
 In this section we will walk through the training process, assuming you followed the instructions above successfully.
 1) Compile our modified Caffe:
     -  Go to `training\openpose_caffe_train`
-    - Make sure the `Makefile.config.example` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda and OpenCV 3), then change the filename to `Makefile.config`
+    - Make sure the `Makefile.config.example` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda and OpenCV 3), then copy the filename as `Makefile.config` by running `cp Makefile.config.example Makefile.config`
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
 2) Generate the training model:
 	- Go to `training\openpose_train`
@@ -170,7 +170,8 @@ sudo apt-get install
  python-numpy
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ3NTQ2ODUzMSwyMDMyNTYyNDEsLTk0NT
-c5NjY4NCwxMzI0ODA5NDYsLTM1NzE1MTIxNiwtMTgxNDY4NDc0
-Miw1MjU1MzE3OTYsLTMxMTE0MDExNSwtMTg5MjkzNjY5NF19
+eyJoaXN0b3J5IjpbLTE5MjIyOTM1NzIsLTQ3NTQ2ODUzMSwyMD
+MyNTYyNDEsLTk0NTc5NjY4NCwxMzI0ODA5NDYsLTM1NzE1MTIx
+NiwtMTgxNDY4NDc0Miw1MjU1MzE3OTYsLTMxMTE0MDExNSwtMT
+g5MjkzNjY5NF19
 -->
