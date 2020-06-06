@@ -150,7 +150,7 @@ The first 10 layers are used as backbone.
 ## Our results
 
 ## Known issues
-|Error					|Reason								 |Solution
+|Error					|Context								 |Solution
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
 |`  Could NOT find Protobuf (missing: Protobuf_INCLUDE_DIR)`|When trying to build OpenPose|https://gist.github.com/diegopacheco/cd795d36e6ebcd2537cd18174865887b
@@ -175,8 +175,8 @@ sudo apt-get install
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk1MzU5NTQwMywtMTM2MzI4ODEyNCwtND
-c1NDY4NTMxLDIwMzI1NjI0MSwtOTQ1Nzk2Njg0LDEzMjQ4MDk0
-NiwtMzU3MTUxMjE2LC0xODE0Njg0NzQyLDUyNTUzMTc5NiwtMz
-ExMTQwMTE1LC0xODkyOTM2Njk0XX0=
+eyJoaXN0b3J5IjpbMTkyNDM2ODIyMiwxOTUzNTk1NDAzLC0xMz
+YzMjg4MTI0LC00NzU0Njg1MzEsMjAzMjU2MjQxLC05NDU3OTY2
+ODQsMTMyNDgwOTQ2LC0zNTcxNTEyMTYsLTE4MTQ2ODQ3NDIsNT
+I1NTMxNzk2LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
 -->
