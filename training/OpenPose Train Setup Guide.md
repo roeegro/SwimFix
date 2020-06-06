@@ -154,7 +154,7 @@ The first 10 layers are used as backbone.
 |`Could NOT find OpenSSL`| When installing CMake|[solutoin](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library)
 | `Could NOT find Atlas (missing: Atlas_CBLAS_INCLUDE_DIR)` | When building OpenPose with CMake |https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/305
 ## Installation commands
-Please install the following libraries:
+- Please install the following libraries:
 ```
 sudo apt-get install
  libprotobuf-dev
@@ -171,8 +171,8 @@ sudo apt-get install
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE3MDQwNDU5OSwtNDc1NDY4NTMxLDIwMz
-I1NjI0MSwtOTQ1Nzk2Njg0LDEzMjQ4MDk0NiwtMzU3MTUxMjE2
-LC0xODE0Njg0NzQyLDUyNTUzMTc5NiwtMzExMTQwMTE1LC0xOD
-kyOTM2Njk0XX0=
+eyJoaXN0b3J5IjpbLTEzNjMyODgxMjQsLTQ3NTQ2ODUzMSwyMD
+MyNTYyNDEsLTk0NTc5NjY4NCwxMzI0ODA5NDYsLTM1NzE1MTIx
+NiwtMTgxNDY4NDc0Miw1MjU1MzE3OTYsLTMxMTE0MDExNSwtMT
+g5MjkzNjY5NF19
 -->
