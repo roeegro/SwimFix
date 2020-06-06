@@ -19,10 +19,13 @@ Throughout this guide we will walk through all the required steps for training a
 From now on the `openpose_train` directory will be our working directory and the `SwimmingProject` directory which is the main directory of our git repository will be our root directory.
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
 >  In case you want to train a model just on the COCO dataset rather than your own, please follow the original repository instructions. You can read more about the COCO dataset which the OpenPose default COCO model was trained on [here](http://cocodataset.org/).
-### Disclaimer
+## Disclaimer
 This guide is based on a setup we successfully managed to perform on an AWS EC2 virtual machine with the following AMI:<br>**Deep Learning Base AMI (Ubuntu 18.04) Version 22.0 (ami-0f6127e61a87f8677)** (more details  [here](https://aws.amazon.com/marketplace/pp/B07Y3VDBNS?qid=1589717278223&sr=0-1&ref_=srh_res_product_title))
 Keep in mind that this machine is delivered with all the NVIDIA related prerequesities that are mandatory for both OpenPose training and inference versions (The full list of prerequesities for the inference version is [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/prerequisites.md))
->The guide assumes you are running on a a similiar machine.
+**The guide assumes you are running on a a similiar machine.**
+
+The guide was tested successfully on an Ubuntu 18.04 machine with the following hardware:
+- Nvidia RTX S
 
 ## Prerequisites
 Make sure you have those and before continuing:
@@ -172,8 +175,8 @@ sudo apt-get install
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMxNjY1MTYwLC0xMzYzMjg4MTI0LC00Nz
-U0Njg1MzEsMjAzMjU2MjQxLC05NDU3OTY2ODQsMTMyNDgwOTQ2
-LC0zNTcxNTEyMTYsLTE4MTQ2ODQ3NDIsNTI1NTMxNzk2LC0zMT
-ExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbLTE0NDI5OTY1NjMsLTEzNjMyODgxMjQsLT
+Q3NTQ2ODUzMSwyMDMyNTYyNDEsLTk0NTc5NjY4NCwxMzI0ODA5
+NDYsLTM1NzE1MTIxNiwtMTgxNDY4NDc0Miw1MjU1MzE3OTYsLT
+MxMTE0MDExNSwtMTg5MjkzNjY5NF19
 -->
