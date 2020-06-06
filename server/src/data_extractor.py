@@ -444,8 +444,46 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
                                                                                body_part)
     filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['Nose', 'Neck'])
     filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['LShoulder', 'RShoulder'])
+
+    neck_estimator(df_to_show)
     df_to_show.to_csv(path)
     return path
+
+
+def neck_estimator(df):
+    # step 1: use mean shoulders rule if necessary
+    for index, frame in df.iterrows():
+        if not math.isnan(df['NeckX'][index]):  # we already know neck location
+            continue
+        elif not math.isnan(df['LShoulderX'][index]) and not math.isnan(df['RShoulderX'][index]):
+            df['NeckX'][index] = (df['LShoulderX'][index] + df['RShoulderX'][index]) / 2
+            df['NeckY'][index] = (df['LShoulderY'][index] + df['RShoulderY'][index]) / 2
+    # after calculation of mean shoulders exhaustively, we want to take
+    # average location of each shoulder and neck and try to use the distance of one shoulder from mean location.
+    mean_r_shoulder_x = df['RShoulderX'].mean()
+    mean_r_shoulder_y = df['RShoulderY'].mean()
+    mean_l_shoulder_x = df['LShoulderX'].mean()
+    mean_l_shoulder_y = df['LShoulderY'].mean()
+    mean_neck_x = df['NeckX'].mean()
+    mean_neck_y = df['NeckY'].mean()
+    for index, frame in df.iterrows():
+        if math.isnan(df['NeckX'][index]):
+            if not math.isnan(df['LShoulderX'][index]) and math.isnan(
+                    df['RShoulderX'][index]):  # Only left shoulder is known
+                epsilon_x = mean_l_shoulder_x - df['LShoulderX'][index]
+                epsilon_y = mean_l_shoulder_y - df['LShoulderY'][index]
+                df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
+                df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
+            elif math.isnan(df['LShoulderX'][index]) and not math.isnan(
+                    df['RShoulderX'][index]):  # Only right shoulder is known
+                epsilon_x = mean_r_shoulder_x - df['RShoulderX'][index]
+                epsilon_y = mean_r_shoulder_y - df['RShoulderY'][index]
+                df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
+                df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
+            else:
+                continue
+        else:
+            continue
 
 
 def try_extend_intervals_by_side(df, interval_list_per_hand, side):
@@ -695,54 +733,20 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys
             df_to_show.loc[[frame], left_side_columns] = np.nan
 
 
-def generate_interpolated_angles_csv(angles_path, output_path=None, filename='interpolated_angles.csv', max_distance=10,
-                                     min_length=3):
-    """ Generates a csv file contains relevant angles for swimmers, derived from csv_path contains vectors.
-
-      :param csv_path:  a path to csv that contains vectors.
-      :param filename: file name of the generated csv.
-      :param output_path: path to generated csv.
-      :return: path to generated csv.
-      """
-    angles_df = pd.read_csv(angles_path)
-    for column in angles_df.columns:
-        counter = 0
-        start_interval = angles_df.index.min()
-        interval_list_per_this_column = list()
-        # Find intervals
-        for index in angles_df.index:
-            if math.isnan(angles_df[column][index]):
-                if counter >= min_length:
-                    interval_list_per_this_column.append({'start': int(start_interval), 'end': int(index)})
-                start_interval = index + 1
-                counter = 0
-            else:
-                counter += 1
-        # Merge between intervals
-        for interval_index in range(len(interval_list_per_this_column) - 1):
-            start_seond_interval = interval_list_per_this_column[interval_index + 1]['start']
-            start_first_interval = interval_list_per_this_column[interval_index]['start']
-            end_first_interval = interval_list_per_this_column[interval_index]['end']
-            end_second_interval = interval_list_per_this_column[interval_index + 1]['end']
-            if start_seond_interval - end_first_interval <= max_distance:
-                frames_to_interpolate = np.arange(end_first_interval + 1, start_seond_interval)
-                try:
-                    angles_df.loc[frames_to_interpolate, [column]] = np.nan
-                except:
-                    continue  # for some perfect intervals which we don't have to fix.
-                interval_df = angles_df.loc[end_first_interval - 2:start_seond_interval + 2, [column]]
-                interval_df[column].interpolate(method='cubic', inplace=True)
-                angles_df.loc[end_first_interval - 2:start_seond_interval + 2, [column]] = interval_df
-
-    outp_path = output_manager.analytical_df_to_csv(angles_df, filename, output_path=output_path)
-
-    return outp_path
-
-
 if __name__ == '__main__':
-    interp_path = filter_and_interpolate(
-        '../output/tom/MVI_8027_from_frame_60/2020-05-28/15-00-23/analytical_data/all_keypoints.csv',
-        output_path=os.getcwd())
-    vectors_path = generate_vectors_csv(interp_path, output_path=os.getcwd())
-    angles_path = generate_angles_csv(vectors_path, output_path=os.getcwd())
-    angles_path = generate_interpolated_angles_csv(angles_path, output_path=os.getcwd())
+    op_row_path = '../output/roeegro/MVI_8027_from_frame_60/2020-06-05/16-32-41/analytical_data/all_keypoints.csv'
+    expected_path = os.getcwd() + '/MVI_8027_expected.csv'
+    interp_path = filter_and_interpolate(op_row_path, output_path=os.getcwd())
+    import visualizer
+
+    # visualizer.plot_multi_graphs_from_other_csvs([interp_path, op_row_path],
+    #                                              output_path=os.getcwd() + '/comparison')
+    angles_path = generate_angles_csv(generate_vectors_csv(interp_path, output_path=os.getcwd()),
+                                      output_path=os.getcwd())
+    angles_path_expected = generate_angles_csv(generate_vectors_csv(expected_path, output_path=os.getcwd()),
+                                               filename='angles_expected',
+                                               output_path=os.getcwd())
+    visualizer.plot_multi_graphs_from_other_csvs([angles_path_expected, angles_path],
+                                                 output_path=os.getcwd() + '/comparison')
+    # angles_path = generate_interpolated_angles_csv(angles_path, output_path=os.getcwd())
+#
