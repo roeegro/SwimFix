@@ -150,7 +150,8 @@ The first 10 layers are used as backbone.
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
 |`  Could NOT find Protobuf (missing: Protobuf_INCLUDE_DIR)`|When trying to build OpenPose|https://gist.github.com/diegopacheco/cd795d36e6ebcd2537cd18174865887b
 |# `Check failed: error == cudaSuccess (2 vs. 0) out of memory` | During model training | Lower batch size (We lowered from 10 to 1 on 6GB GPU (NVIDIA RTX 2060 MSI)
-|`Could NOT find OpenSSL`| When installing CMake|[solution](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library)
+
+|`Could NOT find OpenSSL`| When installing CMake|[solutoin](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library)
 | `Could NOT find Atlas (missing: Atlas_CBLAS_INCLUDE_DIR)` | When building OpenPose with CMake |https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/305
 ## Installation commands
 Please install the following libraries:
@@ -166,8 +167,11 @@ sudo apt-get install
  libatlas-base-dev
  python-numpy
 ```
+
+- Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
+- Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM3Nzg4OTc3OSwtNDc1NDY4NTMxLDIwMz
+eyJoaXN0b3J5IjpbMTE3MDQwNDU5OSwtNDc1NDY4NTMxLDIwMz
 I1NjI0MSwtOTQ1Nzk2Njg0LDEzMjQ4MDk0NiwtMzU3MTUxMjE2
 LC0xODE0Njg0NzQyLDUyNTUzMTc5NiwtMzExMTQwMTE1LC0xOD
 kyOTM2Njk0XX0=
