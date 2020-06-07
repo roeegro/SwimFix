@@ -101,8 +101,9 @@ def view_graphs(data, conn, params):
         return "Fail"
     username = cur.fetchone()['USERNAME']
     cur.execute(
-        "SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {} AND CREATION_DATE = \'{}\'".format(filename, user_id,
-                                                                                                   date_time_obj))
+        "SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {} AND CREATION_DATE = \'{}\'".format(filename,
+                                                                                                       user_id,
+                                                                                                       date_time_obj))
     if res == 0:
         return "Fail"
     res = cur.fetchone()
@@ -352,9 +353,10 @@ def upload(data, conn, params):
     all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
     filtered_and_interpolated_csv_path = facade.filter_and_interpolate(all_keypoints_csv_path, filename)
     # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
-    facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path)
+    angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path)
     facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
     facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
+    facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path)
     zip_path = facade.zip_output()
     creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
     creation_time = facade.get_output_dir_path('time_path').split('/')[-1]

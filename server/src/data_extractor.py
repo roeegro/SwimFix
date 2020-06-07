@@ -445,12 +445,12 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
     filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['Nose', 'Neck'])
     filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['LShoulder', 'RShoulder'])
 
-    neck_estimator(df_to_show)
+    neck_estimator(df_to_show, intervals_per_body_part)
     df_to_show.to_csv(path)
     return path
 
 
-def neck_estimator(df):
+def neck_estimator(df, intervals_per_body_part):
     # step 1: use mean shoulders rule if necessary
     for index, frame in df.iterrows():
         if not math.isnan(df['NeckX'][index]):  # we already know neck location
@@ -460,30 +460,42 @@ def neck_estimator(df):
             df['NeckY'][index] = (df['LShoulderY'][index] + df['RShoulderY'][index]) / 2
     # after calculation of mean shoulders exhaustively, we want to take
     # average location of each shoulder and neck and try to use the distance of one shoulder from mean location.
-    mean_r_shoulder_x = df['RShoulderX'].mean()
-    mean_r_shoulder_y = df['RShoulderY'].mean()
-    mean_l_shoulder_x = df['LShoulderX'].mean()
-    mean_l_shoulder_y = df['LShoulderY'].mean()
-    mean_neck_x = df['NeckX'].mean()
-    mean_neck_y = df['NeckY'].mean()
-    for index, frame in df.iterrows():
-        if math.isnan(df['NeckX'][index]):
-            if not math.isnan(df['LShoulderX'][index]) and math.isnan(
-                    df['RShoulderX'][index]):  # Only left shoulder is known
-                epsilon_x = mean_l_shoulder_x - df['LShoulderX'][index]
-                epsilon_y = mean_l_shoulder_y - df['LShoulderY'][index]
-                df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
-                df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
-            elif math.isnan(df['LShoulderX'][index]) and not math.isnan(
-                    df['RShoulderX'][index]):  # Only right shoulder is known
-                epsilon_x = mean_r_shoulder_x - df['RShoulderX'][index]
-                epsilon_y = mean_r_shoulder_y - df['RShoulderY'][index]
-                df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
-                df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
+    for interval in intervals_per_body_part['LShoulder']:
+        interval_df = df.loc[interval['start']:interval['end'], :]
+        mean_l_shoulder_x = interval_df['LShoulderX'].mean()
+        mean_l_shoulder_y = interval_df['LShoulderY'].mean()
+        mean_neck_x = interval_df['NeckX'].mean()
+        mean_neck_y = interval_df['NeckY'].mean()
+        for index, frame in interval_df.iterrows():
+            if math.isnan(interval_df['NeckX'][index]):
+                if not math.isnan(df['LShoulderX'][index]) and math.isnan(
+                        df['RShoulderX'][index]):  # Only left shoulder is known
+                    epsilon_x = mean_l_shoulder_x - df['LShoulderX'][index]
+                    epsilon_y = mean_l_shoulder_y - df['LShoulderY'][index]
+                    df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
+                    df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
+                else:
+                    continue
             else:
                 continue
-        else:
-            continue
+    for interval in intervals_per_body_part['RShoulder']:
+        interval_df = df.loc[interval['start']:interval['end'], :]
+        mean_r_shoulder_x = interval_df['RShoulderX'].mean()
+        mean_r_shoulder_y = interval_df['RShoulderY'].mean()
+        mean_neck_x = interval_df['NeckX'].mean()
+        mean_neck_y = interval_df['NeckY'].mean()
+        for index, frame in interval_df.iterrows():
+            if math.isnan(interval_df['NeckX'][index]):
+                if math.isnan(df['LShoulderX'][index]) and not math.isnan(
+                        df['RShoulderX'][index]):  # Only right shoulder is known
+                    epsilon_x = mean_r_shoulder_x - df['RShoulderX'][index]
+                    epsilon_y = mean_r_shoulder_y - df['RShoulderY'][index]
+                    df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
+                    df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
+                else:
+                    continue
+            else:
+                continue
 
 
 def try_extend_intervals_by_side(df, interval_list_per_hand, side):
@@ -649,23 +661,39 @@ def try_merge_between_intervals(interval_list, max_distance_between_intervals=10
     :return: 
     """
     merged_intervals_list_for_hand = list()
-    should_skip_next_interval = False
+    merging = False
+    start_frame = None
+    frames_to_interpolate = []
     for index in range(len(interval_list)):
-        if should_skip_next_interval:
-            should_skip_next_interval = False
-            index += 1
-            continue
         if index == len(interval_list) - 1:
-            merged_intervals_list_for_hand.append(interval_list[index])
+            if merging:
+                frames_to_interpolate = np.append(frames_to_interpolate, np.arange(interval_list[index - 1]['end'] + 1,
+                                                                                   interval_list[index]['start']))
+                merged_intervals_list_for_hand.append({'start': start_frame, 'end': interval_list[index]['end'],
+                                                       'frames_to_inerpolate': frames_to_interpolate})
+                frames_to_interpolate = None
+            else:
+                merged_intervals_list_for_hand.append(interval_list[index])
         elif interval_list[index + 1]['start'] - interval_list[index][
             'end'] > max_distance_between_intervals:
-            merged_intervals_list_for_hand.append(interval_list[index])
+            if not merging:
+                merged_intervals_list_for_hand.append(interval_list[index])
+            else:
+                frames_to_interpolate = np.append(frames_to_interpolate, np.arange(interval_list[index - 1]['end'] + 1,
+                                                                                   interval_list[index]['start']))
+                merged_intervals_list_for_hand.append({'start': start_frame, 'end': interval_list[index]['end'],
+                                                       'frames_to_inerpolate': frames_to_interpolate})
+                frames_to_interpolate = None
+                start_frame = None
+                merging = False
         else:
-            merged_intervals_list_for_hand.append({'start': interval_list[index][
-                'start'], 'end': interval_list[index + 1]['end'], 'frames_to_inerpolate': np.arange(
-                interval_list[index]['end'] + 1, interval_list[index + 1]['start'])})
-            should_skip_next_interval = True
-            index += 1
+            if merging:
+                frames_to_interpolate = np.append(frames_to_interpolate, np.arange(interval_list[index - 1]['end'] + 1,
+                                                                                   interval_list[index]['start']))
+            else:
+                start_frame = interval_list[index]['start']
+                merging = True
+
     return merged_intervals_list_for_hand
 
 
@@ -746,7 +774,7 @@ if __name__ == '__main__':
     angles_path_expected = generate_angles_csv(generate_vectors_csv(expected_path, output_path=os.getcwd()),
                                                filename='angles_expected',
                                                output_path=os.getcwd())
-    visualizer.plot_multi_graphs_from_other_csvs([angles_path_expected, angles_path],
-                                                 output_path=os.getcwd() + '/comparison')
+    # visualizer.plot_multi_graphs_from_other_csvs([angles_path_expected, angles_path],
+    #                                              output_path=os.getcwd() + '/comparison')
     # angles_path = generate_interpolated_angles_csv(angles_path, output_path=os.getcwd())
 #
