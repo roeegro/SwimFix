@@ -6,7 +6,7 @@
 3. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
    * [Initialization](#step-0---initialization)
    * [Data Annotation](#step-1---data-annotation)
-   * [Data Filtering and Reindexing](#step-2---data-filtering-and-reindexing)
+   * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
    * [LMDB File Generation](#step-4---lmdb-file-generation)
 4. [Training](#training)
@@ -64,7 +64,7 @@ In this section we will explain how we annotated our own custom data and geneter
 For this section and this section **only** we used a Windows 10 machine with:
 - Docker (For [Data Annotation](#step-1---data-annotation))
 - Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
-- Python 3.6 installed (For [Data Filtering and Re-indexing](step [LMDB File Generation](#step-4---lmdb-file-generation))
+- Python 3.6 installed (For [Data Filtering and Re-indexing](#step-2---data-filtering-and-re-indexing) and [LMDB File Generation](#step-4---lmdb-file-generation))
 
 ### Step 0 - Initialization
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
@@ -174,5 +174,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUzMTU1ODc4MiwxNjg4NjE4MDldfQ==
+eyJoaXN0b3J5IjpbODM0MzQ1MTI0LDE2ODg2MTgwOV19
 -->
