@@ -81,6 +81,7 @@ The server side implementation will be implemented in the future.
 The following mechanism allows admin to manually annotate videos and save their annotation as csv and compare it to the OpenPose library performance.
 The manual to the test adding interface:<br>
 ------------Test Generator Guide--------
+
 Prerequisites:
 1. You must have Python3 installed
 
@@ -149,5 +150,5 @@ CSV Output Section:
 The CSV output format is as follows:
 You will have for each frame number the X and Y coordinated for each body part mentioned in body parts table in the program.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjkwNjY4OTkxXX0=
+eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
