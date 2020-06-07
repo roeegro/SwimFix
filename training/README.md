@@ -33,7 +33,7 @@ The guide was tested successfully on an Ubuntu 18.04 machine with the following 
 
 ## Prerequisites
 Make sure you have those and before continuing:
-### Nvidia GPU version prerequisites:
+- Nvidia GPU related prerequisites:
     1. **Note: OpenPose has been tested extensively with CUDA 8.0 (cuDNN 5.1) and CUDA 10.0 (cuDNN 7.5)**. We highly recommend using those versions to minimize potential installation issues. Other versions should also work, but we do not provide support about any CUDA/cuDNN installation/compilation issue, as well as problems relate dto their integration into OpenPose.
     2. **CUDA**:
         - Ubuntu 14 or 16 ([**CUDA 8**](https://developer.nvidia.com/cuda-80-ga2-download-archive) **or 10**): Run `sudo ./scripts/ubuntu/install_cuda.sh` (if Ubuntu 16 or 14 and for Graphic cards up to 10XX) or alternatively download and install it from their website.
@@ -49,8 +49,8 @@ Make sure you have those and before continuing:
 -  Docker (For [Data Annotation](#step-1---data-annotation))
 - Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
 
-### Required Third-Party Repositories
-Before we get started, please clone the required git repositories:
+## Required Third-Party Repositories
+Before we get started, please run this in order to clone the required git repositories:
 ```
 cd training
 start clone_training_repos.bat [Windows]
@@ -172,5 +172,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgyMDkxNDEzOCwxNjg4NjE4MDldfQ==
+eyJoaXN0b3J5IjpbMTAxMjI5NDU2OSwxNjg4NjE4MDldfQ==
 -->
