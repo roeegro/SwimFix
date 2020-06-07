@@ -3,15 +3,18 @@
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
-3. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
-   * [Initialization](#step-0---initialization)
+3. [Required Third-Party Repositories](#required-third-party-repositories)
+4. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
-   * [Data Filtering and Reindexing](#step-2---data-filtering-and-reindexing)
+   * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
    * [LMDB File Generation](#step-4---lmdb-file-generation)
-4. [Training](#training)
-5. [Validation](#validation)
-6. [Testing](#testing)
+5. [Training](#training)
+6. [Validation](#validation)
+7. [Testing](#testing)
+8. [Our Results](#our-results)
+9. [Q&A](#qa)
+10. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -20,17 +23,16 @@ From now on the `openpose_train` directory will be our working directory and the
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
 >  In case you want to train a model just on the COCO dataset rather than your own, please follow the original repository instructions. You can read more about the COCO dataset which the OpenPose default COCO model was trained on [here](http://cocodataset.org/).
 ## Disclaimer
-This guide is based on a setup we successfully managed to perform on an AWS EC2 virtual machine with the following AMI:<br>**Deep Learning Base AMI (Ubuntu 18.04) Version 22.0 (ami-0f6127e61a87f8677)** (more details  [here](https://aws.amazon.com/marketplace/pp/B07Y3VDBNS?qid=1589717278223&sr=0-1&ref_=srh_res_product_title))
-Keep in mind that this machine is delivered with all the NVIDIA related prerequesities that are mandatory for both OpenPose training and inference versions (The full list of prerequesities for the inference version is [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/prerequisites.md))
-**The guide assumes you are running on a a similiar machine.**
+This guide is based on a setup we successfully managed to perform on an AWS EC2 virtual machine with the following AMI:<br>**Deep Learning Base AMI (Ubuntu 18.04) Version 22.0 (ami-0f6127e61a87f8677)** (more details  [here](https://aws.amazon.com/marketplace/pp/B07Y3VDBNS?qid=1589717278223&sr=0-1&ref_=srh_res_product_title))<br>Keep in mind that this machine is delivered with all the NVIDIA related prerequesities that are mandatory for both OpenPose training and inference versions (The full list of prerequesities for the inference version is [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/prerequisites.md))<br>**The guide assumes you are running on a a similiar machine.**
 
 The guide was tested successfully on an Ubuntu 18.04 machine with the following hardware:
-- Nvidia RTX 2060 
-- Intel i9
+- Nvidia GeForce RTX 2060 GAMING Z 6G
+- Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz
+- 32GB*2 DDR4 RAM
 
 ## Prerequisites
 Make sure you have those and before continuing:
-- Nvidia GPU version prerequisites:
+- Nvidia GPU related prerequisites:
     1. **Note: OpenPose has been tested extensively with CUDA 8.0 (cuDNN 5.1) and CUDA 10.0 (cuDNN 7.5)**. We highly recommend using those versions to minimize potential installation issues. Other versions should also work, but we do not provide support about any CUDA/cuDNN installation/compilation issue, as well as problems relate dto their integration into OpenPose.
     2. **CUDA**:
         - Ubuntu 14 or 16 ([**CUDA 8**](https://developer.nvidia.com/cuda-80-ga2-download-archive) **or 10**): Run `sudo ./scripts/ubuntu/install_cuda.sh` (if Ubuntu 16 or 14 and for Graphic cards up to 10XX) or alternatively download and install it from their website.
@@ -43,8 +45,11 @@ Make sure you have those and before continuing:
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
 -  Python 3.6
+-  Docker (For [Data Annotation](#step-1---data-annotation))
+- Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
+
 ## Required Third-Party Repositories
-Before we get started, please clone the required git repositories:
+Before we get started, please run this in order to clone the required third party git repositories which we will use:
 ```
 cd training
 start clone_training_repos.bat [Windows]
@@ -54,25 +59,16 @@ The cloned repositories are:
 - [openpose_train](https://github.com/tommarz/openpose_train) - The main training library.
 - [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) - Used by the main `openopose_train` library for the training of the model on the NVIDIA GPU.
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) - The annotation tool for our data.
-- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library which is not used in this guide. If you wish to use it, please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide,
+- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
 
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
->**Note:** For this section and this section **only** we used a Windows 10 machine with:
->- Docker (For [Data Annotation](#step-1---data-annotation))
->- Matlab R2019a (For [Data Augmentation](#step-2---data-augmentation)) 
->- Python 3.6 installed (For [LMDB File Generation](#step-3---lmdb-file-generation))
->
->In case you are are using Ubuntu you may not need a Docker for the annotation and Matlab for the augmentation.
 
-In these steps, our working directory is `openpose_train` which 
-
-### Step 0 - Initialization
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
 
 ### Step 1 - Data Annotation
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`.
- We recommend you to use it as well - you can check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
+ We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimmingProject/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
 2.  Export the annotations file as `person_keypoints_custom.json` to the `dataset/COCO/cocoapi/annotations/` folder.
@@ -82,23 +78,23 @@ At the end of this step you should have:
 - An annotations JSON file located in `dataset/COCO/cocoapi/annotations/person_keypoints_custom.json`
 - A [dataset folder](#step-0---data-import) with the raw images located in `dataset/COCO/cocoapi/images/custom`
 
-### Step 2 - Data Filtering and Reindexing
-In this section we will filter out some data and update the coressponding annotations json file accordingly.
+### Step 2 - Data Filtering and Re-indexing
+In this section we will filter out some data and update the corresponding annotations JSON file accordingly.
 
 Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `json_ops.py`
 
-By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs this operations on the `custom.json` annotations file in the following order:
-- Deletes redundant fields from the json structure.
-- Removes annotations with no keypoints/no segmentation, (i.e. area=0).
-- Removes unannotated images
-- Performs reindexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
+By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs these operations on the `custom.json` annotations file in the following order:
+1) Deletes redundant fields from the json structure.
+2) Removes annotations with no keypoints/no segmentation, (i.e. area=0).
+3) Removes images with no annotations (Those images will stay in the `dataset/COCO/cocoapi/images` folder and will be used in the next step to generate the `coco_negatives.json` file.
+4) Performs re-indexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
 ### Step 3 - Data Augmentation
 For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
 Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
 
 Before running anything, make sure you have the `common` and `private` folders (which is located in the `training` folder) in the Matlab path.
 Do expect for some errors regarding paths in to `cocoapi` 
-1.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the LMDB with the images with no people on them.
+1.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the json that contains the images with no people on them - in our case those images will be of empty pools with no swimmers in them.
 2.  Run  `a2_coco_jsonToMat.m`  in Matlab to convert the annotation format from json to mat in  `dataset/COCO/mat/`.
 3.  Run  `a3_coco_matToMasks.m`  in Matlab to obatin the mask images for unlabeled person. You can use 'parfor' in Matlab to speed up the code.
 4.  Run  `a4_coco_matToRefinedJson.m`  to generate a json file in  `dataset/COCO/json/`  directory. The json files contain raw informations needed for training.
@@ -143,14 +139,8 @@ The first 10 layers are used as backbone.
     -  Run  `bash train_pose.sh` (generated by  `d_setLayers.py`) to start the training with 1 GPU
     -   Run  `bash train_pose.sh 0,1,2,3`  (generated by  `d_setLayers.py`) to start the training with the 4 GPUs (0-3).
 
-## Validation
-
-## Testing
-
-## Our results
-
-## Known issues
-|Error					|Context								 |Solution
+## Q&A
+|Error					|Reason|Solution
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
 |`  Could NOT find Protobuf (missing: Protobuf_INCLUDE_DIR)`|When trying to build OpenPose|https://gist.github.com/diegopacheco/cd795d36e6ebcd2537cd18174865887b
@@ -160,23 +150,21 @@ The first 10 layers are used as backbone.
 ## Installation commands
 - Please install the following libraries:
 ```
-sudo apt-get install
- libprotobuf-dev
- libleveldb-dev
- libsnappy-dev
- libopencv-dev
- libhdf5-serial-dev
- protobuf-compiler
- libboost-all-dev
- libatlas-base-dev
- python-numpy
+sudo apt-get install \
+libprotobuf-dev=3.0.0-9.1ubuntu1 \
+libleveldb-dev=1.20-2 \
+libsnappy-dev=1.1.7-1 \
+libopencv-dev=3.2.0+dfsg-4ubuntu0.1 
+libhdf5-serial-dev=1.10.0-patch1+docs-4 \
+protobuf-compiler=3.0.0-9.1ubuntu1 \
+libboost-all-dev=1.65.1.0ubuntu1 \
+libatlas-base-dev=3.10.3-5 \
+python-numpy=1:1.13.3-2ubuntu1
 ```
 
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkyNDM2ODIyMiwxOTUzNTk1NDAzLC0xMz
-YzMjg4MTI0LC00NzU0Njg1MzEsMjAzMjU2MjQxLC05NDU3OTY2
-ODQsMTMyNDgwOTQ2LC0zNTcxNTEyMTYsLTE4MTQ2ODQ3NDIsNT
-I1NTMxNzk2LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbNjAxNDIzMTUyLDI5MzI1MzkzMiw0NjMzMj
+QzMDIsNjM4ODgyMzM3LDE2ODg2MTgwOV19
 -->
