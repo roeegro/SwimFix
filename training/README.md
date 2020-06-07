@@ -27,7 +27,7 @@ This guide is based on a setup we successfully managed to perform on an AWS EC2 
 
 The guide was tested successfully on an Ubuntu 18.04 machine with the following hardware:
 - Nvidia RTX 2060 
-- Intel i9
+- Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz
 
 ## Prerequisites
 Make sure you have those and before continuing:
@@ -164,6 +164,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDYzMzI0MzAyLDYzODg4MjMzNywxNjg4Nj
-E4MDldfQ==
+eyJoaXN0b3J5IjpbMjkzMjUzOTMyLDQ2MzMyNDMwMiw2Mzg4OD
+IzMzcsMTY4ODYxODA5XX0=
 -->
