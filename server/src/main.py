@@ -96,6 +96,7 @@ def accept_request():
                         continue
         except Exception as e:
             print("An error occurred while trying to process the user's request: ", e)
+            continue
 
 
 if __name__ == '__main__':

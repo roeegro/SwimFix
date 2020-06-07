@@ -236,18 +236,21 @@ def test_results(video_name):
 def previous_feedbacks():
     # connect and ask for all list
     user_id = session.get('ID') if session and session.get('logged_in') else 0
-    data_recieved = ''
+    files_details = ''
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
         msg = 'view_feedbacks_list user_id: {}'.format(user_id)
         s.sendall(msg.encode('utf-8'))
         data = s.recv(1024)
-        files_details = data.decode('utf-8')
+        while data:
+            files_details += data.decode('utf-8')
+            data = s.recv(1024)
 
     if files_details == 'Fail':
         return render_template('previous-feedbacks.html', data=list(), isAdmin=is_admin())
 
     files_details = files_details.split(',')
+    files_details.reverse()  # To view new feedbacks first.
     data_to_pass = list()
     for file_detail in files_details:
         try:
@@ -267,7 +270,6 @@ def previous_feedbacks():
 @app.route('/previous-feedback/<details>', methods=['GET', 'POST'])
 def previous_feedback(details):
     [zip_name, date] = details.split('__')
-    print('date is : {}'.format(date))
     user_id = session.get('ID') if session and session.get('logged_in') else 0
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # s.setblocking(0)  # non blocking
@@ -544,6 +546,7 @@ def _pass_data():
     data_as_json = request.get_json()
     image_b64 = data_as_json['img']
     path_to_save_img_in = os.getcwd() + data_as_json['current img path']
+    print(path_to_save_img_in)
     import base64
     image_data = re.sub('^data:image/.+;base64,', '', image_b64)
     image_data = base64.b64decode(image_data)
@@ -554,6 +557,7 @@ def _pass_data():
     video_date_and_time = zip_and_date.split('__')[1]
     date = video_date_and_time.split('_')[0]
     time = video_date_and_time.split('_')[1]
+
     with open(path_to_save_img_in, "wb") as f:
         f.write(image_data)
 
@@ -580,4 +584,4 @@ def _pass_data():
                 s.send(l)
                 print("Sending data")
                 l = f.read(1024)
-    return jsonify({'returned_url': url_for('previous_feedback', details=zip_name)})
+    return jsonify({'returned_url': url_for('previous_feedback', details=zip_and_date)})

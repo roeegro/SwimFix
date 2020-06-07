@@ -26,6 +26,7 @@ SUCCESS_MSG = "success".encode('utf-8')
 def login(data, conn, params):
     print('LOGIN')
     print(data)
+    return_msg = FAILURE_MSG
     try:
         username = data[data.index('username:') + 1]
         password = data[data.index('password:') + 1]
@@ -36,7 +37,9 @@ def login(data, conn, params):
         if res > 0:
             user = cur.fetchone()
             if bcrypt.checkpw(password.encode('utf-8'), user['PASSWORD_HASH'].encode('utf-8')):
-                return '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] != 0).encode("utf-8")
+                return_msg = '{} {} {} {}'.format(user['ID'], user['USERNAME'], True, user['ISADMIN'] != 0).encode(
+                    "utf-8")
+                return
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -44,11 +47,12 @@ def login(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def register(data, conn, params):
     print('REGISTER')
+    return_msg = FAILURE_MSG
     try:
         username = data[data.index('username:') + 1]
         password = data[data.index('password:') + 1]
@@ -58,7 +62,7 @@ def register(data, conn, params):
         res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (username, email))
 
         if res != 0:
-            return 'failure'.encode("utf-8")
+            return
 
         password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
@@ -66,7 +70,7 @@ def register(data, conn, params):
 
         mysql.commit()
         cur.close()
-        return 'success'.encode("utf-8")
+        return_msg = SUCCESS_MSG
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -74,7 +78,7 @@ def register(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def download(data, conn, params):
@@ -83,13 +87,14 @@ def download(data, conn, params):
 
 def view_feedbacks_list(data, conn, params):
     print('VIEW_FEEDBACK_LIST')
+    return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
         mysql.ping(True)
         cur = mysql.cursor()
         res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = {}".format(user_id))
         if res == 0:
-            return "failure".encode("utf-8")
+            return FAILURE_MSG
         mysql.ping(True)
         cur = mysql.cursor()
         cur.execute("SELECT * FROM FILES WHERE CREATORID = {}".format(user_id))
@@ -105,8 +110,8 @@ def view_feedbacks_list(data, conn, params):
                 answer += to_add
             except KeyError as e:
                 print("An exception occurred: %s\nInvalid data %s" % (e, result))
-                return "failure".encode('utf-8')
-        return answer.encode("utf-8")
+                return FAILURE_MSG
+        return_msg = answer.encode("utf-8")
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -114,55 +119,57 @@ def view_feedbacks_list(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def view_graphs(data, conn, params):
-    user_id = data[data.index('user_id:') + 1]
-    filename = data[data.index('filename:') + 1]
-    asked_date = data[data.index('date:') + 1]
-    date = asked_date.split('_')[0]
-    time = asked_date.split('_')[1].replace('-', ':')
-    date_time_as_str = date + ' ' + time
-    date_time_obj = datetime.datetime.strptime(date_time_as_str, '%Y-%m-%d %H:%M:%S')
-    print(date_time_as_str)
-    mysql.ping(True)
-    cur = mysql.cursor()
-    res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
-    if res == 0:
-        return "Fail"
-    username = cur.fetchone()['USERNAME']
-    cur.execute(
-        "SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {} AND CREATION_DATE = \'{}\'".format(filename,
-                                                                                                       user_id,
-                                                                                                       date_time_obj))
-    if res == 0:
-        return "Fail"
-    res = cur.fetchone()
-    creation_date = res['CREATION_DATE']
-    [date, time] = str(creation_date).split(' ')[0:2]
-    time = time.replace(':', '-')
-    creation_date_to_search = date + '/' + time
-    path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
-    print('path to search in = {}'.format(path_to_search_in))
-    zip_location = '../temp'
-    if not os.path.exists(zip_location):
-        os.mkdir(zip_location)
-    output_manager.make_archive(path_to_search_in, zip_location, filename + ".zip")
-    file_path_to_send = zip_location + '/' + filename + ".zip"
-    f = open(file_path_to_send, 'rb')
-    l = f.read(1024)
-    while l:
-        conn.send(l)
-        print('sending zip...')
+    return_msg = FAILURE_MSG
+    try:
+        user_id = data[data.index('user_id:') + 1]
+        filename = data[data.index('filename:') + 1]
+        asked_date = data[data.index('date:') + 1]
+        date = asked_date.split('_')[0]
+        time = asked_date.split('_')[1].replace('-', ':')
+        date_time_as_str = date + ' ' + time
+        date_time_obj = datetime.datetime.strptime(date_time_as_str, '%Y-%m-%d %H:%M:%S')
+        print(date_time_as_str)
+        mysql.ping(True)
+        cur = mysql.cursor()
+        res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+        if res == 0:
+            return
+        username = cur.fetchone()['USERNAME']
+        cur.execute(
+            "SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {} AND CREATION_DATE = \'{}\'".format(filename,
+                                                                                                           user_id,
+                                                                                                           date_time_obj))
+        if res == 0:
+            return
+        res = cur.fetchone()
+        creation_date = res['CREATION_DATE']
+        [date, time] = str(creation_date).split(' ')[0:2]
+        time = time.replace(':', '-')
+        creation_date_to_search = date + '/' + time
+        path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
+        print('path to search in = {}'.format(path_to_search_in))
+        zip_location = '../temp'
+        if not os.path.exists(zip_location):
+            os.mkdir(zip_location)
+        output_manager.make_archive(path_to_search_in, zip_location, filename + ".zip")
+        file_path_to_send = zip_location + '/' + filename + ".zip"
+        f = open(file_path_to_send, 'rb')
         l = f.read(1024)
         while l:
             conn.send(l)
             print('sending zip...')
             l = f.read(1024)
-        f.close()
-        print('sent all zip successfully')
-        return "success".encode("utf-8")
+            while l:
+                conn.send(l)
+                print('sending zip...')
+                l = f.read(1024)
+            f.close()
+            print('sent all zip successfully')
+            return_msg = "success".encode("utf-8")
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -170,10 +177,11 @@ def view_graphs(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def forum_view_page(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         offset = int(data[data.index('offset:') + 1])
         limit = int(data[data.index('limit:') + 1])
@@ -189,7 +197,7 @@ def forum_view_page(data, conn, params):
                 ORDER BY LASTPOST DESC
                 LIMIT %s, %s''', (offset, limit + 1,))
         topics = cur.fetchall()
-        return pickle.dumps(topics)
+        return_msg = pickle.dumps(topics)
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -197,10 +205,11 @@ def forum_view_page(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def forum_topic_name(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         topic_id = data[data.index('topic_id:') + 1]
         mysql.ping(True)
@@ -211,8 +220,9 @@ def forum_topic_name(data, conn, params):
                 WHERE TOPICS.ID = %s;''', (topic_id,))
         topic = cur.fetchone()
         if not topic:
-            return None
-        return topic['NAME'].encode("utf-8")
+            return_msg = None
+            return
+        return_msg = topic['NAME'].encode("utf-8")
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -220,10 +230,11 @@ def forum_topic_name(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def forum_view_topic(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         topicID = data[data.index('topic_id:') + 1]
         page = int(data[data.index('page:') + 1])
@@ -238,7 +249,7 @@ def forum_view_topic(data, conn, params):
                 ORDER BY POSTS.CREATION_DATE
                 LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
         posts = cur.fetchall()
-        return pickle.dumps(posts)
+        return_msg = pickle.dumps(posts)
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -246,10 +257,11 @@ def forum_view_topic(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def forum_create_topic(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
         title = data[data.index('title:') + 1]
@@ -264,7 +276,7 @@ def forum_create_topic(data, conn, params):
         topicID = cur.lastrowid
         cur.close()
         createPostFunction(content, topicID, user_id)
-        return str(topicID).encode("utf-8")
+        return_msg = str(topicID).encode("utf-8")
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -272,16 +284,17 @@ def forum_create_topic(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def forum_create_post(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
         topic_id = data[data.index('topic_id:') + 1]
         content = ' '.join(data[data.index('content:') + 1:])
         createPostFunction(content, topic_id, user_id)
-        return "success".encode('utf-8')
+        return_msg = "success".encode('utf-8')
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -289,18 +302,18 @@ def forum_create_post(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def createPostFunction(content, topicID, userID=0):
-        mysql.ping(True)
-        cur = mysql.cursor()
-        cur.execute('''
-            INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
-            VALUE (%s, %s, %s)
-            ''', (content, userID, topicID))
-        mysql.commit()
-        cur.close()
+    mysql.ping(True)
+    cur = mysql.cursor()
+    cur.execute('''
+        INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
+        VALUE (%s, %s, %s)
+        ''', (content, userID, topicID))
+    mysql.commit()
+    cur.close()
 
 
 def analyze_video(data, conn, params):
@@ -308,6 +321,7 @@ def analyze_video(data, conn, params):
 
 
 def add_test(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         expected_videos_path = '../excepted_data/videos/'
         expected_csvs_path = '../excepted_data/csvs/'
@@ -318,7 +332,7 @@ def add_test(data, conn, params):
         elif extension == 'csv':
             specific_expected_dir = expected_csvs_path
         else:
-            print('ERROR - CAN NOT RECOGNIZE PATH')
+            return_msg = 'ERROR - CAN NOT RECOGNIZE PATH'.encode('utf-8')
             return
 
         new_expected_file_path = specific_expected_dir + data[data.index('file_path:') + 1]
@@ -334,6 +348,7 @@ def add_test(data, conn, params):
                 f.write(data)
                 counter += 1024
                 print('receiving data...')
+        return_msg = SUCCESS_MSG
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
     except socket.error as e:
@@ -341,34 +356,47 @@ def add_test(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def run_test(data, conn, params):
-    filename = data[data.index('filename:') + 1]
-    expected_all_kp_csv_path = output_manager.get_excepted_csv_path_for_movie(filename)
-    if expected_all_kp_csv_path is None:
-        return str("not found").encode('utf-8')
-    upload(data, conn, params)  # Run openpose to create the actual all keypoints csv
-    actual_all_kp_csv_path = output_manager.get_analytics_dir() + '/all_keypoints.csv'
-    movie_name = filename.split('_from')[0]
-    movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
-        movie_name)
+    return_msg = FAILURE_MSG
+    try:
+        filename = data[data.index('filename:') + 1]
+        expected_all_kp_csv_path = output_manager.get_excepted_csv_path_for_movie(filename)
+        if expected_all_kp_csv_path is None:
+            return_msg = str("not found").encode('utf-8')
+            return
 
-    # facade.filter_and_interpolate(expected_all_kp_csv_path, filename, output_path=movie_ground_truth_data_dir)
-    frames_dir_path = output_manager.get_output_dir_path('frames_path')
+        upload(data, conn, params)  # Run openpose to create the actual all keypoints csv
+        movie_name = filename.split('_from')[0]
+        movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
+            movie_name)
 
-    from distutils.dir_util import copy_tree
-    copy_tree(frames_dir_path, movie_frames_dir)
+        # facade.filter_and_interpolate(expected_all_kp_csv_path, filename, output_path=movie_ground_truth_data_dir)
+        frames_dir_path = output_manager.get_output_dir_path('frames_path')
 
-    facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
-                                             output_path=movie_ground_truth_data_dir)
-    facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
-    tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir, filename)
-    return str("success").encode("utf-8")
+        from distutils.dir_util import copy_tree
+        copy_tree(frames_dir_path, movie_frames_dir)
+
+        facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
+                                                 output_path=movie_ground_truth_data_dir)
+        facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
+        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,
+                          filename)
+        return_msg = str("success").encode("utf-8")
+    except FileNotFoundError as e:
+        print("File not found at path: ", e.filename)
+    except socket.error as e:
+        print("An socket error occurred when trying to receive the uploaded video: ", e)
+    except Exception as e:
+        print("An error occurred when trying to upload the video: ", e)
+    finally:
+        return return_msg
 
 
 def upload_image_fix(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         file_size = int(data[data.index('file_size:') + 1])
         user_id = data[data.index('user_id:') + 1]
@@ -381,12 +409,12 @@ def upload_image_fix(data, conn, params):
         cur = mysql.cursor()
         res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
         if res == 0:
-            return "Fail"
+            return
         username = cur.fetchone()['USERNAME']
         path_to_update = os.getcwd() + '/../output/{}/{}/{}/{}/frames/{}'.format(username, video_name_with_no_extension,
-                                                                                date,
-                                                                                time,
-                                                                                filename)
+                                                                                 date,
+                                                                                 time,
+                                                                                 filename)
         print('selected path is {}'.format(path_to_update))
         msg = 'start'
         conn.send(msg.encode('utf-8'))
@@ -401,18 +429,18 @@ def upload_image_fix(data, conn, params):
                 f.write(data)
                 counter += 1024
                 print('receiving data...')
+        return_msg = SUCCESS_MSG
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
-        return "failure".encode('utf-8')
     except mysql.Error as e:
         print("Something went wrong with MySQL: {}".format(e))
-        return "failure".encode('utf-8')
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def upload(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
         mysql.ping(True)
@@ -428,9 +456,14 @@ def upload(data, conn, params):
         if not os.path.exists(videos_path):
             os.mkdir(videos_path)
         path_to_video = videos_path + filename
-        counter = 0
         f = open(path_to_video, 'wb')
         data = conn.recv(1024)
+        while data:
+            if not data:
+                break
+            # write data to a file
+            f.write(data)
+            data = conn.recv(1024)
         f.close()
         print('Successfully get the file')
         print("Analysing path...")
@@ -455,7 +488,7 @@ def upload(data, conn, params):
             ''', (filename, user_id, date_time_obj))
         mysql.commit()
         cur.close()
-        return "success".encode('utf-8')
+        return_msg = "success".encode('utf-8')
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
     except socket.error as e:
@@ -465,10 +498,11 @@ def upload(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 def upload_file_sql(filename, user_id=0):
+    return_msg = FAILURE_MSG
     try:
         mysql.ping(True)
         cur = mysql.cursor()
@@ -478,16 +512,17 @@ def upload_file_sql(filename, user_id=0):
             ''', (filename, user_id))
         mysql.commit()
         cur.close()
-        return "success".encode('utf-8')
+        return_msg = SUCCESS_MSG
     except mysql.Error as e:
         print("Something went wrong with MySQL: {}".format(e))
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
-    return 'failure'.encode('utf-8')
+    return return_msg
 
 
 def view_tests_list(data, conn, params):
     print('view_tests_list')
+    return_msg = FAILURE_MSG
     answer = ''
     path_to_look_at = '../tests'
     try:
@@ -496,7 +531,7 @@ def view_tests_list(data, conn, params):
             answer = answer + test + ','
         print('answer is ')
         print(answer)
-        return answer.encode("utf-8")
+        return_msg = answer.encode("utf-8")
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
     except mysql.Error as e:
@@ -504,10 +539,11 @@ def view_tests_list(data, conn, params):
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return 'failure'.encode('utf-8')
+        return return_msg
 
 
 def view_test_results(data, conn, params):
+    return_msg = FAILURE_MSG
     try:
         filename = data[data.index('filename:') + 1]
         path_to_search_in = '../tests/{}'.format(filename)
@@ -523,13 +559,13 @@ def view_test_results(data, conn, params):
             l = f.read(1024)
         f.close()
         print('sent all test zip')
-        return "success".encode("utf-8")
+        return_msg = SUCCESS_MSG
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
-        return "failure".encode('utf-8')
+        return return_msg
 
 
 requests_dict = {'login': login, 'register': register, 'download': download, 'view_feedbacks_list': view_feedbacks_list,
@@ -550,14 +586,17 @@ def main_parser(data, conn, params):
     :param params: Dictionary with confiugrations for OpenPose activation.
     :return:
     """
+    return_msg = FAILURE_MSG
     try:
         data = data.decode('utf-8')
         data_lst = (data.split(' '))
         print('request type: {}'.format(data_lst[0]))
         print('decoded data :')
         print(data)
-        return (requests_dict[data_lst[0]])(data_lst[1:], conn, params)
+        return_msg = (requests_dict[data_lst[0]])(data_lst[1:], conn, params)
     except IndexError as e:
         print("An error occurred: %s\nOn data: %s" % (data, e))
     except Exception as e:
         print("An error occurred while trying to process the user request: ", e)
+    finally:
+        return return_msg
