@@ -15,7 +15,7 @@ OpenPose is an open-source Pose Estimation library which is used in our project 
 The pose estimation is performed by extracting a wire frame of the swimmer from each frame of a given video of the swimmer in a front crawl setting.
 A wire frame is a skeleton of the swimmer which is composed by a set of key points - each key point represents a body part (e.g elbow, shoulder, wrist, e.t.c).
 For more information about the wire frame structure and the output of OpenPose, please check the official [output](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md)  doc.<br>
-![](https://github.com/CMU-Perceptual-Computing-Lab/openpose/raw/master/doc/media/keypoints_pose_18.png)
+
 <p align="center">
     <img src="https://github.com/CMU-Perceptual-Computing-Lab/openpose/raw/master/doc/media/keypoints_pose_18.png", width="480"></p>
 
@@ -45,5 +45,5 @@ Please check out [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose
 For training OpenPose on custom data and creating your own model, please check out [our](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) complete guide, which is based on the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) OpenPose Training repository and contains all the information you need in order to train a model from scratch.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDE2MjA2Niw1OTExMTgyNTNdfQ==
+eyJoaXN0b3J5IjpbLTEzODIwMjk2OTYsNTkxMTE4MjUzXX0=
 -->
