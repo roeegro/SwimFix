@@ -5,7 +5,7 @@ Chart.defaults.global.defaultFontColor = '#858796';
 var current_img_path = '';
 
 
-function number_format(number){
+function number_format(number) {
     if (Number.isInteger(number))
         return number.toString()
     return number.toFixed(3).toString()
@@ -15,12 +15,12 @@ function make_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
+    console.log(csv_path)
     d3.csv(csv_path).then(make_chart.bind(csv_name, csv_name))
     return 0
 }
 
 function setImage(index) {
-    console.log(index)
     frame_element = document.getElementById('current frame to show')
     frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg')
 }
@@ -30,7 +30,6 @@ function make_comparison_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
-    console.log(csv_name)
     d3.csv(csv_path).then(make_comparison_chart.bind(csv_name, csv_name))
     return 0
 }
@@ -82,6 +81,7 @@ function make_comparison_chart(csv_name, data) {
         y1_axis.push(value1)
         y2_axis.push(value2)
     }
+
     myLineChart = new Chart(canvas_tag, {
         type: 'line',
         data: {
@@ -147,8 +147,7 @@ function make_comparison_chart(csv_name, data) {
                         padding: 10,
                         // Include a dollar sign in the ticks
                         callback: function (value, index, values) {
-                            console.log(index)
-                            return number_format(value, 2);
+                            return number_format(value);
                         }
                     },
                     gridLines: {
@@ -190,6 +189,7 @@ function make_comparison_chart(csv_name, data) {
 
     document.getElementById(canvas_id).onclick = function (evt) {
         var activePoints = myLineChart.getElementAtEvent(evt);
+        console.log('bla bla ' + activePoints.length)
         // make sure click was on an actual point
         if (activePoints.length > 0) {
             var clickedDatasetIndex = activePoints[0]._datasetIndex;
@@ -357,7 +357,7 @@ function make_chart(csv_name, data) {
                         callbacks: {
                             label: function (tooltipItem, chart) {
                                 var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                return datasetLabel + ' ' +  number_format(tooltipItem.yLabel);
+                                return datasetLabel + ' ' + number_format(tooltipItem.yLabel);
                             }
                         }
                     }
@@ -553,7 +553,6 @@ function sendFixes() {
     var c = document.getElementById("current frame to show");
     var ctx = c.getContext("2d");
     var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
-    console.log(current_img_path)
     imgData_url = c.toDataURL()
     var data = {'current url': document.URL, 'img': imgData_url, 'current img path': current_img_path};
     // data = {'current_url' : document.URL , 'img' : 44}
@@ -564,12 +563,10 @@ function sendFixes() {
         dataType: 'json',
         data: JSON.stringify(data),
         success: function (result) {
-            console.log(2)
-            console.log(result['returned_url'])
+            console.log('success')
             jQuery("#clash").html(result['returned_url']);
         }, error: function (result) {
-            console.log(3)
-            console.log(result['returned_url']);
+            console.log('error')
         }
     });
 }

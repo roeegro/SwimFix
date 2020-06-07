@@ -3,7 +3,7 @@ import data_extractor
 import output_manager
 import utils
 import visualizer
-
+import evaluator
 
 def filter_and_interpolate(csv_path, video_full_name, y_cols=None, x_col='Frame Number', mult_figures=True,
                            output_path=None):
@@ -95,7 +95,7 @@ def get_angles_csv_from_keypoints_csv(csv_path, avg_angles=True, output_path=Non
         avg_angles_dict = data_analyser.calc_avg_angle(angles_csv_path)
         visualizer.plot_scatter_from_dict(avg_angles_dict, 'Keypoints', 'Angle', 'average_keypoints_angles',
                                           output_path=output_path)
-        return avg_angles_dict
+        return angles_csv_path
     return angles_csv_path
 
 
@@ -144,6 +144,9 @@ def zip_output():
     zip_path = output_manager.zip_output()
     print('finish to send zip')
     return zip_path
+
+def evaluate_errors(all_kp_path, angles_path , output_name = None):
+    evaluator.perfomance_evaluator(all_kp_path, angles_path , output_name)
 
 
 def main():

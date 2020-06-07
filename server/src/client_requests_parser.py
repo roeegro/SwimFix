@@ -88,13 +88,22 @@ def view_feedbacks_list(data, conn, params):
 def view_graphs(data, conn, params):
     user_id = data[data.index('user_id:') + 1]
     filename = data[data.index('filename:') + 1]
+    asked_date = data[data.index('date:') + 1]
+    date = asked_date.split('_')[0]
+    time = asked_date.split('_')[1].replace('-', ':')
+    date_time_as_str = date + ' ' + time
+    date_time_obj = datetime.datetime.strptime(date_time_as_str, '%Y-%m-%d %H:%M:%S')
+    print(date_time_as_str)
     mysql.ping(True)
     cur = mysql.cursor()
     res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
     if res == 0:
         return "Fail"
     username = cur.fetchone()['USERNAME']
-    cur.execute("SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {}".format(filename, user_id))
+    cur.execute(
+        "SELECT * FROM FILES WHERE NAME = \'{}\' AND CREATORID = {} AND CREATION_DATE = \'{}\'".format(filename,
+                                                                                                       user_id,
+                                                                                                       date_time_obj))
     if res == 0:
         return "Fail"
     res = cur.fetchone()
@@ -103,6 +112,7 @@ def view_graphs(data, conn, params):
     time = time.replace(':', '-')
     creation_date_to_search = date + '/' + time
     path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
+    print('path to search in = {}'.format(path_to_search_in))
     zip_location = '../temp'
     if not os.path.exists(zip_location):
         os.mkdir(zip_location)
@@ -264,6 +274,8 @@ def upload_image_fix(data, conn, params):
     file_size = int(data[data.index('file_size:') + 1])
     user_id = data[data.index('user_id:') + 1]
     video_name = data[data.index('video_name:') + 1]
+    date = data[data.index('date:') + 1]
+    time = data[data.index('time:') + 1]
     filename = data[data.index('filename:') + 1]
     video_name_with_no_extension = video_name.split('.')[0]
     mysql.ping(True)
@@ -272,16 +284,14 @@ def upload_image_fix(data, conn, params):
     if res == 0:
         return "Fail"
     username = cur.fetchone()['USERNAME']
-    print('wanted username : {}'.format(username))
-    res = cur.execute("SELECT CREATION_DATE FROM FILES WHERE CREATORID = {}".format(user_id))
-    if res == 0:
-        return "Fail"
-    results = cur.fetchall()
-    path_to_uploaded_img = os.getcwd() + '/../temp/{}'.format(filename)
-
+    path_to_update = os.getcwd() + '/../output/{}/{}/{}/{}/frames/{}'.format(username, video_name_with_no_extension,
+                                                                             date,
+                                                                             time,
+                                                                             filename)
+    print('selected path is {}'.format(path_to_update))
     msg = 'start'
     conn.send(msg.encode('utf-8'))
-    with open(path_to_uploaded_img, 'wb') as f:
+    with open(path_to_update, 'wb') as f:
         counter = 0
         while file_size > counter:
             print(counter)
@@ -292,22 +302,6 @@ def upload_image_fix(data, conn, params):
             f.write(data)
             counter += 1024
             print('receiving data...')
-    for result in results:
-        try:
-            creation_date = result['CREATION_DATE']
-            [date, time] = str(creation_date).split(' ')[0:2]
-            time = time.replace(':', '-')
-            path_to_update = '/../output/{}/{}/{}/{}/frames/{}'.format(username, video_name_with_no_extension, date,
-                                                                       time,
-                                                                       filename)
-
-            print('next path to update to is:')
-            print(path_to_update)
-            # shutil.rmtree(os.getcwd() + path_to_update)
-            shutil.copy(path_to_uploaded_img, os.getcwd() + path_to_update)
-        except:
-            continue
-    os.remove(path_to_uploaded_img)
 
 
 def upload(data, conn, params):
@@ -341,12 +335,13 @@ def upload(data, conn, params):
 
     facade.create_output_dir_for_movie_of_user(path_to_video, username)
     all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
-    facade.filter_and_interpolate(all_keypoints_csv_path, filename)
+    filtered_and_interpolated_csv_path = facade.filter_and_interpolate(all_keypoints_csv_path, filename)
     # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
-    facade.get_angles_csv_from_keypoints_csv(all_keypoints_csv_path)
-    facade.get_detected_keypoints_by_frame(all_keypoints_csv_path)
-    facade.get_average_swimming_period_from_csv(all_keypoints_csv_path)
-    zip_path = facade.zip_output()
+    angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path)
+    facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
+    facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
+    facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path)
+    # zip_path = facade.zip_output()
     creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
     creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
     creation_time = creation_time.replace('-', ':')

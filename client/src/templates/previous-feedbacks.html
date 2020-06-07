@@ -26,7 +26,7 @@
                         <td>{{ item.date }}</td>
                         <td>{{ item.movie_name }}</td>
                         <td>
-                            <a href="{{url_for('previous_feedback', zip_name = item.zip_name)}}" > Get Graphs for this file </a>
+                            <a href="{{url_for('previous_feedback', details = item.zip_name + '__' + item.date)}}" > Get Graphs for this file </a>
 
                         </td>
                     </tr>

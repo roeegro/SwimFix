@@ -264,14 +264,16 @@ def previous_feedbacks():
     return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
 
 
-@app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
-def previous_feedback(zip_name):
+@app.route('/previous-feedback/<details>', methods=['GET', 'POST'])
+def previous_feedback(details):
+    [zip_name, date] = details.split('__')
+    print('date is : {}'.format(date))
     user_id = session.get('ID') if session and session.get('logged_in') else 0
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # s.setblocking(0)  # non blocking
         s.connect((SERVER_IP, SERVER_PORT))
         zip_name_to_send = zip_name.split('.')[0]
-        msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
+        msg = 'view_graphs user_id: {} filename: {} date: {}'.format(user_id, zip_name_to_send, date)
         print('PREVIOUS FEEDBACK msg = {}'.format(msg))
         s.sendall(msg.encode('utf-8'))
         zip_location = os.getcwd() + '/static/temp'
@@ -281,7 +283,7 @@ def previous_feedback(zip_name):
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
             while data:
-                print('getting zip into temp directory ...')
+                # print('getting zip into temp directory ...')
                 f.write(data)
                 data = s.recv(1024)
             print('finish receiving data')
@@ -290,7 +292,10 @@ def previous_feedback(zip_name):
                                      expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
                                                           'interpolated_all_keypoints',
                                                           'interpolated_and_filtered_all_keypoints'])
-
+    [error_map_path, swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
+                                                                extensions_of_files_to_find=['csv'],
+                                                                expected_file_names=['map', 'swimmer_errors'])
+    error_description_by_frames = match_error_description_to_frames(error_map_path, swimmer_errors_path)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
     frames_paths = sorted(frames_paths, key=sort_lambda)
@@ -299,6 +304,7 @@ def previous_feedback(zip_name):
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
 
     return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
+                           errors_list=error_description_by_frames,
                            isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
@@ -342,7 +348,8 @@ def forum(page):
     if len(topics) == 0 and page != 0:
         return redirect("/forum/" + str(page - 1))
 
-    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists,
+    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page,
+                           nextPageExists=nextPageExists,
                            isAdmin=is_admin())
 
 
@@ -400,7 +407,6 @@ def topic(forumPage, topicID, page):
 #     mysql.connection.commit()
 #     cur.close()
 #     return
-
 
 @app.route("/forum/createPost", methods=['POST'])
 def createPost():
@@ -544,16 +550,23 @@ def _pass_data():
     image_data = base64.b64decode(image_data)
     userID = session.get('ID') if session and session.get('logged_in') else 0
     filename = path_to_save_img_in.split('/')[-1]
-    zip_name = data_as_json['current url'].split('/')[-1]
+    zip_and_date = data_as_json['current url'].split('/')[-1]
+    video_name = zip_and_date.split('__')[0]
+    video_date_and_time = zip_and_date.split('__')[1]
+    date = video_date_and_time.split('_')[0]
+    time = video_date_and_time.split('_')[1]
     with open(path_to_save_img_in, "wb") as f:
         f.write(image_data)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
-        msg = 'upload_image_fix user_id: {} video_name: {} filename: {} file_size: {}'.format(userID, zip_name,
-                                                                                              filename,
-                                                                                              get_size_of_file_path(
-                                                                                                  path_to_save_img_in))
+        msg = 'upload_image_fix user_id: {} video_name: {} date: {} time: {} filename: {} file_size: {}'.format(userID,
+                                                                                                                video_name,
+                                                                                                                date,
+                                                                                                                time,
+                                                                                                                filename,
+                                                                                                                get_size_of_file_path(
+                                                                                                                    path_to_save_img_in))
         print(msg)
         s.sendall(msg.encode('utf-8'))
         start_msg = s.recv(1024)  # for 'start' message
@@ -562,12 +575,10 @@ def _pass_data():
                 flash('No test found for this video', 'info')
                 return render_template('run-test.html')
             start_msg = s.recv(1024)
-        print('path to read from {}'.format(path_to_save_img_in))
         with open(path_to_save_img_in, "rb") as f:
             l = f.read(1024)
             while l:
                 s.send(l)
                 print("Sending data")
                 l = f.read(1024)
-
-    return jsonify({'returned_url': url_for('previous_feedback', zip_name=zip_name)})
+    return jsonify({'returned_url': url_for('previous_feedback', details=zip_name)})
