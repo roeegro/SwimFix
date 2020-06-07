@@ -114,10 +114,9 @@ def compare_csvs(actual_csv_path, expected_csv_path, output_path, filename='comp
 
 
 if __name__ == '__main__':
-    actual_path = '../output/MVI_8027/2020-01-22/00-58-05-647226/analytical_data/interpolated_all_keypoints.csv'
-    expected_path = '../output/MVI_8027/MVI_8027_expected.csv'
-    output_path = '../output/MVI_8027/MVI_8027_compared.csv'
+    actual_path = '<enter actual path>'
+    expected_path = '<enter expected path>'
+    output_path = '<enter output path> '
     cols = ['RShoulderX', 'RShoulderY', 'RElbowX', 'RElbowY', 'RWristX', 'RWristY',
             'LShoulderX', 'LShoulderY', 'LElbowX', 'LElbowY', 'LWristX', 'LWristY']
-    acc = compare_csvs(actual_path, expected_path, output_path, 5, cols)
-    print(acc)
+    compare_csvs(actual_path, expected_path, output_path, 5, cols)

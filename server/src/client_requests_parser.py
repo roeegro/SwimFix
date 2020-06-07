@@ -5,10 +5,8 @@ import MySQLdb
 import bcrypt
 import MySQLdb.cursors
 import facade
-# from output_manager import make_archive, get_excepted_csv_path_for_movie
 import output_manager
 import tester
-import shutil
 import socket
 
 MYSQL_HOST = '65.19.141.67'
@@ -25,7 +23,6 @@ SUCCESS_MSG = "success".encode('utf-8')
 
 def login(data, conn, params):
     print('LOGIN')
-    print(data)
     return_msg = FAILURE_MSG
     try:
         username = data[data.index('username:') + 1]
@@ -81,10 +78,6 @@ def register(data, conn, params):
         return return_msg
 
 
-def download(data, conn, params):
-    pass
-
-
 def view_feedbacks_list(data, conn, params):
     print('VIEW_FEEDBACK_LIST')
     return_msg = FAILURE_MSG
@@ -132,7 +125,6 @@ def view_graphs(data, conn, params):
         time = asked_date.split('_')[1].replace('-', ':')
         date_time_as_str = date + ' ' + time
         date_time_obj = datetime.datetime.strptime(date_time_as_str, '%Y-%m-%d %H:%M:%S')
-        print(date_time_as_str)
         mysql.ping(True)
         cur = mysql.cursor()
         res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
@@ -151,7 +143,6 @@ def view_graphs(data, conn, params):
         time = time.replace(':', '-')
         creation_date_to_search = date + '/' + time
         path_to_search_in = '../output/{}/{}/{}'.format(username, filename, creation_date_to_search)
-        print('path to search in = {}'.format(path_to_search_in))
         zip_location = '../temp'
         if not os.path.exists(zip_location):
             os.mkdir(zip_location)
@@ -163,13 +154,9 @@ def view_graphs(data, conn, params):
             conn.send(l)
             print('sending zip...')
             l = f.read(1024)
-            while l:
-                conn.send(l)
-                print('sending zip...')
-                l = f.read(1024)
-            f.close()
-            print('sent all zip successfully')
-            return_msg = "success".encode("utf-8")
+        f.close()
+        print('sent all zip successfully')
+        return_msg = "success".encode("utf-8")
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -316,10 +303,6 @@ def createPostFunction(content, topicID, userID=0):
     cur.close()
 
 
-def analyze_video(data, conn, params):
-    pass
-
-
 def add_test(data, conn, params):
     return_msg = FAILURE_MSG
     try:
@@ -415,13 +398,11 @@ def upload_image_fix(data, conn, params):
                                                                                  date,
                                                                                  time,
                                                                                  filename)
-        print('selected path is {}'.format(path_to_update))
         msg = 'start'
         conn.send(msg.encode('utf-8'))
         with open(path_to_update, 'wb') as f:
             counter = 0
             while file_size > counter:
-                print(counter)
                 data = conn.recv(1024)
                 if not data:
                     break
@@ -568,13 +549,12 @@ def view_test_results(data, conn, params):
         return return_msg
 
 
-requests_dict = {'login': login, 'register': register, 'download': download, 'view_feedbacks_list': view_feedbacks_list,
+requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': view_feedbacks_list,
                  'view_graphs': view_graphs,
                  'forum_view_page': forum_view_page, 'forum_view_topic': forum_view_topic,
                  'forum_topic_name': forum_topic_name,
-                 'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post,
-                 'analyze_video': analyze_video,
-                 'add_test': add_test, 'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,
+                 'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post, 'add_test': add_test,
+                 'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,
                  'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
 
 
@@ -590,7 +570,6 @@ def main_parser(data, conn, params):
     try:
         data = data.decode('utf-8')
         data_lst = (data.split(' '))
-        print('request type: {}'.format(data_lst[0]))
         print('decoded data :')
         print(data)
         return_msg = (requests_dict[data_lst[0]])(data_lst[1:], conn, params)

@@ -2,16 +2,12 @@ import pandas as pd
 import numpy as np
 import cv2
 import output_manager
-import inspect
 import os
 
 errors_df = None
 
 
 def check_hand_crossed_the_middle_line(all_kp_df, angles_df,name):
-    # frame = inspect.currentframe()
-    # error_name = inspect.getframeinfo(frame) \
-    #     # .function.replace('check_', '').replace('_', ' ')
     error_id = get_id_of_error(name)
     for index, __ in all_kp_df.iterrows():
         r_wrist_x = all_kp_df['RWristX'][index]
@@ -78,13 +74,11 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
                                  'description': [list(error.keys())[0].replace('check_', '').replace('_', ' ') for error
                                                  in errors]}).set_index('error_id')
 
-    # output_directory_path_by_time = os.getcwd()
     output_directory = output_manager.get_output_dir_path(key="time_path") if output_path is None else output_path
     error_map_df.to_csv(output_directory + '/map.csv',index=False)
     for potential_error in errors:
         (list(potential_error.values())[0])(all_kp_df, angles_df,list(potential_error.keys())[0])
-    # errors_df.to_csv(os.getcwd() + '/swimmer_errors.csv', index=False)
-    print(errors_df)
+
     errors_df.to_csv(output_directory + '/swimmer_errors.csv',index=False)
     errors_df = None
 

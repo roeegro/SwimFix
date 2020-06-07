@@ -12,7 +12,7 @@ import filetype
 import os
 import cv2
 import pandas as pd
-import threading
+
 
 from client.src import SERVER_IP, SERVER_PORT
 
@@ -20,6 +20,7 @@ success_sending_flag = None
 
 
 class GuiData():
+    """Class holds relevant data for test generator execution"""
     frames_number = 10  # Just an initial frame_number. Updated at runtime.
     lines = list()
     dlg = None
@@ -48,6 +49,7 @@ def run():
 
 
 def gui_setup():
+    """Defines buttons, labels and initial enabling for widgets"""
     dlg = uic.loadUi('test_generator.ui')
     GuiData.dlg = dlg
     get_from_keypoint_cmbox().setEnabled(False)
@@ -124,7 +126,6 @@ def add_line_btn_pressed():
 
 def body_part_tbl_cell_selected(item):
     GuiData.curr_measured_body_part_index = item.row()
-    print(item.text())
 
 
 def clean_all_btn_pressed():
@@ -153,8 +154,8 @@ def clicked_coor_into_tbl(event):
     x = math.floor(
         event.pos().x() / GuiData.resolution_ratio[0])  # match the selected point's coors to match to image resolution
     y = math.floor(event.pos().y() / GuiData.resolution_ratio[1])
-    print('width ratio is {}'.format(GuiData.resolution_ratio[0]))
-    print('width ratio is {}'.format(GuiData.resolution_ratio[1]))
+    # print('width ratio is {}'.format(GuiData.resolution_ratio[0]))
+    # print('width ratio is {}'.format(GuiData.resolution_ratio[1]))
     body_part_tbl = get_body_coors_tbl()
     row_index_in_body_part_tbl = GuiData.curr_measured_body_part_index
     if body_part_tbl.rowCount() <= row_index_in_body_part_tbl:
@@ -240,7 +241,7 @@ def finish_line_def_btn_pressed():
     # Draw circles and lines based on the known data if exist
     if GuiData.are_keypoints_known is True:
         paint_for_all_frames()
-    build_keypoints_tbl_for_request_frame(0)
+    build_keypoints_tbl_for_required_frame(0)
 
 
 def insert_body_part_btn_pressed():
@@ -323,7 +324,7 @@ def next_btn_pressed():
         GuiData.curr_measured_body_part_index = 0
         save_coors_in_csv(prev_frame_number)
         draw_lines_by_tbl(int(prev_frame_number))
-        build_keypoints_tbl_for_request_frame(current_frame_number)
+        build_keypoints_tbl_for_required_frame(current_frame_number)
         edit_shown_frame()
     else:
         red_btn_pressed()
@@ -357,7 +358,7 @@ def prev_btn_pressed():
         GuiData.curr_measured_body_part_index = 0
         current_frame_label.setText(str(prev_frame_number))
         save_coors_in_csv(current_frame_number)
-        build_keypoints_tbl_for_request_frame(prev_frame_number)
+        build_keypoints_tbl_for_required_frame(prev_frame_number)
         edit_shown_frame()
 
 
@@ -480,12 +481,11 @@ def send_test_files_to_server(file_path):
         l = f.read(1024)
         while l:
             s.send(l)
-            # print("Sending data of {}".format(file_path))
             l = f.read(1024)
         f.close()
 
 
-def build_keypoints_tbl_for_request_frame(requested_frame_number):
+def build_keypoints_tbl_for_required_frame(requested_frame_number):
     body_coors_tbl = get_body_coors_tbl()
     csv_path = get_all_keypoints_csv_path()
     keypoints_df = pd.read_csv(csv_path)
@@ -651,7 +651,7 @@ def paint_for_all_frames():
     all_keypoints_df = pd.read_csv(GuiData.all_keypoints_csv_path)
     frames_number = len(all_keypoints_df.index)
     for frame in range(0, frames_number):
-        build_keypoints_tbl_for_request_frame(frame)
+        build_keypoints_tbl_for_required_frame(frame)
         draw_lines_by_tbl(frame)
         edit_shown_frame()
 

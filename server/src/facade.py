@@ -5,6 +5,7 @@ import utils
 import visualizer
 import evaluator
 
+
 def filter_and_interpolate(csv_path, video_full_name, y_cols=None, x_col='Frame Number', mult_figures=True,
                            output_path=None):
     """
@@ -145,21 +146,6 @@ def zip_output():
     print('finish to send zip')
     return zip_path
 
-def evaluate_errors(all_kp_path, angles_path , output_name = None):
-    evaluator.perfomance_evaluator(all_kp_path, angles_path , output_name)
 
-
-def main():
-    all_keypoints_df_csv_path = '../../all_keypoints.csv'
-    video_path = 'MVI_8027.MOV'
-    # output_dirs = output_manager.generate_dirs_for_output_of_movie(video_path)
-    # interpolated_keypoints_path = interpolate_and_plot(all_keypoints_df_csv_path)
-    # filter_and_interpolate(all_keypoints_df_csv_path)
-    # get_angles_csv_from_keypoints_csv(interpolated_keypoints_path)
-    #
-    # get_detected_keypoints_by_frame(all_keypoints_df_csv_path)
-    # get_average_swimming_period_from_csv(interpolated_keypoints_path)
-
-
-if __name__ == '__main__':
-    main()
+def evaluate_errors(all_kp_path, angles_path, output_name=None):
+    evaluator.perfomance_evaluator(all_kp_path, angles_path, output_name)

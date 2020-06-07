@@ -201,12 +201,6 @@ def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filen
         path = output_path + '/' + filename + '.csv'
     df.drop(columns=df.columns.difference(cols), axis=1, inplace=True)
     for col_name in y_cols:
-        # Numpy Interpolation
-        # y = df[col_name]
-        # nans, x = nan_helper(y)
-        # y[nans] = np.interp(x(nans), x(~nans), y[~nans])
-
-        # Pandas Interpolation
         first_notna_frame = df[col_name].notna().idxmax()
         last_notna_frame = df[col_name].notna()[::-1].idxmax()
         df = df.iloc[first_notna_frame:last_notna_frame + 1]
@@ -599,10 +593,7 @@ def try_extend_intervals_by_body_part(df, interval_list_per_hand, body_part):
                 new_start_interval_frame -= 1
         except:
             new_start_interval_frame += 1  # because we get out of bounds of df
-        # extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame,
-        #                                         'frames_to_inerpolate': np.sort(np.append(frames_to_interpolate , np.arange(
-        #                                             new_start_interval_frame,
-        #                                             start_interval_frame)))})
+
         extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame})
     return extended_interval_list_per_hand
 
@@ -654,11 +645,11 @@ def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length,
 
 
 def try_merge_between_intervals(interval_list, max_distance_between_intervals=10):
-    """ Tries
+    """ Tries to merge between nearby intervals of same body part.
 
     :param interval_list: 
     :param max_distance_between_intervals: 
-    :return: 
+    :return: List of intervals (dictionaries) after merging.
     """
     merged_intervals_list_for_hand = list()
     merging = False
@@ -762,19 +753,10 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys
 
 
 if __name__ == '__main__':
-    op_row_path = '../output/roeegro/MVI_8027_from_frame_60/2020-06-05/16-32-41/analytical_data/all_keypoints.csv'
-    expected_path = os.getcwd() + '/MVI_8027_expected.csv'
-    interp_path = filter_and_interpolate(op_row_path, output_path=os.getcwd())
+    op_row_path = '<Enter some path to all_keypoints.csv file>'
+    expected_path = os.getcwd() + '<Enter some path to ground truth file (Server/expected_data/csvs/csv file>'
+    interp_path = filter_and_interpolate(op_row_path,
+                                         output_path='<can be deleted or put some path to generate output to.>')
     import visualizer
-
-    # visualizer.plot_multi_graphs_from_other_csvs([interp_path, op_row_path],
-    #                                              output_path=os.getcwd() + '/comparison')
-    angles_path = generate_angles_csv(generate_vectors_csv(interp_path, output_path=os.getcwd()),
-                                      output_path=os.getcwd())
-    angles_path_expected = generate_angles_csv(generate_vectors_csv(expected_path, output_path=os.getcwd()),
-                                               filename='angles_expected',
-                                               output_path=os.getcwd())
-    # visualizer.plot_multi_graphs_from_other_csvs([angles_path_expected, angles_path],
-    #                                              output_path=os.getcwd() + '/comparison')
-    # angles_path = generate_interpolated_angles_csv(angles_path, output_path=os.getcwd())
-#
+    visualizer.plot_multi_graphs_from_other_csvs([interp_path, op_row_path],
+                                                 '<can be deleted or put some path to generate output to.>')

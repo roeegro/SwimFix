@@ -1,10 +1,6 @@
 # Edited by Roee Groiser
 
-# import the necessary packages
-# import math
 import math
-import sys
-from sys import platform
 from imutils.video import VideoStream
 import imutils
 import time
@@ -21,12 +17,17 @@ output_dir = "partial_movies/"
 def get_video_name_from_path(video_path):
     video_path = video_path.replace('\\', '/')
     video_name = video_path.split('/')[-1]
-    # video_name = video_name.split('\\')[-1]
     video_name = video_name.split('.')[0]
     return video_name
 
 
 def video_cutter(video_path=0, should_take_full_video=False):
+    """ Cuts the video to relevant parts for analysis.
+
+    :param video_path: Path to video file to be trimmed. By default it will redirect to the webcam.
+    :param should_take_full_video: Flag to decide whether to trim video (default), or not (while sent for testing).
+    :return: List of paths to the partial videos.
+    """
     if video_path == 0:
         vs = VideoStream(src=0).start()
         time.sleep(2.0)
@@ -187,8 +188,14 @@ def video_cutter(video_path=0, should_take_full_video=False):
 
 
 def extract_subclip(filename, t1, t2, targetname):
-    """ Makes a new video file playing video file ``filename`` between
-        the times ``t1`` and ``t2``. """
+    """ Creates sub video file between intervals [t1,t2] in seconds named by targetname.
+    :param filename: Input file path
+    :param t1: Start interval time (in seconds)
+    :param t2: End interval time (in seconds)
+    :param targetname: Output file path.
+    """
+    # """ Makes a new video file playing video file ``filename`` between
+    #     the times ``t1`` and ``t2``. """
     name, ext = os.path.splitext(filename)
     cmd = [get_setting("FFMPEG_BINARY"), "-y",
            "-i", filename,

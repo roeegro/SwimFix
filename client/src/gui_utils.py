@@ -14,18 +14,6 @@ def create_dir_if_not_exists(directory):
         print('Created dir ' + directory)
 
 
-def send_file_to_server(video_paths):
-    for video_path in video_paths:
-        video_name = video_path.split('/')[-1]
-        # to create the output dir from the server
-        create_dir_if_not_exists('output')
-        create_dir_if_not_exists('../../server/videos/')
-        copyfile(video_path, "../../server/videos/" + video_name)
-        # os.remove(video_path)
-        print("Sent file!")
-    shutil.rmtree('partial_movies')
-
-
 def upload_video_file(upload_folder, file, should_take_full_video=False):
     """ Take a video file object and cut it to parts that contains only relevant parts to analyze.
 
@@ -40,8 +28,6 @@ def upload_video_file(upload_folder, file, should_take_full_video=False):
     video_path = os.path.join(upload_folder, filename)
     file.save(video_path)
     new_video_paths = preprocessor.video_cutter(video_path, should_take_full_video)
-    print('new_video_paths : {}'.format(new_video_paths))
-    # send_file_to_server(new_video_paths)
     return new_video_paths
 
 
@@ -93,7 +79,6 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
         if not file_extension in extensions_of_files_to_find:
             shutil.rmtree(output_dir + found_files_dir_name + '/{}'.format(file))
         else:
-            # print(relative_output_dir + found_files_dir_name + '/{}'.format(file))
             returned_file_paths.append(relative_output_dir + found_files_dir_name + '/{}'.format(file))
 
     return returned_file_paths
@@ -114,14 +99,13 @@ def upload_python_file(upload_folder, file):
 
 
 def match_error_description_to_frames(error_map_path, swimmer_errors_path):
+    """Gets paths two errors map, and swimmer's errors and returns
+    list of dictionaries of errors description and relevant frames."""
     list_of_errors_by_frames_detected = list()
     error_map_df = pd.read_csv(os.getcwd() + error_map_path)
     swimmer_errors_df = pd.read_csv(os.getcwd() + swimmer_errors_path)
     joined_df = swimmer_errors_df.join(error_map_df)
     for index, row in joined_df.iterrows():
-        new_record = {'frames':joined_df['frames'][index] , 'description':joined_df['description'][index]}
+        new_record = {'frames': joined_df['frames'][index], 'description': joined_df['description'][index]}
         list_of_errors_by_frames_detected.append(new_record)
-    print(list_of_errors_by_frames_detected)
     return list_of_errors_by_frames_detected
-
-
