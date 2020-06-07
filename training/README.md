@@ -23,9 +23,7 @@ From now on the `openpose_train` directory will be our working directory and the
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
 >  In case you want to train a model just on the COCO dataset rather than your own, please follow the original repository instructions. You can read more about the COCO dataset which the OpenPose default COCO model was trained on [here](http://cocodataset.org/).
 ## Disclaimer
-This guide is based on a setup we successfully managed to perform on an AWS EC2 virtual machine with the following AMI:<br>**Deep Learning Base AMI (Ubuntu 18.04) Version 22.0 (ami-0f6127e61a87f8677)** (more details  [here](https://aws.amazon.com/marketplace/pp/B07Y3VDBNS?qid=1589717278223&sr=0-1&ref_=srh_res_product_title))
-Keep in mind that this machine is delivered with all the NVIDIA related prerequesities that are mandatory for both OpenPose training and inference versions (The full list of prerequesities for the inference version is [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/prerequisites.md))
-**The guide assumes you are running on a a similiar machine.**
+This guide is based on a setup we successfully managed to perform on an AWS EC2 virtual machine with the following AMI:<br>**Deep Learning Base AMI (Ubuntu 18.04) Version 22.0 (ami-0f6127e61a87f8677)** (more details  [here](https://aws.amazon.com/marketplace/pp/B07Y3VDBNS?qid=1589717278223&sr=0-1&ref_=srh_res_product_title))<br>Keep in mind that this machine is delivered with all the NVIDIA related prerequesities that are mandatory for both OpenPose training and inference versions (The full list of prerequesities for the inference version is [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/prerequisites.md))<br>**The guide assumes you are running on a a similiar machine.**
 
 The guide was tested successfully on an Ubuntu 18.04 machine with the following hardware:
 - Nvidia RTX 2060 
@@ -166,6 +164,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MjYyNjQwNTAsNjM4ODgyMzM3LDE2OD
-g2MTgwOV19
+eyJoaXN0b3J5IjpbNDYzMzI0MzAyLDYzODg4MjMzNywxNjg4Nj
+E4MDldfQ==
 -->
