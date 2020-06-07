@@ -1,4 +1,4 @@
-# <center> SwimFix<br>Pose Estimation Based System for Improving Front Crawl -User Guide </center>
+# <center> SwimFix<br> User Guide Web Interface</center>
 
 ## Table of Contents
 1. [Introduction](#web-interface)
@@ -42,16 +42,16 @@ on the right menu- a menu for a regular user, and the two menus to the left are 
 Now we will describe the functionality in the interface.
 
 ## User Interface Functionality
-###  Upload video to the server
+###  Upload Video To The Server
 The user can upload a video of him swimming front crawl style using a basic interface which enables choosing file and uploading it.  
 A user can access this interface by pressing on “Load Video” on the navigation bar.  
 After a video is uploaded, the user is redirected to the index page- and a success/failure message will appear.
 ![](https://lh4.googleusercontent.com/knnw5wdv8sEr-HpjFiRAgF9yRbPqNREXX65fuWWET0HshWkX3QEnd5FsN2y75_mGyU2RveXTSLyQ2zWS7X8KlBOJW0fov_TFKdqD5v4RZ7yxZmBwAqJEKx9St8JKIelc7YmhFT7K)
-### Watching feedbacks on videos
+### Watching Feedbacks On Videos
 The user can watch statistics extracted from his previous uploaded videos in the “Previous Feedbacks” page which can be accessed by pressing on “Previous Feedbacks” button in the navigation bar. 
 ![](https://lh4.googleusercontent.com/J8vcjRUfqQVWseFaGUE953txPiPYOZpXIfsP8kKJWM1KBAFN4_m2js_luQbFUX6GQejnRL425ESjCtgnTIlGCeALUtWZz0tcmtmLIzZ1LpNjYi6YgEOPzy2eY_h-pgABJqz5mlU2)
 In this page there is a table containing all the feedbacks the user has received on his videos ordered by the upload date.
-The user can watch the graphs extracted from his video by pressing on the “View graphs” button on the video’s row. By doing so, the user will be redirected to a page containing all the graphs in a dynamic view, which allows him to click on a point in a graph and see immediately the frame of the video in this point with a Wireframe on it.
+The user can watch the graphs extracted from his video by pressing on the “View graphs” button on the video’s row. By doing so, the user will be redirected to a page containing all the graphs in a dynamic view, which allows him to click on a point in a graph and see immediately the frame of the video in this point with a Wireframe on it.<span>
 **Example:**
 ![](https://lh6.googleusercontent.com/KNclyogaT-jfia3YFZgoWCutEJr_2M30pWkjDsy9MnkwZXiKdJspuOKTXCXj8UFt14fB3KjzxTkxm73Q9sdBGF5zmRLtcGbDP-frXB8CQ96q3ao4-9c-Njhq1pFoAVV9zUBwb_H_)
 [In this picture: the user clicked on frame number 136 in the graph, and immediately saw the frame corresponding with the number in the video, with annotations of keypoints and wireframe on the frame]
@@ -79,7 +79,7 @@ The server side implementation will be implemented in the future.
 
 ### Add Test
 The following mechanism allows admin to manually annotate videos and save their annotation as csv and compare it to the OpenPose library performance.
-The manual to the test adding interface:
+The manual to the test adding interface:<br>
 ------------Test Generator Guide--------
 Installation:
 1. You must have Python3 installed
@@ -149,3 +149,4 @@ CSV Output Section:
 
 The CSV output format is as follows:
 You will have for each frame number the X and Y coordinated for each body part mentioned in body parts table in the program.
+

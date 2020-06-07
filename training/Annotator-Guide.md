@@ -1,4 +1,4 @@
-# <center> SwimFix<br>Pose Estimation Based System for Improving Front Crawl -Annotator Guide </center>
+# <center> SwimFix<br>COCO Annotator Guide </center>
 
 ## Table of Contents
 1. [Introduction](#preparing-additional-data-to-train-openpose)
@@ -20,13 +20,15 @@ In order to prepare more data to train the OpenPose library follow this steps:
     
 2.  Search “vpn settings” in the operating system search tool.**![](https://lh3.googleusercontent.com/9wri_Zh5DUUxo8bRgAjJ9goRYQL7KADM-73BZFlInrr0zhcdvv0Awm39kPtRbW23-YDsIw1l2iM4n13HuWSKwCfOjMkKnOYnY8LGPGKWC14jFl-K4jiVcgkgL-sUJ7cv7vhcfWhE)**
 3. Press “Connect” to the vpn connection from step 1.**![](https://lh3.googleusercontent.com/zVuuNZrnO9oGSb9aDZIXmVW_r1wccTWwN9fSZAfieN3K3Qogxabi5DsVB96oN39dyxWtzc6O_4odMPlP6N7oUjzrDM6rHYHmMECDODLffnzf9IupMVQ1hO6CvES5cDQzS7y0vr8s)**
-4. Enter your credentials in the same format as in the picture, the password will be given by the RSA Authenticator application from step 1.**![](https://lh6.googleusercontent.com/IzpMqrbDQcqtFiME5DpVJEj7p5Tc6S8lfoSuwOrqVafcnC7CpsGJeNoG7c5VOCXCfRoyHJVEivUQXXo6cXgqLU97OPipUTkqjb75oXVWYUoa92D80uOEzKXfjZqE3ODbdtTY3cQ-)**
+4. Enter your credentials in the same format as in the picture, the password will be given by the RSA Authenticator application from step 1.
+<break>**![](https://lh6.googleusercontent.com/IzpMqrbDQcqtFiME5DpVJEj7p5Tc6S8lfoSuwOrqVafcnC7CpsGJeNoG7c5VOCXCfRoyHJVEivUQXXo6cXgqLU97OPipUTkqjb75oXVWYUoa92D80uOEzKXfjZqE3ODbdtTY3cQ-)**
 5. In order to connect to the server, Search “remote desktop connection” in the operating system search tool.**![](https://lh6.googleusercontent.com/Y2dMG-yZ0p2BYS3OF9hVW1kRqwaNb3B6ui_UAZp7aV1G3pvqGstw-4vA0ER44Ke-Oo2WWOAcs6Ehijdlxr-JjU5Xj_TG5UScDEcVMCfja36HveO506knonAvIYPkqVRhHpj4z_Vo)**
-6. Enter the credentials in the same format as in the picture.**![](https://lh5.googleusercontent.com/Sc6eyIUKbjO7-lhT5aq1pb3lWttg1Ar1FU5x-tdLpEgNOw2wIfw3RYo6fSaO_P_cn8AqTWhBwW8qsa0dqADJ7f7Ozsi_4_bhkaZsNMozURSKpp0Re70vdaPDiQ_FheZ2IGEpGUZj)**
+6. Enter the credentials in the same format as in the picture.<break>
+**![](https://lh5.googleusercontent.com/Sc6eyIUKbjO7-lhT5aq1pb3lWttg1Ar1FU5x-tdLpEgNOw2wIfw3RYo6fSaO_P_cn8AqTWhBwW8qsa0dqADJ7f7Ozsi_4_bhkaZsNMozURSKpp0Re70vdaPDiQ_FheZ2IGEpGUZj)**
 7. To connect to the server you need to enter your username and password from BGU.
 	* You need permission to access the computer. Email address to ask authorization: rriemer@bgu.ac.il.
 
-8.	Now we will activate the server. On the start menu press the ^ icon, and search the Docker icon.**![](https://lh6.googleusercontent.com/hIjwMZMzjuxYeyv-UoERniB5abTCCB39ijXpd4Cv28qD-lmVKQb097-8KokHnehEqPHE3n3ujMTEMhTnVrPdiFB-O1F0xJT2qQDMznLdELLrpYc4rWKHkWzbhNUYKaZNdc3ocn2u)**
+8.	Now we will activate the server. On the start menu press the `^` icon, and search the Docker icon.**![](https://lh6.googleusercontent.com/hIjwMZMzjuxYeyv-UoERniB5abTCCB39ijXpd4Cv28qD-lmVKQb097-8KokHnehEqPHE3n3ujMTEMhTnVrPdiFB-O1F0xJT2qQDMznLdELLrpYc4rWKHkWzbhNUYKaZNdc3ocn2u)**
 9.  Right click the docker icon, choose Start Docker and wait until “Docker is running” notification.
     
 10.  Click again on the Docker icon and choose “Dashboard”.
@@ -66,7 +68,7 @@ Note: The following guide describes the functionality needed to annotate keypoin
 6.  Enter the “datasets” directory, in this directory all the previous datasets can be found.
     
 7.  Verify that there is a folder with the name you have chosen on step 4.
-### Adding pictures to the dataset
+### Adding pictures To The Dataset
 1.  Login to the remote desktop (see “Creating VPN connection to the annotator server”)
     
 2.  Enter the directory `D:/SwimmingProject/Coco-annotator` in this directory the server’s code is found.
