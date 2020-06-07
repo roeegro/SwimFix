@@ -12,6 +12,9 @@
 4. [Training](#training)
 5. [Validation](#validation)
 6. [Testing](#testing)
+7. [Our Results](#our-results)
+8. [Q&A](#qa)
+9. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -72,7 +75,7 @@ Before we get started, create a folder with all of you images and name it `custo
 
 ### Step 1 - Data Annotation
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`.
- We recommend you to use it as well - you can check out [this](https://docs.google.com/document/d/1CnZHzUDVSLxYTczuYnHGJrh37uqOqPRSNcRDbleLI5w/edit?usp=sharing) guide we wrote regarding installation and correct usage.
+ We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimmingProject/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
 2.  Export the annotations file as `person_keypoints_custom.json` to the `dataset/COCO/cocoapi/annotations/` folder.
@@ -82,23 +85,23 @@ At the end of this step you should have:
 - An annotations JSON file located in `dataset/COCO/cocoapi/annotations/person_keypoints_custom.json`
 - A [dataset folder](#step-0---data-import) with the raw images located in `dataset/COCO/cocoapi/images/custom`
 
-### Step 2 - Data Filtering and Reindexing
-In this section we will filter out some data and update the coressponding annotations json file accordingly.
+### Step 2 - Data Filtering and Re-indexing
+In this section we will filter out some data and update the corresponding annotations JSON file accordingly.
 
 Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `json_ops.py`
 
-By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs this operations on the `custom.json` annotations file in the following order:
-- Deletes redundant fields from the json structure.
-- Removes annotations with no keypoints/no segmentation, (i.e. area=0).
-- Removes unannotated images
-- Performs reindexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
+By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs these operations on the `custom.json` annotations file in the following order:
+1) Deletes redundant fields from the json structure.
+2) Removes annotations with no keypoints/no segmentation, (i.e. area=0).
+3) Removes images with no annotations (Those images will stay in the `dataset/COCO/cocoapi/images` folder and will be used in the next step to generate the `coco_negatives.json` file.
+4) Performs re-indexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
 ### Step 3 - Data Augmentation
 For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
 Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
 
 Before running anything, make sure you have the `common` and `private` folders (which is located in the `training` folder) in the Matlab path.
 Do expect for some errors regarding paths in to `cocoapi` 
-1.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the LMDB with the images with no people on them.
+1.  Run  `a1_coco_jsonToNegativesJson.m`  in Matlab to generate the json that contains the images with no people on them - in our case those images will be of empty pools with no swimmers in them.
 2.  Run  `a2_coco_jsonToMat.m`  in Matlab to convert the annotation format from json to mat in  `dataset/COCO/mat/`.
 3.  Run  `a3_coco_matToMasks.m`  in Matlab to obatin the mask images for unlabeled person. You can use 'parfor' in Matlab to speed up the code.
 4.  Run  `a4_coco_matToRefinedJson.m`  to generate a json file in  `dataset/COCO/json/`  directory. The json files contain raw informations needed for training.
@@ -147,10 +150,10 @@ The first 10 layers are used as backbone.
 
 ## Testing
 
-## Our results
+## Our Results
 
-## Known issues
-|Error					|Context								 |Solution
+## Q&A
+|Error					|Reason|Solution
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
 |`  Could NOT find Protobuf (missing: Protobuf_INCLUDE_DIR)`|When trying to build OpenPose|https://gist.github.com/diegopacheco/cd795d36e6ebcd2537cd18174865887b
@@ -160,23 +163,20 @@ The first 10 layers are used as backbone.
 ## Installation commands
 - Please install the following libraries:
 ```
-sudo apt-get install
- libprotobuf-dev
- libleveldb-dev
- libsnappy-dev
- libopencv-dev
- libhdf5-serial-dev
- protobuf-compiler
- libboost-all-dev
- libatlas-base-dev
- python-numpy
+sudo apt-get install \
+libprotobuf-dev=3.0.0-9.1ubuntu1 \
+libleveldb-dev=1.20-2 \
+libsnappy-dev=1.1.7-1 \
+libopencv-dev=3.2.0+dfsg-4ubuntu0.1 
+libhdf5-serial-dev=1.10.0-patch1+docs-4 \
+protobuf-compiler=3.0.0-9.1ubuntu1 \
+libboost-all-dev=1.65.1.0ubuntu1 \
+libatlas-base-dev=3.10.3-5 \
+python-numpy=1:1.13.3-2ubuntu1
 ```
 
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkyNDM2ODIyMiwxOTUzNTk1NDAzLC0xMz
-YzMjg4MTI0LC00NzU0Njg1MzEsMjAzMjU2MjQxLC05NDU3OTY2
-ODQsMTMyNDgwOTQ2LC0zNTcxNTEyMTYsLTE4MTQ2ODQ3NDIsNT
-I1NTMxNzk2LC0zMTExNDAxMTUsLTE4OTI5MzY2OTRdfQ==
+eyJoaXN0b3J5IjpbMTY4ODYxODA5XX0=
 -->
