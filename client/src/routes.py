@@ -550,16 +550,23 @@ def _pass_data():
     image_data = base64.b64decode(image_data)
     userID = session.get('ID') if session and session.get('logged_in') else 0
     filename = path_to_save_img_in.split('/')[-1]
-    zip_name = data_as_json['current url'].split('/')[-1]
+    zip_and_date = data_as_json['current url'].split('/')[-1]
+    video_name = zip_and_date.split('__')[0]
+    video_date_and_time = zip_and_date.split('__')[1]
+    date = video_date_and_time.split('_')[0]
+    time = video_date_and_time.split('_')[1]
     with open(path_to_save_img_in, "wb") as f:
         f.write(image_data)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
-        msg = 'upload_image_fix user_id: {} video_name: {} filename: {} file_size: {}'.format(userID, zip_name,
-                                                                                              filename,
-                                                                                              get_size_of_file_path(
-                                                                                                  path_to_save_img_in))
+        msg = 'upload_image_fix user_id: {} video_name: {} date: {} time: {} filename: {} file_size: {}'.format(userID,
+                                                                                                                video_name,
+                                                                                                                date,
+                                                                                                                time,
+                                                                                                                filename,
+                                                                                                                get_size_of_file_path(
+                                                                                                                    path_to_save_img_in))
         print(msg)
         s.sendall(msg.encode('utf-8'))
         start_msg = s.recv(1024)  # for 'start' message
@@ -568,11 +575,10 @@ def _pass_data():
                 flash('No test found for this video', 'info')
                 return render_template('run-test.html')
             start_msg = s.recv(1024)
-        print('path to read from {}'.format(path_to_save_img_in))
         with open(path_to_save_img_in, "rb") as f:
             l = f.read(1024)
             while l:
                 s.send(l)
                 print("Sending data")
                 l = f.read(1024)
-    return jsonify({'returned_url': url_for('previous_feedback', zip_name=zip_name)})
+    return jsonify({'returned_url': url_for('previous_feedback', details=zip_name)})

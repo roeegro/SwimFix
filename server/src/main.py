@@ -64,7 +64,7 @@ for i in range(0, len(args[1])):
         if key not in params: params[key] = next_item
 
 # HOST = '192.168.2.57'  # Standard loopback interface address (localhost)
-HOST = '10.0.0.6'  # Standard loopback interface address (localhost)
+HOST = '10.0.0.10'  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 

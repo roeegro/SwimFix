@@ -29,7 +29,7 @@ def check_hand_crossed_the_middle_line(all_kp_df, angles_df,name):
             from_point = (int(neck_x), int(neck_y))
             to_point = (int(neck_x), int(r_elbow_y))
             draw_line(index, from_point, to_point)
-            if error_id != -1:
+            if error_id != -1 and index not in errors_df['frames'][error_id]:
                 print('detected error in frame number {}'.format(index))
                 errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
         if r_wrist_x > neck_x:
@@ -37,7 +37,7 @@ def check_hand_crossed_the_middle_line(all_kp_df, angles_df,name):
             from_point = (int(neck_x), int(neck_y))
             to_point = (int(neck_x), int(r_wrist_y))
             draw_line(index, from_point, to_point)
-            if error_id != -1:
+            if error_id != -1 and index not in errors_df['frames'][error_id]:
                 print('detected error in frame number {}'.format(index))
                 errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
         if l_elbow_x < neck_x:
@@ -45,7 +45,7 @@ def check_hand_crossed_the_middle_line(all_kp_df, angles_df,name):
             from_point = (int(neck_x), int(neck_y))
             to_point = (int(neck_x), int(l_elbow_y))
             draw_line(index, from_point, to_point)
-            if error_id != -1:
+            if error_id != -1 and index not in errors_df['frames'][error_id]:
                 print('detected error in frame number {}'.format(index))
                 errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
         if l_wrist_x < neck_x:
@@ -53,7 +53,7 @@ def check_hand_crossed_the_middle_line(all_kp_df, angles_df,name):
             from_point = (int(neck_x), int(neck_y))
             to_point = (int(neck_x), int(l_wrist_y))
             draw_line(index, from_point, to_point)
-            if error_id != -1:
+            if error_id != -1 and index not in errors_df['frames'][error_id]:
                 print('detected error in frame number {}'.format(index))
                 errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
 

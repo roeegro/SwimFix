@@ -553,7 +553,6 @@ function sendFixes() {
     var c = document.getElementById("current frame to show");
     var ctx = c.getContext("2d");
     var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
-    console.log(current_img_path)
     imgData_url = c.toDataURL()
     var data = {'current url': document.URL, 'img': imgData_url, 'current img path': current_img_path};
     // data = {'current_url' : document.URL , 'img' : 44}
@@ -564,12 +563,10 @@ function sendFixes() {
         dataType: 'json',
         data: JSON.stringify(data),
         success: function (result) {
-            console.log(2)
-            console.log(result['returned_url'])
+            console.log('success')
             jQuery("#clash").html(result['returned_url']);
         }, error: function (result) {
-            console.log(3)
-            console.log(result['returned_url']);
+            console.log('error')
         }
     });
 }
