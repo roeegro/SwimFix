@@ -291,8 +291,7 @@ def previous_feedback(details):
             print('finish receiving data')
 
     csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
-                                     expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
-                                                          'interpolated_all_keypoints',
+                                     expected_file_names=['all_keypoints', 'angles',
                                                           'interpolated_and_filtered_all_keypoints'])
     [error_map_path, swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
                                                                 extensions_of_files_to_find=['csv'],
