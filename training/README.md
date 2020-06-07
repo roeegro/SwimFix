@@ -61,7 +61,8 @@ The cloned repositories are:
 
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
-For this section and this section **only** we used a Windows 10 machine with:
+
+For this section you will need to install the following:
 - Docker (For [Data Annotation](#step-1---data-annotation))
 - Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
 - Python 3.6 installed (For [Data Filtering and Re-indexing](#step-2---data-filtering-and-re-indexing) and [LMDB File Generation](#step-4---lmdb-file-generation))
@@ -174,5 +175,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODM0MzQ1MTI0LDE2ODg2MTgwOV19
+eyJoaXN0b3J5IjpbLTc2ODI0NDM1OCwxNjg4NjE4MDldfQ==
 -->
