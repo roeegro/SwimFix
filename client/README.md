@@ -22,7 +22,7 @@ In case a user is not registered in the system- pressing the blue link below the
 ### Register User
 In this page, the user has to enter the following credentials:
 
--   Username in english- must begin with a letter.
+-   Username in English- must begin with a letter.
     
 -   Valid email address.
     
@@ -81,9 +81,8 @@ The server side implementation will be implemented in the future.
 The following mechanism allows admin to manually annotate videos and save their annotation as csv and compare it to the OpenPose library performance.
 The manual to the test adding interface:<br>
 ------------Test Generator Guide--------
-Installation:
+Prerequisites:
 1. You must have Python3 installed
-
 
 Guide:
 
@@ -149,4 +148,6 @@ CSV Output Section:
 
 The CSV output format is as follows:
 You will have for each frame number the X and Y coordinated for each body part mentioned in body parts table in the program.
-
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbNjkwNjY4OTkxXX0=
+-->
