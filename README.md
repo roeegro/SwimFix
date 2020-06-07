@@ -31,7 +31,7 @@ To install OpenPose, please check [our](https://github.com/roeegro/SwimmingProje
 We created a training infrastructure for training your own custom model on your own data using the official  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
 For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) out.
 
-> **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but as for now we do not recommend it since our inference module is built upon [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is used side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
+> **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
 ## Results
 In this section we will showcase some of our results.
 ## Useful Links
@@ -40,6 +40,7 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI2OTM0Njk1MSwxOTM1NDgyMzA2LDE1MD
-AzNDI5NzgsLTM5MDM3NDc4MywxMjM4ODU2MTA0XX0=
+eyJoaXN0b3J5IjpbLTgyMTAxOTk1MCwxMjY5MzQ2OTUxLDE5Mz
+U0ODIzMDYsMTUwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMzg4NTYx
+MDRdfQ==
 -->
