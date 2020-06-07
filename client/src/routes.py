@@ -292,7 +292,10 @@ def previous_feedback(details):
                                      expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
                                                           'interpolated_all_keypoints',
                                                           'interpolated_and_filtered_all_keypoints'])
-
+    [error_map_path, swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
+                                                                extensions_of_files_to_find=['csv'],
+                                                                expected_file_names=['map', 'swimmer_errors'])
+    error_description_by_frames = match_error_description_to_frames(error_map_path, swimmer_errors_path)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
     frames_paths = sorted(frames_paths, key=sort_lambda)
@@ -301,6 +304,7 @@ def previous_feedback(details):
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
 
     return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
+                           errors_list=error_description_by_frames,
                            isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
@@ -344,7 +348,8 @@ def forum(page):
     if len(topics) == 0 and page != 0:
         return redirect("/forum/" + str(page - 1))
 
-    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists,
+    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page,
+                           nextPageExists=nextPageExists,
                            isAdmin=is_admin())
 
 
@@ -402,7 +407,6 @@ def topic(forumPage, topicID, page):
 #     mysql.connection.commit()
 #     cur.close()
 #     return
-
 
 @app.route("/forum/createPost", methods=['POST'])
 def createPost():

@@ -5,6 +5,7 @@ from shutil import copyfile
 import shutil
 import time
 from zipfile import ZipFile
+import pandas as pd
 
 
 def create_dir_if_not_exists(directory):
@@ -112,6 +113,15 @@ def upload_python_file(upload_folder, file):
         return False
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
-    # serve(app)
+def match_error_description_to_frames(error_map_path, swimmer_errors_path):
+    list_of_errors_by_frames_detected = list()
+    error_map_df = pd.read_csv(os.getcwd() + error_map_path)
+    swimmer_errors_df = pd.read_csv(os.getcwd() + swimmer_errors_path)
+    joined_df = swimmer_errors_df.join(error_map_df)
+    for index, row in joined_df.iterrows():
+        new_record = {'frames':joined_df['frames'][index] , 'description':joined_df['description'][index]}
+        list_of_errors_by_frames_detected.append(new_record)
+    print(list_of_errors_by_frames_detected)
+    return list_of_errors_by_frames_detected
+
+

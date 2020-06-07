@@ -73,19 +73,19 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
     all_kp_df = pd.read_csv(all_kp_path).set_index('Frame Number')
     angles_df = pd.read_csv(angles_path).set_index('Frame Number')
     global errors_df
-    errors_df = pd.DataFrame({'error_id': np.arange(0, len(errors)), 'frames': [[] * len(errors)]}).set_index(
-        'error_id')
+    errors_df = pd.DataFrame({'error_id': np.arange(0, len(errors)), 'frames': [[] * len(errors)]}).set_index('error_id')
     error_map_df = pd.DataFrame({'error_id': np.arange(0, len(errors)),
                                  'description': [list(error.keys())[0].replace('check_', '').replace('_', ' ') for error
-                                                 in errors]})
+                                                 in errors]}).set_index('error_id')
+
     # output_directory_path_by_time = os.getcwd()
     output_directory = output_manager.get_output_dir_path(key="time_path") if output_path is None else output_path
-    error_map_df.to_csv(output_directory + '/map.csv', index=False)
-    error_map_df.to_csv(os.getcwd() + '/map.csv', index=False)
+    error_map_df.to_csv(output_directory + '/map.csv',index=False)
     for potential_error in errors:
         (list(potential_error.values())[0])(all_kp_df, angles_df,list(potential_error.keys())[0])
     # errors_df.to_csv(os.getcwd() + '/swimmer_errors.csv', index=False)
-    errors_df.to_csv(output_directory + '/swimmer_errors.csv', index=False)
+    print(errors_df)
+    errors_df.to_csv(output_directory + '/swimmer_errors.csv',index=False)
     errors_df = None
 
 
