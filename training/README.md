@@ -3,18 +3,18 @@
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
-3. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
-   * [Initialization](#step-0---initialization)
+3. [Required Third-Party Repositories](#required-third-party-repositories)
+4. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
    * [LMDB File Generation](#step-4---lmdb-file-generation)
-4. [Training](#training)
-5. [Validation](#validation)
-6. [Testing](#testing)
-7. [Our Results](#our-results)
-8. [Q&A](#qa)
-9. [Installation Commands](#installation-commands)
+5. [Training](#training)
+6. [Validation](#validation)
+7. [Testing](#testing)
+8. [Our Results](#our-results)
+9. [Q&A](#qa)
+10. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -50,7 +50,7 @@ Make sure you have those and before continuing:
 - Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
 
 ## Required Third-Party Repositories
-Before we get started, please run this in order to clone the required git repositories:
+Before we get started, please run this in order to clone the required third party git repositories which we will use:
 ```
 cd training
 start clone_training_repos.bat [Windows]
@@ -172,5 +172,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAxMjI5NDU2OSwxNjg4NjE4MDldfQ==
+eyJoaXN0b3J5IjpbMjM5MTY5NzMzLDE2ODg2MTgwOV19
 -->
