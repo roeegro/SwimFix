@@ -46,6 +46,9 @@ Make sure you have those and before continuing:
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
 -  Python 3.6
+-  Docker (For [Data Annotation](#step-1---data-annotation))
+- Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
+- Python 3.6 installed (For [Data Filtering and Re-indexing](#step-2---data-filtering-and-re-indexing) and [LMDB File Generation](#step-4---lmdb-file-generation))
 ## Required Third-Party Repositories
 Before we get started, please clone the required git repositories:
 ```
@@ -63,9 +66,7 @@ The cloned repositories are:
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
 
 For this section you will need to install the following:
-- Docker (For [Data Annotation](#step-1---data-annotation))
-- Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
-- Python 3.6 installed (For [Data Filtering and Re-indexing](#step-2---data-filtering-and-re-indexing) and [LMDB File Generation](#step-4---lmdb-file-generation))
+
 
 ### Step 0 - Initialization
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
@@ -175,5 +176,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc2ODI0NDM1OCwxNjg4NjE4MDldfQ==
+eyJoaXN0b3J5IjpbNzExMzkwMDcyLDE2ODg2MTgwOV19
 -->
