@@ -26,8 +26,9 @@ From now on the `openpose_train` directory will be our working directory and the
 This guide is based on a setup we successfully managed to perform on an AWS EC2 virtual machine with the following AMI:<br>**Deep Learning Base AMI (Ubuntu 18.04) Version 22.0 (ami-0f6127e61a87f8677)** (more details  [here](https://aws.amazon.com/marketplace/pp/B07Y3VDBNS?qid=1589717278223&sr=0-1&ref_=srh_res_product_title))<br>Keep in mind that this machine is delivered with all the NVIDIA related prerequesities that are mandatory for both OpenPose training and inference versions (The full list of prerequesities for the inference version is [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/prerequisites.md))<br>**The guide assumes you are running on a a similiar machine.**
 
 The guide was tested successfully on an Ubuntu 18.04 machine with the following hardware:
-- Nvidia RTX 2060 
+- Nvidia GeForce RTX 2060 GAMING Z 6G
 - Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz
+- 32GB*2 DDR4 RAM
 
 ## Prerequisites
 Make sure you have those and before continuing:
@@ -164,6 +165,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjkzMjUzOTMyLDQ2MzMyNDMwMiw2Mzg4OD
-IzMzcsMTY4ODYxODA5XX0=
+eyJoaXN0b3J5IjpbNjAxNDIzMTUyLDI5MzI1MzkzMiw0NjMzMj
+QzMDIsNjM4ODgyMzM3LDE2ODg2MTgwOV19
 -->
