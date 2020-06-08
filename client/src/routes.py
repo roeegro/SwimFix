@@ -210,15 +210,17 @@ def test_results(video_name):
             print('finish receiving data')
 
     csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
-                                     expected_file_names=['LElbowY_comparison', 'RElbowY_comparison',
-                                                          'LWristY_comparison', 'RWristY_comparison',
-                                                          'LShoulderY_comparison', 'RShoulderY_comparison',
-                                                          'NoseY_comparison', 'NeckY_comparison',
-                                                          'LElbowX_comparison', 'RElbowX_comparison',
-                                                          'LWristX_comparison', 'RWristX_comparison',
-                                                          'LShoulderX_comparison', 'RShoulderX_comparison',
-                                                          'NoseX_comparison', 'NeckX_comparison'
-                                                          ])
+                                     predicate=lambda x: x in ['LElbowY_comparison', 'RElbowY_comparison',
+                                                               'LWristY_comparison', 'RWristY_comparison',
+                                                               'LShoulderY_comparison',
+                                                               'RShoulderY_comparison',
+                                                               'NoseY_comparison', 'NeckY_comparison',
+                                                               'LElbowX_comparison', 'RElbowX_comparison',
+                                                               'LWristX_comparison', 'RWristX_comparison',
+                                                               'LShoulderX_comparison',
+                                                               'RShoulderX_comparison',
+                                                               'NoseX_comparison', 'NeckX_comparison'
+                                                               ])
 
     frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
@@ -291,11 +293,12 @@ def previous_feedback(details):
             print('finish receiving data')
 
     csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
-                                     expected_file_names=['all_keypoints', 'angles',
-                                                          'interpolated_and_filtered_all_keypoints'])
+                                     predicate=(lambda x: x in ['all_keypoints', 'angles',
+                                                                'interpolated_and_filtered_all_keypoints']))
     [error_map_path, swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
                                                                 extensions_of_files_to_find=['csv'],
-                                                                expected_file_names=['map', 'swimmer_errors'])
+                                                                predicate=lambda x: x in ['map',
+                                                                                          'swimmer_errors'])
     error_description_by_frames = match_error_description_to_frames(error_map_path, swimmer_errors_path)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
@@ -584,3 +587,43 @@ def _pass_data():
                 print("Sending data")
                 l = f.read(1024)
     return jsonify({'returned_url': url_for('previous_feedback', details=zip_and_date)})
+
+
+@app.route('/user-feedback/<details>', methods=['GET', 'POST'])
+def user_feedback(details):
+    [zip_name, date] = details.split('__')
+    user_id = session.get('ID') if session and session.get('logged_in') else 0
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        # s.setblocking(0)  # non blocking
+        s.connect((SERVER_IP, SERVER_PORT))
+        zip_name_to_send = zip_name.split('.')[0]
+        msg = 'view_graphs user_id: {} filename: {} date: {}'.format(user_id, zip_name_to_send, date)
+        print('USER FEEDBACK msg = {}'.format(msg))
+        s.sendall(msg.encode('utf-8'))
+        zip_location = os.getcwd() + '/static/temp'
+        path_to_zip = zip_location + '/{}.zip'.format(zip_name)
+        if not os.path.exists(zip_location):
+            os.mkdir(zip_location)
+        with open(path_to_zip, 'wb') as f:
+            data = s.recv(1024)
+            while data:
+                # print('getting zip into temp directory ...')
+                f.write(data)
+                data = s.recv(1024)
+            print('finish receiving data')
+
+    [error_map_path, swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
+                                                                extensions_of_files_to_find=['csv'],
+                                                                predicate=lambda x: x in ['map',
+                                                                                          'swimmer_errors'])
+    error_description_by_frames = match_error_description_to_frames(error_map_path, swimmer_errors_path)
+    frames_paths = get_all_files_paths(zip_name, 'annotated_frames', extensions_of_files_to_find=['jpg'],
+                                       predicate=lambda x: x.startswith('swimfix'))
+    sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+    frames_paths = sorted(frames_paths, key=sort_lambda)
+    frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+    first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+
+    return render_template('user-feedback.html', zip_name=zip_name, data=[], frames=frames_paths_dict,
+                           errors_list=error_description_by_frames,
+                           isAdmin=is_admin(), first_frame_number=first_frame_num)

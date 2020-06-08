@@ -15,7 +15,8 @@
                     <tr>
                         <th>Upload Date</th>
                         <th>Video Name</th>
-                        <th>Charts Page</th>
+                        <th>User Feedback</th>
+                        <th>Dev - Charts Page</th>
                     </tr>
                     </thead>
                     <tbody id="previous_feedbacks_tbl_body">
@@ -26,7 +27,13 @@
                         <td>{{ item.date }}</td>
                         <td>{{ item.movie_name }}</td>
                         <td>
-                            <a href="{{url_for('previous_feedback', details = item.zip_name + '__' + item.date)}}" > Get Graphs for this file </a>
+                            <a href="{{url_for('user_feedback', details = item.zip_name + '__' + item.date)}}"> View
+                                Feedback </a>
+
+                        </td>
+                        <td>
+                            <a href="{{url_for('previous_feedback', details = item.zip_name + '__' + item.date)}}"> View
+                                Graphs </a>
 
                         </td>
                     </tr>

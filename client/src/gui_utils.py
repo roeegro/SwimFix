@@ -31,14 +31,15 @@ def upload_video_file(upload_folder, file, should_take_full_video=False):
     return new_video_paths
 
 
-def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], expected_file_names=None):
+def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], predicate=None):
+
     """ Get zip name to search in Client/crc/temp/zip name and extract to other directory in temp 'found_files_dir_name'
         files with specific extension and with specific names.
 
     :param zip_name:
     :param found_files_dir_name:
     :param extensions_of_files_to_find:
-    :param expected_file_names:
+    :param predicate: predicate of desired filenames
     :return: List of files paths in the new directory for future use.
     """
     returned_file_paths = list()
@@ -50,9 +51,9 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
     output_dir = os.getcwd() + relative_output_dir
     if not os.path.exists(output_dir + found_files_dir_name):
         os.makedirs(output_dir + found_files_dir_name)
-    else:
-        for file in os.listdir(output_dir + found_files_dir_name):
-            os.remove(output_dir + found_files_dir_name + '/' + file)
+    # else:
+    #     for file in os.listdir(output_dir + found_files_dir_name):
+    #         os.remove(output_dir + found_files_dir_name + '/' + file)
     print('we want to unzip {}.zip'.format(zip_dir + zip_name))
     with ZipFile('{}.zip'.format(zip_dir + zip_name), 'r') as zipObj:
         # Get a list of all archived file names from the zip
@@ -65,7 +66,7 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
                 # Extract a single file from zip
                 name_of_file_with_extension = fileName.split('/')[-1]
                 name_of_file_without_extension = name_of_file_with_extension.split('.')[0]
-                if expected_file_names is None or name_of_file_without_extension in expected_file_names:  # check if we want this csv
+                if predicate is None or predicate(name_of_file_without_extension):  # check if we want this csv
                     # print('filename {} , extension {} is extracted'.format(fileName, file_extension))
                     zipObj.extract(fileName, output_dir + found_files_dir_name)
                     try:

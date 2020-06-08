@@ -20,11 +20,34 @@ function make_chart_from_csv(csv_path) {
     return 0
 }
 
+
 function setImage(index) {
     frame_element = document.getElementById('current frame to show')
-    frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg')
+    frame_element.setAttribute('src', '/static/temp/annotated_frames/swimfix_annotated_frame_' + index + '.jpg')
+}
+function setPrevImage(){
+    frame_element = document.getElementById('current frame to show')
+    img_path = frame_element.getAttribute('src')
+    if(img_path== null){
+        img_path= current_img_path
+    }
+    console.log(img_path)
+    curr_index= img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
+    console.log(curr_index)
+    load_img(parseInt(curr_index-1))
 }
 
+function setNextImage(){
+    frame_element = document.getElementById('current frame to show')
+    img_path = frame_element.getAttribute('src')
+    if(img_path== null){
+        img_path= current_img_path
+    }
+    console.log(img_path)
+    curr_index= img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
+    console.log(curr_index)
+    load_img(parseInt(curr_index)+1)
+}
 
 function make_comparison_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
@@ -494,7 +517,7 @@ function make_chart(csv_name, data) {
 
 
 function load_img(index) {
-    current_img_path = '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg'
+    current_img_path = '/static/temp/annotated_frames/swimfix_annotated_frame_' + index + '.jpg'
     console.log(current_img_path)
     var c = document.getElementById("current frame to show");
     var ctx = c.getContext("2d");
@@ -517,7 +540,7 @@ function load_img(index) {
         console.log("clicked");
     };
     image.style.display = "block";
-    image.src = "/static/temp/annotated_frames/annotated_frame_" + index + ".jpg";
+    image.src = "/static/temp/annotated_frames/swimfix_annotated_frame_" + index + ".jpg";
 
     var clicked = false;
     var fPoint = {};
