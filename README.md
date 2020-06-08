@@ -20,6 +20,9 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only
 - **Training and datasets**:
     - [**OpenPose Training**](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train).
+ 
+ <p align="center">
+    <img src="https://github.com/roeegro/SwimmingProject/blob/master/client/src/static/img/8027.gif", width="480"></p>
     
 ## Web Client
 Our client-side consists of a Flask based web client
@@ -41,7 +44,7 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODU2NzQyMjMwLC04MjEwMTk5NTAsMTI2OT
-M0Njk1MSwxOTM1NDgyMzA2LDE1MDAzNDI5NzgsLTM5MDM3NDc4
-MywxMjM4ODU2MTA0XX0=
+eyJoaXN0b3J5IjpbMTA3NDQwNTM0MiwtODIxMDE5OTUwLDEyNj
+kzNDY5NTEsMTkzNTQ4MjMwNiwxNTAwMzQyOTc4LC0zOTAzNzQ3
+ODMsMTIzODg1NjEwNF19
 -->
