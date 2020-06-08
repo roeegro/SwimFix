@@ -44,14 +44,9 @@ For more information about it and a guide how to set it up and use it, please ch
 > **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
 ## Results
 In this section we will showcase some of our results.
-## Useful Links
-https://github.com/h2non/filetype.py/issues/17
-https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
-https://github.com/facebook/prophet/issues/418
-https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI3MzE2Nzc5OCwxNDYzMzIwOTcsLTE1MT
-MyMDAwNyw2NzMyOTgzNSwtODIxMDE5OTUwLDEyNjkzNDY5NTEs
-MTkzNTQ4MjMwNiwxNTAwMzQyOTc4LC0zOTAzNzQ3ODMsMTIzOD
-g1NjEwNF19
+eyJoaXN0b3J5IjpbLTE3Njc0Nzk0OTMsMTQ2MzMyMDk3LC0xNT
+EzMjAwMDcsNjczMjk4MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUx
+LDE5MzU0ODIzMDYsMTUwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMz
+g4NTYxMDRdfQ==
 -->
