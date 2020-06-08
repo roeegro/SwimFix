@@ -10,6 +10,9 @@
 OpenPose is an open-source Pose Estimation library which is used in our project in order to estimate the swimmer's position mid-swimming and then use that estimation to evaluate the swimmer's front crawl performance and suggest ways to improve.
 
 
+<p align="center">
+    <img src="https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/media/dance_foot.gif", width="480"></p>
+
 
 ## How It Works?
 The pose estimation is performed by a keypoint detection of the object (in our case, the swimmer) and extracting a wire frame of it from each frame of the given video (in our case, a video of the swimmer in a front crawl setting).
@@ -47,6 +50,6 @@ Please check out [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose
 For training OpenPose on custom data and creating your own model, please check out [our](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) complete guide, which is based on the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) OpenPose Training repository and contains all the information you need in order to train a model from scratch.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ5MzEzNDA3NCwxMjQ4OTU1MzA4LDE4Mz
+eyJoaXN0b3J5IjpbLTI5NzMwODM4MSwxMjQ4OTU1MzA4LDE4Mz
 k4MTk0NDksLTEzODIwMjk2OTYsNTkxMTE4MjUzXX0=
 -->
