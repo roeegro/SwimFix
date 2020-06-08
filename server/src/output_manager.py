@@ -43,9 +43,11 @@ def generate_dirs_for_output_of_movie(movie_name, username='guest'):
     analytical_data_dir_name = "analytical_data"
     figures_dir_name = "figures"
     frames_dir_name = "frames"
+    swimfix_frames_dir_name = "swimfix_annotated_frames"
     os.mkdir(analytical_data_dir_name)
     os.mkdir(figures_dir_name)
     os.mkdir(frames_dir_name)
+    os.mkdir(swimfix_frames_dir_name)
     new_output_dirs_dict["output_dir"] = outputs_dir
     new_output_dirs_dict["username_dir"] = outputs_dir + "/" + username
     new_output_dirs_dict["output_movie_dir"] = outputs_dir + "/" + username + "/" + video_name
@@ -58,6 +60,8 @@ def generate_dirs_for_output_of_movie(movie_name, username='guest'):
         "figures_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + figures_dir_name
     new_output_dirs_dict[
         "frames_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + frames_dir_name
+    new_output_dirs_dict[
+        "swimfix_frames_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + swimfix_frames_dir_name
     new_output_dirs_dict[
         'annotated_video'] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + "annotated_video.mp4"
     os.chdir(get_src_path())

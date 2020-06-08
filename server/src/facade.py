@@ -149,3 +149,6 @@ def zip_output():
 
 def evaluate_errors(all_kp_path, angles_path, output_name=None):
     evaluator.perfomance_evaluator(all_kp_path, angles_path, output_name)
+
+def plot_keypoints(all_kp_path):
+    visualizer.draw_detected_keypoints(all_kp_path)

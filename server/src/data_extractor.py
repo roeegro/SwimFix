@@ -219,7 +219,7 @@ def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filen
     return path
 
 
-body_parts = utils.get_body_parts()  # all body parts to be used in our analysis.
+body_parts_columns = utils.get_body_parts_columns()  # all body parts to be used in our analysis.
 
 
 def get_keypoints_csv_from_video(video_path, params):
@@ -247,17 +247,19 @@ def get_keypoints_csv_from_video(video_path, params):
     datum = op.Datum()
     print("path is {}".format(video_path))
     cap = cv2.VideoCapture(video_path)
-    valid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
-    invalid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
-    all_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
+    valid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts_columns)
+    invalid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts_columns)
+    all_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts_columns)
     frame_detected_df = pd.DataFrame(columns=['Frame Number', 'Detected'])
     frame_counter = utils.get_number_of_start_frame(video_name)
+    swimfix_annotated_frames = output_manager.get_output_dir_path(key='swimfix_frames_path')
 
     while cap.isOpened():
         check, frame = cap.read()
         if not check:
             break
         resized_frame = cv2.resize(frame, (600, 480), fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
+        cv2.imwrite(swimfix_annotated_frames + '/swimfix_annotated_frame_{}.jpg'.format(frame_counter),resized_frame)
         # emplace keypoints
         datum.cvInputData = resized_frame
         opWrapper.emplaceAndPop([datum])
@@ -272,7 +274,7 @@ def get_keypoints_csv_from_video(video_path, params):
             current_frame_keypoints = np.array([frame_counter])
             # make representation of each relevant point
             for i, body_part in enumerate(first_person_keypoints):
-                if i < len(body_parts) / 3:  # take only 8 first points which are relevant to our detection
+                if i < len(body_parts_columns) / 3:  # take only 8 first points which are relevant to our detection
                     xCoor = body_part[0] if body_part[0] != 0 else math.nan
                     yCoor = body_part[1] if body_part[1] != 0 else math.nan
                     score = body_part[2] if body_part[2] != 0 else math.nan
@@ -280,7 +282,7 @@ def get_keypoints_csv_from_video(video_path, params):
                     # concat to the keypoints detected in this frame
                     current_frame_keypoints = np.append(current_frame_keypoints, body_part_keypoints)
 
-            current_frame_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts,
+            current_frame_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts_columns,
                                                       data=[current_frame_keypoints])
             all_keypoints_df = pd.concat([all_keypoints_df, current_frame_keypoints_df], sort=False)
             if valid_frame(current_frame_keypoints_df.loc[:, 'NeckX':]):
@@ -289,21 +291,21 @@ def get_keypoints_csv_from_video(video_path, params):
                 frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 1]])])
             else:
                 invalid_frames_df = pd.concat(
-                    [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
-                                                                                                  ([np.nan] * len(
-                                                                                                      body_parts))])],
+                    [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts_columns, data=[[frame_counter] +
+                                                                                                          ([np.nan] * len(
+                                                                                                              body_parts_columns))])],
                     sort=False)
                 frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 0]])])
         else:
             all_keypoints_df = pd.concat(
-                [all_keypoints_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
-                                                                                             ([np.nan] * len(
-                                                                                                 body_parts))])],
+                [all_keypoints_df, pd.DataFrame(columns=['Frame Number'] + body_parts_columns, data=[[frame_counter] +
+                                                                                                     ([np.nan] * len(
+                                                                                                         body_parts_columns))])],
                 sort=False)
             invalid_frames_df = pd.concat(
-                [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
-                                                                                              ([np.nan] * len(
-                                                                                                  body_parts))])],
+                [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts_columns, data=[[frame_counter] +
+                                                                                                      ([np.nan] * len(
+                                                                                                          body_parts_columns))])],
                 sort=False)
             frame_detected_df = pd.concat(
                 [frame_detected_df, pd.DataFrame(columns=['Frame Number', 'Detected'], data=[[frame_counter, 0]])],
@@ -750,6 +752,8 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys
             df_to_show.loc[[frame], right_side_columns] = np.nan
         if not found_in_left:
             df_to_show.loc[[frame], left_side_columns] = np.nan
+
+
 
 
 if __name__ == '__main__':

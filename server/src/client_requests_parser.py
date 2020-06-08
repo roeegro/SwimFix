@@ -394,7 +394,7 @@ def upload_image_fix(data, conn, params):
         if res == 0:
             return
         username = cur.fetchone()['USERNAME']
-        path_to_update = os.getcwd() + '/../output/{}/{}/{}/{}/frames/{}'.format(username, video_name_with_no_extension,
+        path_to_update = os.getcwd() + '/../output/{}/{}/{}/{}/swimfix_annotated_frames/{}'.format(username, video_name_with_no_extension,
                                                                                  date,
                                                                                  time,
                                                                                  filename)
@@ -402,13 +402,13 @@ def upload_image_fix(data, conn, params):
         conn.send(msg.encode('utf-8'))
         with open(path_to_update, 'wb') as f:
             counter = 0
-            while file_size > counter:
-                data = conn.recv(1024)
-                if not data:
-                    break
+            data = conn.recv(1024)
+            while data:
                 # write data to a file
                 f.write(data)
+                data = conn.recv(1024)
                 counter += 1024
+                print(counter)
                 print('receiving data...')
         return_msg = SUCCESS_MSG
     except IndexError as e:
@@ -452,6 +452,7 @@ def upload(data, conn, params):
         facade.create_output_dir_for_movie_of_user(path_to_video, username)
         all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
         filtered_and_interpolated_csv_path = facade.filter_and_interpolate(all_keypoints_csv_path, filename)
+        facade.plot_keypoints(filtered_and_interpolated_csv_path)
         # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
         angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path)
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
