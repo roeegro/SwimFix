@@ -27,7 +27,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 ## Web Client
 Our client-side consists of a Flask based web client
 The client allows users to upload a video of a front crawl swimming. The video is then sent to our server and receive various insights that can hopefully improve the swimmer's performance.
-For detailed information and guidelines please visit **this** page.
+For detailed information and guidelines please visit our guide under [client/README.md](https://github.com/roeegro/SwimFix/blob/master/client/README.md) page.
 ## Inference Module
 Our server-side consists of a inference module based on the [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) library which estimates the swimmer's pose in every frame of the video given as input from the web client and then evaluates the swimmer's performance based on the estimation.
 To install OpenPose, please check [our](https://github.com/roeegro/SwimmingProject/blob/master/server/OpenPoseSetupGuide.md) quick guide or go to the official repository linked above.
@@ -44,7 +44,7 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1MTMyMDAwNyw2NzMyOTgzNSwtODIxMD
-E5OTUwLDEyNjkzNDY5NTEsMTkzNTQ4MjMwNiwxNTAwMzQyOTc4
-LC0zOTAzNzQ3ODMsMTIzODg1NjEwNF19
+eyJoaXN0b3J5IjpbODMxNzY5NjE3LC0xNTEzMjAwMDcsNjczMj
+k4MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUxLDE5MzU0ODIzMDYs
+MTUwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMzg4NTYxMDRdfQ==
 -->
