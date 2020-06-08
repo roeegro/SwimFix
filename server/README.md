@@ -12,13 +12,12 @@ OpenPose is an open-source Pose Estimation library which is used in our project 
 ## How It Works?
 The pose estimation is performed by a keypoint detection of the object (in our case, the swimmer) and extracting a wire frame of it from each frame of the given video (in our case, a video of the swimmer in a front crawl setting).
 
-## Output
-A wire frame is the output of Opsepose - it is a skeleton of the swimmer which is composed by a set of key points - each key point represents a body part (e.g elbow, shoulder, wrist, e.t.c).
-For more information about the wire frame structure and the output of OpenPose, please check the official [output](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md)  doc.<br>
+A wire frame is the output of Opsepose - it is a skeleton of the swimmer which is composed by a set of key points - each key point represents a body part (e.g elbow, shoulder, wrist, e.t.c). 
 
 <p align="center">
     <img src="https://github.com/CMU-Perceptual-Computing-Lab/openpose/raw/master/doc/media/keypoints_pose_18.png", width="480"></p>
 
+For more information about the wire frame structure and the output of OpenPose, please check the official [output](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md)  doc.<br>
 
 ## Installation
 
@@ -46,6 +45,6 @@ Please check out [this](https://github.com/CMU-Perceptual-Computing-Lab/openpose
 For training OpenPose on custom data and creating your own model, please check out [our](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) complete guide, which is based on the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) OpenPose Training repository and contains all the information you need in order to train a model from scratch.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODgzNDM5OTQxLDEyNDg5NTUzMDgsMTgzOT
-gxOTQ0OSwtMTM4MjAyOTY5Niw1OTExMTgyNTNdfQ==
+eyJoaXN0b3J5IjpbLTE2MTQ0MDYwNDYsMTI0ODk1NTMwOCwxOD
+M5ODE5NDQ5LC0xMzgyMDI5Njk2LDU5MTExODI1M119
 -->
