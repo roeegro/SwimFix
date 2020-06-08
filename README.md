@@ -1,5 +1,12 @@
 
 # SwimFix<br>Pose Estimation Based System for Improving Front Crawl 
+## Table of Contents
+1. [Introduction](#web-interface)
+2. [Features](#features)
+3. [Web Client](#web-client)
+4. [Inference Module](#inference-module)
+5. [Training Infrastructure](#training-infrastructure)
+6. 
 ## Introduction
 This is a official git repository for the graduation project of our B<span>.Sc. in Software Engineering in Ben Gurion University of the Negev located in Be'er Sheva, Israel.
 We developed a system for improving front crawl swimming which relies on pose estimation of the swimmer.
@@ -43,8 +50,8 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzg5MTgzODE0LDE0NjMzMjA5NywtMTUxMz
-IwMDA3LDY3MzI5ODM1LC04MjEwMTk5NTAsMTI2OTM0Njk1MSwx
-OTM1NDgyMzA2LDE1MDAzNDI5NzgsLTM5MDM3NDc4MywxMjM4OD
-U2MTA0XX0=
+eyJoaXN0b3J5IjpbLTE0MjEwNTA4MDcsMTQ2MzMyMDk3LC0xNT
+EzMjAwMDcsNjczMjk4MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUx
+LDE5MzU0ODIzMDYsMTUwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMz
+g4NTYxMDRdfQ==
 -->
