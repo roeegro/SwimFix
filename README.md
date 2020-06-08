@@ -13,7 +13,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
     - **Visualization of the swimmer's keypoints and angles in each frame**
 - **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool and faces the swimmer)
 - **Output**:
-	- Basic image + keypoint display/saving (PNG, JPG, AVI, ...), keypoint saving 			(JSON, XML, YML, ...), and/or keypoints as array class.
+	- Keypoints display/saving (PNG, JPG, AVI, ...), keypoint saving (JSON)
 	- Graphs for the keypoints' coordinates in each frame of the video.
 	- Graphs for the angles of the swimmer's shoulder/elbows/wrists in each frame of the video
 - **OS**: Ubuntu 18.04 for training, Windows 10 for inference
@@ -40,7 +40,7 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgyMTAxOTk1MCwxMjY5MzQ2OTUxLDE5Mz
-U0ODIzMDYsMTUwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMzg4NTYx
-MDRdfQ==
+eyJoaXN0b3J5IjpbLTI3MjM5ODQ2MCwtODIxMDE5OTUwLDEyNj
+kzNDY5NTEsMTkzNTQ4MjMwNiwxNTAwMzQyOTc4LC0zOTAzNzQ3
+ODMsMTIzODg1NjEwNF19
 -->
