@@ -11,8 +11,8 @@ The system takes as input a video of swimming in a front crawl setting and outpu
         - 18 keypoint body keypoint estimation based on the OpenPose library.
     - **Performance evaluation** of the swimmer
     - **Visualization** of the swimmer's keypoints and angles in each frame
-    - **User Tests** including manual video annotation
-- **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmers as he swims towards it)
+    - **User Model Testing** including manual video annotation and Expected vs 
+- **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmer as he swims towards it)
 - **Output**:
 	- Keypoints display (PNG, JPG, MP4 and saving (CSV)
 	- Graphs of the keypoints' coordinates in each frame of the video.
@@ -44,7 +44,7 @@ https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 https://github.com/facebook/prophet/issues/418
 https://stackoverflow.com/questions/59711301/install-pyqt5-5-14-1-on-linux
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMwMzcwNTQ5Niw2NzMyOTgzNSwtODIxMD
+eyJoaXN0b3J5IjpbMTEyNTYwMjU1Myw2NzMyOTgzNSwtODIxMD
 E5OTUwLDEyNjkzNDY5NTEsMTkzNTQ4MjMwNiwxNTAwMzQyOTc4
 LC0zOTAzNzQ3ODMsMTIzODg1NjEwNF19
 -->
