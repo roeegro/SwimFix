@@ -430,12 +430,12 @@ def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename
             interval_df = df.loc[start_interval_frame:end_interval_frame, body_cols]
             try:
                 interval_df.loc[interval['frames_to_inerpolate'], interval_df.columns] = np.nan
+                for col_name in body_cols:
+                    interval_df[col_name].interpolate(method='cubic', inplace=True)
+                    df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
+                        interval['frames_to_inerpolate'], col_name]  # update df
             except:
                 continue  # for some perfect intervals which we don't have to fix.
-            for col_name in body_cols:
-                interval_df[col_name].interpolate(method='cubic', inplace=True)
-                df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
-                    interval['frames_to_inerpolate'], col_name]  # update df
         intervals_per_body_part[body_part] = try_extend_intervals_by_body_part(df, merged_interval_list_per_body_part,
                                                                                body_part)
     filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['Nose', 'Neck'])

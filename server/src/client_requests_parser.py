@@ -8,6 +8,7 @@ import facade
 import output_manager
 import tester
 import socket
+import traceback
 
 MYSQL_HOST = '65.19.141.67'
 MYSQL_PORT = 3306

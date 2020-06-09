@@ -51,9 +51,9 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
     output_dir = os.getcwd() + relative_output_dir
     if not os.path.exists(output_dir + found_files_dir_name):
         os.makedirs(output_dir + found_files_dir_name)
-    # else:
-    #     for file in os.listdir(output_dir + found_files_dir_name):
-    #         os.remove(output_dir + found_files_dir_name + '/' + file)
+    else:
+        for file in os.listdir(output_dir + found_files_dir_name):
+            os.remove(output_dir + found_files_dir_name + '/' + file)
     print('we want to unzip {}.zip'.format(zip_dir + zip_name))
     with ZipFile('{}.zip'.format(zip_dir + zip_name), 'r') as zipObj:
         # Get a list of all archived file names from the zip
