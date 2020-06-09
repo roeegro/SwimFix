@@ -25,74 +25,11 @@ The other 2 parts are used for the SwimFix web application and they include a we
 
 ## Client Side
 Login to the system is done by entering username and password and pressing on the Login button as seen in the picture:
-**![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)**
-
-**
+**![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)
 
 
 
-3. [Optional] : Press on "Load CSV" button in order to load existing csv file with key points (Look on CSV format section)
-
-4. [Optional] : Press on "Default Settings" in order to load the default key points and lines settings.
-Note that in this case you will not be able to define key points and lines by yourself, so you can continue to (7), and you will not be able to load csv for this running.
-
-
-5. Insert records to body parts table. This table includes the following : Name of body part , x coordinate for current frame and y one.
-   In this level, just type the body parts you want to include in your test. Insertion of new body part are done by pressing "Insert Row".
-Finish to do the above is done by pressing the "Finish define table" button.
-
-6. At the bottom of the window you can find to drop down lists in order to define the connections between 2 body parts you want to include
-   as line in every frame. Insertion of line is done by "Add" button. Finish definition the above is done by pressing "Finish line definition"
-
-7. The first frame of the loaded video is shown.
-
-8. You can now move between the frames of the loaded movie (Prev and Next buttons). 
-
-Getting the key points coordinates is done as follows:
-
-A. By default- the first body part to be taken is the first one, unless you defined otherwise.
-	
-B. Selection of specific body part is done by pressing the match line of your body part choice, e.g in one of the cell in this line.
-Pay attention that after you paint the point in this case, points measurement continues in the next body part.
-	
-C. Undo button - in order to delete some body part coordinates, you need to click on one of the cells of the matched line of the expected body part. The next body part to be measured is the selected one.
-	
-D. Clean all button - deletes all the records of the current frame from the table, and also the points and lines in the shown frame.
-	
-E. Prev button - Saves the current frame records, and move to the previous frame.
-	
-F. Next button - similarly to E, but moves to the next one. 
-Pay attention: When finish all frames of the given movie - the program will be closed.
-	
-G. Load video button - loads other video. Working with the new video is done by following this guide again.
-Pay attention - choosing this option will overload accumulated data, e.g the data will not be saved!!
-	
-H. The red button will save the accumulated information. See output section.
-
-
-
-Output Section:
-
-The next data is saved as an output of the program in the working directory:
-1. .MOV file named by the given file with the wireframe painted for each frame you did so.
-2. .CSV file with the key points coordinated you signed before for each frame. Please read CSV Output section.
-
-
-CSV Input Section:
-
-There is an expected format for the csv file.
-The csv must include the following columns : Frame Number , <body_part>* s.t 
-<body_part> := <body_part>_X , <body_part>_Y
-
-
-CSV Output Section:
-
-The CSV output format is as follows:
-You will have for each frame number the X and Y coordinated for each body part mentioned in body parts table in the program.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
--->
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NDgyMjA5NjQsLTE3NDIzMTkxNzEsLT
+eyJoaXN0b3J5IjpbLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLT
 IxMTY2NDQ5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
 -->
