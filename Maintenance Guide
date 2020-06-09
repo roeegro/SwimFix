@@ -25,13 +25,13 @@ The other 2 parts are used for the SwimFix web application and they include a we
 
 
 ## Client Side
-The client side is a web interface which supports 2 types of users : usual and admin ones. Usual user interface supports upload of video to the server (for analysis), view data and feedback about technique of previous swimming videos and also participate in forum. Admin users can also add tests and run them in the system in order to examine system's performance. More
+The client side is a web interface which supports 2 types of users : usual and admin ones. Usual user interface supports upload of video to the server (for analysis), view data and feedback about technique of previous swimming videos and also participate in forum. Admin users can also add tests and run them in the system in order to examine system's performance. More details about the user interface can be found in this [link](https://github.com/roeegro/SwimFix/tree/master/client).
 **![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA2NzA5ODQzMSwtMjU5MTE2MjU3LC00Mj
+eyJoaXN0b3J5IjpbLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC00Mj
 A0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLTIxMTY2
 NDQ5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
 -->
