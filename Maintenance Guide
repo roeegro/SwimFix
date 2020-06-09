@@ -44,7 +44,9 @@ Each function must return a redirection to some html page to be loaded in the br
 You can pass other arguments to the respective html code by specifying them as follows
 
     return render_template('page-name.html',param1 = argument1,...)
-Using this arguments in the respective html code is done by specifing their names 
+Using this arguments in the respective html code is done as follows
+
+    {{parameter name}}
 
 > **Note**: Url address definition, function name and html page redirection returned in the end of the function name must be consistent, correlative and named by html and python conventions respectively.
 
@@ -58,9 +60,9 @@ Using this arguments in the respective html code is done by specifing their name
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLT
-Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
-NjI1NywtNDIwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MT
-cxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNd
-fQ==
+eyJoaXN0b3J5IjpbLTg0OTc2ODM2MSwtMTAyODAwOTM0NiwtMT
+EyMjQyMTEzOSwtNDc3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4
+NDE2OSwtMjU5MTE2MjU3LC00MjA0NzMyMzUsLTE0ODU1ODM5Nz
+csLTE3NDIzMTkxNzEsLTIxMTY2NDQ5OTksLTExNTA1NTIwODgs
+LTMzMjQ1NTM2M119
 -->
