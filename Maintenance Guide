@@ -14,7 +14,8 @@
 	* [Add Test](#add-test)
 
 ## Introduction
-Our system 
+Our system is built according to client-server architecture, so it has 2 main parts.
+
 ### Login
 Login to the system is done by entering username and password and pressing on the Login button as seen in the picture:
 **![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)**
@@ -154,5 +155,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
+eyJoaXN0b3J5IjpbLTIxMTY2NDQ5OTksLTExNTA1NTIwODgsLT
+MzMjQ1NTM2M119
 -->
