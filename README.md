@@ -44,11 +44,18 @@ For more information about it and a guide how to set it up and use it, please ch
 ## System Architecture
 ```mermaid
 graph LR
-A[Web Client] -- Inference --> B((OpenPose))
-A[Web Client] -- Test --> B((OpenPose))
-C[OpenPose Training] -- Deploy --> B
+A[Web Client] 
+B[Server]
+C((OpenPose))
+D((OpenPose Training))
+
+
+
+A -- Inference --> B
+A -- Test --> B
+C -- Deploy --> B
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NDIxNjkyNjgsLTEyMTc0NTY2ODcsLT
+eyJoaXN0b3J5IjpbLTE3OTYwNjI5MzksLTEyMTc0NTY2ODcsLT
 E3Njc0Nzk0OTMsMTQ2MzMyMDk3LC0xNTEzMjAwMDcsNjczMjk4
 MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUxLDE5MzU0ODIzMDYsMT
 UwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMzg4NTYxMDRdfQ==
