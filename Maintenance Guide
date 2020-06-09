@@ -77,16 +77,17 @@ Dear Liron, complete this section please.
 
 ### Test Generator (test_generator.py, test_generator.ui) 
 A module for manual annotation of videos. A guide for user mode can be found at this [link](https://github.com/roeegro/SwimFix/tree/master/client#add-test).
-The widgets, and their positions in the window is defined in .ui file. You can
+The widgets, and their positions in the window is defined in .ui file. You can open ui files with program that can be found in scripts directory under python directory in programs directory.
 Python file code is based on [PyQt5](https://doc.qt.io/qtforpython/) package.
-This codemanipulates those widgets in the
+This code manipulates those widgets in the
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5Nz
-Y4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAz
-NTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLT
-QyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjEx
-NjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+eyJoaXN0b3J5IjpbLTE0NDEyMjY3MjUsMTA4MDc0NDUyLDU5Mz
+Q1NjgyMiwtODQ5NzY4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIx
+MTM5LC00Nzc4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC
+0yNTkxMTYyNTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0
+MjMxOTE3MSwtMjExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyND
+U1MzYzXX0=
 -->
