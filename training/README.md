@@ -82,7 +82,7 @@ In this section we will explain how we annotated our own custom data and geneter
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
 
 ### Step 1 - Data Annotation
-For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is cloned in the root directory under the name `coco-annotator`.
+For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is located in `training/coco-annotator`.
  We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimmingProject/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
@@ -191,6 +191,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NjMxMjQ5MDcsMTE2MzE3OTk1NSw3NT
+eyJoaXN0b3J5IjpbLTE1OTY0MTQ4NTksMTE2MzE3OTk1NSw3NT
 g5MzMzNzZdfQ==
 -->
