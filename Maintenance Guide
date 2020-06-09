@@ -5,14 +5,15 @@
 1. [Introduction](#Introduction)
 2. [Client Side](#)
 	* [Video Trimmer](#)
+	* [Video Trimmer](#)
 	* [Test Generator](#)
 	* [File Management](#)
-3. [Server Side](#)
+4. [Server Side](#)
 	* [Supported Functionality](#)
 	* [File Management](#)
 	* [Configurations](#)
-4. [Adding Functionality](#)
-5. [Assimilation on New Hardware](#)
+5. [Adding Functionality](#)
+6. [Assimilation on New Hardware](#)
 
 ## Introduction
 Our system has 3 main parts. The first one is the training infrastructure.
@@ -29,8 +30,12 @@ The client side is a web interface which supports 2 types of users : usual and a
 
 ### Video Trimmer
 
+### Test Generator
+
+
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY3MDEzMDY3NSwtODY5ODg0MTY5LC0yNT
+eyJoaXN0b3J5IjpbLTg0NTk1NzQ4OSwtODY5ODg0MTY5LC0yNT
 kxMTYyNTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMx
 OTE3MSwtMjExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1Mz
 YzXX0=
