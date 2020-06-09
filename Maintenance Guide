@@ -38,7 +38,7 @@ This is the most important module in the client side. It defines the web links o
 		    <some code>  
            return render_template('page-name.html')
 
-The first line denotes that it is the home page of the site,
+The first line denotes that the next url address is the home page of the site, and it should be placed to this page only.
 The second line binds between the url address to the function below,
 Each function must return a redirection to some html page to be loaded in the browser.
 You can pass other arguments to the respective html code by specifying them as follows
@@ -57,9 +57,9 @@ You can pass other arguments to the respective html code by specifying them as f
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMzUxNzI4NTcsLTExMjI0MjExMzksLT
-Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
-NjI1NywtNDIwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MT
-cxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNd
-fQ==
+eyJoaXN0b3J5IjpbLTgzNDAwNjE2LC0xMTIyNDIxMTM5LC00Nz
+c4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYy
+NTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MS
+wtMjExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+
 -->
