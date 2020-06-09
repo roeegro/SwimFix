@@ -34,11 +34,14 @@ This is the most important module in the client side. It defines the web links o
 
     @app.route('/', methods=['GET', 'POST'])  
     @app.route("/<page-name>", methods=['GET', 'POST'])  
-    def page_name():  
+    def page_name():
+		    <some code>  
            return render_template('page-name.html')
 
 The first line denotes that it is the home page of the site,
-The second line binds between the url address to the function below
+The second line binds between the url address to the function below,
+Each function must return a redirection to some html pa
+
 
 ### Video Trimmer
 
@@ -47,7 +50,7 @@ The second line binds between the url address to the function below
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg1NjQ4NTU1MSwtMTEyMjQyMTEzOSwtND
+eyJoaXN0b3J5IjpbMTcwNDI0Mjg4MiwtMTEyMjQyMTEzOSwtND
 c3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2
 MjU3LC00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNz
 EsLTIxMTY2NDQ5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
