@@ -46,14 +46,10 @@ For more information about it and a guide how to set it up and use it, please ch
 graph LR
 A[Web Client] -- Inference --> B((OpenPose))
 A[Web Client] -- Test --> B((OpenPose))
-C[OpenPose Training] -- 
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
-```
+C[OpenPose Training] -- Deploy --> B
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMTc0NTY2ODcsLTE3Njc0Nzk0OTMsMT
-Q2MzMyMDk3LC0xNTEzMjAwMDcsNjczMjk4MzUsLTgyMTAxOTk1
-MCwxMjY5MzQ2OTUxLDE5MzU0ODIzMDYsMTUwMDM0Mjk3OCwtMz
-kwMzc0NzgzLDEyMzg4NTYxMDRdfQ==
+eyJoaXN0b3J5IjpbLTE3NDIxNjkyNjgsLTEyMTc0NTY2ODcsLT
+E3Njc0Nzk0OTMsMTQ2MzMyMDk3LC0xNTEzMjAwMDcsNjczMjk4
+MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUxLDE5MzU0ODIzMDYsMT
+UwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMzg4NTYxMDRdfQ==
 -->
