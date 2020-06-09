@@ -74,6 +74,8 @@ The cloned repositories are:
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) - The annotation tool for our data.
 - [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
 
+All of the above will be clone into the `training` directory.
+
 ## Data Preperation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
 
@@ -189,5 +191,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE2MzE3OTk1NSw3NTg5MzMzNzZdfQ==
+eyJoaXN0b3J5IjpbLTE1NjMxMjQ5MDcsMTE2MzE3OTk1NSw3NT
+g5MzMzNzZdfQ==
 -->
