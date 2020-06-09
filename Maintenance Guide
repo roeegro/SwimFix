@@ -43,7 +43,8 @@ This is the most important module in the client side. It defines the web links o
            return render_template('page-name.html')
 
 The first line denotes that the next url address is the home page of the site, and it should be placed to this page only. The methods specify the type of requests supported in this page.
-The second line binds between the url address to the function below,
+The second line binds between the url address to the function below.
+In the function there is a code, that frequently connects to th
 Each function must return a redirection to some html page to be loaded in the browser.
 You can pass other arguments to the respective html code by specifying them as follows
 
@@ -76,9 +77,9 @@ The widgets, and their positions in the window is defined in .ui file, while the
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTM4NjM3MTIxLDU5MzQ1NjgyMiwtODQ5Nz
-Y4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAz
-NTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLT
-QyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjEx
-NjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+eyJoaXN0b3J5IjpbLTM2NTY0MjM3Myw1OTM0NTY4MjIsLTg0OT
+c2ODM2MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQw
+MzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC
+00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLTIx
+MTY2NDQ5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
 -->
