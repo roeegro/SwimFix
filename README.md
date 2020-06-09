@@ -27,8 +27,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
 - **Training**:  Train your own model on your own data.
  
- <p align="center">
-    <img src="https://github.com/roeegro/SwimmingProject/blob/master/client/src/static/img/8027.gif", width="480"></p>
+>TODO: put a video in here
     
 ## Web Client
 Our client-side consists of a Flask based web client
@@ -42,11 +41,20 @@ We created a training infrastructure for training your own custom model on your 
 For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) out.
 
 > **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
-## Results
-In this section we will showcase some of our results.
+
+## System Architecture
+```mermaid
+graph LR
+	A[Web Client] 
+	B[Server]
+	C((OpenPose))
+	D((OpenPose Training))
+
+	A -- Model Testing --> B
+	A -- Front Crawl Evaluation --> B
+	B -- Inference --> C
+	D -- Deploy Model --> C
+```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3Njc0Nzk0OTMsMTQ2MzMyMDk3LC0xNT
-EzMjAwMDcsNjczMjk4MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUx
-LDE5MzU0ODIzMDYsMTUwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMz
-g4NTYxMDRdfQ==
+eyJoaXN0b3J5IjpbODkwMTE4NDA2LC0xMzc0NTQ5MjAwXX0=
 -->
