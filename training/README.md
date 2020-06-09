@@ -66,10 +66,10 @@ Before we get started, please run the following commands:
 this will clone the required third party git repositories which we will use:
 ```
 cd training
-
+# Linux
+sh clone_training_repos.sh
 # Windows
 start clone_training_repos.bat
-
 ```
 The cloned repositories are:
 - [openpose_train](https://github.com/tommarz/openpose_train) - The main training library.
@@ -80,7 +80,7 @@ The cloned repositories are:
 All of the above will be clone into the `training` directory - this guide focuses on the first three.
 
 ### Packages
-This script will install on your machine all the required packages
+This script will install on your machine all the required  packages for both Ubuntu and Python 2.7 :
 ```
 # Ubuntu
 sh requirements.sh
@@ -204,6 +204,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjU5OTM5NTY1LC05MzI3MTkyOTYsMTE2Mz
-E3OTk1NSw3NTg5MzMzNzZdfQ==
+eyJoaXN0b3J5IjpbLTEyNzc0MTg4NjUsLTkzMjcxOTI5NiwxMT
+YzMTc5OTU1LDc1ODkzMzM3Nl19
 -->
