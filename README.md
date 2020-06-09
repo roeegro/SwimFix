@@ -44,14 +44,16 @@ For more information about it and a guide how to set it up and use it, please ch
 ## System Architecture
 ```mermaid
 graph LR
-A[Web Client] -- Link text --> B((Circle))
+A[Web Client] -- Inference --> B((OpenPose))
+A[Web Client] -- Test --> B((OpenPose))
+C[OpenPose Training] -- 
 A --> C(Round Rect)
 B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTA2NzA2ODgxLC0xNzY3NDc5NDkzLDE0Nj
-MzMjA5NywtMTUxMzIwMDA3LDY3MzI5ODM1LC04MjEwMTk5NTAs
-MTI2OTM0Njk1MSwxOTM1NDgyMzA2LDE1MDAzNDI5NzgsLTM5MD
-M3NDc4MywxMjM4ODU2MTA0XX0=
+eyJoaXN0b3J5IjpbLTEyMTc0NTY2ODcsLTE3Njc0Nzk0OTMsMT
+Q2MzMyMDk3LC0xNTEzMjAwMDcsNjczMjk4MzUsLTgyMTAxOTk1
+MCwxMjY5MzQ2OTUxLDE5MzU0ODIzMDYsMTUwMDM0Mjk3OCwtMz
+kwMzc0NzgzLDEyMzg4NTYxMDRdfQ==
 -->
