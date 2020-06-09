@@ -79,15 +79,16 @@ Dear Liron, complete this section please.
 A module for manual annotation of videos. A guide for user mode can be found at this [link](https://github.com/roeegro/SwimFix/tree/master/client#add-test).
 The widgets, and their positions in the window is defined in .ui file. You can open ui files with program that can be found in scripts directory under python directory in programs directory.
 Python file code is based on [PyQt5](https://doc.qt.io/qtforpython/) package.
-This code manipulates those widgets in the code by QtApplication object which holdes all the widgets defined in the ui 
+This code manipulates those widgets in the code by QtApplication object which holdes all the widgets defined in the ui file. 
+This module has 3 main parts: accessors to the widgets objects, events (for buttons), and some helper functions. The funcitons in each part are sorted by the alpha-be
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ2ODU3OTY3NywyMDY1OTk5MjMyLDEwOD
-A3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0
-NiwtMTEyMjQyMTEzOSwtNDc3ODQwMzUyLC02ODM4MTIyNTAsLT
-g2OTg4NDE2OSwtMjU5MTE2MjU3LC00MjA0NzMyMzUsLTE0ODU1
-ODM5NzcsLTE3NDIzMTkxNzEsLTIxMTY2NDQ5OTksLTExNTA1NT
-IwODgsLTMzMjQ1NTM2M119
+eyJoaXN0b3J5IjpbLTIwNzkwNDYzNzQsMjA2NTk5OTIzMiwxMD
+gwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkz
+NDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC
+04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC0xNDg1
+NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0xMTUwNT
+UyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
