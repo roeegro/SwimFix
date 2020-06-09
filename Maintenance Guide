@@ -30,7 +30,7 @@ We used Flask, a python web framework, to write the client side. This library en
 **![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)
 
 ### Routes File
-
+This is the most important module in the client side. It defines the web links of all the pages and binds them to the relevant html page (appears in temp
 
 ### Video Trimmer
 
@@ -39,8 +39,8 @@ We used Flask, a python web framework, to write the client side. This library en
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNzQ4OTE0OCwtNjgzODEyMjUwLC04Nj
-k4ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC0xNDg1NTgz
-OTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMD
-g4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbLTExOTMxNjYxOTEsLTY4MzgxMjI1MCwtOD
+Y5ODg0MTY5LC0yNTkxMTYyNTcsLTQyMDQ3MzIzNSwtMTQ4NTU4
+Mzk3NywtMTc0MjMxOTE3MSwtMjExNjY0NDk5OSwtMTE1MDU1Mj
+A4OCwtMzMyNDU1MzYzXX0=
 -->
