@@ -94,7 +94,9 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_d
     :return: path to generated csv.
     """
     vectors_df = pd.read_csv(csv_path)
-    angles_df = pd.DataFrame(columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng'])
+    angles_df = pd.DataFrame(
+        columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng', 'RGlobalArmAng',
+                 'LGlobalArmAng', 'RGlobalForeArmAng', 'LGlobalForeArmAng'])
     for idx, frame in vectors_df.iterrows():
         RChestVec = (frame['RChestX'], frame['RChestY'])
         LChestVec = (frame['LChestX'], frame['LChestY'])
@@ -108,6 +110,10 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_d
                         'LShoulderAng': angle(tuple([x for x in LChestVec]), LArmVec),
                         'RElbowAng': angle(tuple([-1 * x for x in RArmVec]), RForearmVec),
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
+                        'RGlobalArmAng': angle(RChestVec, (RChestVec[0], 0)),
+                        'LGlobalArmAng': angle(LChestVec, (LChestVec[0], 0)),
+                        'RGlobalForeArmAng': angle(RForearmVec, (RForearmVec[0], 0)),
+                        'LGlobalForeArmAng': angle(LForearmVec, (LForearmVec[0], 0))
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
 
@@ -761,6 +767,9 @@ if __name__ == '__main__':
 
     interp_path = filter_and_interpolate(op_row_path,
                                          output_path=os.getcwd(), filename='new_interpolated')
+
+    facade.get_angles_csv_from_keypoints_csv(interp_path, output_path=os.getcwd())
+
     import visualizer
     # visualizer.plot_multi_graphs_from_other_csvs([interp_path, op_row_path],
     #                                              '<can be deleted or put some path to generate output to.>')
