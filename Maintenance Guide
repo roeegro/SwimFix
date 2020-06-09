@@ -3,16 +3,16 @@
 
 ## Table of Contents
 1. [Introduction](#Introduction)
-2. [Client Side](#login)
-	* [Video Trimmer](#upload-video-to-the-server)
-	* [Test Generator](#upload-video-to-the-server)
-	* [File Management](#upload-video-to-the-server)
+2. [Client Side](#)
+	* [Video Trimmer](#)
+	* [Test Generator](#)
+	* [File Management](#)
 	
-4. [Server Side](#register-user)
-	* [Supported Functionality](#upload-video-to-the-server)
+3. [Server Side](#)
+	* [Supported Functionality](#)
 	* [File Management](#upload-video-to-the-server)
 	* [Configurations](#upload-video-to-the-server)
-4.  [Adding Functionality](#upload-video-to-the-server)
+4. [Adding Functionality](#upload-video-to-the-server)
 5. [Assimilation on New Hardware](#register-user)
 
 ## Introduction
@@ -31,7 +31,7 @@ Login to the system is done by entering username and password and pressing on th
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI0MzM4MTM3NiwtNDIwNDczMjM1LC0xND
+eyJoaXN0b3J5IjpbLTY3ODk4NjIwMSwtNDIwNDczMjM1LC0xND
 g1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0xMTUw
 NTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
