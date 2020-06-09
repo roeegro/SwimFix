@@ -4,7 +4,7 @@
 1. [Introduction](#introduction)
 2. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
 3. [Prerequisites](#prerequisites)
-4. [Required Third-Party Repositories](#required-third-party-repositories)
+4. [Required Third-Party Repositories and Packages](#required-third-party-repositories-and-packages)
 5. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
@@ -61,7 +61,7 @@ Make sure you have those and before continuing:
 -  Docker (for [Data Annotation](#step-1---data-annotation))
 - Matlab R2019a (for [Data Augmentation](#step-3---data-augmentation)) 
 
-## Required Third-Party Repositories
+## Required Third-Party Repositories and Packages
 Before we get started, please run this in order to clone the required third party git repositories which we will use:
 ```
 cd training
@@ -191,6 +191,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODgwNDg4MzQ4LDExNjMxNzk5NTUsNzU4OT
-MzMzc2XX0=
+eyJoaXN0b3J5IjpbLTkzMjcxOTI5NiwxMTYzMTc5OTU1LDc1OD
+kzMzM3Nl19
 -->
