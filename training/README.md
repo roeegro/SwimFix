@@ -142,18 +142,24 @@ The first 10 layers are used as backbone.
 ## Training Flow
 ```mermaid
 graph TB
-A[Raw Data] 
-B[Annotated Data]
-C[Augmented Data]
-D[Data in LMDB Format]
-E([Training])
-F[Trained Model]
+	A[Raw Data] 
+	B[Annotated Data]
+	C[Augmented Data]
+	D[Data in LMDB Format]
+	E[Training]
+	F[Trained Model]
+	G[[((Tom))]]
 
-A -- COCO Annotator --> B
-B -- MATLAB --> C;
-C -- Python Scripts --> D
-D -- OpenPose Train --> E
-E -- Training --> F
+	A -- COCO Annotator --> B
+	B -- MATLAB --> C;
+	C -- Python Scripts --> D
+	D -- OpenPose Train --> E
+	E -- Training --> F
+
+```
+graph LR
+    id1[(Database)]
+```
 ```
 
 ## Q&A
@@ -182,7 +188,7 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk2MDQ3NzMyOCwyNTUwODY3MjIsNjAxND
-IzMTUyLDI5MzI1MzkzMiw0NjMzMjQzMDIsNjM4ODgyMzM3LDE2
-ODg2MTgwOV19
+eyJoaXN0b3J5IjpbLTEyMjYwNDYwMjQsMjU1MDg2NzIyLDYwMT
+QyMzE1MiwyOTMyNTM5MzIsNDYzMzI0MzAyLDYzODg4MjMzNywx
+Njg4NjE4MDldfQ==
 -->
