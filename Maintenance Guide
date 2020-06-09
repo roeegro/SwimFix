@@ -4,17 +4,16 @@
 ## Table of Contents
 1. [Introduction](#Introduction)
 2. [Client Side](#login)
-* [Video Trimmer](#upload-video-to-the-server)
+	* [Video Trimmer](#upload-video-to-the-server)
 	* [Test Generator](#upload-video-to-the-server)
-	* [Adding Functionality](#upload-video-to-the-server)
 	* [File Management](#upload-video-to-the-server)
 	
-3. [Server Side](#register-user)
+4. [Server Side](#register-user)
 	* [Supported Functionality](#upload-video-to-the-server)
-	* [Adding Functionality](#upload-video-to-the-server)
 	* [File Management](#upload-video-to-the-server)
 	* [Configurations](#upload-video-to-the-server)
-4. [Assimilation on New Hardware](#register-user)
+4.  [Adding Functionality](#upload-video-to-the-server)
+5. [Assimilation on New Hardware](#register-user)
 
 ## Introduction
 Our system has 3 main parts. The first one is the training infrastructure.
@@ -32,7 +31,7 @@ Login to the system is done by entering username and password and pressing on th
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU3NzgxMzExLC00MjA0NzMyMzUsLTE0OD
-U1ODM5NzcsLTE3NDIzMTkxNzEsLTIxMTY2NDQ5OTksLTExNTA1
-NTIwODgsLTMzMjQ1NTM2M119
+eyJoaXN0b3J5IjpbMTI0MzM4MTM3NiwtNDIwNDczMjM1LC0xND
+g1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0xMTUw
+NTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
