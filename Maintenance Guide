@@ -11,7 +11,7 @@
 	* [Running Server](#upload-video-to-the-server)
 	* [Supported Functionality](#upload-video-to-the-server)
 	* [Adding Features](#upload-video-to-the-server)
-	* [Database](#upload-video-to-the-server)
+	* [File Management](#upload-video-to-the-server)
 
 ## Introduction
 Our system has 3 main parts. The first one is the training infrastructure.
@@ -161,6 +161,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgzMTUxMDc3NiwtMTc0MjMxOTE3MSwtMj
-ExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+eyJoaXN0b3J5IjpbLTEyNTI0NjAxOTYsLTE3NDIzMTkxNzEsLT
+IxMTY2NDQ5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
 -->
