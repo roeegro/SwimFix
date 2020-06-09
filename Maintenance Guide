@@ -14,8 +14,9 @@
 	* [Add Test](#add-test)
 
 ## Introduction
-Our system has 3 main parts. The first one is the infrastructure for optimize OpenPose library perfomance by training its model. You can read more details click [here](https://github.com/roeegro/SwimFix/tree/master/training)
-built according to client-server architecture, so it has 2 main parts.
+Our system has 3 main parts. The first one is the infrastructure for optimize OpenPose library perfomance by training its model. For more details, [click here](https://github.com/roeegro/SwimFix/tree/master/training).
+
+The other 2 parts are used for 
 
 ### Login
 Login to the system is done by entering username and password and pressing on the Login button as seen in the picture:
@@ -156,6 +157,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzODc2MjA1ODMsLTIxMTY2NDQ5OTksLT
-ExNTA1NTIwODgsLTMzMjQ1NTM2M119
+eyJoaXN0b3J5IjpbLTcyNTAxMjQxLC0yMTE2NjQ0OTk5LC0xMT
+UwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
