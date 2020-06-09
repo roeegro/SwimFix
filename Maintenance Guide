@@ -4,7 +4,7 @@
 ## Table of Contents
 1. [Introduction](#Introduction)
 2. [Client Side](#login)
-	* [Basic Explaination](#upload-video-to-the-server)
+	* [Basic Explanation](#upload-video-to-the-server)
 	* [](#upload-video-to-the-server)
 3. [Register User](#register-user)
 4. [User Interface functionality](#user-interface-functionality)
@@ -16,7 +16,8 @@
 	* [Add Test](#add-test)
 
 ## Introduction
-Our system has 3 main parts. The first one is the infrastructure for optimize OpenPose library perfomance by training its model. For more details, [click here](https://github.com/roeegro/SwimFix/tree/master/training).
+Our system has 3 main parts. The first one is the training infrastructure.
+For more details, [click here](https://github.com/roeegro/SwimFix/tree/master/training).
 
 The other 2 parts are used for the SwimFix web application and they include a web client part and a server for analysis and evaluation. Both parts written in Python and connect each other by TCP conneciton.
 
@@ -162,6 +163,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk0NTEzNDE2MCwtMjExNjY0NDk5OSwtMT
-E1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+eyJoaXN0b3J5IjpbLTE3NDIzMTkxNzEsLTIxMTY2NDQ5OTksLT
+ExNTA1NTIwODgsLTMzMjQ1NTM2M119
 -->
