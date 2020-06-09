@@ -11,11 +11,8 @@
    * [Data Augmentation](#step-3---data-augmentation)
    * [LMDB File Generation](#step-4---lmdb-file-generation)
 6. [Training](#training)
-7. [Validation](#validation)
-8. [Testing](#testing)
-9. [Our Results](#our-results)
-10. [Q&A](#qa)
-11. [Installation Commands](#installation-commands)
+7. [Q&A](#qa)
+8. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -62,6 +59,7 @@ Make sure you have those and before continuing:
 - Matlab R2019a (for [Data Augmentation](#step-3---data-augmentation)) 
 
 ## Required Third-Party Repositories and Packages
+
 Before we get started, please run this in order to clone the required third party git repositories which we will use:
 ```
 cd training
@@ -191,6 +189,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkzMjcxOTI5NiwxMTYzMTc5OTU1LDc1OD
-kzMzM3Nl19
+eyJoaXN0b3J5IjpbLTgwMTIyNTYzMSwtOTMyNzE5Mjk2LDExNj
+MxNzk5NTUsNzU4OTMzMzc2XX0=
 -->
