@@ -75,9 +75,9 @@ The cloned repositories are:
 - [openpose_train](https://github.com/tommarz/openpose_train) - The main training library.
 - [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) - Used by the main `openopose_train` library for the training of the model on the NVIDIA GPU.
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) - The annotation tool for our data.
-- >[openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
+- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
 
-All of the above will be clone into the `training` directory - this guide focuses on the first three.
+All of the above will be clone into the `training` directory - this guide is about the first three.
 
 ### Packages
 This script will install on your machine all the required  packages for both Ubuntu and Python 2.7 :
@@ -190,6 +190,6 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzU1MjE3MTY3LC05MzI3MTkyOTYsMTE2Mz
+eyJoaXN0b3J5IjpbNzY3NDg3NTk1LC05MzI3MTkyOTYsMTE2Mz
 E3OTk1NSw3NTg5MzMzNzZdfQ==
 -->
