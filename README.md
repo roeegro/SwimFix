@@ -45,15 +45,16 @@ For more information about it and a guide how to set it up and use it, please ch
 ## System Architecture
 ```mermaid
 graph LR
-A[Web Client] 
-B[Server]
-C((OpenPose))
-D((OpenPose Training))
+	A[Web Client] 
+	B[Server]
+	C((OpenPose))
+	D((OpenPose Training))
 
-A -- Model Testing --> B
-A -- Front Crawl Evaluation --> B
-B -- Inference --> C
-D -- Deploy Model --> C
+	A -- Model Testing --> B
+	A -- Front Crawl Evaluation --> B
+	B -- Inference --> C
+	D -- Deploy Model --> C
+```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNzQ1NDkyMDBdfQ==
+eyJoaXN0b3J5IjpbODkwMTE4NDA2LC0xMzc0NTQ5MjAwXX0=
 -->
