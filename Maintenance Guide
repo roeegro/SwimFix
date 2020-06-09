@@ -26,7 +26,7 @@ The other 2 parts are used for the SwimFix web application and they include a we
 
 ## Client Side
 The client side is a web interface which supports 2 types of users : usual and admin ones. Usual user interface supports upload of video to the server (for analysis), view data and feedback about technique of previous swimming videos and also participate in forum. Admin users can also add tests and run them in the system in order to examine system's performance. More details about the user interface can be found in this [link](https://github.com/roeegro/SwimFix/tree/master/client).
-We used Flask, a python library, to write 
+We used Flask, a python web framework, to write the client side. This library enables the developers to load dynamically 
 **![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)
 
 ### Routes File
@@ -39,8 +39,8 @@ We used Flask, a python library, to write
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkyNjAzODksLTg2OTg4NDE2OSwtMjU5MT
-E2MjU3LC00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkx
-NzEsLTIxMTY2NDQ5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M1
-19
+eyJoaXN0b3J5IjpbLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNT
+kxMTYyNTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMx
+OTE3MSwtMjExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1Mz
+YzXX0=
 -->
