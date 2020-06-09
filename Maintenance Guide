@@ -25,13 +25,13 @@ The other 2 parts are used for the SwimFix web application and they include a we
 
 
 ## Client Side
-The client side is a web interface and supports 
+The client side is a web interface which supports 2 types of users : usualand supports upload of video to the server, participate in forum.
 **![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI1OTExNjI1NywtNDIwNDczMjM1LC0xND
-g1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0xMTUw
-NTUyMDg4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbLTEzMTYxMjAxODQsLTI1OTExNjI1NywtND
+IwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2
+NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
