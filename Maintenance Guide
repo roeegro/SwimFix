@@ -64,16 +64,19 @@ Using this arguments in the respective html code is done as follows
 
 **static -** Contains temp directory and also css, js files, images and other files that are loaded or shown in the html pages shown in temp directory.
 
+**temp -** Contains html code that are loaded by the Flask code as shown in the section above.
+
 ### Video Trimmer
+Dear Liron, complete this section please.
 
 ### Test Generator
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMjg5MDAxMywtODQ5NzY4MzYxLC0xMD
-I4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAzNTIsLTY4Mzgx
-MjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLTQyMDQ3MzIzNS
-wtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjExNjY0NDk5OSwt
-MTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+eyJoaXN0b3J5IjpbNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMj
+gwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEy
+MjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC
+0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0x
+MTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
