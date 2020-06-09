@@ -2,26 +2,27 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Required Third-Party Repositories](#required-third-party-repositories)
-4. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
+2. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
+3. [Prerequisites](#prerequisites)
+4. [Required Third-Party Repositories](#required-third-party-repositories)
+5. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
    * [LMDB File Generation](#step-4---lmdb-file-generation)
-5. [Training](#training)
-6. [Validation](#validation)
-7. [Testing](#testing)
-8. [Our Results](#our-results)
-9. [Q&A](#qa)
-10. [Installation Commands](#installation-commands)
+6. [Training](#training)
+7. [Validation](#validation)
+8. [Testing](#testing)
+9. [Our Results](#our-results)
+10. [Q&A](#qa)
+11. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
 Throughout this guide we will walk through all the required steps for training a custom model on your own data, top to bottom.
 From now on the `openpose_train` directory will be our working directory and the `SwimmingProject` directory which is the main directory of our git repository will be our root directory.
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
->  In case you want to train a model just on the COCO dataset rather than your own, please follow the original repository instructions. You can read more about the COCO dataset which the OpenPose default COCO model was trained on [here](http://cocodataset.org/).
+>  In case you want to train a model just on the COCO dataset only rather than on your own data, consider following the original repository's instructions. You can read more about the COCO dataset (which the OpenPose default COCO model was trained on) [here](http://cocodataset.org/).
 ## Disclaimer
 This guide is based on a setup we successfully managed to perform on an AWS EC2 virtual machine with the following AMI:<br>**Deep Learning Base AMI (Ubuntu 18.04) Version 22.0 (ami-0f6127e61a87f8677)** (more details  [here](https://aws.amazon.com/marketplace/pp/B07Y3VDBNS?qid=1589717278223&sr=0-1&ref_=srh_res_product_title))<br>Keep in mind that this machine is delivered with all the NVIDIA related prerequisites that are mandatory for both OpenPose training and inference versions (The full list of prerequisites for the inference version is [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/prerequisites.md))<br>**The guide assumes you are running on a similar machine.**
 
@@ -29,6 +30,18 @@ This guide is based on a setup we successfully managed to perform on an AWS EC2 
 >- Nvidia GeForce RTX 2060 GAMING Z 6G
 >- Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz
 >- 32GB*2 DDR4 RAM
+## A Very Important Note Before We Start
+This guide was written based on our successful attempt to train a model using the OpenPose Train repository.
+With that being said, we **did not** manage to deploy our trained model successfully to the vanilla OpenPose repository which is used for inference.
+
+Our primary goal was to retrain the currently deployed COCO model (which you can find in the OpenPose repository) in order to fit it to our task at hand - pose estimation of swimmers.
+
+Although we did manage to retrain a model, the model we retrained **was not** COCO but BODY_25 - which is the same as COCO but with foot keypoints and two extra keypoints at the center area of the object.
+The reason for that has something to do with our training configuration isn't satisfying a condition, which leads to an exception during training.
+
+Up to this point, a solution is yet to be found and that means that:<br>
+### This guide relates to the COCO format only, but the model we train is eventually in the BODY_25 format.
+for more information about the keypoints format please go [here](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md).
 
 ## Prerequisites
 Make sure you have those and before continuing:
@@ -107,7 +120,10 @@ In our context, the key is an id of an image and the value is the image itself a
 - To generate the lmdb file, run  `python c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
 - We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
-By the end of this step you should have `lmdb_coco` and `lmdb_background` folders in the `dataset` folder, each consists of `data.mdb` and `lock.mdb` files which represents the training data that contains at least one person and zero persons respectivly, as a LMDB file.
+>**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
+
+
+By the end of this step you should have `lmdb_coco`,`lmdb_background`,`lmdb_mpii` and `lmdb_coco2017_foot` folders in the `dataset` folder, each folder consists of a `data.mdb` file which represents the data as a LMDB file and a  `lock.mdb` files for synchronization locks (not important).
 
 ## Training
 In this section we will walk through the training process, assuming you followed the instructions above successfully.
@@ -117,15 +133,8 @@ In this section we will walk through the training process, assuming you followed
     - The original config file is `Makefile.config.example` in case you want to use it or modify it. When you are done, run `cp Makefile.config.example Makefile.config` to copy it to the config file.
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
 2) Generate the training model:
-	- Go to `training\openpose_train`
-	- Generate the Caffe ProtoTxt and shell file for training by running  `python d_setLayers.py`. We strongly recommend you to stick with the default setup as this one worked for us.
-	    -   Set  `sCaffeFolder`  to the path of  [OpenPose Caffe Train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_caffe_train).
-	    -   Set  `sAddFoot`  to 1 or 0 to enable/disable combined body-foot.
-	    -   Set  `sAddMpii`,  `sAddFace`  and  `sAddHands`  to 1 or 0 to enable/disable boyd mpii/face/hands (if 1, then all the above must be also 1).
-	    -   Set  `sAddDome`  to 1 or 0 to enable/disable the Dome whole-body dataset (if 1, then all the above must be also 1).
-	    -   Flag  `sProbabilityOnlyBackground`  fixes the percentage of images that will come from the non-people dataset (called negative dataset).
-	    -   Set  `sSuperModel`  to 1 train the whole-body dataset, or to train a heavier but also more accurate body-foot dataset. Set it to 0 for the original OpenPose body-foot dataset.
-	    -   Flags  `carVersion`  and  `sAddDistance`  are deprecated.
+	- Go to the `training` directory
+	- Generate the Caffe ProtoTxt and shell file for training by running  `python d_setLayers.py`. We strongly recommend you to stick with the our configuration as this was the [only](#a-very-important-note-before-we-start) one that worked for us. In case you wish to change it, please check the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/blob/master/training/README.md) training instructions for more details.  
 	   
 3) Pre-trained weights setup:
 	- Create a new directory `dataset/vgg/`
@@ -141,25 +150,17 @@ The first 10 layers are used as backbone.
 
 ## Training Flow
 ```mermaid
-graph TB
+graph LR
 	A[Raw Data] 
 	B[Annotated Data]
 	C[Augmented Data]
 	D[Data in LMDB Format]
-	E[Training]
-	F[Trained Model]
-	G[[((Tom))]]
+	E[Trained Model]
 
 	A -- COCO Annotator --> B
 	B -- MATLAB --> C;
 	C -- Python Scripts --> D
 	D -- OpenPose Train --> E
-	E -- Training --> F
-
-```
-graph LR
-    id1[(Database)]
-```
 ```
 
 ## Q&A
@@ -188,7 +189,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMjYwNDYwMjQsMjU1MDg2NzIyLDYwMT
-QyMzE1MiwyOTMyNTM5MzIsNDYzMzI0MzAyLDYzODg4MjMzNywx
-Njg4NjE4MDldfQ==
+eyJoaXN0b3J5IjpbNzU4OTMzMzc2XX0=
 -->
