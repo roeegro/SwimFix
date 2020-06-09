@@ -60,7 +60,10 @@ Make sure you have those and before continuing:
 
 ## Required Third-Party Repositories and Packages
 
-Before we get started, please run this in order to clone the required third party git repositories which we will use:
+Before we get started, please run the following commands:
+
+### Repositories
+this will clone the required third party git repositories which we will use:
 ```
 cd training
 start clone_training_repos.bat [Windows]
@@ -73,6 +76,13 @@ The cloned repositories are:
 - [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
 
 All of the above will be clone into the `training` directory - this guide focuses on the first three.
+
+### Packages
+This script will install on your machine all the required packages:
+```
+sh requirements.sh
+```
+
 
 ## Data Preparation and Preprocessing
 In this section we will explain how we annotated our own custom data and geneterated a lmdb file so it can fit into the model. We will go through the complete pipeline.
@@ -189,6 +199,6 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgwMTIyNTYzMSwtOTMyNzE5Mjk2LDExNj
-MxNzk5NTUsNzU4OTMzMzc2XX0=
+eyJoaXN0b3J5IjpbLTEwOTI0NzYzMjEsLTkzMjcxOTI5NiwxMT
+YzMTc5OTU1LDc1ODkzMzM3Nl19
 -->
