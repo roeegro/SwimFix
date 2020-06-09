@@ -32,18 +32,19 @@ We used Flask, a python web framework, to write the client side. This library en
 ### Routes File
 This is the most important module in the client side. It defines the web links of all the pages and binds them to the relevant html page (appears in templates directory). For each html page, there must be found a function in this .py file which looks as follows:
 
-    @app.route('/', methods=['GET', 'POST'])  
+    @app.route('/', methods=['GET', 'POST'])  # only for home page definition
     @app.route("/<page-name>", methods=['GET', 'POST'])  
     def page_name():
 		    <some code>  
            return render_template('page-name.html')
 
-The first line denotes that the next url address is the home page of the site, and it should be placed to this page only.
+The first line denotes that the next url address is the home page of the site, and it should be placed to this page only. The methods specify the type of requests supported in this page.
 The second line binds between the url address to the function below,
 Each function must return a redirection to some html page to be loaded in the browser.
 You can pass other arguments to the respective html code by specifying them as follows
 
     return render_template('page-name.html',param1 = argument1,...)
+Using this url
 
 > **Note**: Url address definition, function name and html page redirection returned in the end of the function name must be consistent, correlative and named by html and python conventions respectively.
 
@@ -57,9 +58,9 @@ You can pass other arguments to the respective html code by specifying them as f
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgzNDAwNjE2LC0xMTIyNDIxMTM5LC00Nz
-c4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYy
-NTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MS
-wtMjExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+eyJoaXN0b3J5IjpbLTMxNzI1MDk0MCwtMTEyMjQyMTEzOSwtND
+c3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2
+MjU3LC00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNz
+EsLTIxMTY2NDQ5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
 
 -->
