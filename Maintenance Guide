@@ -69,15 +69,16 @@ Using this arguments in the respective html code is done as follows
 ### Video Trimmer
 Dear Liron, complete this section please.
 
-### Test Generator
-A module for manual annotation of videos. A guide for user mode can be found at 
+### Test Generator (test_generator.py, test_generator.ui) 
+A module for manual annotation of videos. A guide for user mode can be found at this [link](https://github.com/roeegro/SwimFix/tree/master/client#add-test).
+This module is
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk1ODkxMjQ4LDU5MzQ1NjgyMiwtODQ5Nz
-Y4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAz
-NTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLT
-QyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjEx
-NjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+eyJoaXN0b3J5IjpbLTIwNTQzNzE1ODEsNTkzNDU2ODIyLC04ND
+k3NjgzNjEsLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0
+MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1Ny
+wtNDIwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0y
+MTE2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
