@@ -42,7 +42,7 @@ The first line denotes that it is the home page of the site,
 The second line binds between the url address to the function below,
 Each function must return a redirection to some html page to be loaded in the browser.
 
-**Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
+> **Note**: Url address, function name and html page name must be consistent and correlative and named by html and python conventions respe **only**. 
 
 
 ### Video Trimmer
@@ -52,9 +52,9 @@ Each function must return a redirection to some html page to be loaded in the br
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1MDQ3MjU1NzgsLTExMjI0MjExMzksLT
-Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
-NjI1NywtNDIwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MT
-cxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNd
-fQ==
+eyJoaXN0b3J5IjpbMzA3MjkxMjU4LC0xMTIyNDIxMTM5LC00Nz
+c4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYy
+NTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MS
+wtMjExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
+
 -->
