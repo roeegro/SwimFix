@@ -153,7 +153,7 @@ A -- COCO Annotator --> B
 B -- MATLAB --> C
 C -- Python Scripts --> D
 D -- OpenPose Train --> E
-E -- --> F
+E -- Training --> F
 ```
 
 ## Q&A
@@ -182,7 +182,7 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMDIxOTIxOTYsMjU1MDg2NzIyLDYwMT
-QyMzE1MiwyOTMyNTM5MzIsNDYzMzI0MzAyLDYzODg4MjMzNywx
-Njg4NjE4MDldfQ==
+eyJoaXN0b3J5IjpbLTY5OTU3NTI5NCwyNTUwODY3MjIsNjAxND
+IzMTUyLDI5MzI1MzkzMiw0NjMzMjQzMDIsNjM4ODgyMzM3LDE2
+ODg2MTgwOV19
 -->
