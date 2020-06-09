@@ -75,6 +75,7 @@ The cloned repositories are:
 - [openpose_train](https://github.com/tommarz/openpose_train) - The main training library.
 - [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) - Used by the main `openopose_train` library for the training of the model on the NVIDIA GPU.
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) - The annotation tool for our data.
+- 
 - [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
 
 All of the above will be clone into the `training` directory - this guide focuses on the first three.
@@ -186,24 +187,10 @@ graph LR
 |# `Check failed: error == cudaSuccess (2 vs. 0) out of memory` | During model training | Lower batch size (We lowered from 10 to 1 on 6GB GPU (NVIDIA RTX 2060 MSI)
 |`Could NOT find OpenSSL`| When installing CMake|[https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library)
 | `Could NOT find Atlas (missing: Atlas_CBLAS_INCLUDE_DIR)` | When building OpenPose with CMake |https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/305
-## Installation commands
-- Please install the following libraries:
-```
-sudo apt-get install \
-libprotobuf-dev=3.0.0-9.1ubuntu1 \
-libleveldb-dev=1.20-2 \
-libsnappy-dev=1.1.7-1 \
-libopencv-dev=3.2.0+dfsg-4ubuntu0.1 
-libhdf5-serial-dev=1.10.0-patch1+docs-4 \
-protobuf-compiler=3.0.0-9.1ubuntu1 \
-libboost-all-dev=1.65.1.0ubuntu1 \
-libatlas-base-dev=3.10.3-5 \
-python-numpy=1:1.13.3-2ubuntu1
-```
 
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNzc0MTg4NjUsLTkzMjcxOTI5NiwxMT
-YzMTc5OTU1LDc1ODkzMzM3Nl19
+eyJoaXN0b3J5IjpbMzk5NDE0MTMwLC05MzI3MTkyOTYsMTE2Mz
+E3OTk1NSw3NTg5MzMzNzZdfQ==
 -->
