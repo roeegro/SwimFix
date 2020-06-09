@@ -4,6 +4,8 @@
 ## Table of Contents
 1. [Introduction](#Introduction)
 2. [Client Side](#login)
+	* [Basic Explaination](#upload-video-to-the-server)
+	* [](#upload-video-to-the-server)
 3. [Register User](#register-user)
 4. [User Interface functionality](#user-interface-functionality)
 	* [Upload Video To The Server](#upload-video-to-the-server)
@@ -160,6 +162,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTY2NTQ5NTY4LC0yMTE2NjQ0OTk5LC0xMT
-UwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbLTk0NTEzNDE2MCwtMjExNjY0NDk5OSwtMT
+E1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
 -->
