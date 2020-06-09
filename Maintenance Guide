@@ -18,8 +18,8 @@
 	* [Evaluator Module](#)
 	* [File Management](#)
 	* [Configurations](#)
-5. [Adding Functionality](#)
-6. [Assimilation on New Hardware and run all](#)
+5. [Adding Functionality Schema](#)
+6. [Assimilation on New Hardware and Run All Program](#)
 
 ## Introduction
 Our system has 3 main parts. The first one is the training infrastructure.
@@ -82,7 +82,7 @@ The widgets, and their positions in the window is defined in .ui file, while the
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg3NjQxNzM0MSw1OTM0NTY4MjIsLTg0OT
+eyJoaXN0b3J5IjpbMjAyMDc2MTA0Miw1OTM0NTY4MjIsLTg0OT
 c2ODM2MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQw
 MzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC
 00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLTIx
