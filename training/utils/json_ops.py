@@ -8,6 +8,7 @@ openpose_train_path = "../openpose_train/"
 annotator_path = "../coco-annotator/"
 coco_skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10],
                  [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
+# new_img_id_map = {}
 
 '''
 Iterate over all the key value pairs in dictionary and call the given
@@ -50,20 +51,26 @@ def filter_json(json_path, filters, out_path=None, segmentation=True):
     filtered_imgs = [filter_dict(img, lambda elem: elem[0] in filters) for img in imgs]
     filtered_annots = [filter_dict(annot, lambda elem: elem[0] in filters) for annot in annots]
 
+    new_img_id_map = {img['id']: idx + 1 for (idx, img) in enumerate(filtered_imgs)}
+    dataset_dir = openpose_train_path + "dataset/COCO/cocoapi/images/custom"
+    filtered_imgs = [copy_rename_img(img, dataset_dir) for img in filtered_imgs]
+
     # Removing annotations with no key points and images with no annotations
     annos_to_rem = []
     imgs_to_rem = []
     for anno in filtered_annots:
         try:
-            kp = anno['keypoints']
             if segmentation and anno['area'] is 0:
                 print('removed img with id: ', anno['image_id'])
                 imgs_to_rem.append(anno['image_id'])
                 annos_to_rem.append(anno)
+            else:
+                kp = anno['keypoints']
         except Exception as e:
             print('removed img with id: ', anno['image_id'])
             imgs_to_rem.append(anno['image_id'])
             annos_to_rem.append(anno)
+
     filtered_imgs = list(filter(lambda img: img['id'] not in imgs_to_rem, filtered_imgs))
 
     # Updating the json
@@ -71,7 +78,6 @@ def filter_json(json_path, filters, out_path=None, segmentation=True):
     parsed['images'] = list(filter(lambda img: img['id'] in map(lambda anno: anno['image_id'], parsed['annotations']), filtered_imgs))
 
     # Remapping the images id so it would be 1 to N when N is the number of images
-    new_img_id_map = {img['id']: idx + 1 for (idx, img) in enumerate(filtered_imgs)}
     for img in parsed['images']:
         img['id'] = new_img_id_map[img['id']]
     # Fixing the annotations accordingly
@@ -98,6 +104,7 @@ def add_imgs_to_train_dataset(coco_json_path, dataset_dir):
 
 
 def copy_rename_img(img, dst_path):
+    # global new_img_id_map
     # print(img)
     img_id = img['id']
     img['file_name'] = '%012d' % img_id + ".jpg"
@@ -120,13 +127,15 @@ if __name__ == '__main__':
         shutil.rmtree(openpose_train_custom_dataset_path, ignore_errors=False, onerror=None)
         os.mkdir(openpose_train_custom_dataset_path)
 
+    raw_json_path = openpose_train_annots_path + "custom.json"
     filtered_json_path = openpose_train_annots_path + "person_keypoints_custom.json"
-    filter_json(openpose_train_annots_path + "custom.json",
+    filter_json(raw_json_path,
                 ['height', 'width', 'id', 'path', 'image_id', 'segmentation', 'bbox', 'keypoints',
                  "annotated", "file_name", "num_keypoints", "area", "iscrowd", "category_id"],
-                filtered_json_path)
-    #
+                filtered_json_path, True)
     add_imgs_to_train_dataset(filtered_json_path, openpose_train_custom_dataset_path)
 
+    json_field_len(raw_json_path, "images")
+    json_field_len(raw_json_path, "annotations")
     json_field_len(filtered_json_path, "images")
     json_field_len(filtered_json_path, "annotations")
