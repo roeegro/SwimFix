@@ -42,7 +42,9 @@ The first line denotes that it is the home page of the site,
 The second line binds between the url address to the function below,
 Each function must return a redirection to some html page to be loaded in the browser.
 
-> **Note**: Url address, function name and html page name must be consistent and correlative and named by html and python conventions respe **only**. 
+> **Note**: Url address definition, function name and html page redirection returned in the end of the function name must be consistent, correlative and named by html and python conventions respectively.
+
+ 
 
 
 ### Video Trimmer
@@ -52,7 +54,7 @@ Each function must return a redirection to some html page to be loaded in the br
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzA3MjkxMjU4LC0xMTIyNDIxMTM5LC00Nz
+eyJoaXN0b3J5IjpbNzk3MjU4MDc0LC0xMTIyNDIxMTM5LC00Nz
 c4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYy
 NTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MS
 wtMjExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
