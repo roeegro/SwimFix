@@ -32,7 +32,12 @@ We used Flask, a python web framework, to write the client side. This library en
 ### Routes File
 This is the most important module in the client side. It defines the web links of all the pages and binds them to the relevant html page (appears in templates directory). For each html page, there must be found a function in this .py file which looks as follows:
 
-    enter code here
+    @app.route('/', methods=['GET', 'POST'])  
+    @app.route("/<page-name>", methods=['GET', 'POST'])  
+    def page_name():  
+           return render_template('page-name.html')
+
+
 
 ### Video Trimmer
 
@@ -41,8 +46,9 @@ This is the most important module in the client side. It defines the web links o
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNj
-gzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDcz
-MjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OT
-k5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbLTExMzczMzAyMTIsLTExMjI0MjExMzksLT
+Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
+NjI1NywtNDIwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MT
+cxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNd
+fQ==
 -->
