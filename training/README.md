@@ -57,7 +57,7 @@ Make sure you have those and before continuing:
         - Ubuntu 18 ([**cuDNN 7.5**](https://developer.nvidia.com/cudnn)): Download and install it from the [Nvidia website](https://developer.nvidia.com/cudnn).
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
--  Python 3.6
+- Python 3.6 **and** 2.7
 -  Docker (For [Data Annotation](#step-1---data-annotation))
 - Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
 
@@ -94,7 +94,7 @@ At the end of this step you should have:
 ### Step 2 - Data Filtering and Re-indexing
 In this section we will filter out some data and update the corresponding annotations JSON file accordingly.
 
-Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `json_ops.py`
+Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `python3 json_ops.py`
 
 By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs these operations on the `custom.json` annotations file in the following order:
 1) Deletes redundant fields from the json structure.
@@ -117,7 +117,7 @@ By the end of this step you should have a `coco_negatives.json` and `custom.json
 ### Step 4 - LMDB File Generation
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
-- To generate the lmdb file, run  `python c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
+- To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
 - We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
 >**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
@@ -189,5 +189,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzU4OTMzMzc2XX0=
+eyJoaXN0b3J5IjpbMjAxODQ3NzMxMSw3NTg5MzMzNzZdfQ==
 -->
