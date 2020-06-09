@@ -4,7 +4,7 @@
 ## Table of Contents
 1. [Introduction](#Introduction)
 2. [Client Side](#login)
-	* [Basic Explanation](#upload-video-to-the-server)
+	* [Adding](#upload-video-to-the-server)
 	* [](#upload-video-to-the-server)
 3. [Register User](#register-user)
 4. [User Interface functionality](#user-interface-functionality)
@@ -24,7 +24,7 @@ The other 2 parts are used for the SwimFix web application and they include a we
 <Join here project hierarchy chart>
 
 
-### Login
+## Client Side
 Login to the system is done by entering username and password and pressing on the Login button as seen in the picture:
 **![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)**
 In case a user is not registered in the system- pressing the blue link below the Login button will redirect you to the Registration page (next page).
@@ -163,6 +163,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NDIzMTkxNzEsLTIxMTY2NDQ5OTksLT
-ExNTA1NTIwODgsLTMzMjQ1NTM2M119
+eyJoaXN0b3J5IjpbMjc2MzA0MTk1LC0xNzQyMzE5MTcxLC0yMT
+E2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
