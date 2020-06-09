@@ -71,12 +71,13 @@ Dear Liron, complete this section please.
 
 ### Test Generator (test_generator.py, test_generator.ui) 
 A module for manual annotation of videos. A guide for user mode can be found at this [link](https://github.com/roeegro/SwimFix/tree/master/client#add-test).
-This module is
+This module uses PyQt5 python package which useful for GUI applications.
+
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNTQzNzE1ODEsNTkzNDU2ODIyLC04ND
+eyJoaXN0b3J5IjpbLTIwNDE1NzQyNDAsNTkzNDU2ODIyLC04ND
 k3NjgzNjEsLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0
 MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1Ny
 wtNDIwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0y
