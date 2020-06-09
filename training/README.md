@@ -57,9 +57,9 @@ Make sure you have those and before continuing:
         - Ubuntu 18 ([**cuDNN 7.5**](https://developer.nvidia.com/cudnn)): Download and install it from the [Nvidia website](https://developer.nvidia.com/cudnn).
         - In order to manually install it (any version), just unzip it and copy (merge) the contents on the CUDA folder, usually `/usr/local/cuda/` in Ubuntu and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0` in Windows.
 - OpenCV must be already installed on your machine. It can be installed with `sudo apt-get install libopencv-dev`. You can also use your own compiled OpenCV version.
-- Python 3.6 **and** 2.7
--  Docker (For [Data Annotation](#step-1---data-annotation))
-- Matlab R2019a (For [Data Augmentation](#step-3---data-augmentation)) 
+- Python 3.6 (for our scripts) **and** 2.7 (for scripts from the original training repository)
+-  Docker (for [Data Annotation](#step-1---data-annotation))
+- Matlab R2019a (for [Data Augmentation](#step-3---data-augmentation)) 
 
 ## Required Third-Party Repositories
 Before we get started, please run this in order to clone the required third party git repositories which we will use:
@@ -134,7 +134,7 @@ In this section we will walk through the training process, assuming you followed
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
 2) Generate the training model:
 	- Go to the `training` directory
-	- Generate the Caffe ProtoTxt and shell file for training by running  `python d_setLayers.py`. We strongly recommend you to stick with the our configuration as this was the [only](#a-very-important-note-before-we-start) one that worked for us. In case you wish to change it, please check the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/blob/master/training/README.md) training instructions for more details.  
+	- Generate the Caffe ProtoTxt and shell file for training by running  `python2 d_setLayers.py`. We strongly recommend you to stick with the our configuration as this was the [only](#a-very-important-note-before-we-start) one that worked for us. In case you wish to change it, please check the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/blob/master/training/README.md) training instructions for more details.  
 	   
 3) Pre-trained weights setup:
 	- Create a new directory `dataset/vgg/`
@@ -189,5 +189,5 @@ python-numpy=1:1.13.3-2ubuntu1
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAxODQ3NzMxMSw3NTg5MzMzNzZdfQ==
+eyJoaXN0b3J5IjpbMTE2MzE3OTk1NSw3NTg5MzMzNzZdfQ==
 -->
