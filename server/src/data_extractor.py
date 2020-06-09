@@ -259,7 +259,7 @@ def get_keypoints_csv_from_video(video_path, params):
         if not check:
             break
         resized_frame = cv2.resize(frame, (600, 480), fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
-        cv2.imwrite(swimfix_annotated_frames + '/swimfix_annotated_frame_{}.jpg'.format(frame_counter),resized_frame)
+        cv2.imwrite(swimfix_annotated_frames + '/swimfix_annotated_frame_{}.jpg'.format(frame_counter), resized_frame)
         # emplace keypoints
         datum.cvInputData = resized_frame
         opWrapper.emplaceAndPop([datum])
@@ -291,9 +291,10 @@ def get_keypoints_csv_from_video(video_path, params):
                 frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 1]])])
             else:
                 invalid_frames_df = pd.concat(
-                    [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts_columns, data=[[frame_counter] +
-                                                                                                          ([np.nan] * len(
-                                                                                                              body_parts_columns))])],
+                    [invalid_frames_df,
+                     pd.DataFrame(columns=['Frame Number'] + body_parts_columns, data=[[frame_counter] +
+                                                                                       ([np.nan] * len(
+                                                                                           body_parts_columns))])],
                     sort=False)
                 frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 0]])])
         else:
@@ -456,42 +457,55 @@ def neck_estimator(df, intervals_per_body_part):
             df['NeckY'][index] = (df['LShoulderY'][index] + df['RShoulderY'][index]) / 2
     # after calculation of mean shoulders exhaustively, we want to take
     # average location of each shoulder and neck and try to use the distance of one shoulder from mean location.
+
     for interval in intervals_per_body_part['LShoulder']:
         interval_df = df.loc[interval['start']:interval['end'], :]
-        mean_l_shoulder_x = interval_df['LShoulderX'].mean()
-        mean_l_shoulder_y = interval_df['LShoulderY'].mean()
-        mean_neck_x = interval_df['NeckX'].mean()
-        mean_neck_y = interval_df['NeckY'].mean()
-        for index, frame in interval_df.iterrows():
-            if math.isnan(interval_df['NeckX'][index]):
-                if not math.isnan(df['LShoulderX'][index]) and math.isnan(
-                        df['RShoulderX'][index]):  # Only left shoulder is known
-                    epsilon_x = mean_l_shoulder_x - df['LShoulderX'][index]
-                    epsilon_y = mean_l_shoulder_y - df['LShoulderY'][index]
-                    df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
-                    df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
-                else:
-                    continue
-            else:
-                continue
+        interval_df['NeckX'].interpolate(method='linear', limit_direction='forward', axis=0, inplace=True)
+        interval_df['NeckY'].interpolate(method='linear', limit_direction='forward', axis=0, inplace=True)
+        df.loc[interval['start']:interval['end'], :] = interval_df
+
     for interval in intervals_per_body_part['RShoulder']:
         interval_df = df.loc[interval['start']:interval['end'], :]
-        mean_r_shoulder_x = interval_df['RShoulderX'].mean()
-        mean_r_shoulder_y = interval_df['RShoulderY'].mean()
-        mean_neck_x = interval_df['NeckX'].mean()
-        mean_neck_y = interval_df['NeckY'].mean()
-        for index, frame in interval_df.iterrows():
-            if math.isnan(interval_df['NeckX'][index]):
-                if math.isnan(df['LShoulderX'][index]) and not math.isnan(
-                        df['RShoulderX'][index]):  # Only right shoulder is known
-                    epsilon_x = mean_r_shoulder_x - df['RShoulderX'][index]
-                    epsilon_y = mean_r_shoulder_y - df['RShoulderY'][index]
-                    df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
-                    df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
-                else:
-                    continue
-            else:
-                continue
+        interval_df['NeckX'].interpolate(method='linear', limit_direction='forward', axis=0, inplace=True)
+        interval_df['NeckY'].interpolate(method='linear', limit_direction='forward', axis=0, inplace=True)
+        df.loc[interval['start']:interval['end'], :] = interval_df
+
+    # for interval in intervals_per_body_part['LShoulder']:
+    #     interval_df = df.loc[interval['start']:interval['end'], :]
+    #     mean_l_shoulder_x = interval_df['LShoulderX'].mean()
+    #     mean_l_shoulder_y = interval_df['LShoulderY'].mean()
+    #     mean_neck_x = interval_df['NeckX'].mean()
+    #     mean_neck_y = interval_df['NeckY'].mean()
+    #     for index, frame in interval_df.iterrows():
+    #         if math.isnan(interval_df['NeckX'][index]):
+    #             if not math.isnan(df['LShoulderX'][index]) and math.isnan(
+    #                     df['RShoulderX'][index]):  # Only left shoulder is known
+    #                 epsilon_x = mean_l_shoulder_x - df['LShoulderX'][index]
+    #                 epsilon_y = mean_l_shoulder_y - df['LShoulderY'][index]
+    #                 df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
+    #                 df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
+    #             else:
+    #                 continue
+    #         else:
+    #             continue
+    # for interval in intervals_per_body_part['RShoulder']:
+    #     interval_df = df.loc[interval['start']:interval['end'], :]
+    #     mean_r_shoulder_x = interval_df['RShoulderX'].mean()
+    #     mean_r_shoulder_y = interval_df['RShoulderY'].mean()
+    #     mean_neck_x = interval_df['NeckX'].mean()
+    #     mean_neck_y = interval_df['NeckY'].mean()
+    #     for index, frame in interval_df.iterrows():
+    #         if math.isnan(interval_df['NeckX'][index]):
+    #             if math.isnan(df['LShoulderX'][index]) and not math.isnan(
+    #                     df['RShoulderX'][index]):  # Only right shoulder is known
+    #                 epsilon_x = mean_r_shoulder_x - df['RShoulderX'][index]
+    #                 epsilon_y = mean_r_shoulder_y - df['RShoulderY'][index]
+    #                 df['NeckX'][index] = mean_neck_x + (epsilon_x / 2)
+    #                 df['NeckY'][index] = mean_neck_y + (epsilon_y / 2)
+    #             else:
+    #                 continue
+    #         else:
+    #             continue
 
 
 def try_extend_intervals_by_side(df, interval_list_per_hand, side):
@@ -754,13 +768,14 @@ def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys
             df_to_show.loc[[frame], left_side_columns] = np.nan
 
 
-
-
 if __name__ == '__main__':
-    op_row_path = '<Enter some path to all_keypoints.csv file>'
-    expected_path = os.getcwd() + '<Enter some path to ground truth file (Server/expected_data/csvs/csv file>'
+    op_row_path = os.getcwd() + '/all_keypoints.csv'
+    # expected_path = os.getcwd() + '<Enter some path to ground truth file (Server/expected_data/csvs/csv file>'
+    # interp_path = filter_and_interpolate(op_row_path,
+    #                                      output_path='<can be deleted or put some path to generate output to.>',filename='new_interpolated')
+
     interp_path = filter_and_interpolate(op_row_path,
-                                         output_path='<can be deleted or put some path to generate output to.>')
+                                         output_path=os.getcwd(), filename='new_interpolated')
     import visualizer
-    visualizer.plot_multi_graphs_from_other_csvs([interp_path, op_row_path],
-                                                 '<can be deleted or put some path to generate output to.>')
+    # visualizer.plot_multi_graphs_from_other_csvs([interp_path, op_row_path],
+    #                                              '<can be deleted or put some path to generate output to.>')
