@@ -4,16 +4,15 @@
 ## Table of Contents
 1. [Introduction](#Introduction)
 2. [Client Side](#login)
-	* [Running Web Client](#upload-video-to-the-server)
 	* [Supported Functionality](#upload-video-to-the-server)
 	* [Adding Features](#upload-video-to-the-server)
 	* [File Management](#upload-video-to-the-server)
 3. [Server Side](#register-user)
-	* [Running Server](#upload-video-to-the-server)
 	* [Supported Functionality](#upload-video-to-the-server)
 	* [Adding Features](#upload-video-to-the-server)
 	* [File Management](#upload-video-to-the-server)
 	* [Configurations](#upload-video-to-the-server)
+4. [Assimilation on New Hardware](#register-user)
 
 ## Introduction
 Our system has 3 main parts. The first one is the training infrastructure.
@@ -163,6 +162,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjcwNzE0Mzc4LC0xNzQyMzE5MTcxLC0yMT
-E2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbMjEyMDIyNDU4NSwtMTc0MjMxOTE3MSwtMj
+ExNjY0NDk5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
 -->
