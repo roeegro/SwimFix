@@ -41,10 +41,9 @@ We created a training infrastructure for training your own custom model on your 
 For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) out.
 
 > **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
-## Results
-In this section we will showcase some of our results.
+## System Architecture
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjIxMTEyOTM3LC0xNzY3NDc5NDkzLDE0Nj
+eyJoaXN0b3J5IjpbNzQ2NTY2Mzg1LC0xNzY3NDc5NDkzLDE0Nj
 MzMjA5NywtMTUxMzIwMDA3LDY3MzI5ODM1LC04MjEwMTk5NTAs
 MTI2OTM0Njk1MSwxOTM1NDgyMzA2LDE1MDAzNDI5NzgsLTM5MD
 M3NDc4MywxMjM4ODU2MTA0XX0=
