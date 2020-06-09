@@ -41,6 +41,7 @@ We created a training infrastructure for training your own custom model on your 
 For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) out.
 
 > **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
+
 ## System Architecture
 ```mermaid
 graph LR
@@ -49,14 +50,10 @@ B[Server]
 C((OpenPose))
 D((OpenPose Training))
 
-
-
-A -- Inference --> B
-A -- Test --> B
-C -- Deploy --> B
+A -- Model Testing --> B
+A -- Front Crawl Evaluation --> B
+B -- Inference --> C
+D -- Deploy Model --> C
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3OTYwNjI5MzksLTEyMTc0NTY2ODcsLT
-E3Njc0Nzk0OTMsMTQ2MzMyMDk3LC0xNTEzMjAwMDcsNjczMjk4
-MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUxLDE5MzU0ODIzMDYsMT
-UwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMzg4NTYxMDRdfQ==
+eyJoaXN0b3J5IjpbLTEzNzQ1NDkyMDBdfQ==
 -->
