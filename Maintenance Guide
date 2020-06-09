@@ -16,7 +16,9 @@
 ## Introduction
 Our system has 3 main parts. The first one is the infrastructure for optimize OpenPose library perfomance by training its model. For more details, [click here](https://github.com/roeegro/SwimFix/tree/master/training).
 
-The other 2 parts are used for 
+The other 2 parts are used for the SwimFix web application and they include a web client part and a server for analysis and evaluation. Both parts written in Python and connect each other by TCP conneciton.
+
+<Include here project hierarchy char>
 
 ### Login
 Login to the system is done by entering username and password and pressing on the Login button as seen in the picture:
@@ -157,6 +159,6 @@ You will have for each frame number the X and Y coordinated for each body part m
 eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcyNTAxMjQxLC0yMTE2NjQ0OTk5LC0xMT
-UwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbLTEzNjc0NDE2MywtMjExNjY0NDk5OSwtMT
+E1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
 -->
