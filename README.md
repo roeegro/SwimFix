@@ -27,8 +27,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
 - **Training**:  Train your own model on your own data.
  
- <p align="center">
-    <img src="https://github.com/roeegro/SwimmingProject/blob/master/client/src/static/img/8027.gif", width="480"></p>
+>TODO: put a video in here
     
 ## Web Client
 Our client-side consists of a Flask based web client
@@ -45,8 +44,8 @@ For more information about it and a guide how to set it up and use it, please ch
 ## Results
 In this section we will showcase some of our results.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3Njc0Nzk0OTMsMTQ2MzMyMDk3LC0xNT
-EzMjAwMDcsNjczMjk4MzUsLTgyMTAxOTk1MCwxMjY5MzQ2OTUx
-LDE5MzU0ODIzMDYsMTUwMDM0Mjk3OCwtMzkwMzc0NzgzLDEyMz
-g4NTYxMDRdfQ==
+eyJoaXN0b3J5IjpbMjIxMTEyOTM3LC0xNzY3NDc5NDkzLDE0Nj
+MzMjA5NywtMTUxMzIwMDA3LDY3MzI5ODM1LC04MjEwMTk5NTAs
+MTI2OTM0Njk1MSwxOTM1NDgyMzA2LDE1MDAzNDI5NzgsLTM5MD
+M3NDc4MywxMjM4ODU2MTA0XX0=
 -->
