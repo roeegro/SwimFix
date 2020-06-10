@@ -89,17 +89,19 @@ Handling those requests in server side are described in this section < link >
 
 ## Server Side
 
-In this side we are getting requests from the cli
+The main responsibilities of the server is : 
+* Parsing requests from client side. See < Link to parser >
+* 
 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTMyMjQwNzQ1LC01ODI2OTc2MjQsMjA2NT
-k5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEs
-LTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNj
-gzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDcz
-MjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OT
-k5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbMTA5NTIwMzA1MiwtNTgyNjk3NjI0LDIwNj
+U5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5NzY4MzYx
+LC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAzNTIsLT
+Y4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLTQyMDQ3
+MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjExNjY0ND
+k5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
 -->
