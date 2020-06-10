@@ -109,18 +109,18 @@ The parser takes the first word in the request, and redirect the request to the 
       'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,  
       'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
 
-
-
+### Facade Module
+This module is an API of server's functionality, so each function in this module
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NT
-QyMzk3NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIz
-MiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMj
-gwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEy
-MjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC
-0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0x
-MTUwNTUyMDg4XX0=
+eyJoaXN0b3J5IjpbMTg1MzUxMjA3MCwtODMyNjYzMDcsMTIyNz
+YyODA0MCwxNjc1NDIzOTc0LC0xNzYxNjc2MDQsLTU4MjY5NzYy
+NCwyMDY1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4MjIsLTg0OT
+c2ODM2MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQw
+MzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC
+00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLTIx
+MTY2NDQ5OTldfQ==
 -->
