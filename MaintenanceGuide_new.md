@@ -3,9 +3,9 @@
 
 ## Table of Contents
 1. [Introduction](#Introduction)
-2. [Client Side](#Client Side)
-	* [Routes File](#Routes File)
-	* [Gui Utils](#Routes File)
+2. [Client Side](#)
+	* [Routes File](#)
+	* [Gui Utils](#)
 	* [Directory Management](#)
 	* [Video Trimmer](#)
 	* [Test Generator](#)
@@ -17,6 +17,7 @@
 	* [Data_Analyser Module](#)
 	* [Visualizer Module](#)
 	* [Evaluator Module](#)
+	*  [File Management](#)
 5. [Adding Functionality Schema](#)
 6. [Assimilation on New Hardware and Run All Program](#)
 
@@ -224,8 +225,8 @@ For this guide, we will call our new functionality new_functionality:
 7. According to your needs, feel free to add new functionalities for other modules existing in the project.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTQ2MjEzNjk3LDEwMzI2NzEwMDYsMjE0Mz
-A4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2NiwxMTQzMTk4NTA2
-LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMj
-AyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbMjEyMzIwMzU0OCwxMDMyNjcxMDA2LDIxND
+MwODkwMDUsMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMTE0MzE5ODUw
+NiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgzODksLT
+IwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
 -->
