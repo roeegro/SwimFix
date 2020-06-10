@@ -110,17 +110,20 @@ The parser takes the first word in the request, and redirect the request to the 
       'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
 
 ### Facade Module
-This module is an API of server's functionality, so each function in this module supplies abstraction of levels in data processing. For example the function `get_angles_csv_from_keypoints_csv` takes csv file with all coordinates of body part and generate csv file with angles 
+This module is an API of server's functionality, so each function in this module supplies abstraction of levels in data processing. For example the function `get_angles_csv_from_keypoints_csv` takes csv file with all coordinates of body part and generate csv file with angles by generate vector file, then evaluates the angles from the vector file.
+
+### Data_Extractor Module
+A module 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMTYxNTk2MzgsNDgwMDYzMDI0LC04Mz
-I2NjMwNywxMjI3NjI4MDQwLDE2NzU0MjM5NzQsLTE3NjE2NzYw
-NCwtNTgyNjk3NjI0LDIwNjU5OTkyMzIsMTA4MDc0NDUyLDU5Mz
-Q1NjgyMiwtODQ5NzY4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIx
-MTM5LC00Nzc4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC
-0yNTkxMTYyNTcsLTQyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0
-MjMxOTE3MV19
+eyJoaXN0b3J5IjpbNzg4MDM5MDMyLDQ4MDA2MzAyNCwtODMyNj
+YzMDcsMTIyNzYyODA0MCwxNjc1NDIzOTc0LC0xNzYxNjc2MDQs
+LTU4MjY5NzYyNCwyMDY1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NT
+Y4MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEz
+OSwtNDc3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMj
+U5MTE2MjU3LC00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIz
+MTkxNzFdfQ==
 -->
