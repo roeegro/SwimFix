@@ -85,17 +85,17 @@ This module has 3 main parts: accessors to the widgets objects, events (for butt
 ### Requests Format
 In order to connect to the server, TCP connection is handled for each request. There are different types of requests but they all have the same general format.
 < Request Type > (< parameter name >: < argument name >)*
-Handling those
+Handling those requests in server side are described in this section < link >
 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MzMzOTIyODYsLTU4MjY5NzYyNCwyMD
-Y1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2
-MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQwMzUyLC
-02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC00MjA0
-NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLTIxMTY2ND
-Q5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
+eyJoaXN0b3J5IjpbMTYwMDM2ODQyNiwtNTgyNjk3NjI0LDIwNj
+U5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5NzY4MzYx
+LC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAzNTIsLT
+Y4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLTQyMDQ3
+MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjExNjY0ND
+k5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
 -->
