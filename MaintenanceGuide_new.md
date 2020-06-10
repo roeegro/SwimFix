@@ -206,10 +206,12 @@ Each specific upload contains the following folders:
 				 
 ## Adding Functionality Schema
 
-This is the 0-stage system for swimming technique fix, and you might add new functionality to the system. For this purpose, this guide supplies a simple schema for adding new functionality supported by both client and server side. Follow this steps carefully and everything will be g
+This is the 0-stage system for swimming technique fix, and you might add new functionality to the system. For this purpose, this guide supplies a simple schema for adding new functionality supported by both client and server side. Follow this steps carefully and everything will be great :)
+
+1. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODc0NzgxMjc3LDM2NDc1NTc2NiwxMTQzMT
-k4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4
-OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ
-==
+eyJoaXN0b3J5IjpbMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMTE0Mz
+E5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgz
+ODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX
+0=
 -->
