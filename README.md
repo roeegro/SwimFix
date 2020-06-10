@@ -17,9 +17,9 @@ The system takes as input a video of swimming in a front crawl setting and outpu
     - **2D real-time multi-person keypoint detection**:
         - 18 keypoint body keypoint estimation based on the OpenPose library.
     - **Performance evaluation** of the swimmer:
-	    - Error detection 
+	    - Error detection
 	    - Manuel error annotation
-    - **Analytical extraction** of the swimmer's pose in each frame of the video:
+    - **Visualization** of the swimmer's pose in each frame of the video:
 		- Graphs of the keypoints' coordinates
 		- Graphs of the angles of the swimmer's shoulder/elbows/wrists
     - **Model Testing and Evaluation**
@@ -64,6 +64,6 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzk1OTQ2MjUxLDg5MDExODQwNiwtMTM3ND
-U0OTIwMF19
+eyJoaXN0b3J5IjpbMTc2NzQ2NTc3NiwzOTU5NDYyNTEsODkwMT
+E4NDA2LC0xMzc0NTQ5MjAwXX0=
 -->
