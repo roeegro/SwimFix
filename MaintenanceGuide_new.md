@@ -227,10 +227,11 @@ For this guide, we will call our new functionality new_functionality:
 ## Assimilation on New Hardware and Run All Program
 
 
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODUwMjUwMTMxLC0xOTg4OTAzNjMwLDEwMz
-I2NzEwMDYsMjE0MzA4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2
-NiwxMTQzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLT
-czNzY1ODM4OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0
-OTQzNzldfQ==
+eyJoaXN0b3J5IjpbLTEyMTQ3OTE5MzUsODUwMjUwMTMxLC0xOT
+g4OTAzNjMwLDEwMzI2NzEwMDYsMjE0MzA4OTAwNSwxNjU3MzQ1
+NjM5LDM2NDc1NTc2NiwxMTQzMTk4NTA2LC0xMjczMTAzNDcxLD
+ExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2NDY5MywyNjQ4
+NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
