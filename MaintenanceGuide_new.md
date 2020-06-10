@@ -208,11 +208,13 @@ Each specific upload contains the following folders:
 
 This is a 0-stage system for swimming technique fix, and you might add new functionality to the system. For this purpose, this guide supplies a simple schema for adding new functionality supported by both client and server side. Follow this steps carefully and everything will be great :)
 For this guide, we will call our new functionality new_functionality:
+>**Assumption**: We create an empty page without any extra-ordinary feature. 
+
 1. In client/src/templates, create new-functionality.html.
 2. In client/src/routes.py create function with the format shown here < routes link>
-3.  In 
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDk4OTY5NjAzLDE2NTczNDU2MzksMzY0Nz
+eyJoaXN0b3J5IjpbLTU2ODM4Nzc4LDE2NTczNDU2MzksMzY0Nz
 U1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2
 NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMT
 M3ODQ5NDM3OV19
