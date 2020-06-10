@@ -162,6 +162,8 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 	> Function name : check_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 
+
+
 ### File Management
  
 The server side includes some directories for files management.
@@ -229,16 +231,17 @@ For this guide, we will call our new functionality new_functionality:
 We run the system with specific computer as server and with specific database which its schema defines as follows:
 < link to erd figure>
 For running the system on your own device:
-1. Make sure your server computer has the prerequisites for [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)  
+1. Make sure your server computer has the prerequisites for [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
 2. In server/main.py - change HOST to be your server IP address.
 3. In client/src/__ init __ - change SERVER_HOST to be your server IP address.
 4. Change in run file in client/src line "app.run(host=127.0.0.1,debug=False)
 5. For server side activation: from server/src, run "python main.py"
-6. For client side activation:
+6. For client side activation: execute run.py.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ4Nzg3ODU4OSwtNTcyNjUyMzM2LDg1MD
-I1MDEzMSwtMTk4ODkwMzYzMCwxMDMyNjcxMDA2LDIxNDMwODkw
-MDUsMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMTE0MzE5ODUwNiwtMT
-I3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1
-NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbMjAxMDEzOTQ2NiwtNDg3ODc4NTg5LC01Nz
+I2NTIzMzYsODUwMjUwMTMxLC0xOTg4OTAzNjMwLDEwMzI2NzEw
+MDYsMjE0MzA4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2NiwxMT
+QzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1
+ODM4OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNz
+ldfQ==
 -->
