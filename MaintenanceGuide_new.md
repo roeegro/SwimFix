@@ -215,11 +215,12 @@ For this guide, we will call our new functionality new_functionality:
 3. You can help some other function in routes in order to write code sending message to the server, with the following format: < new_request_type > ...
 
 #### from server side:
-4. 
+4. Go to client_request_parser.py file and add in the dictionary in the bottom of the page an entry with 'new_request_type': new_functionality.
+5. Create in the same page function named new_functionality that recieves all 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjE0MzA4OTAwNSwxNjU3MzQ1NjM5LDM2ND
-c1NTc2NiwxMTQzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDcz
-NjQsLTczNzY1ODM4OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLT
-EzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbLTEyODEwMzc4ODMsMjE0MzA4OTAwNSwxNj
+U3MzQ1NjM5LDM2NDc1NTc2NiwxMTQzMTk4NTA2LC0xMjczMTAz
+NDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2NDY5My
+wyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
