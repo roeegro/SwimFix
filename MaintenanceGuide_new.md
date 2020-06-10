@@ -183,11 +183,12 @@ Auto generated directory that holds all test results, based on tester module exe
 The directory structure is as follows:
 * Video name
 	* frames - directory that contains the frames with OpenPose annotations.
-	* ground_truth_data - di
+	* ground_truth_data - directory that contains csvs based on csv files appears in excepted < link >.
+	* test results - directory contains csvs comparing the same colum 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkwNDc5MjEyNCwxMTQzMTk4NTA2LC0xMj
-czMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2
-NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbLTIwNTM5NDQ2NzgsMTE0MzE5ODUwNiwtMT
+I3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1
+NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
 -->
