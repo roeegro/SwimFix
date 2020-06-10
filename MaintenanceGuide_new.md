@@ -165,9 +165,10 @@ The server side includes some directories for files management.
 each video sent to the server is stored in this directory for future use of the developers.
 
 #### temp
-Stores files
+Stores zip files containing relevant content for user's request. Those files sent to the client side and stored in the temp < link> directory in the client side.
+#### 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ2MjY3MzIwMywtNzM3NjU4Mzg5LC0yMD
+eyJoaXN0b3J5IjpbMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMD
 IwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
 -->
