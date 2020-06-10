@@ -128,7 +128,7 @@ Those are the columns:
 `[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	This is the second stage in analysis process. TTakes the path to all key points extracted in the function above.
+	This is the second stage in analysis process. This function takes the path to all key points extracted in the function above, and returns a path to csv file generated in the function, includes the vectors
 
 4. `generate_vectors_csv`
 	Generates all vectors defined by the key points defined
@@ -141,7 +141,7 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwMTMwNjA5NzcsLTgxMzg0MTc1OSw0OD
+eyJoaXN0b3J5IjpbLTE3NzM5NjQ1NDksLTgxMzg0MTc1OSw0OD
 AwNjMwMjQsLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NTQyMzk3
 NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMD
 gwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkz
