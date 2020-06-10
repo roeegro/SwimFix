@@ -229,13 +229,14 @@ For this guide, we will call our new functionality new_functionality:
 We run the system with specific computer as server and with specific database which its schema defines as follows:
 < link to erd figure>
 For running the system on your own device:
-1. Make sure your computer has the prerequisites for [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)  
-2. In server/main.py - change HOST to be your ipv4 address.
-3. 
+1. Make sure your server computer has the prerequisites for [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)  
+2. In server/main.py - change HOST to be your server IP address.
+3. In client/src/__init__ - change SERVER_HOST to be your server IP address.
+4. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk0ODA3NTYwLDg1MDI1MDEzMSwtMTk4OD
-kwMzYzMCwxMDMyNjcxMDA2LDIxNDMwODkwMDUsMTY1NzM0NTYz
-OSwzNjQ3NTU3NjYsMTE0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMT
-IyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1NjQ2OTMsMjY0ODcx
-NTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbLTEzNTc4MDY2ODQsODUwMjUwMTMxLC0xOT
+g4OTAzNjMwLDEwMzI2NzEwMDYsMjE0MzA4OTAwNSwxNjU3MzQ1
+NjM5LDM2NDc1NTc2NiwxMTQzMTk4NTA2LC0xMjczMTAzNDcxLD
+ExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2NDY5MywyNjQ4
+NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
