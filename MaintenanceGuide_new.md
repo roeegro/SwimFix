@@ -144,6 +144,10 @@ Those are the columns:
 ### Data_Analyser Module
 
 This module should be operated after all stages in data_extractor are finished, This module should calculate advanced measures derived from the coordinates, vectors and angles csv files generated before.
+This module is able to calculate:
+*  Average time period
+* Average angle for each angle.
+* Count how many frames were detected 
 
  
  
@@ -151,5 +155,5 @@ This module should be operated after all stages in data_extractor are finished, 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbMjAwNjcwOTY3MSwtMTM3ODQ5NDM3OV19
 -->
