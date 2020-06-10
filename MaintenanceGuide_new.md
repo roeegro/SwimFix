@@ -156,9 +156,9 @@ This module is able to calculate:
 This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module, in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
 At the bottom of the module there is a dictionary that binds between the errors description in the function that detects this error, and the main function of this module runs over this dictionary and activate each function with the paths specified above.
 The effect of this module is 2 csv files. The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected.
-> **Note**: Each function name must be named as follows:
+> **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
 	> check_<error description with underscores between words>
-	Description match to this error must be .
+	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 
 ### File Management
  
@@ -195,7 +195,7 @@ Directory for future use, where one python function files would be store here. F
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ3OTY2NTczMiwxMTQzMTk4NTA2LC0xMj
+eyJoaXN0b3J5IjpbMTcxNjMxOTQ5OCwxMTQzMTk4NTA2LC0xMj
 czMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2
 NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
