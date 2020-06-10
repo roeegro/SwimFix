@@ -149,7 +149,8 @@ This module is able to calculate:
 * Average angle for each angle.
 
 ### Visualizer
- 
+ This module plot figures derived from csvs generated in other module.
+ In each function in this module, you can control the output file name, the location of this file, which colu
 
  ### Evaluator Module
 
@@ -159,6 +160,6 @@ This module is able to calculate:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMz
-c4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbLTE1NTQ3Nzk1ODYsLTIwMjA1NjQ2OTMsMj
+Y0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
 -->
