@@ -137,7 +137,7 @@ Those are the columns:
 	This csv contains rows for each frame, and columns describes the vectors by X,Y coordinates.
 	As shown in the skeleton image, the vectors we looks for are: right chest, left chest, right arm, left arm, right forearm, left forearm. The columns format is similar to the format described in the first function in this module.
 
-4. `generate_angles_csv` The last s
+4. `generate_angles_csv` The last 
 
 
 
@@ -147,11 +147,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc1MzkwNTk3NSwtNTM0MDE5MDQ4LC0xNz
-czOTY0NTQ5LC04MTM4NDE3NTksNDgwMDYzMDI0LC04MzI2NjMw
-NywxMjI3NjI4MDQwLDE2NzU0MjM5NzQsLTE3NjE2NzYwNCwtNT
-gyNjk3NjI0LDIwNjU5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1Njgy
-MiwtODQ5NzY4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC
-00Nzc4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkx
-MTYyNTddfQ==
+eyJoaXN0b3J5IjpbLTQ1MzgwNjM2OCwtNzUzOTA1OTc1LC01Mz
+QwMTkwNDgsLTE3NzM5NjQ1NDksLTgxMzg0MTc1OSw0ODAwNjMw
+MjQsLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NTQyMzk3NCwtMT
+c2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0
+NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLT
+ExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4
+ODQxNjldfQ==
 -->
