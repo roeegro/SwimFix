@@ -216,11 +216,11 @@ For this guide, we will call our new functionality new_functionality:
 
 #### from server side:
 4. Go to client_request_parser.py file and add in the dictionary in the bottom of the page an entry with 'new_request_type': new_functionality.
-5. Create in the same page function named new_functionality that recieves all 
+5. Create in the same page function named new_functionality that receives all the parameters that the other functions in this page got. You can use those functions to create a code snippet that receives files from client (if you have to), or
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyODEwMzc4ODMsMjE0MzA4OTAwNSwxNj
-U3MzQ1NjM5LDM2NDc1NTc2NiwxMTQzMTk4NTA2LC0xMjczMTAz
-NDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2NDY5My
-wyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbMTY0NTQ3MTYxNSwyMTQzMDg5MDA1LDE2NT
+czNDU2MzksMzY0NzU1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0
+NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLD
+I2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
 -->
