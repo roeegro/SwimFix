@@ -116,7 +116,8 @@ This module is an API of server's functionality, so each function in this module
 This module is the first level in video analysis. Its goal is to extract basic information about body parts coordinates and than process them.
 Since the system analyses rowing swimming style the body parts that detected are: nose,neck,right shoulder, right elbow, right wrist, left shoulder, left elbow, and left wrist.
 
-Imag
+< Image of Open Pose skeleton >
+
 Main functionality supported in this module:
 
 1. `get_keypoints_csv_from_video` 
@@ -129,7 +130,9 @@ Those are the columns:
 `[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	This is the second stage in analysis process. This function takes the path to all key points extracted in the function above, and returns a path to csv file generated in the function, includes the vectors
+	This is the second stage in analysis process. This function takes the path to all key points extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
+	This csv contains rows for each frame, and columns describes the vectors by X,Y coordinates.
+	As shown in the skeleton image ou
 
 4. `generate_vectors_csv`
 	Generates all vectors defined by the key points defined
@@ -142,11 +145,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjA3NDAyOTk5LC0xNzczOTY0NTQ5LC04MT
-M4NDE3NTksNDgwMDYzMDI0LC04MzI2NjMwNywxMjI3NjI4MDQw
-LDE2NzU0MjM5NzQsLTE3NjE2NzYwNCwtNTgyNjk3NjI0LDIwNj
-U5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5NzY4MzYx
-LC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAzNTIsLT
-Y4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLTQyMDQ3
-MzIzNV19
+eyJoaXN0b3J5IjpbLTE0NDc1NzkwMTUsLTE3NzM5NjQ1NDksLT
+gxMzg0MTc1OSw0ODAwNjMwMjQsLTgzMjY2MzA3LDEyMjc2Mjgw
+NDAsMTY3NTQyMzk3NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMj
+A2NTk5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3Njgz
+NjEsLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1Mi
+wtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIw
+NDczMjM1XX0=
 -->
