@@ -109,14 +109,14 @@ The parser takes the first word in the request, and redirect the request to the 
       'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,  
       'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
 
-Each handler has
+
 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjU3MTE4Mjc0LDEyMjc2MjgwNDAsMTY3NT
+eyJoaXN0b3J5IjpbLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NT
 QyMzk3NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIz
 MiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMj
 gwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEy
