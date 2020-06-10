@@ -43,9 +43,9 @@ def video_cutter(video_path=0, should_take_full_video=False):
     first_frame = cv2.GaussianBlur(first_frame, (21, 21), 0)
 
     ####### PARAMETERS ######
-    MIN_AREA = 1600  # motion sensitivity factor
-    PIXEL_THRESH = 40
-    UNDETECTED_FRAMES_THRESH = 30
+    MIN_AREA = 1600  # motion sensitivity factor - area wise
+    PIXEL_THRESH = 40  # pixel sensitivity factor - the delta per pixel
+    UNDETECTED_FRAMES_THRESH = 30  # number of undetected motion frames before stop recording
     OMIT_CLIPS_BELOW = 2  # ignore videos with length < OMIT_CLIPS_BELOW seconds
     DEBUG_MODE = 0  # visual feedback and prints
     #########################
@@ -55,7 +55,7 @@ def video_cutter(video_path=0, should_take_full_video=False):
     num_frames_not_detected_in_seq = 0
     prev_cnt = 0
     prev_trend = 0
-    trend = 0  # to calculate if the swimmers is getting away from the camera
+    trend = 0  # to calculate if the swimmer is getting away from the camera
     trend_diff = 0
     starting_frames = []
     starting_timestamps = []
@@ -97,7 +97,7 @@ def video_cutter(video_path=0, should_take_full_video=False):
         cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
                                 cv2.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(cnts)
-        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]  ## Taking the biggest countour
+        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]  # Taking the biggest contour
         found_contour_in_area = False
         # loop over the contours - in this implementation there is only the biggest contour
         for c in cnts:
@@ -116,6 +116,7 @@ def video_cutter(video_path=0, should_take_full_video=False):
             trend = trend + 1 if (cv2.contourArea(c) - prev_cnt > 0) else trend - 1
             prev_cnt = cv2.contourArea(c)
 
+            # every second we calculate if the figure is getting closer to the camera or getting away from it
             if not (frame_counter % int(fps)):
                 trend_diff = trend - prev_trend
                 prev_trend = trend
@@ -146,6 +147,7 @@ def video_cutter(video_path=0, should_take_full_video=False):
 
         frame_counter += 1
 
+    # finished looping on the video
     if is_recording:
         ending_timestamps.append(frame_counter * 1.0 / fps)
     vs.stop() if video_path == 0 else vs.release()
@@ -159,6 +161,8 @@ def video_cutter(video_path=0, should_take_full_video=False):
             if DEBUG_MODE: print("Omitting the clip")
             continue
 
+        # making sure the start and end time are integers or else
+        # the extract_subclip may provide a video with black frames at the start/end of the video
         new_start_time = math.floor(start_time) - 2
         if new_start_time < 0:
             new_start_time = 0
@@ -174,11 +178,13 @@ def video_cutter(video_path=0, should_take_full_video=False):
         new_videos_paths.append(target_path)
 
     print(new_videos_paths)
+
     if new_videos_paths == []:
         target_path = output_dir + video_name + '_from_frame_' + str(0) + '.mp4'
         extract_subclip(video_path, 0, math.ceil(frame_counter * fps), target_path)
         new_videos_paths.append(target_path)
 
+    # if this argument is true, send the full video without cutting it
     if should_take_full_video:
         target_path = output_dir + video_name + '_from_frame_' + str(0) + '.mp4'
         extract_subclip(video_path, 0, math.ceil(frame_counter * fps), target_path)
