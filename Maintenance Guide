@@ -99,13 +99,24 @@ The main responsibilities of the server is :
 
 ### Client Request Parser File
 This module is the gate for using functionalities of the server. 
-The parser takes the first word in the request, and redirect the request to the matching handler function, with a diction
+The parser takes the first word in the request, and redirect the request to the matching handler function, with a dictionary binds between the first word and the matching handler as shown:
+
+    requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': view_feedbacks_list,  
+      'view_graphs': view_graphs,  
+      'forum_view_page': forum_view_page, 'forum_view_topic': forum_view_topic,  
+      'forum_topic_name': forum_topic_name,  
+      'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post, 'add_test': add_test,  
+      'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,  
+      'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
+
+Each handler 
+
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk5MzM1MDcwMCwxNjc1NDIzOTc0LC0xNz
+eyJoaXN0b3J5IjpbMTIyNzYyODA0MCwxNjc1NDIzOTc0LC0xNz
 YxNjc2MDQsLTU4MjY5NzYyNCwyMDY1OTk5MjMyLDEwODA3NDQ1
 Miw1OTM0NTY4MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0NiwtMT
 EyMjQyMTEzOSwtNDc3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4
