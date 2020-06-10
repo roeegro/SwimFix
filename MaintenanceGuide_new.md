@@ -3,8 +3,8 @@
 
 ## Table of Contents
 1. [Introduction](#Introduction)
-2. [Client Side](#)
-	* [Routes File](#)
+2. [Client Side](#Client Side)
+	* [Routes File](#Routes File)
 	* [Directory Management](#)
 	* [Video Trimmer](#)
 	* [Test Generator](#)
@@ -221,7 +221,7 @@ For this guide, we will call our new functionality new_functionality:
 7. According to your needs, feel free to add new functionalities for other modules existing in the project.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ4NzA5MTM4NCwyMTQzMDg5MDA1LDE2NT
+eyJoaXN0b3J5IjpbMTAzMjY3MTAwNiwyMTQzMDg5MDA1LDE2NT
 czNDU2MzksMzY0NzU1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0
 NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLD
 I2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
