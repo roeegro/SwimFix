@@ -19,6 +19,7 @@
 	* [Evaluator Module](#)
 	* [Tester Module](#)
 	* [Output Manager Module](#)
+	* [Utils](#)
 	*  [File Management](#)
 5. [Adding Functionality Schema](#)
 6. [Assimilation on New Hardware and Run All Program](#)
@@ -167,14 +168,15 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 ### Tester Module
 This module is to compare csvs with same format of the manual annotations vs. automatic annotation returned from data_extractor module < link >, and generate csvs comparing each column and plotting figures based on the new csvs to emphasis the gap between the manual annotations to the automatic ones. By activating server we can measure the performance of the system.
  > **Note**: You can activate Tester module by calling
- > Tester.start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename), only after you insured you have expected data for this video (see excepted_data < need link to section of this folder>), and after you call to all functions in data_extractor ( < link > ). Our implementation automatically does the described steps before run the test itself (See implementation in client_request_parser in function run_test.
+ > Tester.start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename), only after you insured you have expected data for this video (see excepted_data < need link to section of this folder>), and after you call to all functions in data_extractor ( < link > ). Our implementation automatically does the described steps before run the test itself (See implementation in client_request_parser in function run_test).
 
 ### Output Manager Module
 This module purpose is to build dynamically folders for each upload and supply easy access to directories in order to store them generated files dynamically.
 This module use dictionary that map between a name of desired path to its actual path in output path hierarchy < link to output hierarchy, appears below>.
 The output manager also enables you to know if there is a ground_truth file in expected data < link to the section below in file management>, and also build environment to locate the test results in. See Tester < link to Tester section> for more details.
+
 ### Utils
-Simple module with operations on path, names. It also holding varia
+Simple module with operations on path, names. It also holding variable with constant values for our system (like body parts detected, etc.)
 
 ### File Management
  
@@ -250,10 +252,10 @@ For running the system on your own device:
 5. For server side activation: from server/src, run "python main.py"
 6. For client side activation: execute run.py.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzYzOTM3NDY3LC00ODc4Nzg1ODksLTU3Mj
-Y1MjMzNiw4NTAyNTAxMzEsLTE5ODg5MDM2MzAsMTAzMjY3MTAw
-NiwyMTQzMDg5MDA1LDE2NTczNDU2MzksMzY0NzU1NzY2LDExND
-MxOTg1MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4
-Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV
-19
+eyJoaXN0b3J5IjpbLTE3NzQ2NTk1OTgsLTQ4Nzg3ODU4OSwtNT
+cyNjUyMzM2LDg1MDI1MDEzMSwtMTk4ODkwMzYzMCwxMDMyNjcx
+MDA2LDIxNDMwODkwMDUsMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMT
+E0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2
+NTgzODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mz
+c5XX0=
 -->
