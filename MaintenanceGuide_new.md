@@ -163,7 +163,7 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 
 ### Tester
-This module is to compare csvs with same format of the manual annotations vs. automatic annotation returned from all mo
+This module is to compare csvs with same format of the manual annotations vs. automatic annotation returned from data_extractor module < link >, and generate csvs comparing each column and plotting figures based on the new csvs to emphasis the gap between the manual annotations to the automatic ones. By activating serve
 
 ### Output Manager Module
 This module purpose is to build dynamically folders for each upload and supply easy access to directories in order to store them generated files dynamically.
@@ -244,7 +244,7 @@ For running the system on your own device:
 5. For server side activation: from server/src, run "python main.py"
 6. For client side activation: execute run.py.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjEwMzQzMzQsLTQ4Nzg3ODU4OSwtNT
+eyJoaXN0b3J5IjpbLTE5MzMzNjM4OTYsLTQ4Nzg3ODU4OSwtNT
 cyNjUyMzM2LDg1MDI1MDEzMSwtMTk4ODkwMzYzMCwxMDMyNjcx
 MDA2LDIxNDMwODkwMDUsMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMT
 E0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2
