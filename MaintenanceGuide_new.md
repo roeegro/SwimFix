@@ -175,10 +175,13 @@ This directory is not exist in the repository but should be added by the develop
 * examples
 * build
 
+> **Note**: This directory is necessary for execution of all project.
+
+#### 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMzNDc5MzAxMCwxMTQzMTk4NTA2LC0xMj
+eyJoaXN0b3J5IjpbMTM2OTU5OTQxMCwxMTQzMTk4NTA2LC0xMj
 czMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2
 NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
