@@ -114,13 +114,13 @@ This module is an API of server's functionality, so each function in this module
 
 ### Data_Extractor Module
 The main goal of this module is extracting data and process it.
-This module has function names 
+This module has function names `get_keypoints_csv_from_video` which is the first stage in analysis of video. It receives path to video, and argument named params which holds OpenPose configurations < Link to configurations>, and with OpenPose it ext 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMDU0NDYzMzksNDgwMDYzMDI0LC04Mz
+eyJoaXN0b3J5IjpbLTEwNzI1MjM4MjMsNDgwMDYzMDI0LC04Mz
 I2NjMwNywxMjI3NjI4MDQwLDE2NzU0MjM5NzQsLTE3NjE2NzYw
 NCwtNTgyNjk3NjI0LDIwNjU5OTkyMzIsMTA4MDc0NDUyLDU5Mz
 Q1NjgyMiwtODQ5NzY4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIx
