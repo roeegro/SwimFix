@@ -83,15 +83,18 @@ This code manipulates those widgets in the code by QtApplication object which ho
 This module has 3 main parts: accessors to the widgets objects, events (for buttons), and some helper functions. The functions in each part are sorted by the alpha-bet for easier navigation.
 
 ### Requests Format
-In order to connect to the server, TCP connection is handled for each request. There are different types of requests but the 
+In order to connect to the server, TCP connection is handled for each request. There are different types of requests but they all have the same general format.
+< Request Type > (< parameter name >: <argument name
+
+ 
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5NTIzOTY5ODQsLTU4MjY5NzYyNCwyMD
-Y1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2
-MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQwMzUyLC
-02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC00MjA0
-NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLTIxMTY2ND
-Q5OTksLTExNTA1NTIwODgsLTMzMjQ1NTM2M119
+eyJoaXN0b3J5IjpbNjA3ODIyMjUzLC01ODI2OTc2MjQsMjA2NT
+k5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEs
+LTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNj
+gzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDcz
+MjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OT
+k5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
 -->
