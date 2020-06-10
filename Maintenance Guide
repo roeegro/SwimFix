@@ -137,7 +137,7 @@ Those are the columns:
 	This csv contains rows for each frame, and columns describes the vectors by X,Y coordinates.
 	As shown in the skeleton image, the vectors we looks for are: right chest, left chest, right arm, left arm, right forearm, left forearm. The columns format is similar to the format described in the first function in this module.
 
-4. `generate_angles_csv` The last stage in data extraction process. This function takes a path to the vectors csv file got from the function above and calculate the angles between 2 relevant vectors. The format of the csv file is similar to the csvs above and includes for each frame the following angles: right shoulder angle, left shoulder angle, right elbow angle, left elbow angle, righat global shoulder 
+4. `generate_angles_csv` The last stage in data extraction process. This function takes a path to the vectors csv file got from the function above and calculate the angles between 2 relevant vectors. The format of the csv file is similar to the csvs above and includes for each frame the following angles: right shoulder angle, left shoulder angle, right elbow angle, left elbow angle, righat global shoulder angle , left global shoulder angle ,right global elbow angle and left global elbow angle.
 
 
 
@@ -147,11 +147,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMwNjgwMTc3NiwtNzUzOTA1OTc1LC01Mz
-QwMTkwNDgsLTE3NzM5NjQ1NDksLTgxMzg0MTc1OSw0ODAwNjMw
-MjQsLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NTQyMzk3NCwtMT
-c2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0
-NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLT
-ExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4
-ODQxNjldfQ==
+eyJoaXN0b3J5IjpbNjMyMjIxODMyLC03NTM5MDU5NzUsLTUzND
+AxOTA0OCwtMTc3Mzk2NDU0OSwtODEzODQxNzU5LDQ4MDA2MzAy
+NCwtODMyNjYzMDcsMTIyNzYyODA0MCwxNjc1NDIzOTc0LC0xNz
+YxNjc2MDQsLTU4MjY5NzYyNCwyMDY1OTk5MjMyLDEwODA3NDQ1
+Miw1OTM0NTY4MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0NiwtMT
+EyMjQyMTEzOSwtNDc3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4
+NDE2OV19
 -->
