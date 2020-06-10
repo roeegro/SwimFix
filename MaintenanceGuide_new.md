@@ -177,11 +177,16 @@ This directory is not exist in the repository but should be added by the develop
 
 > **Note**: This directory is necessary for execution of all project.
 
-#### 
+#### tests
+
+This directory holds all test results, based on tester module execution < link >.
+The directory structure is as follows:
+* Video name
+	* 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM2OTU5OTQxMCwxMTQzMTk4NTA2LC0xMj
-czMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2
-NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbLTE2ODU4NzM2MTcsMTE0MzE5ODUwNiwtMT
+I3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1
+NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
 -->
