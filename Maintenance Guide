@@ -130,10 +130,10 @@ Those are the columns:
 `[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	
+	This is the second stage in analaysis process. This function takes the csv path returned from the first function, and filters
 
 3. `generate_vectors_csv`
-	This is the second stage in analysis process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
+	This is the third stage in analysis process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
 	This csv contains rows for each frame, and columns describes the vectors by X,Y coordinates.
 	As shown in the skeleton image, the vectors we looks for are: right chest, left chest, right arm, left arm, right forearm, left forearm. The columns format is similar to the format described in the first function in this module.
 
@@ -145,11 +145,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUzNDAxOTA0OCwtMTc3Mzk2NDU0OSwtOD
-EzODQxNzU5LDQ4MDA2MzAyNCwtODMyNjYzMDcsMTIyNzYyODA0
-MCwxNjc1NDIzOTc0LC0xNzYxNjc2MDQsLTU4MjY5NzYyNCwyMD
-Y1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2
-MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQwMzUyLC
-02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC00MjA0
-NzMyMzVdfQ==
+eyJoaXN0b3J5IjpbLTE0OTQyODg3ODMsLTUzNDAxOTA0OCwtMT
+c3Mzk2NDU0OSwtODEzODQxNzU5LDQ4MDA2MzAyNCwtODMyNjYz
+MDcsMTIyNzYyODA0MCwxNjc1NDIzOTc0LC0xNzYxNjc2MDQsLT
+U4MjY5NzYyNCwyMDY1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4
+MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOS
+wtNDc3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5
+MTE2MjU3XX0=
 -->
