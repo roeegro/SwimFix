@@ -110,17 +110,17 @@ The parser takes the first word in the request, and redirect the request to the 
       'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
 
 ### Facade Module
-This module is an API of server's functionality, so each function in this module
+This module is an API of server's functionality, so each function in this module supplies abstraction of levels in data processing. For example there is a function that generates csv with angles 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg1MzUxMjA3MCwtODMyNjYzMDcsMTIyNz
-YyODA0MCwxNjc1NDIzOTc0LC0xNzYxNjc2MDQsLTU4MjY5NzYy
-NCwyMDY1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4MjIsLTg0OT
-c2ODM2MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQw
-MzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC
-00MjA0NzMyMzUsLTE0ODU1ODM5NzcsLTE3NDIzMTkxNzEsLTIx
-MTY2NDQ5OTldfQ==
+eyJoaXN0b3J5IjpbNDgwMDYzMDI0LC04MzI2NjMwNywxMjI3Nj
+I4MDQwLDE2NzU0MjM5NzQsLTE3NjE2NzYwNCwtNTgyNjk3NjI0
+LDIwNjU5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5Nz
+Y4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAz
+NTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLT
+QyMDQ3MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjEx
+NjY0NDk5OV19
 -->
