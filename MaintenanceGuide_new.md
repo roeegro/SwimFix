@@ -199,12 +199,14 @@ The output directory has hierarchy for easy navigation:
 * output
 	* Usernames
 			* Videos uploaded by specific user
-				* Upload date (DD-
+				* Upload date (DD-MM-YY format)
 					* Upload time (HH-MM-DD format)
+					* 
+				 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI1OTA0MTQwNiwzNjQ3NTU3NjYsMTE0Mz
+eyJoaXN0b3J5IjpbLTQxMzcxNDUzMSwzNjQ3NTU3NjYsMTE0Mz
 E5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgz
 ODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX
 0=
