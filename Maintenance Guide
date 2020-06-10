@@ -119,7 +119,7 @@ Since the system analyses rowing swimming style the body parts that detected are
 Main functionality supported in this module:
 
 1. `get_keypoints_csv_from_video` 
-	function is the first stage in analysis of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a path csv file named `all _keypoints` with the following format:
+	function is the first stage in analysis of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a path to csv file named `all _keypoints` with the following format:
 rows - for each frame
 columns - each body part we have 3 columns : < Body Part >X , < Body Part >Y, < Body Part >Score.
 X,Y stands for the coordinates of the specific body part, and Score stands for the confidence score of OpenPose for its estimation.
@@ -127,7 +127,10 @@ If the body part appears in hand so we have those 3 columns for each side. We sp
 Those are the columns: 
 `[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
-2. `generate_vectors_csv`
+2. `filter_and_interpolate`
+	This is the second stage in analysis process. TTakes the path to all key points extracted in the function above.
+
+4. `generate_vectors_csv`
 	Generates all vectors defined by the key points defined
 
 
@@ -138,7 +141,7 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNDAxMDgzODAsLTgxMzg0MTc1OSw0OD
+eyJoaXN0b3J5IjpbLTEwMTMwNjA5NzcsLTgxMzg0MTc1OSw0OD
 AwNjMwMjQsLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NTQyMzk3
 NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMD
 gwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkz
