@@ -99,17 +99,17 @@ The main responsibilities of the server is :
 
 ### Client Request Parser File
 This module is the gate for using functionalities of the server. 
-The parser takes the first word in the requests 
+The parser takes the first word in the request, and redirect the request to the matching handler function, with a diction
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjE1Mzk4MTAsMTY3NTQyMzk3NCwtMT
-c2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0
-NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLT
-ExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4
-ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC0xNDg1NTgzOT
-c3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMDg4
-LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbMTk5MzM1MDcwMCwxNjc1NDIzOTc0LC0xNz
+YxNjc2MDQsLTU4MjY5NzYyNCwyMDY1OTk5MjMyLDEwODA3NDQ1
+Miw1OTM0NTY4MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0NiwtMT
+EyMjQyMTEzOSwtNDc3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4
+NDE2OSwtMjU5MTE2MjU3LC00MjA0NzMyMzUsLTE0ODU1ODM5Nz
+csLTE3NDIzMTkxNzEsLTIxMTY2NDQ5OTksLTExNTA1NTIwODgs
+LTMzMjQ1NTM2M119
 -->
