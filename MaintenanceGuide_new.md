@@ -162,8 +162,10 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 	> Function name : check_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 
+### Tester
 
-
+### Output Manager Module
+This module purpose is to build dynamically folders for each upload and supply easy access to directories in order to store them g
 ### File Management
  
 The server side includes some directories for files management.
@@ -238,7 +240,7 @@ For running the system on your own device:
 5. For server side activation: from server/src, run "python main.py"
 6. For client side activation: execute run.py.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAxMDEzOTQ2NiwtNDg3ODc4NTg5LC01Nz
+eyJoaXN0b3J5IjpbMTUyMDA4OTQwOSwtNDg3ODc4NTg5LC01Nz
 I2NTIzMzYsODUwMjUwMTMxLC0xOTg4OTAzNjMwLDEwMzI2NzEw
 MDYsMjE0MzA4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2NiwxMT
 QzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1
