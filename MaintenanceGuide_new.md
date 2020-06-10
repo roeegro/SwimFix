@@ -154,13 +154,15 @@ This module is able to calculate:
 
  ### Evaluator Module
 This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module, in order to detect errors of technique of the filmed swimmer.
-At the bottom of the module there is a dictionary that binds between the errors description in the function that detects this error, and the main function of this module `perfomance_evaluator`runs over this dictionary and activate 
+At the bottom of the module there is a dictionary that binds between the errors description in the function that detects this error, and the main function of this module `perfomance_evaluator`runs over this dictionary and activate each function with the paths specified above.
+The effect of this module is 2 csv files. The first one keeps an id of error and its description. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected.
+
 ### File Management
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwOTg4MzMwODgsLTczNzY1ODM4OSwtMj
+eyJoaXN0b3J5IjpbLTEwNDI2MjMxMDcsLTczNzY1ODM4OSwtMj
 AyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
