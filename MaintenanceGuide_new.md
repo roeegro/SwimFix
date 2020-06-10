@@ -169,10 +169,10 @@ Stores zip files containing relevant content for user's request. Those files sen
 #### excepted_data
 Stores csvs and videos annotated by the manual tag defined in the test generator< link > 
 #### openpose
-This directory is not exist in the repository but should be added by the developer to the server side directory. This directory should contain the binaries nesseccary 
+This directory is not exist in the repository but should be added by the developer to the server side directory. This directory should contain the binaries necessary for execution of this pose estimation library's code. 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2ODAxNTg3OTEsLTEyNzMxMDM0NzEsMT
-EyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLDI2NDg3
-MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbMTE0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMT
+IyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1NjQ2OTMsMjY0ODcx
+NTA1LC0xMzc4NDk0Mzc5XX0=
 -->
