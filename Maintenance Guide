@@ -91,16 +91,17 @@ Handling those requests in server side are described in this section < link >
 
 The main responsibilities of the server is : 
 * Parsing requests from client side. See < Link to parser >
-* Extracting key points of swimmer in the video
-* Processing the data extracted from video
-* Using the data to get matrics 
+* Extracting key points of swimmer in the video.
+* Processing the data extracted from video.
+* Using the data to get analytics data for evaluation metrics measuring swimmer technique.
+* Management of files 
 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjgxODkwMjY3LC01ODI2OTc2MjQsMjA2NT
+eyJoaXN0b3J5IjpbNDAyMTQ2ODY0LC01ODI2OTc2MjQsMjA2NT
 k5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEs
 LTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNj
 gzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDcz
