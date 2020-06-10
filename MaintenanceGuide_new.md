@@ -226,10 +226,12 @@ For this guide, we will call our new functionality new_functionality:
 
 ## Assimilation on New Hardware and Run All Program
 
-
+We run the system with specific computer as server and with specific database which its schema defines as follows:
+< link to erd figure>
+For running the system on your own device
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMTQ3OTE5MzUsODUwMjUwMTMxLC0xOT
+eyJoaXN0b3J5IjpbLTE5ODgzNjQ3ODgsODUwMjUwMTMxLC0xOT
 g4OTAzNjMwLDEwMzI2NzEwMDYsMjE0MzA4OTAwNSwxNjU3MzQ1
 NjM5LDM2NDc1NTc2NiwxMTQzMTk4NTA2LC0xMjczMTAzNDcxLD
 ExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2NDY5MywyNjQ4
