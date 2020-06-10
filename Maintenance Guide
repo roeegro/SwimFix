@@ -116,6 +116,7 @@ This module is an API of server's functionality, so each function in this module
 This module is the first level in video analysis. Its goal is to extract basic information about body parts coordinates and than process them.
 Since the system analyses rowing swimming style the body parts that detected are: nose,neck,right shoulder, right elbow, right wrist, left shoulder, left elbow, and left wrist.
 
+Imag
 Main functionality supported in this module:
 
 1. `get_keypoints_csv_from_video` 
@@ -141,11 +142,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NzM5NjQ1NDksLTgxMzg0MTc1OSw0OD
-AwNjMwMjQsLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NTQyMzk3
-NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMD
-gwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkz
-NDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC
-04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC0xNDg1
-NTgzOTc3XX0=
+eyJoaXN0b3J5IjpbNjA3NDAyOTk5LC0xNzczOTY0NTQ5LC04MT
+M4NDE3NTksNDgwMDYzMDI0LC04MzI2NjMwNywxMjI3NjI4MDQw
+LDE2NzU0MjM5NzQsLTE3NjE2NzYwNCwtNTgyNjk3NjI0LDIwNj
+U5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5NzY4MzYx
+LC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAzNTIsLT
+Y4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLTQyMDQ3
+MzIzNV19
 -->
