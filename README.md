@@ -18,11 +18,11 @@ The system takes as input a video of swimming in a front crawl setting and outpu
         - 18 keypoint body keypoint estimation based on the OpenPose library.
     - **Performance evaluation** of the swimmer:
 	    - Error detection including multiple error types
-	    - Manuel error annotation on each frame of the video
+	    - Manuel error annotation on eacha frame of the videoyour choice
     - **Extraction & Visualization** of various performance measures:
 		- The keypoints' coordinates
 		- The angles of the swimmer's shoulders/elbows/wrists
-		- Graph for every measure with its value in e
+		- Graph for every measure with its value in every frame of the video
     - **Model Testing and Evaluation**
 	    - Manual video annotation.
 	    - Expected vs actual swimmer's pose.
@@ -65,7 +65,7 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODQyNzIzNTQ2LC05MTU1MTIwNjgsNDUzMz
-c1NjM4LDM5NTk0NjI1MSw4OTAxMTg0MDYsLTEzNzQ1NDkyMDBd
-fQ==
+eyJoaXN0b3J5IjpbODc3MTQ3NzYxLDg0MjcyMzU0NiwtOTE1NT
+EyMDY4LDQ1MzM3NTYzOCwzOTU5NDYyNTEsODkwMTE4NDA2LC0x
+Mzc0NTQ5MjAwXX0=
 -->
