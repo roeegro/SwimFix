@@ -196,18 +196,13 @@ Directory for future use, where one python function files would be stored here. 
 #### output
 This directory keeps all the files generated in the modules described before for all clients and videos uploaded.
 The output directory has hierarchy for easy navigation:
-* output
-	* Usernames
-			* Videos uploaded by specific user
-				* Upload date (DD-MM-YY format)
-					* Upload time (HH-MM-DD format)
-					* 
+
 				 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQxMzcxNDUzMSwzNjQ3NTU3NjYsMTE0Mz
-E5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgz
-ODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX
-0=
+eyJoaXN0b3J5IjpbLTE4NTQ1NTc0NDgsMzY0NzU1NzY2LDExND
+MxOTg1MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4
+Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV
+19
 -->
