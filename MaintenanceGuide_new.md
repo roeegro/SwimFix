@@ -147,7 +147,8 @@ This module should be operated after all stages in data_extractor are finished, 
 This module is able to calculate:
 *  Average time period
 * Average angle for each angle.
-* Count how many frames were detected 
+
+ 
 
  
  
@@ -155,5 +156,5 @@ This module is able to calculate:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAwNjcwOTY3MSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbMTE1NDc4MzA3MiwtMTM3ODQ5NDM3OV19
 -->
