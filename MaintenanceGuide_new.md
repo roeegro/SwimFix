@@ -159,10 +159,12 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 
 ### File Management
  
+The server side includes some directories for files management.
+
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY5NDk2MzU5NCwtNzM3NjU4Mzg5LC0yMD
-IwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbMjY0NDU0NzE0LC03Mzc2NTgzODksLTIwMj
+A1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
 -->
