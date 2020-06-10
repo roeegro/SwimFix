@@ -130,7 +130,7 @@ Those are the columns:
 `[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	This is the second stage in analaysis process. This function takes the csv path returned from the first function, and filters
+	This is the second stage in analaysis process. This function takes the csv path returned from the first function, and filters records with low score value. If there are closer intervals with high score, the function complete
 
 3. `generate_vectors_csv`
 	This is the third stage in analysis process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
@@ -145,11 +145,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0OTQyODg3ODMsLTUzNDAxOTA0OCwtMT
-c3Mzk2NDU0OSwtODEzODQxNzU5LDQ4MDA2MzAyNCwtODMyNjYz
-MDcsMTIyNzYyODA0MCwxNjc1NDIzOTc0LC0xNzYxNjc2MDQsLT
-U4MjY5NzYyNCwyMDY1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4
-MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOS
-wtNDc3ODQwMzUyLC02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5
-MTE2MjU3XX0=
+eyJoaXN0b3J5IjpbMzQ4NzQwMDg1LC01MzQwMTkwNDgsLTE3Nz
+M5NjQ1NDksLTgxMzg0MTc1OSw0ODAwNjMwMjQsLTgzMjY2MzA3
+LDEyMjc2MjgwNDAsMTY3NTQyMzk3NCwtMTc2MTY3NjA0LC01OD
+I2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIy
+LC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLT
+Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
+NjI1N119
 -->
