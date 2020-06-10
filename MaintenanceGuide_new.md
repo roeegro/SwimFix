@@ -230,9 +230,10 @@ We run the system with specific computer as server and with specific database wh
 < link to erd figure>
 For running the system on your own device:
 1. Make sure your computer has the prerequisites for [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)  
-2. In server/main.py - change 
+2. In server/main.py - change HOST to be your ipv4 address.
+3. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTc1MzUxOTg3LDg1MDI1MDEzMSwtMTk4OD
+eyJoaXN0b3J5IjpbLTk0ODA3NTYwLDg1MDI1MDEzMSwtMTk4OD
 kwMzYzMCwxMDMyNjcxMDA2LDIxNDMwODkwMDUsMTY1NzM0NTYz
 OSwzNjQ3NTU3NjYsMTE0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMT
 IyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1NjQ2OTMsMjY0ODcx
