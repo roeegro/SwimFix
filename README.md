@@ -30,6 +30,8 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 	- Graphs of the angles of the swimmer's shoulder/elbows/wrists in each frame of the video.
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
 - **Training**:  Train your own model on your own data.
+	- Currently we are not support 
+	- You can find a complete walkthro [here](https://github.com/roeegro/SwimFix/blob/master/training/README.md)
  
 >TODO: put a video in here
     
@@ -60,6 +62,6 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEwOTI2MTM4Myw4OTAxMTg0MDYsLTEzNz
+eyJoaXN0b3J5IjpbMTg0NTE4NDgxNSw4OTAxMTg0MDYsLTEzNz
 Q1NDkyMDBdfQ==
 -->
