@@ -113,7 +113,7 @@ The parser takes the first word in the request, and redirect the request to the 
 This module is an API of server's functionality, so each function in this module supplies abstraction of levels in data processing. For example the function `get_angles_csv_from_keypoints_csv` takes csv file with all coordinates of body part and generate csv file with angles by generate vector file, then evaluates the angles from the vector file.
 
 ### Data_Extractor Module
-This module is the first level in video analysis. Its goal is to extract basic information about body parts coordinates and than process them.
+This module is the first level in data extraction. Its goal is to extract basic information about body parts coordinates and than process them.
 Since the system analyses rowing swimming style the body parts that detected are: nose,neck,right shoulder, right elbow, right wrist, left shoulder, left elbow, and left wrist.
 
 < Image of Open Pose skeleton >
@@ -121,7 +121,7 @@ Since the system analyses rowing swimming style the body parts that detected are
 Main functionality supported in this module:
 
 1. `get_keypoints_csv_from_video` 
-	function is the first stage in analysis of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a path to csv file named `all _keypoints` with the following format:
+	function is the first stage in data extraction of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a path to csv file named `all _keypoints` with the following format:
 rows - for each frame
 columns - each body part we have 3 columns : < Body Part >X , < Body Part >Y, < Body Part >Score.
 X,Y stands for the coordinates of the specific body part, and Score stands for the confidence score of OpenPose for its estimation.
@@ -130,14 +130,14 @@ Those are the columns:
 `[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	This is the second stage in analaysis process. This function takes the csv path returned from the first function, and filters records with low score value. If there are closer intervals with high score, the function completes the gap between the intervals by interpolation. Returns path to updated body parts coordinates.
+	This is the second stage in data extraction process. This function takes the csv path returned from the first function, and filters records with low score value. If there are closer intervals with high score, the function completes the gap between the intervals by interpolation. Returns path to updated body parts coordinates.
 
 3. `generate_vectors_csv`
-	This is the third stage in analysis process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
+	This is the third stage in data extraction process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
 	This csv contains rows for each frame, and columns describes the vectors by X,Y coordinates.
 	As shown in the skeleton image, the vectors we looks for are: right chest, left chest, right arm, left arm, right forearm, left forearm. The columns format is similar to the format described in the first function in this module.
 
-4. `generat`
+4. `generate_angles_csv` The last s
 
 
 
@@ -147,11 +147,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDUzOTMzNjE4LC01MzQwMTkwNDgsLTE3Nz
-M5NjQ1NDksLTgxMzg0MTc1OSw0ODAwNjMwMjQsLTgzMjY2MzA3
-LDEyMjc2MjgwNDAsMTY3NTQyMzk3NCwtMTc2MTY3NjA0LC01OD
-I2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIy
-LC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLT
-Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
-NjI1N119
+eyJoaXN0b3J5IjpbLTc1MzkwNTk3NSwtNTM0MDE5MDQ4LC0xNz
+czOTY0NTQ5LC04MTM4NDE3NTksNDgwMDYzMDI0LC04MzI2NjMw
+NywxMjI3NjI4MDQwLDE2NzU0MjM5NzQsLTE3NjE2NzYwNCwtNT
+gyNjk3NjI0LDIwNjU5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1Njgy
+MiwtODQ5NzY4MzYxLC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC
+00Nzc4NDAzNTIsLTY4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkx
+MTYyNTddfQ==
 -->
