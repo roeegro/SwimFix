@@ -194,11 +194,15 @@ The directory structure is as follows:
 Directory for future use, where one python function files would be stored here. Function naming format is identical to the format required here < link to evaluator >
 
 #### output
-This directory keeps all the files generated in the modules described before for all clients and videos uploaded before.
+This directory keeps all the files generated in the modules described before for all clients and videos uploaded.
+The output directory has hierarchy for easy navigation:
+* output
+	* Usernames
+			* 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxMDQxODcyNCwzNjQ3NTU3NjYsMTE0Mz
+eyJoaXN0b3J5IjpbMjA3MzQwNDk0NCwzNjQ3NTU3NjYsMTE0Mz
 E5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgz
 ODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX
 0=
