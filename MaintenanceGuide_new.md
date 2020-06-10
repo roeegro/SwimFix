@@ -166,9 +166,11 @@ each video sent to the server is stored in this directory for future use of the 
 
 #### temp
 Stores zip files containing relevant content for user's request. Those files sent to the client side and stored in the temp < link> directory in the client side.
-#### 
+#### excepted_data
+Stores csvs and videos annotated by the manual tag defined in the test generator< link > 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMD
-IwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNz
+M3NjU4Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5
+NDM3OV19
 -->
