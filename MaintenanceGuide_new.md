@@ -153,13 +153,13 @@ This module is able to calculate:
  In each function in this module, you can control the output file name, the location of this file, which columns will be export into figure, and even how to define the x-axis in the figures. This module enables the developer even to plot multifigures based on the same csvs and even comparison figures based on csv files with the same structure (e.g columns names).
 
  ### Evaluator Module
-
+This module gets as an input paths to the body part coordinates after filter and path to csv contains the an
 ### File Management
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTczNzY1ODM4OSwtMjAyMDU2NDY5MywyNj
-Q4NzE1MDUsLTEzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbLTExMTMwNjMzMDcsLTczNzY1ODM4OSwtMj
+AyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
