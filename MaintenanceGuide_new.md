@@ -179,14 +179,15 @@ This directory is not exist in the repository but should be added by the develop
 
 #### tests
 
-This directory holds all test results, based on tester module execution < link >.
+Auto generated directory that holds all test results, based on tester module execution < link >.
 The directory structure is as follows:
 * Video name
-	* 
+	* frames - directory that contains the frames with OpenPose annotations.
+	* ground_truth_data - di
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2ODU4NzM2MTcsMTE0MzE5ODUwNiwtMT
-I3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1
-NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbLTkwNDc5MjEyNCwxMTQzMTk4NTA2LC0xMj
+czMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2
+NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
