@@ -113,14 +113,14 @@ The parser takes the first word in the request, and redirect the request to the 
 This module is an API of server's functionality, so each function in this module supplies abstraction of levels in data processing. For example the function `get_angles_csv_from_keypoints_csv` takes csv file with all coordinates of body part and generate csv file with angles by generate vector file, then evaluates the angles from the vector file.
 
 ### Data_Extractor Module
-This module is the first level in video analysis. Its goal is to extract basic information about body parts coordinates and than po
-`get_keypoints_csv_from_video` function is the first stage in analysis of video. It receives path to video, and argument named params which holds OpenPose configurations < Link to configurations>, and with OpenPose it extracts for each frame the coordinates of the relevant body parts. 
+This module is the first level in video analysis. Its goal is to extract basic information about body parts coordinates and than process them.
+`get_keypoints_csv_from_video` function is the first stage in analysis of video. It receives path to video, and argument named `params` which holds OpenPose configurations < Link to configurations>, and with OpenPose library it extracts for each frame the coordinates of the relevant body parts. 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc5NzcyMzQ0Miw0ODAwNjMwMjQsLTgzMj
+eyJoaXN0b3J5IjpbLTgxMzg0MTc1OSw0ODAwNjMwMjQsLTgzMj
 Y2MzA3LDEyMjc2MjgwNDAsMTY3NTQyMzk3NCwtMTc2MTY3NjA0
 LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0NTIsNTkzND
 U2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLTExMjI0MjEx
