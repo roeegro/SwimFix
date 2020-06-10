@@ -99,17 +99,16 @@ The main responsibilities of the server is :
 
 ### Client Request Parser File
 This module is the gate for using functionalities of the server. 
-In the bottom of the page there is a 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY3NTQyMzk3NCwtMTc2MTY3NjA0LC01OD
-I2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIy
-LC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLT
-Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
-NjI1NywtNDIwNDczMjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MT
-cxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNd
-fQ==
+eyJoaXN0b3J5IjpbLTE3MzAyODU3NTEsMTY3NTQyMzk3NCwtMT
+c2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0
+NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLT
+ExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4
+ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC0xNDg1NTgzOT
+c3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OTk5LC0xMTUwNTUyMDg4
+LC0zMzI0NTUzNjNdfQ==
 -->
