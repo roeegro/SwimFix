@@ -163,7 +163,7 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 
 ### Tester
-
+This module is to compare csvs with same format of the manual annotations vs. automatic annotation returned from all mo
 
 ### Output Manager Module
 This module purpose is to build dynamically folders for each upload and supply easy access to directories in order to store them generated files dynamically.
@@ -244,10 +244,10 @@ For running the system on your own device:
 5. For server side activation: from server/src, run "python main.py"
 6. For client side activation: execute run.py.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzE2MTE3MTA3LC00ODc4Nzg1ODksLTU3Mj
-Y1MjMzNiw4NTAyNTAxMzEsLTE5ODg5MDM2MzAsMTAzMjY3MTAw
-NiwyMTQzMDg5MDA1LDE2NTczNDU2MzksMzY0NzU1NzY2LDExND
-MxOTg1MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4
-Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV
-19
+eyJoaXN0b3J5IjpbLTIwMjEwMzQzMzQsLTQ4Nzg3ODU4OSwtNT
+cyNjUyMzM2LDg1MDI1MDEzMSwtMTk4ODkwMzYzMCwxMDMyNjcx
+MDA2LDIxNDMwODkwMDUsMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMT
+E0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2
+NTgzODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mz
+c5XX0=
 -->
