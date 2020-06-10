@@ -210,10 +210,10 @@ This is a 0-stage system for swimming technique fix, and you might add new funct
 For this guide, we will call our new functionality new_functionality:
 1. In client/src/templates, create new-functionality.html.
 2. In client/src/routes.py create function with the format shown here < routes link>
-3.  
+3.  In 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA3ODQzNzIzOCwxNjU3MzQ1NjM5LDM2ND
-c1NTc2NiwxMTQzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDcz
-NjQsLTczNzY1ODM4OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLT
-EzNzg0OTQzNzldfQ==
+eyJoaXN0b3J5IjpbNDk4OTY5NjAzLDE2NTczNDU2MzksMzY0Nz
+U1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2
+NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMT
+M3ODQ5NDM3OV19
 -->
