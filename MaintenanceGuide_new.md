@@ -224,9 +224,13 @@ For this guide, we will call our new functionality new_functionality:
 6. Create in facade module a function that abstracts the functionality you want to create, and call it from the function you created in section 5.
 7. According to your needs, feel free to add new functionalities for other modules existing in the project.
 
+## Assimilation on New Hardware and Run All Program
+
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5ODg5MDM2MzAsMTAzMjY3MTAwNiwyMT
-QzMDg5MDA1LDE2NTczNDU2MzksMzY0NzU1NzY2LDExNDMxOTg1
-MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC
-0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbODUwMjUwMTMxLC0xOTg4OTAzNjMwLDEwMz
+I2NzEwMDYsMjE0MzA4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2
+NiwxMTQzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLT
+czNzY1ODM4OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0
+OTQzNzldfQ==
 -->
