@@ -139,7 +139,7 @@ Those are the columns:
 
 4. `generate_angles_csv` The last stage in data extraction process. This function takes a path to the vectors csv file got from the function above and calculate the angles between 2 relevant vectors. The format of the csv file is similar to the csvs above and includes for each frame the following angles: right shoulder angle, left shoulder angle, right elbow angle, left elbow angle, righat global shoulder angle , left global shoulder angle ,right global elbow angle and left global elbow angle.
 
-5. There are more helper functions which are called by one or more of the functions above. Some of those functions are used for calculation or some intermediate stages in one of the functions abov
+5. There are more helper functions which are called by one or more of the functions above. Some of those functions are used for calculation or some intermediate stages in one of the functions above. Documentation for each function in data_extractor module is found in the code.
 
 
 
@@ -149,11 +149,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4NTM1NTIzODksNjMyMjIxODMyLC03NT
-M5MDU5NzUsLTUzNDAxOTA0OCwtMTc3Mzk2NDU0OSwtODEzODQx
-NzU5LDQ4MDA2MzAyNCwtODMyNjYzMDcsMTIyNzYyODA0MCwxNj
-c1NDIzOTc0LC0xNzYxNjc2MDQsLTU4MjY5NzYyNCwyMDY1OTk5
-MjMyLDEwODA3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2MSwtMT
-AyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQwMzUyLC02ODM4
-MTIyNTBdfQ==
+eyJoaXN0b3J5IjpbMTM0MDQ2NzkyNyw2MzIyMjE4MzIsLTc1Mz
+kwNTk3NSwtNTM0MDE5MDQ4LC0xNzczOTY0NTQ5LC04MTM4NDE3
+NTksNDgwMDYzMDI0LC04MzI2NjMwNywxMjI3NjI4MDQwLDE2Nz
+U0MjM5NzQsLTE3NjE2NzYwNCwtNTgyNjk3NjI0LDIwNjU5OTky
+MzIsMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5NzY4MzYxLC0xMD
+I4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAzNTIsLTY4Mzgx
+MjI1MF19
 -->
