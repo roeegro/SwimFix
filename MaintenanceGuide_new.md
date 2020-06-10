@@ -233,11 +233,12 @@ For running the system on your own device:
 2. In server/main.py - change HOST to be your server IP address.
 3. In client/src/__ init __ - change SERVER_HOST to be your server IP address.
 4. Change in run file in client/src line "app.run(host=127.0.0.1,debug=False)
-5. 
+5. For server side activation: from server/src, run "python main.py"
+6. For client side activation:
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU3MjY1MjMzNiw4NTAyNTAxMzEsLTE5OD
-g5MDM2MzAsMTAzMjY3MTAwNiwyMTQzMDg5MDA1LDE2NTczNDU2
-MzksMzY0NzU1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0NzEsMT
-EyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLDI2NDg3
-MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbLTQ4Nzg3ODU4OSwtNTcyNjUyMzM2LDg1MD
+I1MDEzMSwtMTk4ODkwMzYzMCwxMDMyNjcxMDA2LDIxNDMwODkw
+MDUsMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMTE0MzE5ODUwNiwtMT
+I3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1
+NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
 -->
