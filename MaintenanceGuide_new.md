@@ -148,13 +148,16 @@ This module is able to calculate:
 *  Average time period
 * Average angle for each angle.
 
+### Data_Analyser Module
  
 
- 
+ ### Evaluator Module
+
+### File Management
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE1NDc4MzA3MiwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
 -->
