@@ -121,60 +121,15 @@ rows - for each frame
 columns - each body part we have 3 columns : < Body Part >X , < Body Part >Y, < Body Part >Score.
 X,Y stands for the coordinates of the specific body part, and Score stands for the confidence score of OpenPose for its estimation.
 If the body part appears in hand so we have those 3 columns for each side. We specifying it by L/R (left or right) letter before the body part name.
-Those are the columns: [Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,NeckScore,RShoulderX,RShoulderY,RShoulderScore,RElbowX,RElbowY,RElbowScore
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-RWristX
-
-RWristY
-
-RWristScore
-
-LShoulderX
-
-LShoulderY
-
-LShoulderScore
-
-LElbowX
-
-LElbowY
-
-LElbowScore
-
-LWristX
-
-LWristY
-
-LWristScore
+Those are the columns: 
+`[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,NeckScore,RShoulderX,RShoulderY,RShoulderScore,RElbowX,RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 This module also supplies functions for calculating vectors between 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgwMDE0OTU5NSwtODEzODQxNzU5LDQ4MD
+eyJoaXN0b3J5IjpbMTM2NTAzMjkzMiwtODEzODQxNzU5LDQ4MD
 A2MzAyNCwtODMyNjYzMDcsMTIyNzYyODA0MCwxNjc1NDIzOTc0
 LC0xNzYxNjc2MDQsLTU4MjY5NzYyNCwyMDY1OTk5MjMyLDEwOD
 A3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0
