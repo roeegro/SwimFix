@@ -232,11 +232,12 @@ For running the system on your own device:
 1. Make sure your server computer has the prerequisites for [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)  
 2. In server/main.py - change HOST to be your server IP address.
 3. In client/src/__ init __ - change SERVER_HOST to be your server IP address.
-4. Change in run file in client/src line "app.run(host=127.0.0.1,debug
+4. Change in run file in client/src line "app.run(host=127.0.0.1,debug=False)
+5. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzY1MjUwODgyLDg1MDI1MDEzMSwtMTk4OD
-kwMzYzMCwxMDMyNjcxMDA2LDIxNDMwODkwMDUsMTY1NzM0NTYz
-OSwzNjQ3NTU3NjYsMTE0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMT
-IyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1NjQ2OTMsMjY0ODcx
-NTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbLTU3MjY1MjMzNiw4NTAyNTAxMzEsLTE5OD
+g5MDM2MzAsMTAzMjY3MTAwNiwyMTQzMDg5MDA1LDE2NTczNDU2
+MzksMzY0NzU1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0NzEsMT
+EyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLDI2NDg3
+MTUwNSwtMTM3ODQ5NDM3OV19
 -->
