@@ -116,15 +116,20 @@ This module is an API of server's functionality, so each function in this module
 This module is the first level in video analysis. Its goal is to extract basic information about body parts coordinates and than process them.
 Since the system analyses rowing swimming style the body parts that detected are: nose,neck,right shoulder, right elbow, right wrist, left shoulder, left elbow, and left wrist.
 
+Main functionality supported in this module:
+
+1. `get_keypoints_csv_from_video` 
+							function is the first stage in analysis of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a csv file named `all _keypoints` with the following format:
+							rows - for each frame
+							columns - each body part we have 3 columns : < Body Part >X , < Body Part >Y, < Body Part >Score.
+							X,Y stands for the coordinates of the specific body part, and Score stands for the confidence score of OpenPose for its estimation.
+							If the body part appears in hand so we have those 3 columns for each side. We specifying it by L/R (left or right) letter before the body part name.
+							Those are the columns: 
+							`[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
+
+3. `generate_vectors_csv`- 
 
 
-`get_keypoints_csv_from_video` function is the first stage in analysis of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a csv file named `all _keypoints` with the following format:
-rows - for each frame
-columns - each body part we have 3 columns : < Body Part >X , < Body Part >Y, < Body Part >Score.
-X,Y stands for the coordinates of the specific body part, and Score stands for the confidence score of OpenPose for its estimation.
-If the body part appears in hand so we have those 3 columns for each side. We specifying it by L/R (left or right) letter before the body part name.
-Those are the columns: 
-`[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
  
  
@@ -132,11 +137,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM4NTkxOTAxOSwtODEzODQxNzU5LDQ4MD
-A2MzAyNCwtODMyNjYzMDcsMTIyNzYyODA0MCwxNjc1NDIzOTc0
-LC0xNzYxNjc2MDQsLTU4MjY5NzYyNCwyMDY1OTk5MjMyLDEwOD
-A3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2MSwtMTAyODAwOTM0
-NiwtMTEyMjQyMTEzOSwtNDc3ODQwMzUyLC02ODM4MTIyNTAsLT
-g2OTg4NDE2OSwtMjU5MTE2MjU3LC00MjA0NzMyMzUsLTE0ODU1
-ODM5NzddfQ==
+eyJoaXN0b3J5IjpbLTE2NDc2MzYzMDQsLTgxMzg0MTc1OSw0OD
+AwNjMwMjQsLTgzMjY2MzA3LDEyMjc2MjgwNDAsMTY3NTQyMzk3
+NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMD
+gwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkz
+NDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC
+04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDczMjM1LC0xNDg1
+NTgzOTc3XX0=
 -->
