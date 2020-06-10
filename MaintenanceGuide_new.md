@@ -200,13 +200,17 @@ The output directory has hierarchy for easy navigation and described by the foll
 server/output/< specific username>/< video name > /< upload date >/< upload time>
 where < upload date> is in format of DD-MM-YY and < upload time> is in format of HH-MM-SS.
 
-Each specific upload contains the following fo
+Each specific upload contains the following folders:
+* frames - with annotations of OpenPose
+* swimfix_annotated_frames- with annotations of keypoints used after filter and interpolation of all keypoints (See link < extractor link >).
+* analytical_data - contains csv f
+* 
 				 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTYyMjc1OTQ1MiwzNjQ3NTU3NjYsMTE0Mz
-E5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgz
-ODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX
-0=
+eyJoaXN0b3J5IjpbNDU0NzAxNzE3LDM2NDc1NTc2NiwxMTQzMT
+k4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4
+OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ
+==
 -->
