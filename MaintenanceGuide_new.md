@@ -153,9 +153,9 @@ This module is able to calculate:
  In each function in this module, you can control the output file name, the location of this file, which columns will be export into figure, and even how to define the x-axis in the figures. This module enables the developer even to plot multifigures based on the same csvs and even comparison figures based on csv files with the same structure (e.g columns names).
 
  ### Evaluator Module
-This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module, in order to detect errors of technique of the filmed swimmer. The main function of this module is 
-At the bottom of the module there is a dictionary that binds between the errors description in the function that detects this error, and the main function of this module `perfomance_evaluator`runs over this dictionary and activate each function with the paths specified above.
-The effect of this module is 2 csv files. The first one keeps an id of error and its description. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected.
+This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module, in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
+At the bottom of the module there is a dictionary that binds between the errors description in the function that detects this error, and the main function of this module runs over this dictionary and activate each function with the paths specified above.
+The effect of this module is 2 csv files. The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected.
 
 ### File Management
  
@@ -163,6 +163,6 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjEwODU3NDE4LC03Mzc2NTgzODksLTIwMj
-A1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbMTY5NDk2MzU5NCwtNzM3NjU4Mzg5LC0yMD
+IwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
 -->
