@@ -194,11 +194,12 @@ The directory structure is as follows:
 Directory for future use, where one python function files would be stored here. Function naming format is identical to the format required here < link to evaluator >
 
 #### output
-
+This directory keeps all the files generated in the modules described before for all clients and videos uploaded before.
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzY0NzU1NzY2LDExNDMxOTg1MDYsLTEyNz
-MxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0
-NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbLTIxMDQxODcyNCwzNjQ3NTU3NjYsMTE0Mz
+E5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgz
+ODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX
+0=
 -->
