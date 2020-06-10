@@ -19,9 +19,9 @@ The system takes as input a video of swimming in a front crawl setting and outpu
     - **Performance evaluation** of the swimmer:
 	    - Error detection including multiple error types
 	    - Manuel error annotation on each frame of the video
-    - **Extraction & Visualization** of analytical measures based on the swimmer's pose in each frame of the video:
-		- Graphs of the keypoints' coordinates
-		- Graphs of the angles of the swimmer's shoulder/elbows/wrists
+    - **Extraction & Visualization** of analytical measures:
+		- The keypoints' coordinates in each frame
+		- The angles of the swimmer's shoulders/elbows/wrists
     - **Model Testing and Evaluation**
 	    - Manual video annotation.
 	    - Expected vs actual swimmer's pose.
@@ -64,6 +64,6 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDUzMzc1NjM4LDM5NTk0NjI1MSw4OTAxMT
-g0MDYsLTEzNzQ1NDkyMDBdfQ==
+eyJoaXN0b3J5IjpbLTkxNTUxMjA2OCw0NTMzNzU2MzgsMzk1OT
+Q2MjUxLDg5MDExODQwNiwtMTM3NDU0OTIwMF19
 -->
