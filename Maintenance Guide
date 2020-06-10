@@ -130,12 +130,12 @@ Those are the columns:
 `[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	This is the second stage in analysis process. This function takes the path to all key points extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
-	This csv contains rows for each frame, and columns describes the vectors by X,Y coordinates.
-	As shown in the skeleton image, the vectors we looks for are: right chest, left chest, right arm, left arm, right forearm, 
+	
 
-4. `generate_vectors_csv`
-	Generates all vectors defined by the key points defined
+3. `generate_vectors_csv`
+	This is the second stage in analysis process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
+	This csv contains rows for each frame, and columns describes the vectors by X,Y coordinates.
+	As shown in the skeleton image, the vectors we looks for are: right chest, left chest, right arm, left arm, right forearm, left forearm. The columns format is similar to the format described in the first function in this module.
 
 
 
@@ -145,11 +145,11 @@ Those are the columns:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU0Mjc3NzksLTE3NzM5NjQ1NDksLTgxMz
-g0MTc1OSw0ODAwNjMwMjQsLTgzMjY2MzA3LDEyMjc2MjgwNDAs
-MTY3NTQyMzk3NCwtMTc2MTY3NjA0LC01ODI2OTc2MjQsMjA2NT
-k5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEs
-LTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNj
-gzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDcz
-MjM1XX0=
+eyJoaXN0b3J5IjpbLTUzNDAxOTA0OCwtMTc3Mzk2NDU0OSwtOD
+EzODQxNzU5LDQ4MDA2MzAyNCwtODMyNjYzMDcsMTIyNzYyODA0
+MCwxNjc1NDIzOTc0LC0xNzYxNjc2MDQsLTU4MjY5NzYyNCwyMD
+Y1OTk5MjMyLDEwODA3NDQ1Miw1OTM0NTY4MjIsLTg0OTc2ODM2
+MSwtMTAyODAwOTM0NiwtMTEyMjQyMTEzOSwtNDc3ODQwMzUyLC
+02ODM4MTIyNTAsLTg2OTg4NDE2OSwtMjU5MTE2MjU3LC00MjA0
+NzMyMzVdfQ==
 -->
