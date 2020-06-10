@@ -99,12 +99,13 @@ The main responsibilities of the server is :
 
 ### Client Request Parser File
 This module is the gate for using functionalities of the server. 
+The parser takes the first word in the requests 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MzAyODU3NTEsMTY3NTQyMzk3NCwtMT
+eyJoaXN0b3J5IjpbLTIwMjE1Mzk4MTAsMTY3NTQyMzk3NCwtMT
 c2MTY3NjA0LC01ODI2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0
 NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLT
 ExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4
