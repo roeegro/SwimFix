@@ -167,8 +167,7 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 ### Tester Module
 This module is to compare csvs with same format of the manual annotations vs. automatic annotation returned from data_extractor module < link >, and generate csvs comparing each column and plotting figures based on the new csvs to emphasis the gap between the manual annotations to the automatic ones. By activating server we can measure the performance of the system.
  > **Note**: You can activate Tester module by calling
- > `Tester.start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename)
- > `.
+ > `Tester.start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename), only after you insured you have expected data for this video (see excepted_data < need link to section of this folder>), and after you run
 
 ### Output Manager Module
 This module purpose is to build dynamically folders for each upload and supply easy access to directories in order to store them generated files dynamically.
@@ -249,10 +248,10 @@ For running the system on your own device:
 5. For server side activation: from server/src, run "python main.py"
 6. For client side activation: execute run.py.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkzNDg0NjE4NCwtNDg3ODc4NTg5LC01Nz
-I2NTIzMzYsODUwMjUwMTMxLC0xOTg4OTAzNjMwLDEwMzI2NzEw
-MDYsMjE0MzA4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2NiwxMT
-QzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1
-ODM4OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNz
-ldfQ==
+eyJoaXN0b3J5IjpbLTEzMjM4MTQxOTUsLTQ4Nzg3ODU4OSwtNT
+cyNjUyMzM2LDg1MDI1MDEzMSwtMTk4ODkwMzYzMCwxMDMyNjcx
+MDA2LDIxNDMwODkwMDUsMTY1NzM0NTYzOSwzNjQ3NTU3NjYsMT
+E0MzE5ODUwNiwtMTI3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2
+NTgzODksLTIwMjA1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mz
+c5XX0=
 -->
