@@ -150,7 +150,7 @@ This module is able to calculate:
 
 ### Visualizer
  This module plot figures derived from csvs generated in other module.
- In each function in this module, you can control the output file name, the location of this file, which columns will be export into figure, and even how to define the x-axis in the figures. This module enables the developer even to plot multifigures based on the same csvs and even compario
+ In each function in this module, you can control the output file name, the location of this file, which columns will be export into figure, and even how to define the x-axis in the figures. This module enables the developer even to plot multifigures based on the same csvs and even comparison figures based on csv files with the same structure (e.g columns names).
 
  ### Evaluator Module
 
@@ -160,6 +160,6 @@ This module is able to calculate:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNTEzOTc1MzIsLTIwMjA1NjQ2OTMsMj
-Y0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbLTczNzY1ODM4OSwtMjAyMDU2NDY5MywyNj
+Q4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
