@@ -94,17 +94,18 @@ The main responsibilities of the server is :
 * Extracting key points of swimmer in the video.
 * Processing the data extracted from video.
 * Using the data to get analytics data for evaluation metrics measuring swimmer technique.
-* Management of files 
+* Management of files.
+* Returning responses to the client side. 
 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDAyMTQ2ODY0LC01ODI2OTc2MjQsMjA2NT
-k5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIyLC04NDk3NjgzNjEs
-LTEwMjgwMDkzNDYsLTExMjI0MjExMzksLTQ3Nzg0MDM1MiwtNj
-gzODEyMjUwLC04Njk4ODQxNjksLTI1OTExNjI1NywtNDIwNDcz
-MjM1LC0xNDg1NTgzOTc3LC0xNzQyMzE5MTcxLC0yMTE2NjQ0OT
-k5LC0xMTUwNTUyMDg4LC0zMzI0NTUzNjNdfQ==
+eyJoaXN0b3J5IjpbLTE3NjE2NzYwNCwtNTgyNjk3NjI0LDIwNj
+U5OTkyMzIsMTA4MDc0NDUyLDU5MzQ1NjgyMiwtODQ5NzY4MzYx
+LC0xMDI4MDA5MzQ2LC0xMTIyNDIxMTM5LC00Nzc4NDAzNTIsLT
+Y4MzgxMjI1MCwtODY5ODg0MTY5LC0yNTkxMTYyNTcsLTQyMDQ3
+MzIzNSwtMTQ4NTU4Mzk3NywtMTc0MjMxOTE3MSwtMjExNjY0ND
+k5OSwtMTE1MDU1MjA4OCwtMzMyNDU1MzYzXX0=
 -->
