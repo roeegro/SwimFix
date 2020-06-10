@@ -169,9 +169,16 @@ Stores zip files containing relevant content for user's request. Those files sen
 #### excepted_data
 Stores csvs and videos annotated by the manual tag defined in the test generator< link > 
 #### openpose
-This directory is not exist in the repository but should be added by the developer to the server side directory. This directory should contain the binaries necessary for execution of this pose estimation library's code. Please see this [link](https://github.com/CMU-Perceptual-Computing-Lab/openpose) in order to build Open
+
+This directory is not exist in the repository but should be added by the developer to the server side directory. This directory should contain the binaries necessary for execution of this pose estimation library's code. Please see this [link](https://github.com/CMU-Perceptual-Computing-Lab/openpose) in order to build OpenPose on your machine. After building OpenPose, remove into Server/openpose the following directories:
+* models
+* examples
+* build
+
+
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1ODExMDM5ODIsMTE0MzE5ODUwNiwtMT
-I3MzEwMzQ3MSwxMTIyMjQ3MzY0LC03Mzc2NTgzODksLTIwMjA1
-NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbLTMzNDc5MzAxMCwxMTQzMTk4NTA2LC0xMj
+czMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMjAyMDU2
+NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
