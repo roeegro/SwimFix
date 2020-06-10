@@ -59,11 +59,15 @@ def start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename):
                 actual_csv_path = actual_csvs_dir + '/' + file_name
                 expected_csv_path = expected_csvs_dir + '/' + file_name
                 compare_csvs(actual_csv_path, expected_csv_path, output_path, filename=filename_without_extension)
+                visualizer.plot_multi_graphs_from_other_csvs([expected_csv_path,actual_csv_path])
 
     interpolated_and_filtered_csv_path = actual_csvs_dir + '/interpolated_and_filtered_all_keypoints.csv'
     ground_truth_all_kp = output_manager.get_excepted_csv_path_for_movie(filename)
     visualizer.plot_multi_graphs_from_other_csvs([ground_truth_all_kp, interpolated_and_filtered_csv_path],
                                                  output_path=output_path)
+    row_data_path = actual_csvs_dir + '/all_keypoints.csv'
+    visualizer.plot_multi_graphs_from_other_csvs([ground_truth_all_kp, interpolated_and_filtered_csv_path,row_data_path],
+                                                 output_path=output_path,name_prefix='expected_vs_interpolated_vs_raw_data')
 
 
 def compare_csvs(actual_csv_path, expected_csv_path, output_path, filename='comparison.csv', tolerance=1,
@@ -119,4 +123,5 @@ if __name__ == '__main__':
     output_path = '<enter output path> '
     cols = ['RShoulderX', 'RShoulderY', 'RElbowX', 'RElbowY', 'RWristX', 'RWristY',
             'LShoulderX', 'LShoulderY', 'LElbowX', 'LElbowY', 'LWristX', 'LWristY']
-    compare_csvs(actual_path, expected_path, output_path, 5, cols)
+
+    # compare_csvs(actual_path, expected_path, output_path, 5, cols)

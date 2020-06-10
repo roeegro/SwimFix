@@ -143,7 +143,7 @@ def autolabel(rects, ax):
 
 
 def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True,
-                                      output_path=None):
+                                      output_path=None,name_prefix = ''):
     """ Plot single or multi figures from different csv files.
         **Very important assumption** : The columns must be the same when using this function for more than one csv path.
 
@@ -186,8 +186,8 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
             title = specific_y_col + ' comparison'
             plt.title = title
             df_to_new_csv = pd.DataFrame(data=dict_for_df).set_index(x_col)
-            df_to_new_csv.to_csv(analytics_path + '/' + specific_y_col + '_comparison.csv')
-            plt.savefig(figures_path + '/' + specific_y_col + '_by_' + x_col + '_comparison')
+            df_to_new_csv.to_csv(analytics_path + '/' + name_prefix + specific_y_col + '_comparison.csv')
+            plt.savefig(figures_path + '/' + name_prefix + specific_y_col + '_by_' + x_col + '_comparison')
             plt.close(fig)
 
 

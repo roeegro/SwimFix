@@ -358,7 +358,7 @@ def run_test(data, conn, params):
             movie_name)
 
         # facade.filter_and_interpolate(expected_all_kp_csv_path, filename, output_path=movie_ground_truth_data_dir)
-        frames_dir_path = output_manager.get_output_dir_path('frames_path')
+        frames_dir_path = output_manager.get_output_dir_path('swimfix_frames_path')
 
         from distutils.dir_util import copy_tree
         copy_tree(frames_dir_path, movie_frames_dir)

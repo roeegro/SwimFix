@@ -210,17 +210,7 @@ def test_results(video_name):
             print('finish receiving data')
 
     csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
-                                     predicate=lambda x: x in ['LElbowY_comparison', 'RElbowY_comparison',
-                                                               'LWristY_comparison', 'RWristY_comparison',
-                                                               'LShoulderY_comparison',
-                                                               'RShoulderY_comparison',
-                                                               'NoseY_comparison', 'NeckY_comparison',
-                                                               'LElbowX_comparison', 'RElbowX_comparison',
-                                                               'LWristX_comparison', 'RWristX_comparison',
-                                                               'LShoulderX_comparison',
-                                                               'RShoulderX_comparison',
-                                                               'NoseX_comparison', 'NeckX_comparison'
-                                                               ])
+                                     predicate=lambda x: x.endswith('_comparison'))
 
     frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])

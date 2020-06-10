@@ -25,28 +25,25 @@ function setImage(index) {
     frame_element = document.getElementById('current frame to show')
     frame_element.setAttribute('src', '/static/temp/annotated_frames/swimfix_annotated_frame_' + index + '.jpg')
 }
-function setPrevImage(){
+
+function setPrevImage() {
     frame_element = document.getElementById('current frame to show')
     img_path = frame_element.getAttribute('src')
-    if(img_path== null){
-        img_path= current_img_path
+    if (img_path == null) {
+        img_path = current_img_path
     }
-    console.log(img_path)
-    curr_index= img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
-    console.log(curr_index)
-    load_img(parseInt(curr_index-1))
+    curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
+    load_img(parseInt(curr_index - 1))
 }
 
-function setNextImage(){
+function setNextImage() {
     frame_element = document.getElementById('current frame to show')
     img_path = frame_element.getAttribute('src')
-    if(img_path== null){
-        img_path= current_img_path
+    if (img_path == null) {
+        img_path = current_img_path
     }
-    console.log(img_path)
-    curr_index= img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
-    console.log(curr_index)
-    load_img(parseInt(curr_index)+1)
+    curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
+    load_img(parseInt(curr_index) + 1)
 }
 
 function make_comparison_chart_from_csv(csv_path) {
@@ -58,8 +55,7 @@ function make_comparison_chart_from_csv(csv_path) {
 }
 
 function make_comparison_chart(csv_name, data) {
-    columns = d3.keys(data[0])
-    console.log(columns)
+    var columns = d3.keys(data[0])
 
     var frame_range = []
     // Load frame Numberes
@@ -96,49 +92,51 @@ function make_comparison_chart(csv_name, data) {
 
     charts_node.appendChild(card_shadow_div)
 
-    var y1_axis = []
-    var y2_axis = []
-    for (i = 0; i < data.length; i++) {
-        var value1 = (data[i])[columns[1]]
-        var value2 = (data[i])[columns[2]]
-        y1_axis.push(value1)
-        y2_axis.push(value2)
+    var y_axis = [];
+    for (j = 0; j < columns.length; j++) {
+        y_axis.push([])
+        for (i = 0; i < data.length; i++) {
+            var value = (data[i])[columns[j]]
+            y_axis[j].push(value)
+        }
     }
-
+    backgroundColors = []
+    pointHoverBackgroundColors = []
+    for (j = 0; j < columns.length; j++) {
+        if (j == 1) {
+            backgroundColors.push("rgba(78, 115, 223, 0.05)")
+            pointHoverBackgroundColors.push("rgba(78, 115, 223, 1)")
+        } else {
+            r = (244- (10^j) ).toString()
+            g = (115 - (4*j)).toString()
+            b = (223 - Math.pow(8,j)).toString()
+            backgroundColors.push("rgba(" + [r, g, b, 0.05].join(",") + ")")
+            pointHoverBackgroundColors.push("rgba(" + [r, g, b, 1].join(",") + ")")
+        }
+    }
+    dataToPut = []
+    for (j = 1; j < columns.length; j++) {
+        dataToPut.push({
+            label: columns[j],
+            lineTension: 0.3,
+            backgroundColor: backgroundColors[j],
+            borderColor: pointHoverBackgroundColors[j],
+            pointRadius: 3,
+            pointBackgroundColor: pointHoverBackgroundColors[j],
+            pointBorderColor: pointHoverBackgroundColors[j],
+            pointHoverRadius: 3,
+            pointHoverBackgroundColor: pointHoverBackgroundColors[j],
+            pointHoverBorderColor: pointHoverBackgroundColors[j],
+            pointHitRadius: 10,
+            pointBorderWidth: 2,
+            data: y_axis[j],
+        })
+    }
     myLineChart = new Chart(canvas_tag, {
         type: 'line',
         data: {
             labels: frame_range,
-            datasets: [{
-                label: columns[1],
-                lineTension: 0.3,
-                backgroundColor: "rgba(78, 115, 223, 0.05)",
-                borderColor: "rgba(78, 115, 223, 1)",
-                pointRadius: 3,
-                pointBackgroundColor: "rgba(255, 255, 255, 1)",
-                pointBorderColor: "rgba(78, 115, 223, 1)",
-                pointHoverRadius: 3,
-                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                pointHitRadius: 10,
-                pointBorderWidth: 2,
-                data: y1_axis,
-            },
-                {
-                    label: columns[2],
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgba(255, 0, 0, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(255, 255, 255, 1)",
-                    pointBorderColor: "rgba(255, 0, 0, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(255, 0, 0, 1)",
-                    pointHoverBorderColor: "rgba(255, 0, 0, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    data: y2_axis,
-                }],
+            datasets: dataToPut
         },
         options: {
             bezierCurve: true,
@@ -208,6 +206,109 @@ function make_comparison_chart(csv_name, data) {
             }
         }
     });
+    // myLineChart = new Chart(canvas_tag, {
+    //     type: 'line',
+    //     data: {
+    //         labels: frame_range,
+    //         datasets: [{
+    //             label: columns[1],
+    //             lineTension: 0.3,
+    //             backgroundColor: "rgba(78, 115, 223, 0.05)",
+    //             borderColor: "rgba(78, 115, 223, 1)",
+    //             pointRadius: 3,
+    //             pointBackgroundColor: "rgba(255, 255, 255, 1)",
+    //             pointBorderColor: "rgba(78, 115, 223, 1)",
+    //             pointHoverRadius: 3,
+    //             pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+    //             pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+    //             pointHitRadius: 10,
+    //             pointBorderWidth: 2,
+    //             data: y1_axis,
+    //         },
+    //             {
+    //                 label: columns[2],
+    //                 lineTension: 0.3,
+    //                 backgroundColor: "rgba(78, 115, 223, 0.05)",
+    //                 borderColor: "rgba(255, 0, 0, 1)",
+    //                 pointRadius: 3,
+    //                 pointBackgroundColor: "rgba(255, 255, 255, 1)",
+    //                 pointBorderColor: "rgba(255, 0, 0, 1)",
+    //                 pointHoverRadius: 3,
+    //                 pointHoverBackgroundColor: "rgba(255, 0, 0, 1)",
+    //                 pointHoverBorderColor: "rgba(255, 0, 0, 1)",
+    //                 pointHitRadius: 10,
+    //                 pointBorderWidth: 2,
+    //                 data: y2_axis,
+    //             }],
+    //     },
+    //     options: {
+    //         bezierCurve: true,
+    //         maintainAspectRatio: false,
+    //         layout: {
+    //             padding: {
+    //                 left: 10,
+    //                 right: 25,
+    //                 top: 25,
+    //                 bottom: 0
+    //             }
+    //         },
+    //         scales: {
+    //             xAxes: [{
+    //                 time: {
+    //                     unit: 'date'
+    //                 },
+    //                 gridLines: {
+    //                     display: false,
+    //                     drawBorder: false
+    //                 },
+    //                 ticks: {
+    //                     maxTicksLimit: 7
+    //                 }
+    //             }],
+    //             yAxes: [{
+    //                 ticks: {
+    //                     maxTicksLimit: 5,
+    //                     padding: 10,
+    //                     // Include a dollar sign in the ticks
+    //                     callback: function (value, index, values) {
+    //                         return number_format(value);
+    //                     }
+    //                 },
+    //                 gridLines: {
+    //                     color: "rgb(234, 236, 244)",
+    //                     zeroLineColor: "rgb(234, 236, 244)",
+    //                     drawBorder: false,
+    //                     borderDash: [2],
+    //                     zeroLineBorderDash: [2]
+    //                 }
+    //             }],
+    //         },
+    //         legend: {
+    //             display: true
+    //         },
+    //         tooltips: {
+    //             backgroundColor: "rgb(255,255,255)",
+    //             bodyFontColor: "#858796",
+    //             titleMarginBottom: 10,
+    //             titleFontColor: '#6e707e',
+    //             titleFontSize: 14,
+    //             borderColor: '#dddfeb',
+    //             borderWidth: 1,
+    //             xPadding: 15,
+    //             yPadding: 15,
+    //             displayColors: false,
+    //             intersect: false,
+    //             mode: 'index',
+    //             caretPadding: 10,
+    //             callbacks: {
+    //                 label: function (tooltipItem, chart) {
+    //                     var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+    //                     return datasetLabel + ' ' + number_format(tooltipItem.yLabel);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
 
 
     document.getElementById(canvas_id).onclick = function (evt) {
