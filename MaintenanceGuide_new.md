@@ -164,10 +164,12 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
 
 ### Tester
 
+
 ### Output Manager Module
 This module purpose is to build dynamically folders for each upload and supply easy access to directories in order to store them generated files dynamically.
 This module use dictionary that map between a name of desired path to its actual path in output path hierarchy < link to output hierarchy, appears below>.
-The output manager also enables you to know if there is a ground_truth file in expected data < link to the section below in file management>, and also build environment to impla
+The output manager also enables you to know if there is a ground_truth file in expected data < link to the section below in file management>, and also build environment to locate the test results in. See Tester < link to Tester section> for more details.
+
 ### File Management
  
 The server side includes some directories for files management.
@@ -242,10 +244,10 @@ For running the system on your own device:
 5. For server side activation: from server/src, run "python main.py"
 6. For client side activation: execute run.py.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg1MDg5ODg3OSwtNDg3ODc4NTg5LC01Nz
-I2NTIzMzYsODUwMjUwMTMxLC0xOTg4OTAzNjMwLDEwMzI2NzEw
-MDYsMjE0MzA4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2NiwxMT
-QzMTk4NTA2LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1
-ODM4OSwtMjAyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNz
-ldfQ==
+eyJoaXN0b3J5IjpbMzE2MTE3MTA3LC00ODc4Nzg1ODksLTU3Mj
+Y1MjMzNiw4NTAyNTAxMzEsLTE5ODg5MDM2MzAsMTAzMjY3MTAw
+NiwyMTQzMDg5MDA1LDE2NTczNDU2MzksMzY0NzU1NzY2LDExND
+MxOTg1MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4
+Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV
+19
 -->
