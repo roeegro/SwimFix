@@ -218,10 +218,10 @@ For this guide, we will call our new functionality new_functionality:
 4. Go to client_request_parser.py file and add in the dictionary in the bottom of the page an entry with 'new_request_type': new_functionality.
 5. Create in the same page function named new_functionality that receives all the parameters that the other functions in this page got. You can use those functions to create a code snippet that receives files from client, or sending message or file to the server (if you have to).
 6. Create in facade module a function that abstracts the functionality you want to create, and call it from the function you created in section 5.
-7. According to 
+7. According to your needs, feel free to add new functionalities for other modules existing in the project.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1MjI4MzcxMSwyMTQzMDg5MDA1LDE2NT
+eyJoaXN0b3J5IjpbLTQ4NzA5MTM4NCwyMTQzMDg5MDA1LDE2NT
 czNDU2MzksMzY0NzU1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0
 NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLD
 I2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
