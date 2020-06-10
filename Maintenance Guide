@@ -98,13 +98,14 @@ The main responsibilities of the server is :
 * Returning responses to the client side. 
 
 ### Client Request Parser File
-This
+This module is the gate for using functionalities of the server. 
+In the bottom of the page there is a 
  
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ5NDUzOTEwMiwtMTc2MTY3NjA0LC01OD
+eyJoaXN0b3J5IjpbMTY3NTQyMzk3NCwtMTc2MTY3NjA0LC01OD
 I2OTc2MjQsMjA2NTk5OTIzMiwxMDgwNzQ0NTIsNTkzNDU2ODIy
 LC04NDk3NjgzNjEsLTEwMjgwMDkzNDYsLTExMjI0MjExMzksLT
 Q3Nzg0MDM1MiwtNjgzODEyMjUwLC04Njk4ODQxNjksLTI1OTEx
