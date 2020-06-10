@@ -5,6 +5,7 @@
 1. [Introduction](#Introduction)
 2. [Client Side](#Client Side)
 	* [Routes File](#Routes File)
+	* [Gui Utils](#Routes File)
 	* [Directory Management](#)
 	* [Video Trimmer](#)
 	* [Test Generator](#)
@@ -57,7 +58,8 @@ Using this arguments in the respective html code is done as follows
     {{parameter name}}
 
 > **Note**: Url address definition, function name and html page redirection returned in the end of the function name must be consistent, correlative and named by html and python conventions respectively.
-
+### Gui Utils
+A small module with some functions d
  ### Directory Management
  
  **temp -** Contains zip files with information hold in the server, and some temporal folder which holds files to be shown in the browser.
@@ -221,8 +223,8 @@ For this guide, we will call our new functionality new_functionality:
 7. According to your needs, feel free to add new functionalities for other modules existing in the project.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAzMjY3MTAwNiwyMTQzMDg5MDA1LDE2NT
-czNDU2MzksMzY0NzU1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0
-NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLD
-I2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbLTE4MjcwMjc5NjYsMTAzMjY3MTAwNiwyMT
+QzMDg5MDA1LDE2NTczNDU2MzksMzY0NzU1NzY2LDExNDMxOTg1
+MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC
+0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
 -->
