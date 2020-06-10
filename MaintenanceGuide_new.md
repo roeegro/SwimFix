@@ -211,10 +211,12 @@ For this guide, we will call our new functionality new_functionality:
 >**Assumption**: We create an empty page without any extra-ordinary feature. 
 
 1. In client/src/templates, create new-functionality.html.
-2. In client/src/routes.py create function with the format shown here < routes link>
+2. In client/src/routes.py create function with the format shown here < routes link>.
+3. You can help some other function in routes in order to write code sending message to the server, with the following format: < new_request_type > ...
+4. 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU2ODM4Nzc4LDE2NTczNDU2MzksMzY0Nz
+eyJoaXN0b3J5IjpbNzAwNDMxMjM0LDE2NTczNDU2MzksMzY0Nz
 U1NzY2LDExNDMxOTg1MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2
 NCwtNzM3NjU4Mzg5LC0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMT
 M3ODQ5NDM3OV19
