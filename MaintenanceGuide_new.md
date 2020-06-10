@@ -59,7 +59,7 @@ Using this arguments in the respective html code is done as follows
 
 > **Note**: Url address definition, function name and html page redirection returned in the end of the function name must be consistent, correlative and named by html and python conventions respectively.
 ### Gui Utils
-A small module with some functions d
+A small module with some functions for files manipulation such as extracting data from zip file got from server, getting specific files from zip, crucifixion with errors map (id and description), to swimmers error so
  ### Directory Management
  
  **temp -** Contains zip files with information hold in the server, and some temporal folder which holds files to be shown in the browser.
@@ -223,8 +223,8 @@ For this guide, we will call our new functionality new_functionality:
 7. According to your needs, feel free to add new functionalities for other modules existing in the project.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4MjcwMjc5NjYsMTAzMjY3MTAwNiwyMT
-QzMDg5MDA1LDE2NTczNDU2MzksMzY0NzU1NzY2LDExNDMxOTg1
-MDYsLTEyNzMxMDM0NzEsMTEyMjI0NzM2NCwtNzM3NjU4Mzg5LC
-0yMDIwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
+eyJoaXN0b3J5IjpbMzI2OTU3NjgyLDEwMzI2NzEwMDYsMjE0Mz
+A4OTAwNSwxNjU3MzQ1NjM5LDM2NDc1NTc2NiwxMTQzMTk4NTA2
+LC0xMjczMTAzNDcxLDExMjIyNDczNjQsLTczNzY1ODM4OSwtMj
+AyMDU2NDY5MywyNjQ4NzE1MDUsLTEzNzg0OTQzNzldfQ==
 -->
