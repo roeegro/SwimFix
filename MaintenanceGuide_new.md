@@ -161,10 +161,13 @@ The effect of this module is 2 csv files. The first one keeps an id of error and
  
 The server side includes some directories for files management.
 
+#### videos
+each video sent to the server is stored in this directory for future use of the developers.
 
-
+#### temp
+Stores files
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjY0NDU0NzE0LC03Mzc2NTgzODksLTIwMj
-A1NjQ2OTMsMjY0ODcxNTA1LC0xMzc4NDk0Mzc5XX0=
+eyJoaXN0b3J5IjpbLTQ2MjY3MzIwMywtNzM3NjU4Mzg5LC0yMD
+IwNTY0NjkzLDI2NDg3MTUwNSwtMTM3ODQ5NDM3OV19
 -->
