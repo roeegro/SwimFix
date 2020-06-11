@@ -43,10 +43,10 @@ The client allows users to upload a video of a front crawl swimming. The video i
 For detailed information and guidelines please visit [our](https://github.com/roeegro/SwimFix/blob/master/client/README.md) guide.
 ## Inference
 Our server-side consists of a inference module based on the [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) library which estimates the swimmer's pose in every frame of the video given as input from the web client and then evaluates the swimmer's performance based on the estimation.
-To install OpenPose, please check [our](https://github.com/roeegro/SwimmingProject/blob/master/server/OpenPoseSetupGuide.md) quick guide or go to the official repository linked above.
+To install OpenPose, please check [our](https://github.com/roeegro/SwimmingProject/blob/master/server/README.md) quick guide or go to the official repository linked above.
 ## Training Infrastructure
 We created a training infrastructure for training your own custom model on your own data using the official  [OpenPose Train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
-For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Train%20Setup%20Guide.md) out.
+For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/README.md) out.
 
 > **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
 
@@ -66,5 +66,5 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwMTc2MDU4NTcsMTAzNzUwMTk0XX0=
+eyJoaXN0b3J5IjpbMzg0OTQ0MzgsMTAzNzUwMTk0XX0=
 -->
