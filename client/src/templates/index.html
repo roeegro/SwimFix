@@ -37,7 +37,7 @@
         <!-- Nav Item - Tables -->
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('admin_index') }}">
-                <i class="fas fa-fw fa-table"></i>
+                <i class="fas fa-fw fa-briefcase"></i>
                 <span>Admin Panel</span></a>
         </li>
         {% endif %}
@@ -45,36 +45,35 @@
         <!-- Nav Item - Tables -->
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('load_video') }}">
-                <i class="fas fa-fw fa-table"></i>
+                <i class="fas fa-fw fa-camera"></i>
                 <span>Load video</span></a>
-        </li>
-
-
-        <!-- Nav Item - Tables -->
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('about') }}">
-                <i class="fas fa-fw fa-table"></i>
-                <span>About</span></a>
         </li>
 
         <!-- Nav Item - previous-feedbacks -->
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('previous_feedbacks') }}">
-                <i class="fas fa-fw fa-table"></i>
+                <i class="fas fa-fw fa-calendar-alt"></i>
                 <span>Previous Feedbacks</span></a>
         </li>
 
         <!-- Nav Item - previous-feedbacks -->
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('forum', page='0') }}">
-                <i class="fas fa-fw fa-table"></i>
+                <i class="fas fa-fw fa-pencil-alt"></i>
                 <span>Forum</span></a>
+        </li>
+
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('about') }}">
+                <i class="fas fa-fw fa-info-circle"></i>
+                <span>About</span></a>
         </li>
 
         <!-- Nav Item - Logout -->
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('logout') }}">
-                <i class="fas fa-fw fa-table"></i>
+                <i class="fas fa-fw fa-sign-out-alt"></i>
                 <span>Logout</span></a>
         </li>
 

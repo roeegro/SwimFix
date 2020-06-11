@@ -313,28 +313,6 @@ def forum(page):
     topics = pickle.loads(send_msg_to_server(msg))
     pinned = {}
 
-    # cur = mysql.connection.cursor()
-    # if page == 0:
-    #     cur.execute('''
-    #         SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-    #         FROM TOPICS
-    #         INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-    #         LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-    #         WHERE TOPICS.ISPINNED = TRUE
-    #         GROUP BY TOPICS.ID
-    #         ORDER BY LASTPOST DESC;''')
-    #     pinned = cur.fetchall()
-    # cur.execute('''
-    #     SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-    #     FROM TOPICS
-    #     INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-    #     LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-    #     WHERE TOPICS.ISPINNED = FALSE
-    #     GROUP BY TOPICS.ID
-    #     ORDER BY LASTPOST DESC
-    #     LIMIT %s, %s''', (offset, limit + 1,))
-    # topics = cur.fetchall()
-
     if len(topics) > limit:
         nextPageExists = True
     topics = topics[:limit]
@@ -525,9 +503,9 @@ def plug_and_play():
                 flash('The file {} was uploaded successfully'.format(file.filename), 'success')
                 return admin_index()
             else:
-                flash('Failed to upload python file. Please try again', 'failure')
+                flash('Failed to upload python file. Please try again', 'danger')
         else:
-            flash('Failed to upload python file. Please try again', 'failure')
+            flash('Failed to upload python file. Please try again', 'danger')
     return render_template('plug-and-play.html', isAdmin=is_admin())
 
 
@@ -618,3 +596,24 @@ def user_feedback(details):
     return render_template('user-feedback.html', zip_name=zip_name, data=[], frames=frames_paths_dict,
                            errors_list=error_description_by_frames,
                            isAdmin=is_admin(), first_frame_number=first_frame_num, last_frame_number= last_frame_num)
+
+
+@app.route('/add-admin/<id_to_promote>/', methods=['GET', 'POST'])
+def add_admin(id_to_promote):
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    if id_to_promote and int(id_to_promote):
+        print(id_to_promote)
+        promote_msg="make_admin user_id: {}".format(id_to_promote)
+        answer = send_msg_to_server(promote_msg).decode('utf-8')
+        if answer == "failure":
+            flash("Failed to promote user. Please try again","danger")
+        else:
+            flash("Promoted successfully", 'success')
+
+    msg = 'view_users'
+    users_details = pickle.loads(send_msg_to_server(msg))
+
+    return render_template('add-admin.html', data=users_details, isAdmin=is_admin())

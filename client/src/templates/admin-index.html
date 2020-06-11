@@ -1,25 +1,32 @@
 {% extends 'index.html' %}
 {% block admin_menu %}
 
+<!-- Nav Item - Tables -->
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('add_admin', id_to_promote='0') }}">
+        <i class="fas fa-fw fa-award"></i>
+        <span>Add Admin</span></a>
+</li>
+
 <!-- Nav Item - Add new test -->
 <li class="nav-item">
     <a class="nav-link" href="{{ url_for('add_test') }}">
         <i class="fas fa-fw fa-chart-area"></i>
-        <span>Add new Test</span></a>
+        <span>Add New Test</span></a>
 </li>
 
 <!-- Nav Item - Tables -->
 <li class="nav-item">
     <a class="nav-link" href="{{ url_for('plug_and_play') }}">
-        <i class="fas fa-fw fa-table"></i>
+        <i class="fas fa-fw fa-plug"></i>
         <span>Plug & Play</span></a>
 </li>
 
 <!-- Nav Item - Tables -->
 <li class="nav-item">
     <a class="nav-link" href="{{ url_for('run_test') }}">
-        <i class="fas fa-fw fa-table"></i>
-        <span>Select and run test</span></a>
+        <i class="fas fa-fw fa-cloud-upload-alt"></i>
+        <span>Select and Run Test</span></a>
 </li>
 
 <!-- Nav Item - Tables -->
