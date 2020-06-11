@@ -1,16 +1,22 @@
-from flask_login import login_user, logout_user, current_user
+from io import StringIO
+import pickle
+import socket
 from gui_utils import *
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, jsonify
 from forms import RegistrationForm, LoginForm
-from client.src.models import User
+import threading
+import re
+import os
 from test_generator import run
-from . import app, db, bcrypt
+from . import app, SERVER_IP, SERVER_PORT
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
+IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
 
 def is_admin():
-    return session.get('isAdmin') if session and session.get('logged_in') else False
+    return session.get('isAdmin') if session else False
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -19,38 +25,52 @@ def allowed_file(filename):
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
-    return render_template('about.html',isAdmin=is_admin())
+    return render_template('about.html', isAdmin=is_admin())
 
 
 @app.route('/forgot-password')
 def forgot_password():
-    return render_template('forgot-password.html',isAdmin=is_admin())
+    return render_template('forgot-password.html', isAdmin=is_admin())
 
 
 @app.route('/add-test', methods=['GET', 'POST'])
 def add_test():
-    try:
-        run()
-    finally:
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+    add_test_thread = threading.Thread(target=run)
+    add_test_thread.start()
+    while add_test_thread.is_alive():
+        time.sleep(5)
+    # add_test_thread.join()
+    from test_generator import success_sending_flag
+    time.sleep(5)
+    if success_sending_flag == 'exit':
+        flash('No test uploaded to the server', 'info')
         return redirect(url_for("admin_index"))
+    if not success_sending_flag:
+        flash('Failed to upload test files', 'danger')
+    else:
+        flash('The test files were uploaded successfully', 'success')
+    return redirect(url_for("admin_index"))
 
 
 @app.route('/admin-index', methods=['GET', 'POST'])
 def admin_index():
-    if is_admin():
-        return render_template('admin-index.html',isAdmin=is_admin())
-    flash("You are not authorized to access this page", 'failure')
+    if is_admin() == 'True':
+        return render_template('admin-index.html', isAdmin=is_admin())
+    flash("You are not authorized to access this page", 'danger')
     return redirect(url_for('index'))
 
 
 @app.route('/charts')
 def charts():
-    return render_template('charts.html',isAdmin=is_admin())
+    return render_template('charts.html', isAdmin=is_admin())
 
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html',isAdmin=is_admin())
+    return render_template('index.html', isAdmin=is_admin())
 
 
 @app.route("/load-video", methods=['GET', 'POST'])
@@ -58,71 +78,262 @@ def load_video():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            upload_video_file(app.config['UPLOAD_FOLDER'], file)
+            videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file)
+            print(videos_paths_to_upload)
             userID = session.get('ID') if session and session.get('logged_in') else 0
-            upload_file_sql(file.filename.split('.')[0],userID)
+            for video_path in videos_paths_to_upload:
+                video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
+                # to create the output dir from the server
+                # create_dir_if_not_exists('output')
+                # create_dir_if_not_exists('../../server/videos/')
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((SERVER_IP, SERVER_PORT))
+                    msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
+                    print('UPLOAD {} '.format(msg))
+                    s.sendall(msg.encode('utf-8'))
+                    start_msg = s.recv(1024)  # for 'start' message
+                    if start_msg.decode('utf-8') != 'start':
+                        flash('Failed to upload video file. Please try again', 'failure')
+                        return render_template('load-video.html', isAdmin=is_admin())
+                    f = open(video_path, 'rb')
+                    # send the file
+                    l = f.read(1024)
+                    while l:
+                        s.send(l)
+                        print("Sending data")
+                        l = f.read(1024)
+                    f.close()
             flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            return previous_feedbacks()
+            return redirect(url_for('index'))
         else:
             flash('Failed to upload video file. Please try again', 'failure')
-    return render_template('load-video.html',isAdmin=is_admin())
+    return render_template('load-video.html', isAdmin=is_admin())
 
 
-def upload_file_sql(filename, user_id=0):
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        INSERT INTO FILES(NAME, CREATORID)
-        VALUE (%s, %s)
-        ''', (filename, user_id))
-    mysql.connection.commit()
-    cur.close()
-    return
+def get_size_of_file_path(file_path):
+    f = open(file_path, 'rb')
+    f.seek(0, 2)  # moves the file object's position to the end of the file.
+    size = f.tell()
+    f.close()
+    return size
+
+
+@app.route("/run-test", methods=['GET', 'POST'])
+def run_test():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            videos_paths_to_upload = upload_video_file(app.config['UPLOAD_FOLDER'], file, should_take_full_video=True)
+            userID = session.get('ID') if session and session.get('logged_in') else 0
+            for video_path in videos_paths_to_upload:
+                video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((SERVER_IP, SERVER_PORT))
+                    msg = 'run_test user_id: {} filename: {} file_size: {}'.format(userID, video_name,
+                                                                                   get_size_of_file_path(video_path))
+                    s.sendall(msg.encode('utf-8'))
+                    start_msg = s.recv(1024)  # for 'start' message
+                    while start_msg.decode('utf-8') != 'start':
+                        if start_msg.decode('utf-8') == 'not found':
+                            flash('No test found for this video', 'info')
+                            return render_template('run-test.html')
+                        start_msg = s.recv(1024)
+                    f = open(video_path, 'rb')
+                    # send the file
+                    l = f.read(1024)
+                    while l:
+                        s.send(l)
+                        print("Sending data")
+                        l = f.read(1024)
+                    f.close()
+
+            flash('The file {} was uploaded successfully'.format(file.filename), 'success')
+            return redirect(url_for('admin_index'))
+        else:
+            flash('Failed to upload video file. Please try again', 'failure')
+    return render_template('run-test.html')
+
+
+@app.route('/tests-results', methods=['GET', 'POST'])
+def tests_results():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    # connect and ask for all list
+    data_recieved = ''
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_tests_list'
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        files_details = data.decode('utf-8')
+
+    if files_details == 'Fail':
+        return render_template('tests-results.html', data=list(), isAdmin=is_admin())
+    print('available tests are : {}'.format(files_details))
+    files_details = files_details.split(',')
+    data_to_pass = list()
+    for file_detail in files_details[:-1]:
+        try:
+            new_data = dict()
+            new_data['video_name'] = file_detail
+            data_to_pass.append(new_data)
+        except:
+            continue
+
+    return render_template('tests-results.html', data=data_to_pass, isAdmin=is_admin())
+
+
+@app.route('/test-results/<video_name>', methods=['GET', 'POST'])
+def test_results(video_name):
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_test_results filename: {}'.format(video_name)
+        s.sendall(msg.encode('utf-8'))
+
+        path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(video_name)
+        with open(path_to_zip, 'wb') as f:
+            data = s.recv(1024)
+            while data:
+                print('getting test zip into temp directory ...')
+                f.write(data)
+                data = s.recv(1024)
+            print('finish receiving data')
+
+    csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                     expected_file_names=['LElbowY_comparison', 'RElbowY_comparison',
+                                                          'LWristY_comparison', 'RWristY_comparison',
+                                                          'LShoulderY_comparison', 'RShoulderY_comparison',
+                                                          'NoseY_comparison', 'NeckY_comparison',
+                                                          'LElbowX_comparison', 'RElbowX_comparison',
+                                                          'LWristX_comparison', 'RWristX_comparison',
+                                                          'LShoulderX_comparison', 'RShoulderX_comparison',
+                                                          'NoseX_comparison', 'NeckX_comparison'
+                                                          ])
+
+    frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'])
+    sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+    frames_paths = sorted(frames_paths, key=sort_lambda)
+    print(frames_paths)
+    frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+    first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+    return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
+                           isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
 def previous_feedbacks():
-    user_id= session.get('ID') if session and session.get('logged_in') else 0
-    data_to_pass = get_previous_feedbacks(user_id)
-    return render_template('previous-feedbacks.html', data=data_to_pass,isAdmin=is_admin())
+    # connect and ask for all list
+    user_id = session.get('ID') if session and session.get('logged_in') else 0
+    data_recieved = ''
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'view_feedbacks_list user_id: {}'.format(user_id)
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        files_details = data.decode('utf-8')
+
+    if files_details == 'Fail':
+        return render_template('previous-feedbacks.html', data=list(), isAdmin=is_admin())
+
+    files_details = files_details.split(',')
+    data_to_pass = list()
+    for file_detail in files_details:
+        try:
+            name_and_date = file_detail.split('__')
+            zip_date = name_and_date[1]
+            new_data = dict()
+            new_data['date'] = zip_date
+            new_data['zip_name'] = name_and_date[0]  # with no extension
+            new_data['movie_name'] = name_and_date[0].split('_from')[0]
+            data_to_pass.append(new_data)
+        except:
+            continue
+
+    return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
 
 
 @app.route('/previous-feedback/<zip_name>', methods=['GET', 'POST'])
 def previous_feedback(zip_name):
-    csvs_dir, csvs_paths = get_all_csvs_paths(zip_name)
-    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
-    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass,isAdmin=is_admin())
+    user_id = session.get('ID') if session and session.get('logged_in') else 0
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        # s.setblocking(0)  # non blocking
+        s.connect((SERVER_IP, SERVER_PORT))
+        zip_name_to_send = zip_name.split('.')[0]
+        msg = 'view_graphs user_id: {} filename: {}'.format(user_id, zip_name_to_send)
+        print('PREVIOUS FEEDBACK msg = {}'.format(msg))
+        s.sendall(msg.encode('utf-8'))
+        zip_location = os.getcwd() + '/static/temp'
+        path_to_zip = zip_location + '/{}.zip'.format(zip_name)
+        if not os.path.exists(zip_location):
+            os.mkdir(zip_location)
+        with open(path_to_zip, 'wb') as f:
+            data = s.recv(1024)
+            while data:
+                print('getting zip into temp directory ...')
+                f.write(data)
+                data = s.recv(1024)
+            print('finish receiving data')
 
+    csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
+                                     expected_file_names=['all_keypoints', 'angles', 'detected_keypoints',
+                                                          'interpolated_all_keypoints',
+                                                          'interpolated_and_filtered_all_keypoints'])
+
+    frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
+    sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
+    frames_paths = sorted(frames_paths, key=sort_lambda)
+    frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
+    first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+    data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
+
+    return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
+                           isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
 # Forum
 @app.route("/forum/<page>")
 def forum(page):
     page = int(page)
-    cur = mysql.connection.cursor()
     limit = 30
     offset = limit * page
     nextPageExists = False
+    msg = 'forum_view_page offset: {} limit: {}'.format(offset, limit)
+    topics = pickle.loads(send_msg_to_server(msg))
     pinned = {}
-    if page == 0:
-        cur.execute('''
-            SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-            FROM TOPICS
-            INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-            LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-            WHERE TOPICS.ISPINNED = TRUE
-            GROUP BY TOPICS.ID
-            ORDER BY LASTPOST DESC;''')
-        pinned = cur.fetchall()
-    cur.execute('''
-        SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
-        FROM TOPICS
-        INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
-        LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
-        WHERE TOPICS.ISPINNED = FALSE
-        GROUP BY TOPICS.ID
-        ORDER BY LASTPOST DESC
-        LIMIT %s, %s''', (offset, limit + 1,))
-    topics = cur.fetchall()
+
+    # cur = mysql.connection.cursor()
+    # if page == 0:
+    #     cur.execute('''
+    #         SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
+    #         FROM TOPICS
+    #         INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
+    #         LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
+    #         WHERE TOPICS.ISPINNED = TRUE
+    #         GROUP BY TOPICS.ID
+    #         ORDER BY LASTPOST DESC;''')
+    #     pinned = cur.fetchall()
+    # cur.execute('''
+    #     SELECT TOPICS.ID, TOPICS.NAME, USERS.USERNAME AS 'CREATOR', Count(POSTS.ID) AS 'POSTS', MAX(POSTS.CREATION_DATE) AS 'LASTPOST'
+    #     FROM TOPICS
+    #     INNER JOIN USERS ON TOPICS.CREATORID = USERS.ID
+    #     LEFT JOIN POSTS ON POSTS.TOPICID = TOPICS.ID
+    #     WHERE TOPICS.ISPINNED = FALSE
+    #     GROUP BY TOPICS.ID
+    #     ORDER BY LASTPOST DESC
+    #     LIMIT %s, %s''', (offset, limit + 1,))
+    # topics = cur.fetchall()
 
     if len(topics) > limit:
         nextPageExists = True
@@ -131,7 +342,8 @@ def forum(page):
     if len(topics) == 0 and page != 0:
         return redirect("/forum/" + str(page - 1))
 
-    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists,isAdmin=is_admin())
+    return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page, nextPageExists=nextPageExists,
+                           isAdmin=is_admin())
 
 
 @app.route("/forum/topic/<forumPage>/<topicID>/<page>")
@@ -139,24 +351,35 @@ def topic(forumPage, topicID, page):
     page = int(page)
     limit = 10
     nextPageExists = False
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        SELECT TOPICS.NAME, TOPICS.ISPINNED
-        FROM TOPICS
-        WHERE TOPICS.ID = %s;''', (topicID,))
-    topic = cur.fetchone()
-    if not topic:
+
+    msg = 'forum_topic_name topic_id: {}'.format(topicID)
+    name = send_msg_to_server(msg).decode("utf-8")
+
+    # cur = mysql.connection.cursor()
+    # cur.execute('''
+    #     SELECT TOPICS.NAME, TOPICS.ISPINNED
+    #     FROM TOPICS
+    #     WHERE TOPICS.ID = %s;''', (topicID,))
+    # topic = cur.fetchone()
+    # if not topic:
+    #     return redirect("/forum/" + forumPage)
+    if not name:
         return redirect("/forum/" + forumPage)
-    name = topic['NAME']
-    isPinned = int(topic['ISPINNED'])
-    cur.execute('''
-        SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
-        FROM POSTS
-        INNER JOIN USERS ON POSTS.CREATORID = USERS.ID
-        WHERE POSTS.TOPICID = %s
-        ORDER BY POSTS.CREATION_DATE
-        LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
-    posts = cur.fetchall()
+    # name = topic['NAME']
+    # isPinned = int(topic['ISPINNED'])
+    isPinned = 0
+    msg = 'forum_view_topic topic_id: {} page: {} limit: {}'.format(topicID, page, limit)
+    posts = pickle.loads(send_msg_to_server(msg))
+
+    # cur.execute('''
+    #     SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN
+    #     FROM POSTS
+    #     INNER JOIN USERS ON POSTS.CREATORID = USERS.ID
+    #     WHERE POSTS.TOPICID = %s
+    #     ORDER BY POSTS.CREATION_DATE
+    #     LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
+    # posts = cur.fetchall()
+
     if len(posts) > limit:
         nextPageExists = True
     if len(posts) == 0 and page != 0:
@@ -168,15 +391,15 @@ def topic(forumPage, topicID, page):
 
 # Create post, topic
 
-def createPostFunction(content, topicID, userID=0):
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
-        VALUE (%s, %s, %s)
-        ''', (content, userID, topicID))
-    mysql.connection.commit()
-    cur.close()
-    return
+# def createPostFunction(content, topicID, userID=0):
+#     cur = mysql.connection.cursor()
+#     cur.execute('''
+#         INSERT INTO POSTS(CONTENT, CREATORID, TOPICID)
+#         VALUE (%s, %s, %s)
+#         ''', (content, userID, topicID))
+#     mysql.connection.commit()
+#     cur.close()
+#     return
 
 
 @app.route("/forum/createPost", methods=['POST'])
@@ -190,7 +413,9 @@ def createPost():
         flash(u"Post must contain content!", "danger")
     else:
         userID = session.get('ID') if session and session.get('logged_in') else 0
-        createPostFunction(content, topicID, userID)
+        msg = 'forum_create_post user_id: {} topic_id: {} content: {}'.format(userID, topicID, content)
+        send_msg_to_server(msg)
+        # createPostFunction(content, topicID, userID)
     return redirect("/forum/topic/0/" + topicID + "/" + page)
 
 
@@ -204,27 +429,38 @@ def createTopic():
     if not content or not title:
         flash(u"Topic must contain content and title!", "danger")
     else:
-        cur = mysql.connection.cursor()
-        cur.execute('''
-            INSERT INTO TOPICS(NAME, CREATORID)
-            VALUE (%s, %s)
-            ''', (title, userID))
-        mysql.connection.commit()
-        topicID = cur.lastrowid
-        cur.close()
-        createPostFunction(content, topicID, userID)
+        msg = 'forum_create_topic user_id: {} title: {} content: {}'.format(userID, title, content)
+        topicID = send_msg_to_server(msg).decode("utf-8")
+
+        # cur = mysql.connection.cursor()
+        # cur.execute('''
+        #     INSERT INTO TOPICS(NAME, CREATORID)
+        #     VALUE (%s, %s)
+        #     ''', (title, userID))
+        # mysql.connection.commit()
+        # topicID = cur.lastrowid
+        # cur.close()
+        # createPostFunction(content, topicID, userID)
         return redirect("/forum/topic/0/" + str(topicID) + "/0")
     return redirect("/forum")
+
+
+def send_msg_to_server(msg):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        s.sendall(msg.encode('utf-8'))
+        answer = b''
+        part_answer = s.recv(1024)
+        while part_answer:
+            answer += part_answer
+            part_answer = s.recv(1024)
+        return answer
 
 
 # Login / Register / Logout scripts
 @app.route('/', methods=['GET', 'POST'])
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    # if session and session['logged_in']:
-    #     print(session['logged_in'])
-    #     return redirect(url_for('index'))
-
     form = LoginForm(request.form)
     if not form.validate_on_submit():
         return render_template('login.html', title='Login', form=form)
@@ -232,19 +468,17 @@ def login():
     _username = request.form['username']
     _passwd = request.form['password']
 
-    cur = mysql.connection.cursor()
-    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s", (_username,))
+    msg = 'login username: {} password: {}'.format(_username, _passwd)
 
-    if res > 0:
-        user = cur.fetchone()
-
-        if bcrypt.check_password_hash(user['PASSWORD_HASH'], _passwd):
-            session['ID'] = user['ID']
-            session['username'] = user['USERNAME']
-            session['logged_in'] = True
-            session['isAdmin'] = (user['ISADMIN'] == 1)
-            flash(u"You're now logged in!", "info")
-            return redirect(url_for('index'))
+    answer = send_msg_to_server(msg).decode("utf-8")
+    answer = answer.split()
+    if answer[0] != "Fail:":
+        session['ID'] = answer[0]
+        session['username'] = answer[1]
+        session['logged_in'] = answer[2]
+        session['isAdmin'] = answer[3]
+        flash(u"You're now logged in!", "success")
+        return redirect(url_for('index'))
 
     flash(u"Incorrect login", "danger")
     return redirect(url_for('login'))
@@ -259,25 +493,17 @@ def register():
     _username = form.username.data
     _passwd = request.form['password']
     _email = request.form['email']
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'register username: {} password: {} email: {}'.format(_username, _passwd, _email)
+        s.sendall(msg.encode('utf-8'))
+        data = s.recv(1024)
+        data = data.decode("utf-8")
+        if data.split(' ')[0] == "Fail:":
+            flash(data, "danger")
+            return redirect(url_for('register'))
 
-    if len(_username) < 2 or len(_username) > 20:
-        flash(u"Incorrect username lenght!", "danger")
-        return redirect(url_for('panel'))
-
-    cur = mysql.connection.cursor()
-    res = cur.execute("SELECT * FROM USERS WHERE USERNAME = %s OR EMAIL = %s", (_username, _email))
-
-    if res != 0:
-        flash(u"User exists!", "danger")
-        return redirect(url_for('panel'))
-
-    passwordHash = bcrypt.generate_password_hash(_passwd).decode('utf-8')
-    cur.execute("INSERT INTO USERS(USERNAME, EMAIL, PASSWORD_HASH) VALUES (%s, %s, %s)",
-                (_username, _email, passwordHash))
-
-    mysql.connection.commit()
-    cur.close()
-    flash(u"You're now registered!", "info")
+    flash(u"You're now registered!", "success")
     return redirect(url_for('login'))
 
 
@@ -289,6 +515,9 @@ def logout():
 
 @app.route("/plug-and-play", methods=['POST', 'GET'])
 def plug_and_play():
+    if not is_admin() == 'True':
+        flash("You are not authorized to access this page", 'danger')
+        return redirect(url_for('index'))
     if request.method == 'POST':
         file = request.files['file']
         if file:
@@ -300,4 +529,45 @@ def plug_and_play():
                 flash('Failed to upload python file. Please try again', 'failure')
         else:
             flash('Failed to upload python file. Please try again', 'failure')
-    return render_template('plug-and-play.html',isAdmin=is_admin())
+    return render_template('plug-and-play.html', isAdmin=is_admin())
+
+
+# Helpers
+
+@app.route("/_pass_data/", methods=['GET', 'POST'])
+def _pass_data():
+    data_as_json = request.get_json()
+    image_b64 = data_as_json['img']
+    path_to_save_img_in = os.getcwd() + data_as_json['current img path']
+    import base64
+    image_data = re.sub('^data:image/.+;base64,', '', image_b64)
+    image_data = base64.b64decode(image_data)
+    userID = session.get('ID') if session and session.get('logged_in') else 0
+    filename = path_to_save_img_in.split('/')[-1]
+    zip_name = data_as_json['current url'].split('/')[-1]
+    with open(path_to_save_img_in, "wb") as f:
+        f.write(image_data)
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'upload_image_fix user_id: {} video_name: {} filename: {} file_size: {}'.format(userID, zip_name,
+                                                                                              filename,
+                                                                                              get_size_of_file_path(
+                                                                                                  path_to_save_img_in))
+        print(msg)
+        s.sendall(msg.encode('utf-8'))
+        start_msg = s.recv(1024)  # for 'start' message
+        while start_msg.decode('utf-8') != 'start':
+            if start_msg.decode('utf-8') == 'not found':
+                flash('No test found for this video', 'info')
+                return render_template('run-test.html')
+            start_msg = s.recv(1024)
+        print('path to read from {}'.format(path_to_save_img_in))
+        with open(path_to_save_img_in, "rb") as f:
+            l = f.read(1024)
+            while l:
+                s.send(l)
+                print("Sending data")
+                l = f.read(1024)
+
+    return jsonify({'returned_url': url_for('previous_feedback', zip_name=zip_name)})

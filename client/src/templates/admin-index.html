@@ -14,6 +14,22 @@
         <i class="fas fa-fw fa-table"></i>
         <span>Plug & Play</span></a>
 </li>
+
+<!-- Nav Item - Tables -->
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('run_test') }}">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Select and run test</span></a>
+</li>
+
+<!-- Nav Item - Tables -->
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('tests_results') }}">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Tests Results</span></a>
+</li>
+
+
 {% endblock admin_menu %}
 
 {% block content %}

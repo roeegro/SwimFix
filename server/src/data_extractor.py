@@ -3,15 +3,21 @@ import math
 import cv2
 import numpy as np
 from scipy import interpolate
-import extract_frames as f
 import output_manager
 import utils
 import pandas as pd
-# import main
+
 from main import *
 
 
-def generate_vectors_csv(csv_path, filename='vectors.csv'):
+def generate_vectors_csv(csv_path, filename='vectors.csv', output_path=None):
+    """ Generates csv file with vectors from csv file contains all key points derived earlier.
+
+    :param csv_path: path to csv file contains all key points information derived before using this function.
+    :param filename: file name of generated file.
+    :param output_path: path to generated csv file to be located in.
+    :return: path to generated csv file to be located in.
+    """
     df = pd.read_csv(csv_path)
     df.reset_index(drop=True, inplace=True)
     vectors_df = pd.DataFrame(
@@ -25,10 +31,10 @@ def generate_vectors_csv(csv_path, filename='vectors.csv'):
     # kp_cols.remove('Frame Number')
     for idx, frame in df.iterrows():
         frame_vectors = {'Frame Number': frame['Frame Number'],
-                         'RChestX': frame['RShoulderX'] - frame['ChestX'],
-                         'RChestY': frame['RShoulderY'] - frame['ChestY'],
-                         'LChestX': frame['LShoulderX'] - frame['ChestX'],
-                         'LChestY': frame['LShoulderY'] - frame['ChestY'],
+                         'RChestX': frame['RShoulderX'] - frame['NeckX'],
+                         'RChestY': frame['RShoulderY'] - frame['NeckY'],
+                         'LChestX': frame['LShoulderX'] - frame['NeckX'],
+                         'LChestY': frame['LShoulderY'] - frame['NeckY'],
                          'RArmX': frame['RShoulderX'] - frame['RElbowX'],
                          'RArmY': frame['RShoulderY'] - frame['RElbowY'],
                          'LArmX': frame['LShoulderX'] - frame['LElbowX'],
@@ -38,16 +44,18 @@ def generate_vectors_csv(csv_path, filename='vectors.csv'):
                          'LForearmX': frame['LElbowX'] - frame['LWristX'],
                          'LForearmY': frame['RElbowY'] - frame['RWristY'], }
         vectors_df = vectors_df.append(frame_vectors, ignore_index=True)
-    outp_path = output_manager.get_analytics_dir() + '/' + filename
+    outp_path = output_manager.get_analytics_dir() + '/' + filename if output_path is None else output_path + '/' + filename
     pd.DataFrame.to_csv(vectors_df, outp_path, index=False)
     return outp_path
 
 
 def dotproduct(v1, v2):
+    """ Returns the dot product of 2 vectors.  """
     return sum((a * b) for a, b in zip(v1, v2))
 
 
 def length(v):
+    """ Returns the normal of vector.  """
     return math.sqrt(dotproduct(v, v))
 
 
@@ -76,7 +84,14 @@ def angle_between(v1, v2):
     # return np.arccos(np.dot(v1_u, v2_u))
 
 
-def generate_angles_csv(csv_path, filename='angles.csv'):
+def generate_angles_csv(csv_path, filename='angles.csv', output_path=None):
+    """ Generates a csv file contains relevant angles for swimmers, derived from csv_path contains vectors.
+
+    :param csv_path:  a path to csv that contains vectors.
+    :param filename: file name of the generated csv.
+    :param output_path: path to generated csv.
+    :return: path to generated csv.
+    """
     vectors_df = pd.read_csv(csv_path)
     angles_df = pd.DataFrame(columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng'])
     for idx, frame in vectors_df.iterrows():
@@ -94,12 +109,12 @@ def generate_angles_csv(csv_path, filename='angles.csv'):
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
-    outp_path = output_manager.analytical_df_to_csv(angles_df, filename)
+    outp_path = output_manager.analytical_df_to_csv(angles_df, filename, output_path=output_path)
     # pd.DataFrame.to_csv(angles_df, filname, index=False)
     return outp_path
 
 
-def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
+def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None, output_path=None):
     df = pd.read_csv(csv_path)
     if score_cols is None:
         if filename is None:
@@ -110,7 +125,7 @@ def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
             filename = 'is_' + '_'.join(score_cols) + 'detected.csv'
         score_cols = list(map(utils.keypoint_to_score, score_cols))
     is_detected_cols = list(map(lambda x: x.replace('Score', ''), score_cols))
-    path = output_manager.get_analytics_dir() + '/' + filename
+    path = output_manager.get_analytics_dir() + '/' + filename if output_path is None else output_path + '/' + filename
     is_detected_df = pd.DataFrame(columns=['Frame Number'] + is_detected_cols)
     for idx, frame in df.iterrows():
         is_detected_frame = {'Frame Number': frame['Frame Number']}
@@ -127,11 +142,20 @@ def generate_detected_keypoints_csv(csv_path, score_cols=None, filename=None):
 
 
 def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filename=None, output_path=None):
+    """ Generates csv file contains all key points given in csv_path after interpolation of coordinates values.
+
+    :param csv_path: a path to csv contains all key points coordinates.
+    :param y_cols: columns of key points coordinates to be interpolated.
+    :param x_col: column from csv_path to be the index of the generated csv.
+    :param filename: file name for the generated csv file.
+    :param output_path: path to generate csv file to.
+    :return: path to the generated csv file.
+    """
     df = pd.read_csv(csv_path)
     if output_path is None:
         output_path = output_manager.get_analytics_dir()
     if y_cols is None:
-        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))[1:]
+        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))
         y_cols = cols.copy()
         y_cols.remove(x_col)
         path = output_path + '/interpolated_' + utils.path_without_suffix(utils.get_file_name(csv_path)) + '.csv'
@@ -170,47 +194,24 @@ def generate_interpolated_csv(csv_path, y_cols=None, x_col='Frame Number', filen
     return path
 
 
-body_parts = utils.get_body_parts()
+body_parts = utils.get_body_parts()  # all body parts to be used in our analysis.
 
 
-# Recieves args from main (including video path) and params to configure the library
-# Creates 3 csv files(all keypoints, valid and invalid ones) and emplace wire-frame.
 def get_keypoints_csv_from_video(video_path, params):
+    """ Generates csv files contains information about key points, derived from video located in video_path.
+        Key points detection is done by OpenPose library using configurations defined in params.
+        The function also generates video with annotation of OpenPose and frames of this video.
+        All those outputs are located in Server/output/<username>/<current date>/<current time>
+
+    :param video_path: path to video to be extracted key points from.
+    :param params: Dictionary contains OpenPose configurations.
+    :return: path to csv file that contains all key points extracted from video using OpenPose.
+    """
     video_name = utils.get_file_name(video_path)
     video_name = utils.path_without_suffix(video_name)
-    output_dirs = output_manager.generate_dirs_for_output_of_movie(video_name)
+    output_dirs = output_manager.get_output_dirs_dict()  # must be created before calling to this function.
     size = (600, 480)
     annotated_video_cap = cv2.VideoWriter('annotated_video.avi', cv2.VideoWriter_fourcc(*'MP4V'), 30, size)
-
-    # Extract frames
-    # f.extract_frames_by_file(file=video_path, output=output_dirs['time_path'])
-
-    # # sort frames by creation time
-    # # path to the directory (relative or absolute)
-    # dirpath = output_dirs['output_movie_dir'] + '\\frames'
-    # list_of_frames = [name for name in os.listdir(dirpath)]
-    # frame_to_index = list(map(lambda  file_name : {'path':file_name ,'index':utils.get_id_of_file(utils.filename_without_prefix(file_name))} , list_of_frames))
-    # frame_to_index = sorted(frame_to_index, key=lambda k: (int)(k['index']))
-    # params['image_dir'] = output_dirs['output_movie_dir'] + '\\frames'
-    # params['write_images'] =output_dirs['output_movie_dir'] + '\\images'
-    # # Starting OpenPose
-    # opWrapper = op.WrapperPython()
-    # # print(params)
-    # opWrapper.configure(params)
-    # opWrapper.start()
-    # datum = op.Datum()
-    #
-    # for i in range(0,len(frame_to_index)-1):
-    #     print(i)
-    #     frame = cv2.imread(dirpath + '\\'+ frame_to_index[i]['path'])
-    #     datum.cvInputData = frame
-    #     opWrapper.emplaceAndPop([datum])
-    #     output = datum.poseKeypoints
-    #     cv2.waitKey(10)
-    #     cv2.imshow("OpenPose 1.5.1 - Tutorial Python API", datum.cvOutputData)
-    #     converter = op.OpOutputToCvMat()
-    #     cv2.imwrite(output_dirs['output_movie_dir'] + '\\images',converter.formatToCvMat(datum.cvOutputData))
-    # cv2.destroyAllWindows()
 
     # Starting OpenPose
     opWrapper = op.WrapperPython()
@@ -221,133 +222,93 @@ def get_keypoints_csv_from_video(video_path, params):
     datum = op.Datum()
     print("path is {}".format(video_path))
     cap = cv2.VideoCapture(video_path)
-    valid_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
-    invalid_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
+    valid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
+    invalid_frames_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
     all_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts)
     frame_detected_df = pd.DataFrame(columns=['Frame Number', 'Detected'])
-    frame_counter = 0
-    all_keypoints_df_csv_path = ''
+    frame_counter = utils.get_number_of_start_frame(video_name)
+
     while cap.isOpened():
         check, frame = cap.read()
         if not check:
             break
         resized_frame = cv2.resize(frame, (600, 480), fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
-        # resized_frame = cv2.resize(frame, dsize=(720, 480))
+        # emplace keypoints
         datum.cvInputData = resized_frame
         opWrapper.emplaceAndPop([datum])
-        output = datum.poseKeypoints
-
+        detected_keypoints = datum.poseKeypoints
+        annotated_frame = datum.cvOutputData
+        annotated_video_cap.write(annotated_frame)
+        cv2.imshow('Annotated frame', annotated_frame)
+        cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), annotated_frame)
         # Extracting points coordinates into csv file
         if not datum.poseKeypoints.shape == ():
-            first_person = output[0]
-            current_frame_array = []
-            coors = [math.nan] * int(len(body_parts) / 3)
+            first_person_keypoints = detected_keypoints[0]
+            current_frame_keypoints = np.array([frame_counter])
             # make representation of each relevant point
-            for i, body_part in enumerate(first_person):
+            for i, body_part in enumerate(first_person_keypoints):
                 if i < len(body_parts) / 3:  # take only 8 first points which are relevant to our detection
-                    xCoor = body_part[0]
-                    yCoor = body_part[1]
-                    score = body_part[2]
-                    if xCoor == 0:
-                        xCoor = math.nan
-                    if yCoor == 0:
-                        yCoor = math.nan
-                    if score == 0:
-                        score = math.nan
-                    current_frame_array += [xCoor, yCoor, score]
-                    coors[i] = (xCoor, yCoor)
-            annotated_frame = get_annotated_frame(frame, coors)
-            cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), datum.cvOutputData)
-            annotated_video_cap.write(annotated_frame)
+                    xCoor = body_part[0] if body_part[0] != 0 else math.nan
+                    yCoor = body_part[1] if body_part[1] != 0 else math.nan
+                    score = body_part[2] if body_part[2] != 0 else math.nan
+                    body_part_keypoints = np.array([xCoor, yCoor, score])  # specific keypoint
+                    # concat to the keypoints detected in this frame
+                    current_frame_keypoints = np.append(current_frame_keypoints, body_part_keypoints)
 
-            # Concatenate record of current frame number
-            current_frame_array = [frame_counter] + current_frame_array
-            current_frame_df = pd.DataFrame(
-                current_frame_array).T  # make the array as a line to be concatenated to in the csv.
-            # Concatenate from left new feature of Number frame
-            current_frame_df.columns = ['Frame Number'] + body_parts
-            # if has no basic anomaly - append it to valid keypoints df. Otherwise - to invalid keypoints
-            is_valid = valid_frame(current_frame_df.loc[:, 'NeckX':])
-            if is_valid:  # Check the dataframe without the number frame property
-                valid_keypoints_df = pd.concat([valid_keypoints_df, current_frame_df], sort=False)
-                # Update csv file
-                valid_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv")
+            current_frame_keypoints_df = pd.DataFrame(columns=['Frame Number'] + body_parts,
+                                                      data=[current_frame_keypoints])
+            all_keypoints_df = pd.concat([all_keypoints_df, current_frame_keypoints_df], sort=False)
+            if valid_frame(current_frame_keypoints_df.loc[:, 'NeckX':]):
+                # if True:
+                valid_frames_df = pd.concat([valid_frames_df, current_frame_keypoints_df], sort=False)
+                frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 1]])])
             else:
-                invalid_keypoints_df = pd.concat([invalid_keypoints_df, current_frame_df], sort=False)
-                # Update csv file
-                invalid_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv")
-
-            # Anyway append it to all keypoints
-            all_keypoints_df = pd.concat([all_keypoints_df, current_frame_df], sort=False)
-            # Update csv file
-            all_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv")
-
-            # and anyway add it to detected
-            current_detected_frame_array = [frame_counter, 0 if not is_valid else 1]
-            current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
-            current_detected_frame_df.columns = ['Frame Number', 'Detected']
-            frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
+                invalid_frames_df = pd.concat(
+                    [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
+                                                                                                  ([np.nan] * len(
+                                                                                                      body_parts))])],
+                    sort=False)
+                frame_detected_df = pd.concat([frame_detected_df, pd.DataFrame(data=[[frame_counter, 0]])])
         else:
-            cv2.imwrite(output_dirs['frames_path'] + "/annotated_frame_{}.jpg".format(frame_counter), datum.cvOutputData)
-            annotated_video_cap.write(frame)
-            nan_record = [frame_counter]
-            nan_record = nan_record + [math.nan] * len(body_parts)
-            nan_record_df = pd.DataFrame(nan_record).T
-            nan_record_df.columns = ['Frame Number'] + body_parts
-            all_keypoints_df = pd.concat([all_keypoints_df, nan_record_df], sort=False)
-            # Update csv file
-            all_keypoints_df_csv_path = output_dirs['analytical_data_path'] + "/all_keypoints.csv"
-            all_keypoints_df.to_csv(all_keypoints_df_csv_path)
-            current_detected_frame_array = [frame_counter, 0]
-            current_detected_frame_df = pd.DataFrame(current_detected_frame_array).T
-            current_detected_frame_df.columns = ['Frame Number', 'Detected']
-            frame_detected_df = pd.concat([frame_detected_df, current_detected_frame_df], sort=False)
-            frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv")
-
-        # if not args[0].no_display:
-        cv2.imshow("body from video", datum.cvOutputData)
-
-        key = cv2.waitKey(1)
+            all_keypoints_df = pd.concat(
+                [all_keypoints_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
+                                                                                             ([np.nan] * len(
+                                                                                                 body_parts))])],
+                sort=False)
+            invalid_frames_df = pd.concat(
+                [invalid_frames_df, pd.DataFrame(columns=['Frame Number'] + body_parts, data=[[frame_counter] +
+                                                                                              ([np.nan] * len(
+                                                                                                  body_parts))])],
+                sort=False)
+            frame_detected_df = pd.concat(
+                [frame_detected_df, pd.DataFrame(columns=['Frame Number', 'Detected'], data=[[frame_counter, 0]])],
+                sort=False)
 
         frame_counter += 1
+        key = cv2.waitKey(1)
 
     # When everything done, release
     # the video capture object
     print("finished")
     cap.release()
-    shutil.copy('annotated_video.avi', output_dirs['annotated_video'])
     annotated_video_cap.release()
+    shutil.move('annotated_video.avi', output_dirs['annotated_video'])
+    valid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/valid_keypoints.csv", index=False)
+    invalid_frames_df.to_csv(output_dirs['analytical_data_path'] + "/invalid_keypoints.csv", index=False)
+    frame_detected_df.to_csv(output_dirs['analytical_data_path'] + "/is_frame_detected.csv", index=False)
+    all_keypoints_df.to_csv(output_dirs['analytical_data_path'] + "/all_keypoints.csv", index=False)
     # Closes all the frames
     cv2.destroyAllWindows()
 
-    return all_keypoints_df_csv_path
+    return output_dirs['analytical_data_path'] + "/all_keypoints.csv"
 
 
-# coors - coors is list of tuples and lines are list of lists of pairs
-# returns an annotated frame
-def get_annotated_frame(frame, coors, lines=[[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [1, 5], [5, 6], [6, 7]]):
-    annotated_frame = frame
-    for line in lines:
-        from_kp_index = line[0]
-        to_kp_index = line[1]
-        from_point = coors[from_kp_index]
-        to_point = coors[to_kp_index]
-        if not math.isnan(from_point[0]) and not math.isnan(from_point[1]):
-            annotated_frame = cv2.circle(annotated_frame, from_point, 1, (0, 255, 0), thickness=1)
-        if not math.isnan(to_point[0]) and not math.isnan(to_point[1]):
-            annotated_frame = cv2.circle(annotated_frame, coors[to_kp_index], 1, (0, 255, 0), thickness=1)
-        try:
-            annotated_frame = cv2.line(annotated_frame, to_point, from_point, (0, 255, 0),
-                                       thickness=1)
-        except:
-            continue
-    return annotated_frame
-
-
-# Basic check if frame is valid to be included in the analytical data
-# Checks if critic data (Elbows,Shoulders...) is 0
 def valid_frame(current_frame_df):
+    """ Checks if frame contains enough information to be included in 'valid_keypoints.csv'
+
+    :param current_frame_df: Pandas DataFrame contains row of key points extracted in some frame.
+    :return: True if frame contains enough information to be included in 'valid_keypoints.csv'. Otherwise-  False.
+    """
     number_of_detected_body_parts = 0
     frame = current_frame_df.iloc[0]
     neck_detected = (not (float)(frame[0]) == 0.) and (not (float)(frame[1]) == 0.)
@@ -359,3 +320,317 @@ def valid_frame(current_frame_df):
             number_of_detected_body_parts > number_of_body_parts * 0.6 and neck_detected):
         return True
     return False
+
+
+def filter_and_interpolate(csv_path, y_cols=None, x_col='Frame Number', filename=None, output_path=None,
+                           min_interval_length=3, score_threshold=0.4):
+    """ Gets path to csv file contains all key points in 'get_keypoints_csv_from_video'.
+        The function takes this file, build intervals for neck,nose,right side and left side with 'min_interval_length'
+        length contains key points with scores higher than 'score_threshold', extend each interval and merge between
+        some intervals, and filter key points coordinates which are not in some intervals.
+
+    :param csv_path: All key points csv path.
+    :param y_cols:
+    :param x_col: Index of input and output of csv path.
+    :param filename: File name of the generated csv file after the process.
+    :param output_path: Path of the generated csv file after the process.
+    :param min_interval_length: Minimum initial intervals length for some body part.
+    :param score_threshold: Minimum confidence score of some key point to be located in the interval.
+    :return: Path of the generated csv file after the process.
+    """
+    df = pd.read_csv(csv_path)
+    if output_path is None:
+        output_path = output_manager.get_analytics_dir()
+    if y_cols is None:
+        cols = list(filter(lambda name: 'Score' not in name, df.columns.values))
+        y_cols = cols.copy()
+        y_cols.remove(x_col)
+        path = output_path + '/interpolated_and_filtered_' + utils.path_without_suffix(
+            utils.get_file_name(csv_path)) + '.csv'
+    elif type(y_cols) == str:
+        y_cols = [y_cols]
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    else:
+        cols = y_cols + [x_col]
+        path = output_path + '/' + '_'.join(y_cols) + '.csv'
+    if filename is not None:
+        path = output_path + '/' + filename + '.csv'
+
+    df['Frame Number'].astype('int64')
+    df = df.set_index('Frame Number')
+
+    df_to_show = df.drop(columns=df.columns.difference(cols), axis=1)
+    sides = ['L', 'R']
+    intervals_list = list()
+    intervals_per_side = dict()
+    for side in sides:
+        interval_list_per_hand = get_relevant_intervals_for_hand(df, side,
+                                                                 min_interval_length, score_threshold)
+        extended_interval_list_per_hand = try_extend_intervals_by_side(df, interval_list_per_hand, side)
+        merged_interval_list_per_hand = try_merge_between_intervals(extended_interval_list_per_hand)
+        print('after merging intervals')
+        print(merged_interval_list_per_hand)
+        intervals_per_side[side] = merged_interval_list_per_hand
+        side_cols = list(filter(lambda name: name.startswith(side), y_cols))
+        for interval in merged_interval_list_per_hand:
+            intervals_list.append(interval)
+            start_interval_frame = int(interval['start'])
+            end_interval_frame = int(interval['end'])
+            interval_df = df.loc[start_interval_frame:end_interval_frame, side_cols]
+            try:
+                interval_df.loc[interval['frames_to_inerpolate'], interval_df.columns] = np.nan
+            except:
+                continue  # for some perfect intervals which we don't have to fix.
+            for col_name in side_cols:
+                interval_df[col_name].interpolate(method='cubic', inplace=True)
+                df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
+                    interval['frames_to_inerpolate'], col_name]  # update df
+
+    filter_frames_without_reliable_info(df_to_show, intervals_per_side, sides)
+
+    intervals_per_body_part = dict()
+    for body_part in ['Nose', 'Neck']:
+        interval_list_per_body_part = get_relevant_intervals_for_body_part(df, body_part, min_interval_length,
+                                                                           score_threshold)
+        extended_interval_list_body_part = try_extend_intervals_by_body_part(df, interval_list_per_body_part, body_part)
+        merged_interval_list_per_body_part = try_merge_between_intervals(extended_interval_list_body_part)
+        body_cols = list(filter(lambda name: name.startswith(body_part), y_cols))
+        intervals_per_body_part[body_part] = merged_interval_list_per_body_part
+        for interval in merged_interval_list_per_body_part:
+            intervals_list.append(interval)
+            start_interval_frame = int(interval['start'])
+            end_interval_frame = int(interval['end'])
+            interval_df = df.loc[start_interval_frame:end_interval_frame, body_cols]
+            try:
+                interval_df.loc[interval['frames_to_inerpolate'], interval_df.columns] = np.nan
+            except:
+                continue  # for some perfect intervals which we don't have to fix.
+            for col_name in body_cols:
+                interval_df[col_name].interpolate(method='cubic', inplace=True)
+                df_to_show.loc[interval['frames_to_inerpolate'], col_name] = interval_df.loc[
+                    interval['frames_to_inerpolate'], col_name]  # update df
+
+    filter_frames_without_reliable_info(df_to_show, intervals_per_body_part, ['Nose', 'Neck'])
+    df_to_show.to_csv(path)
+    return path
+
+
+def try_extend_intervals_by_side(df, interval_list_per_hand, side):
+    """ Tries to extend intervals. For each interval, calculates the average distance of wrist Y coordinate
+        over frames in interval. Then, the function looks for frames next and before the interval that
+        change is smaller than avg. change and upward trend is identical to upward trend in the frames
+        key points inside the interval.
+
+    :param df: Pandas Dataframe of all key points derived from path given in 'filter_and_interpolate'.
+    :param interval_list_per_hand: list of initial intervals per hand from some side
+    :param side: 'L' - left hand side , 'R' - right hand side
+    :return: List with extended intervals.
+    """
+    extended_interval_list_per_hand = list()
+    relevant_body_parts = list(filter(lambda name: name.startswith(side), df.columns))
+    for interval in interval_list_per_hand:
+        start_interval_frame = int(interval['start'])
+        new_start_interval_frame = start_interval_frame
+        end_interval_frame = int(interval['end'])
+        new_end_interval_frame = end_interval_frame
+        interval_df = df.loc[start_interval_frame:end_interval_frame, relevant_body_parts]
+
+        # calculate avg distance
+        avg_distance = 0
+        for index, row in interval_df.iterrows():
+            if index == start_interval_frame:
+                continue
+            avg_distance += math.fabs(
+                float(interval_df[side + 'WristY'][index]) - float(interval_df[side + 'WristY'][index - 1]))
+        avg_distance = avg_distance / (len(interval_df) - 1)
+        # Look forward
+        forward_upward_trend = True if float(df[side + 'WristY'][end_interval_frame]) > float(
+            df[side + 'WristY'][end_interval_frame - 1]) else False
+        backward_upward_trend = True if float(df[side + 'WristY'][start_interval_frame + 1]) > float(
+            df[side + 'WristY'][start_interval_frame]) else False
+
+        try:
+            while math.fabs(float(df[side + 'WristY'][new_end_interval_frame]) - float(
+                    df[side + 'WristY'][new_end_interval_frame - 1])) < avg_distance and \
+                    float(df[side + 'WristY'][new_end_interval_frame]) > float(
+                df[side + 'WristY'][new_end_interval_frame - 1]) is forward_upward_trend:
+                new_end_interval_frame += 1
+        except:
+            new_end_interval_frame -= 1  # because we get out of bounds of df
+
+        # Look backward
+        try:
+            while math.fabs(float(df[side + 'WristY'][new_start_interval_frame]) - float(
+                    df[side + 'WristY'][new_start_interval_frame + 1])) < avg_distance and \
+                    (float(df[side + 'WristY'][new_start_interval_frame + 1]) - float(
+                        df[side + 'WristY'][new_start_interval_frame]) > 0) is backward_upward_trend:
+                new_start_interval_frame -= 1
+        except:
+            new_start_interval_frame += 1  # because we get out of bounds of df
+
+        extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame})
+    return extended_interval_list_per_hand
+
+
+def try_extend_intervals_by_body_part(df, interval_list_per_hand, body_part):
+    """ Similar to 'try_extend_intervals_by_side' but does the same for specific body_part"""
+    extended_interval_list_per_hand = list()
+    relevant_body_parts = list(filter(lambda name: name.startswith(body_part), df.columns))
+    for interval in interval_list_per_hand:
+        start_interval_frame = int(interval['start'])
+        new_start_interval_frame = start_interval_frame
+        end_interval_frame = int(interval['end'])
+        new_end_interval_frame = end_interval_frame
+        interval_df = df.loc[start_interval_frame:end_interval_frame, relevant_body_parts]
+
+        # calculate avg distance
+        avg_distance = 0
+        for index, row in interval_df.iterrows():
+            if index == start_interval_frame:
+                continue
+            avg_distance += math.fabs(
+                float(interval_df[body_part + 'Y'][index]) - float(interval_df[body_part + 'Y'][index - 1]))
+        avg_distance = avg_distance / (len(interval_df) - 1)
+
+        # Look forward
+        forward_upward_trend = True if float(df[body_part + 'Y'][end_interval_frame]) - float(
+            df[body_part + 'Y'][end_interval_frame - 1]) > 0 else False
+        backward_upward_trend = True if float(df[body_part + 'Y'][start_interval_frame + 1]) - float(
+            df[body_part + 'Y'][start_interval_frame]) > 0 else False
+        try:
+            while math.fabs(float(df[body_part + 'Y'][new_end_interval_frame]) - float(
+                    df[body_part + 'Y'][new_end_interval_frame - 1])) < avg_distance and \
+                    (float(df[body_part + 'Y'][new_end_interval_frame]) - float(
+                        df[body_part + 'Y'][new_end_interval_frame - 1]) > 0) is forward_upward_trend:
+                new_end_interval_frame += 1
+        except:
+            new_end_interval_frame -= 1  # because we get out of bounds of df
+        frames_to_interpolate = np.arange(end_interval_frame + 1,
+                                          new_end_interval_frame + 1)
+        # Look backward
+        try:
+            while math.fabs(float(df[body_part + 'Y'][new_start_interval_frame]) - float(
+                    df[body_part + 'Y'][new_start_interval_frame + 1])) < avg_distance and \
+                    (float(df[body_part + 'Y'][new_start_interval_frame + 1]) - float(
+                        df[body_part + 'Y'][new_start_interval_frame]) > 0) is backward_upward_trend:
+                new_start_interval_frame -= 1
+        except:
+            new_start_interval_frame += 1  # because we get out of bounds of df
+        # extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame,
+        #                                         'frames_to_inerpolate': np.sort(np.append(frames_to_interpolate , np.arange(
+        #                                             new_start_interval_frame,
+        #                                             start_interval_frame)))})
+        extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame})
+    # print('after extension of each interval')
+    # print(extended_interval_list_per_hand)
+    return extended_interval_list_per_hand
+
+
+def get_relevant_intervals_for_body_part(all_keypoints_df, body_part, min_interval_length, score_threshold):
+    """ Goes over all_keypoints_df and build intervals s.t |interval| > min_interval_length, and
+        foreach frame in interval: the score of body_part in frame is higher than score_threshold.
+
+    :param all_keypoints_df: Pandas Dataframe of all key points derived from path given in 'filter_and_interpolate'.
+    :param body_part: selected body_part to be build confident frames interval for.
+    :param min_interval_length: Minimum length for frames interval.
+    :param score_threshold: The score of body_part in frame is higher than score_threshold
+    :return: Intervals list for body part as described above.
+    """
+    current_interval_len_counter = 0
+    intervals_list_for_hand = list()
+    start_interval_frame_number = all_keypoints_df.index.min()
+    for index, row in all_keypoints_df.iterrows():
+        if all_keypoints_df[body_part + 'Score'][index] > score_threshold:
+            if current_interval_len_counter == 0:
+                start_interval_frame_number = index
+            current_interval_len_counter += 1
+        elif current_interval_len_counter > min_interval_length:
+            intervals_list_for_hand.append({'start': start_interval_frame_number, 'end': index - 1})
+            start_interval_frame_number = index
+            current_interval_len_counter = 0
+        else:
+            current_interval_len_counter = 0
+    return intervals_list_for_hand
+
+
+def get_relevant_intervals_for_hand(all_keypoints_df, side, min_interval_length, score_threshold):
+    """ Similar to 'get_relevant_intervals_for_body_part' but does the same for some hand side."""
+    current_interval_len_counter = 0
+    intervals_list_for_hand = list()
+    start_interval_frame_number = all_keypoints_df.index.min()
+    for index, row in all_keypoints_df.iterrows():
+        if all_keypoints_df[side + 'ElbowScore'][index] > score_threshold:
+            if current_interval_len_counter == 0:
+                start_interval_frame_number = index
+            current_interval_len_counter += 1
+        elif current_interval_len_counter > min_interval_length:
+            intervals_list_for_hand.append({'start': start_interval_frame_number, 'end': index - 1})
+            start_interval_frame_number = index
+            current_interval_len_counter = 0
+        else:
+            current_interval_len_counter = 0
+    return intervals_list_for_hand
+
+
+def try_merge_between_intervals(interval_list, max_distance_between_intervals=10):
+    """ Tries
+
+    :param interval_list: 
+    :param max_distance_between_intervals: 
+    :return: 
+    """
+    merged_intervals_list_for_hand = list()
+    should_skip_next_interval = False
+    for index in range(len(interval_list)):
+        if should_skip_next_interval:
+            should_skip_next_interval = False
+            index += 1
+            continue
+        if index == len(interval_list) - 1:
+            merged_intervals_list_for_hand.append(interval_list[index])
+        elif interval_list[index + 1]['start'] - interval_list[index][
+            'end'] > max_distance_between_intervals:
+            merged_intervals_list_for_hand.append(interval_list[index])
+        else:
+            merged_intervals_list_for_hand.append({'start': interval_list[index][
+                'start'], 'end': interval_list[index + 1]['end'], 'frames_to_inerpolate': np.arange(
+                interval_list[index]['end'] + 1, interval_list[index + 1]['start'])})
+            should_skip_next_interval = True
+            index += 1
+    return merged_intervals_list_for_hand
+
+
+def filter_frames_without_reliable_info(df_to_show, intervals_per_side, two_keys_list):
+    """ Gets pandas DataFrame df_to_show with all frames and keypoints and filters body parts
+        records of frames that are not in some interval from interval list intervals_per_side.
+
+    :param df_to_show: Pandas DataFrame which will be written to csv file. We will filter frames from this df.
+    :param intervals_per_side: Intervals list.
+    :param two_keys_list: Two body parts to filter by.
+    """
+    right_side_columns = list(filter(lambda name: name.startswith(two_keys_list[1]), df_to_show.columns))
+    left_side_columns = list(filter(lambda name: name.startswith(two_keys_list[0]), df_to_show.columns))
+    frames_out_of_wanted_ranges = df_to_show.index.tolist()
+    reliable_intervals_for_right_side = intervals_per_side[two_keys_list[1]]
+    reliable_intervals_for_left_side = intervals_per_side[two_keys_list[0]]
+    for frame in frames_out_of_wanted_ranges:
+        found_in_right = False
+        found_in_left = False
+        for interval in reliable_intervals_for_right_side:
+            if frame in np.arange(interval['start'], interval['end'] + 1):
+                found_in_right = True
+                break
+        for interval in reliable_intervals_for_left_side:
+            if frame in np.arange(interval['start'], interval['end'] + 1):
+                found_in_left = True
+                break
+
+        if not found_in_right:
+            df_to_show.loc[[frame], right_side_columns] = np.nan
+        if not found_in_left:
+            df_to_show.loc[[frame], left_side_columns] = np.nan
+
+
+if __name__ == '__main__':
+    filter_and_interpolate('../output/tom/MVI_8027_from_frame_60/2020-05-28/15-00-23/analytical_data/all_keypoints.csv')

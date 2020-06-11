@@ -3,7 +3,8 @@
 # import the necessary packages
 # import math
 import math
-
+import sys
+from sys import platform
 from imutils.video import VideoStream
 import imutils
 import time
@@ -18,13 +19,14 @@ output_dir = "partial_movies/"
 
 # if the video_path argument is 0, then we are reading from webcam
 def get_video_name_from_path(video_path):
+    video_path = video_path.replace('\\', '/')
     video_name = video_path.split('/')[-1]
-    video_name = video_name.split('\\')[-1]
+    # video_name = video_name.split('\\')[-1]
     video_name = video_name.split('.')[0]
     return video_name
 
 
-def video_cutter(video_path=0):
+def video_cutter(video_path=0, should_take_full_video=False):
     if video_path == 0:
         vs = VideoStream(src=0).start()
         time.sleep(2.0)
@@ -157,6 +159,8 @@ def video_cutter(video_path=0):
             continue
 
         new_start_time = math.floor(start_time) - 2
+        if new_start_time < 0:
+            new_start_time = 0
         new_end_time = math.ceil(end_time)
         start_frame = int(new_start_time * fps)
         target_path = output_dir + video_name + '_from_frame_' + str(start_frame) + '.mp4'
@@ -169,6 +173,16 @@ def video_cutter(video_path=0):
         new_videos_paths.append(target_path)
 
     print(new_videos_paths)
+    if new_videos_paths == []:
+        target_path = output_dir + video_name + '_from_frame_' + str(0) + '.mp4'
+        extract_subclip(video_path, 0, math.ceil(frame_counter * fps), target_path)
+        new_videos_paths.append(target_path)
+
+    if should_take_full_video:
+        target_path = output_dir + video_name + '_from_frame_' + str(0) + '.mp4'
+        extract_subclip(video_path, 0, math.ceil(frame_counter * fps), target_path)
+        return [target_path]
+
     return new_videos_paths
 
 

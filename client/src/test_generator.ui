@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="next_button">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>530</x>
       <y>760</y>
       <width>151</width>
       <height>61</height>
@@ -231,7 +231,7 @@
    <widget class="QPushButton" name="load_video_btn">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>190</x>
       <y>760</y>
       <width>151</width>
       <height>61</height>
@@ -257,7 +257,7 @@
    <widget class="QPushButton" name="set_default_setting_btn">
     <property name="geometry">
      <rect>
-      <x>790</x>
+      <x>700</x>
       <y>760</y>
       <width>151</width>
       <height>61</height>
@@ -286,7 +286,7 @@
    <widget class="QPushButton" name="prev_button">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>360</x>
       <y>760</y>
       <width>151</width>
       <height>61</height>
@@ -299,7 +299,7 @@
    <widget class="QPushButton" name="load_csv_btn">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>20</x>
       <y>760</y>
       <width>151</width>
       <height>61</height>
@@ -323,6 +323,19 @@
     </property>
     <property name="text">
      <string>Clean all</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="save_btn">
+    <property name="geometry">
+     <rect>
+      <x>870</x>
+      <y>760</y>
+      <width>151</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save</string>
     </property>
    </widget>
   </widget>

@@ -17,18 +17,12 @@ def get_files_in_dir(path):
     return files
 
 
-def get_id_of_file(path):
-    filename = path_without_suffix(path.split('/')[-1])
-    id = filename.split('_')[-1]
-    return id
-
-
 def get_file_name(path):
     return path.split('/')[-1]
 
 
 def get_file_name_for_backslash(path):
-    return path.split('\\')[-1]
+    return path.split('/')[-1]
 
 
 def get_number_of_start_frame(movie_name):
@@ -41,7 +35,7 @@ def get_src_path():
 
 
 def get_body_parts():
-    return ['NeckX', 'NeckY', 'NeckScore', 'ChestX', 'ChestY', 'ChestScore', 'RShoulderX', 'RShoulderY',
+    return ['NoseX', 'NoseY','NoseScore','NeckX', 'NeckY', 'NeckScore', 'RShoulderX', 'RShoulderY',
             'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
             'LShoulderY', 'LShoulderScore',
             'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']

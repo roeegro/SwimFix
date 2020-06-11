@@ -1,5 +1,7 @@
 import math
 import shutil
+import socket
+import time
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtWidgets, uic, QtCore
@@ -10,7 +12,11 @@ import filetype
 import os
 import cv2
 import pandas as pd
-from pip._vendor.pkg_resources import parse_requirements
+import threading
+
+from client.src import SERVER_IP, SERVER_PORT
+
+success_sending_flag = None
 
 
 class GuiData():
@@ -26,6 +32,7 @@ class GuiData():
     original_frames = list()
     resolution_ratio = (0, 0)
     selected_item_val = None
+    movie_extension = None
 
 
 def run():
@@ -56,6 +63,7 @@ def gui_setup():
     get_undo_btn().setEnabled(False)
     get_load_csv_btn().setEnabled(False)
     get_clean_all_btn().setEnabled(False)
+    get_save_btn().setEnabled(False)
 
     get_current_frame_label().setText(str(0))
     get_image_label().setScaledContents(True)
@@ -87,6 +95,8 @@ def gui_setup():
     get_undo_btn().clicked.connect(undo_btn_pressed)
     get_load_csv_btn().clicked.connect(load_csv_btn_pressed)
     get_clean_all_btn().clicked.connect(clean_all_btn_pressed)
+    get_save_btn().clicked.connect(save_btn_pressed)
+
     # Window settings
 
     dlg.showMaximized()
@@ -198,6 +208,7 @@ def finish_line_def_btn_pressed():
 
     get_next_button().setEnabled(True)
     get_prev_button().setEnabled(True)
+    get_save_btn().setEnabled(True)
     get_undo_btn().setEnabled(True)
     get_clean_all_btn().setEnabled(True)
     get_add_line_btn().setEnabled(False)
@@ -275,6 +286,7 @@ def load_video_btn_pressed():
             kind = filetype.guess(file_path)
             if str(kind.mime).split('/')[0] == 'video':
                 GuiData.video_path = file_path
+                GuiData.movie_extension = file_path.split('.')[-1]
                 GuiData.frames_number = generate_frames_from_video(file_path)
                 get_msg_lbl().setText("Generation succeeded")
                 gui_setup()
@@ -349,14 +361,32 @@ def prev_btn_pressed():
         edit_shown_frame()
 
 
-def red_btn_pressed():
+def save_btn_pressed():
     try:
+        get_msg_lbl().setText("Uploading is done. Please wait...")
+        global success_sending_flag
         delete_frames_folder()
-        output_video_name = create_video()
-        csv_name = get_video_name() + "_expected.csv"
-        add_data_to_excepted_csvs(output_video_name, csv_name)
-    finally:
-        return
+        output_video_path = create_video()
+        csv_path = get_video_name() + "_expected.csv"
+        send_test_files_to_server(output_video_path)
+        print('sent video')
+        time.sleep(15)  # in order to let the server to prepare
+        os.remove(output_video_path)
+        send_test_files_to_server(csv_path)
+        os.remove(csv_path)
+        print('sent all')
+        success_sending_flag = True
+        get_msg_lbl().setText("Uploading succeeded")
+
+    except:
+        get_msg_lbl().setText("Uploading failed")
+        success_sending_flag = False
+
+
+def red_btn_pressed():
+    global success_sending_flag
+    if success_sending_flag is None:
+        success_sending_flag = 'exit'
 
 
 def reset_guidata_object():
@@ -392,7 +422,7 @@ def set_default_setting_btn_pressed():
         lines_tbl.setItem(row_counter, 1, QTableWidgetItem(body_parts[i + 1]))
         row_counter += 1
 
-    # connect left shoulder with chest
+    # connect left shoulder with Neck
     lines_tbl.setRowCount(row_counter + 1)
     lines_tbl.setItem(row_counter, 0, QTableWidgetItem(body_parts[1]))
     lines_tbl.setItem(row_counter, 1, QTableWidgetItem(body_parts[5]))
@@ -401,6 +431,7 @@ def set_default_setting_btn_pressed():
     finish_line_def_btn_pressed()
     get_next_button().setEnabled(True)
     get_prev_button().setEnabled(True)
+    get_save_btn().setEnabled(True)
     get_insert_row_btn().setEnabled(False)
     get_finish_body_parts_def_btn().setEnabled(False)
     get_finish_line_def_btn().setEnabled(False)
@@ -424,10 +455,34 @@ def undo_btn_pressed():
         return
 
 
+def get_size_of_file_path(file_path):
+    f = open(file_path, 'rb')
+    f.seek(0, 2)  # moves the file object's position to the end of the file.
+    size = f.tell()
+    f.close()
+    return size
+
+
 # Helpers
-def add_data_to_excepted_csvs(output_video_name, csv_name):
-    shutil.move(os.getcwd() + '/' + output_video_name, '../../server/excepted_data/videos')
-    shutil.move(os.getcwd() + '/' + csv_name, '../../server/excepted_data/csvs')
+def send_test_files_to_server(file_path):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        file_size_in_bytes = get_size_of_file_path(file_path)
+        msg = 'add_test file_path: {} file_extension: {} file_size: {}'.format(file_path, file_path.split('.')[-1],
+                                                                               file_size_in_bytes)
+        s.send(msg.encode('utf-8'))
+        msg = None
+        while msg != 'start':
+            start_msg = s.recv(1024)  # for 'start' message
+            msg = start_msg.decode('utf-8')
+        f = open(file_path, 'rb')
+        # send the file
+        l = f.read(1024)
+        while l:
+            s.send(l)
+            # print("Sending data of {}".format(file_path))
+            l = f.read(1024)
+        f.close()
 
 
 def build_keypoints_tbl_for_request_frame(requested_frame_number):
@@ -452,7 +507,7 @@ def create_csv():
     if not GuiData.all_keypoints_csv_path is None:  # There is an existing csv to copy from
         # copy the selected one to cwd
         original_csv_as_df = pd.read_csv(GuiData.all_keypoints_csv_path)
-        csv_path = os.getcwd() + "\\" + video_name + "_expected.csv"
+        csv_path = os.getcwd() + "/" + video_name + "_expected.csv"
         original_csv_as_df.to_csv(csv_path, index=False)
         GuiData.all_keypoints_csv_path = csv_path  # keep it for write every frame keypoints coordinates.
         return
@@ -468,7 +523,7 @@ def create_csv():
             except:
                 continue
     df = pd.DataFrame(columns=body_parts)
-    csv_path = os.getcwd() + "\\" + video_name + "_expected.csv"
+    csv_path = os.getcwd() + "/" + video_name + "_expected.csv"
     df.to_csv(csv_path, index=False)
     GuiData.all_keypoints_csv_path = csv_path  # keep it for write every frame keypoints coordinates.
 
@@ -542,7 +597,7 @@ def generate_frames_from_video(video_path):
             break
         height, width, _ = image.shape
         GuiData.resolution_ratio = (frame_label_width / width, frame_label_height / height)
-        cv2.imwrite(get_frame_dir() + "\\frame_%d.jpg" % count, image)  # save frame as JPEG file
+        cv2.imwrite(get_frame_dir() + "/frame_%d.jpg" % count, image)  # save frame as JPEG file
         GuiData.frames_for_final_video.append(image)
         GuiData.original_frames.append(image)
         GuiData.stabbed_points_per_frame.append(dict())
@@ -653,7 +708,7 @@ def get_all_keypoints_csv_path():
 
 
 def get_body_parts():
-    return ['Neck', 'Chest', 'RShoulder', 'RElbow', 'RWrist', 'LShoulder', 'LElbow', 'LWrist']
+    return ['Nose', 'Neck', 'RShoulder', 'RElbow', 'RWrist', 'LShoulder', 'LElbow', 'LWrist']
 
 
 def get_body_coors_tbl():
@@ -677,12 +732,12 @@ def get_finish_line_def_btn():
 
 
 def get_frame(curr_frame):
-    frame_path = get_frame_dir() + '\\frame_{}.jpg'.format(curr_frame)
+    frame_path = get_frame_dir() + '/frame_{}.jpg'.format(curr_frame)
     return frame_path
 
 
 def get_frame_dir():
-    return os.getcwd() + '\\frames'
+    return os.getcwd() + '/frames'
 
 
 def get_from_keypoint_cmbox():
@@ -713,6 +768,10 @@ def get_msg_lbl():
     return GuiData.dlg.msg_lbl
 
 
+def get_movie_extension():
+    return GuiData.movie_extension
+
+
 def get_next_button():
     return GuiData.dlg.next_button
 
@@ -724,6 +783,9 @@ def get_prev_button():
 def get_undo_btn():
     return GuiData.dlg.undo_btn
 
+
+def get_save_btn():
+    return GuiData.dlg.save_btn
 
 def get_set_default_setting_btn():
     return GuiData.dlg.set_default_setting_btn

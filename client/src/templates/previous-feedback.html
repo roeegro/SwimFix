@@ -22,12 +22,18 @@
 </head>
 
 <body id="page-top">
+<div class="img-sticky">
+    <canvas id="current frame to show"></canvas>
+    <button type="button" id='save changes' onclick="sendFixes()">Save fixes</button>
+</div>
+
+<!--<img id="current frame to show" class="img-sticky">-->
 
 <!-- Page Wrapper -->
 <div id="wrapper">
 
     <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content-wrapper-sticky" class="d-flex flex-column">
 
         <!-- Main Content -->
         <div id="content">
@@ -38,7 +44,12 @@
 
                 <!-- Page Heading -->
                 <h1 class="h3 mb-2 text-gray-800">Charts</h1>
-
+                <div class="row">
+                    <script src="/static/js/demo/chart-area-demo.js"></script>
+                    <script>
+                        load_img(parseInt("{{first_frame_number}}"))
+                    </script>
+                </div>
                 <!-- Content Row -->
                 <div class="row">
                     <div id="Charts" class="col-xl-8 col-lg-7">
