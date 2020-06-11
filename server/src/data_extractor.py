@@ -95,8 +95,8 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_d
     """
     vectors_df = pd.read_csv(csv_path)
     angles_df = pd.DataFrame(
-        columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng', 'RGlobalArmAng',
-                 'LGlobalArmAng', 'RGlobalForeArmAng', 'LGlobalForeArmAng'])
+        columns=['Frame Number', 'RShoulderAng', 'LShoulderAng', 'RElbowAng', 'LElbowAng', 'RGlobalShoulderAng',
+                 'LGlobalShoulderAng','RGlobalArmAng','LGlobalArmAng' , 'RGlobalForeArmAng', 'LGlobalForeArmAng'])
     for idx, frame in vectors_df.iterrows():
         RChestVec = (frame['RChestX'], frame['RChestY'])
         LChestVec = (frame['LChestX'], frame['LChestY'])
@@ -104,16 +104,17 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_d
         LArmVec = (frame['LArmX'], frame['LArmY'])
         RForearmVec = (frame['RForearmX'], frame['RForearmY'])
         LForearmVec = (frame['LForearmX'], frame['LForearmY'])
-        neg = tuple([-1 * x for x in RChestVec])
         frame_angels = {'Frame Number': frame['Frame Number'],
                         'RShoulderAng': angle(tuple([x for x in RChestVec]), RArmVec),
                         'LShoulderAng': angle(tuple([x for x in LChestVec]), LArmVec),
                         'RElbowAng': angle(tuple([-1 * x for x in RArmVec]), RForearmVec),
                         'LElbowAng': angle(tuple([-1 * x for x in LArmVec]), LForearmVec),
-                        'RGlobalArmAng': angle(RChestVec, (RChestVec[0], 0)),
-                        'LGlobalArmAng': angle(LChestVec, (LChestVec[0], 0)),
-                        'RGlobalForeArmAng': angle(RForearmVec, (RForearmVec[0], 0)),
-                        'LGlobalForeArmAng': angle(LForearmVec, (LForearmVec[0], 0))
+                        'RGlobalShoulderAng': angle(RChestVec, (0, RChestVec[1])),
+                        'LGlobalShoulderAng': angle(LChestVec, (0, LChestVec[1])),
+                        'RGlobalArmAng': angle([-1 * x for x in RArmVec], (0, -RArmVec[1])),
+                        'LGlobalArmAng': angle([-1 * x for x in LArmVec], (0, -LArmVec[1])),
+                        'RGlobalForeArmAng': angle([-1 * x for x in RForearmVec], (0, -RForearmVec[1])),
+                        'LGlobalForeArmAng': angle([-1 * x for x in LForearmVec], (0, -LForearmVec[1]))
                         }
         angles_df = angles_df.append(frame_angels, ignore_index=True)
 

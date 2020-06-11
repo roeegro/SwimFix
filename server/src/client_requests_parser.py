@@ -12,8 +12,8 @@ import traceback
 
 MYSQL_HOST = '65.19.141.67'
 MYSQL_PORT = 3306
-MYSQL_USER = 'lironabr'
-MYSQL_PASSWORD = 'h3dChhmg'
+MYSQL_USER = 'lironabr_roeegro'
+MYSQL_PASSWORD = 'roeegro'
 MYSQL_DB = 'lironabr_swimming_project'
 MYSQL_CURSORCLASS = 'DictCursor'
 mysql = MySQLdb.Connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB,
