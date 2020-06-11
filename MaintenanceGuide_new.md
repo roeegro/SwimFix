@@ -131,11 +131,7 @@ Since the system analyses rowing swimming style the body parts detected are: nos
 
 <p align="center">
 
-![](https://raw.githubusercontent.com/CMU-Perceptual-Computing-Lab/openpose/master/doc/media/keypoints_pose_18.png)
-
-
-
-
+**![](https://lh5.googleusercontent.com/sr14FSTG-eyOk8JKLQq3TOxGkVSqYeH9QnM2cK1v8Hlv4QhHqsvtC3bNyT9RBRLQQTkXuNn6GSgR6KMNtYbsxLzkiRERfCBMyLaOh0gh6joM8Y_K5ufO_AS4XmKBRv8-Lt3j1DiQ)**
 
 For more information about the wire frame structure and the output of OpenPose, please check the official [output](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md)  doc.<br>
 </p>
@@ -270,5 +266,5 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNjgxNDY1ODgsMjEyNzIzMTUxNl19
+eyJoaXN0b3J5IjpbMTMxNjg0Nzg2NywyMTI3MjMxNTE2XX0=
 -->
