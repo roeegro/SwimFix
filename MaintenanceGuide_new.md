@@ -244,7 +244,7 @@ For this guide, we will call our new functionality new_functionality:
 >**Assumption**: We create an empty page without any extra-ordinary feature. 
 #### From client side:
 1. In `client/src/templates`, create `new-functionality.html`.
-2. In `index.html`, add to the nevigation bar 
+2. In `index.html`, add to the navigation bar a navigation item with link to the page created in 1. (If this page supposed to be an a 
 3. In `client/src/routes.py` create function with the format shown in [Routes File](#routes-file) with respective names to new_functionality.
 4. You can help some other function in routes in order to write code sending message to the server, with the following format: < new_request_type > ...
 
@@ -267,5 +267,5 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE3MjExMDYwOSwyMTI3MjMxNTE2XX0=
+eyJoaXN0b3J5IjpbNzA4MDMyNzExLDIxMjcyMzE1MTZdfQ==
 -->
