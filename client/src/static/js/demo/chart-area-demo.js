@@ -33,7 +33,8 @@ function setPrevImage() {
         img_path = current_img_path
     }
     curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
-    load_img(parseInt(curr_index - 1))
+    document.getElementById("change_img").value = parseInt(curr_index)-1
+    load_img(parseInt(curr_index)- 1)
 }
 
 function setNextImage() {
@@ -43,7 +44,12 @@ function setNextImage() {
         img_path = current_img_path
     }
     curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
+    document.getElementById("change_img").value = parseInt(curr_index)+1
     load_img(parseInt(curr_index) + 1)
+}
+function setNumberImage() {
+    index = document.getElementById("change_img").value
+    load_img(parseInt(index))
 }
 
 function make_comparison_chart_from_csv(csv_path) {

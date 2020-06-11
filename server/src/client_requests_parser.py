@@ -550,6 +550,47 @@ def view_test_results(data, conn, params):
     finally:
         return return_msg
 
+def view_users(data, conn, params):
+    return_msg = FAILURE_MSG
+    try:
+        mysql.ping(True)
+        cur = mysql.cursor()
+        cur.execute('''
+                SELECT ID, USERNAME, EMAIL, ISADMIN
+                FROM USERS''')
+        users_details = cur.fetchall()
+        return_msg = pickle.dumps(users_details)
+    except IndexError as e:
+        print("An exception occurred: %s\nInvalid data %s" % (e, data))
+    except mysql.Error as e:
+        print("Something went wrong with MySQL: {}".format(e))
+    except Exception as e:
+        print("An error occurred when trying to upload the video: ", e)
+    finally:
+        return return_msg
+
+def make_admin(data, conn, params):
+    return_msg= FAILURE_MSG
+    user_id = data[data.index('user_id:') + 1]
+    try:
+        mysql.ping(True)
+        cur = mysql.cursor()
+        cur.execute(''' UPDATE USERS
+        SET ISADMIN = 1
+        WHERE ID= %s''', user_id)
+        mysql.commit()
+        cur.close()
+        return_msg = SUCCESS_MSG
+
+    except IndexError as e:
+        print("An exception occurred: %s\nInvalid data %s" % (e, data))
+    except mysql.Error as e:
+        print("Something went wrong with MySQL: {}".format(e))
+    except Exception as e:
+        print("An error occurred when trying to upload the video: ", e)
+    finally:
+        return return_msg
+
 
 requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': view_feedbacks_list,
                  'view_graphs': view_graphs,
@@ -557,7 +598,7 @@ requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': vi
                  'forum_topic_name': forum_topic_name,
                  'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post, 'add_test': add_test,
                  'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,
-                 'view_tests_list': view_tests_list, 'view_test_results': view_test_results}
+                 'view_tests_list': view_tests_list, 'view_test_results': view_test_results, 'view_users' : view_users, 'make_admin': make_admin}
 
 
 def main_parser(data, conn, params):
