@@ -41,8 +41,6 @@ We used Flask, a python web framework, to write the client side. This library en
 
 <Client side structure must be put here>
 
-**![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)
-
 ### Routes File
 This is the most important module in the client side. It defines the web links of all the pages and binds them to the relevant html page (appears in templates directory). For each html page, there must be found a function in this .py file which looks as follows:
 
@@ -258,7 +256,8 @@ The server side receives from the client preprocessed videos and saves the produ
 *   Edited videos including the Wireframes.
 * Information about the user- to associate videos to a specific user.
 * Topics and posts of users on the forum.
-* The system saves this data in a database which contains 4 tables.
+
+The system saves this data in a database which contains 4 tables.
 > Note: in the "FILES" table we save only the name of the videos, and the videos can be found in the system and not on the database- this is done in order to save the time required in downloading and uploading files from/to a remote database, and to search easily the location of desired file in the server.
 
 **![](https://lh4.googleusercontent.com/c2IRENacfHTBGFBaoQqVqL-aBV-xumBQLoHHSt_zP6x3fUTnOpNjaA-OUP6hDwZEMNuepexeoSNVTddb2reMgnZCVlfjWBQTRVGaT0j9eLfTOHv2c7Xu3H2Et4lmAE0HIcS4sb7b)**
@@ -295,6 +294,6 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NDA1NzUzODcsLTE1Njc2ODYwNTIsMT
-Q4NDQzNjkyOCw2MDgxMTM1NzEsMjEyNzIzMTUxNl19
+eyJoaXN0b3J5IjpbMTk3Mzc3OTA4OSwtMTU2NzY4NjA1MiwxND
+g0NDM2OTI4LDYwODExMzU3MSwyMTI3MjMxNTE2XX0=
 -->
