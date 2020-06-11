@@ -27,9 +27,20 @@
                 <span>Main Page</span></a>
         </li>
 
+
+        {% block admin_menu %}
+        {% endblock admin_menu %}
         <!-- Divider -->
         <hr class="sidebar-divider">
 
+        {% if isAdmin %}
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin_index') }}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Admin Panel</span></a>
+        </li>
+        {% endif %}
 
         <!-- Nav Item - Tables -->
         <li class="nav-item">
@@ -38,19 +49,6 @@
                 <span>Load video</span></a>
         </li>
 
-        <!-- Nav Item - Charts -->
-        {#        <li class="nav-item">#}
-        {#            <a class="nav-link" href="{{ url_for('charts') }}">#}
-        {#                <i class="fas fa-fw fa-chart-area"></i>#}
-        {#                <span>Charts</span></a>#}
-        {#        </li>#}
-        {##}
-        <!-- Nav Item - Tables -->
-        {#        <li class="nav-item">#}
-        {#            <a class="nav-link" href="{{ url_for('tables') }}">#}
-        {#                <i class="fas fa-fw fa-table"></i>#}
-        {#                <span>Tables</span></a>#}
-        {#        </li>#}
 
         <!-- Nav Item - Tables -->
         <li class="nav-item">
@@ -66,9 +64,16 @@
                 <span>Previous Feedbacks</span></a>
         </li>
 
+        <!-- Nav Item - previous-feedbacks -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('forum', page='0') }}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Forum</span></a>
+        </li>
+
         <!-- Nav Item - Logout -->
         <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('login') }}">
+            <a class="nav-link" href="{{ url_for('logout') }}">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Logout</span></a>
         </li>
@@ -121,7 +126,7 @@
 </div>
 
 <!-- Bootstrap core JavaScript-->
-<script src="/static/jquery/jquery.min.js"></script>
+<script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
@@ -134,8 +139,8 @@
 <script src="/static/vendor/chart.js/Chart.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="/static/js/demo/chart-area-demo.js"></script>
-<script src="/static/js/demo/chart-pie-demo.js"></script>
+<!--<script src="/static/js/demo/chart-area-demo.js"></script>-->
+<!--<script src="/static/js/demo/chart-pie-demo.js"></script>-->
 
 </body>
 

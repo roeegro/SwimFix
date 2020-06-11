@@ -47,6 +47,7 @@ def generate_dirs_for_output_of_movie(movName):
         "figures_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + figures_dir_name
     dict_to_return[
         "frames_path"] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + frames_dir_name
+    dict_to_return['annotated_video'] = outputs_dir + "\\" + name + "\\" + curr_date + "\\" + curr_time + "\\" + "annotated_video.mp4"
     os.chdir(get_src_path())
     return dict_to_return
 
