@@ -129,12 +129,19 @@ This module is an API of the server's functionality, so each function in this mo
 
 ### Data_Extractor Module
 This module is the first level in data extraction. Its goal is to extract basic information about body parts coordinates and then process them.
-Since the system analyses rowing swimming style the body parts detected are: nose,neck,right shoulder, right elbow, right wrist, left shoulder, left elbow, and left wrist (indexed by points 0-7). In addition, the process finds vectors defined by the points in the skeleton and their directions are defined by the arrows in the figure below. The process also calculates the angles between the body parts defined in the figure:
+Since the system analyses rowing swimming style the body parts detected are: nose,neck,right shoulder, right elbow, right wrist, left shoulder, left elbow, and left wrist (indexed by points 0-7). 
+In addition, the process finds vectors defined by the points in the skeleton and their directions are defined by the arrows in the figure below. 
+The process also calculates the angles between the body parts defined in the figure:
 a - Global right shoulder angle
 b - Right shoulder angle.
 c - Global right arm angle
 d - Right elbow angle
 e - Global right forearm angle.
+f - Global left shoulder angle
+g - Left shoulder angle.
+h - Global left arm angle
+i - Left elbow angle
+j - Global left forearm angle.
 
 <p align="center">
 
@@ -288,6 +295,6 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTM1NDIzNzU3LDYwODExMzU3MSwyMTI3Mj
-MxNTE2XX0=
+eyJoaXN0b3J5IjpbMTQ4NDQzNjkyOCw2MDgxMTM1NzEsMjEyNz
+IzMTUxNl19
 -->
