@@ -96,7 +96,7 @@ Before we get started, create a folder with all of you images and name it `custo
 
 ### Step 1 - Data Annotation
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is located in `training/coco-annotator`.
- We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimmingProject/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
+ We recommend you to use it as well - you can check out [this](../Annotator-Guide.md) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
 2.  Export the annotations file as `person_keypoints_custom.json` to the `dataset/COCO/cocoapi/annotations/` folder.
@@ -190,5 +190,5 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzY3NDg3NTk1XX0=
+eyJoaXN0b3J5IjpbMTExODMxNzY4Nyw3Njc0ODc1OTVdfQ==
 -->
