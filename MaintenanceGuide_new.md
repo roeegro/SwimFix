@@ -265,3 +265,6 @@ For running the system on your own device:
 5. Change in `run.py` file in `client/src` line `app.run(host='127.0.0.1',debug=False)`
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMjEyNzIzMTUxNl19
+-->
