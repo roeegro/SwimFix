@@ -28,6 +28,7 @@
 <!--    <a class="btn btn-primary btn-circle" id='next_button' > > </a>-->
     <button type="button" id='prev_button' onclick="setPrevImage()"> prev </button>
     <button type="button" id='next_button' onclick="setNextImage()"> next </button>
+    <input type="number" id="change_img" min= "{{first_frame_number}}" max="{{last_frame_number}}" onchange="setNumberImage()">
 
     <button type="button" id='save changes' onclick="sendFixes()">Save fixes</button>
     <table id="previous_feedbacks_tbl" class="table table-bordered" id="dataTable" width="100%"

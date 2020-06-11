@@ -613,7 +613,8 @@ def user_feedback(details):
     frames_paths = sorted(frames_paths, key=sort_lambda)
     frames_paths_dict = [{'path': path.replace('\\', '/')} for path in frames_paths]
     first_frame_num = int((frames_paths[0].split('.')[0]).split('_')[-1])
+    last_frame_num = int((frames_paths[-1].split('.')[0]).split('_')[-1])
 
     return render_template('user-feedback.html', zip_name=zip_name, data=[], frames=frames_paths_dict,
                            errors_list=error_description_by_frames,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num, last_frame_number= last_frame_num)
