@@ -258,8 +258,8 @@ The server side receives from the client preprocessed videos and saves the produ
 *   Edited videos including the Wireframes.
 * Information about the user- to associate videos to a specific user.
 * Topics and posts of users on the forum.
-The system saves this data in a database which contains 4 tables.
-> Note: in the "FILES" table we save only the name of the videos, and the videos can be found in the system and not on the database- this is done in order to save the time required in downloading and uploading files from/to a remote database
+* The system saves this data in a database which contains 4 tables.
+> Note: in the "FILES" table we save only the name of the videos, and the videos can be found in the system and not on the database- this is done in order to save the time required in downloading and uploading files from/to a remote database, and to search easily the location of desired file in the server.
 
 **![](https://lh4.googleusercontent.com/c2IRENacfHTBGFBaoQqVqL-aBV-xumBQLoHHSt_zP6x3fUTnOpNjaA-OUP6hDwZEMNuepexeoSNVTddb2reMgnZCVlfjWBQTRVGaT0j9eLfTOHv2c7Xu3H2Et4lmAE0HIcS4sb7b)**
 The sql code to create this database can be found in `server/swimfix_db/swimfix.sql`
@@ -295,6 +295,6 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1Njc2ODYwNTIsMTQ4NDQzNjkyOCw2MD
-gxMTM1NzEsMjEyNzIzMTUxNl19
+eyJoaXN0b3J5IjpbLTE3NDA1NzUzODcsLTE1Njc2ODYwNTIsMT
+Q4NDQzNjkyOCw2MDgxMTM1NzEsMjEyNzIzMTUxNl19
 -->
