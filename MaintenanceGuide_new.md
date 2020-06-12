@@ -183,7 +183,9 @@ This module is able to calculate:
 
  ### Evaluator Module
 This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module and each function defines in plug and play < link >, in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
-At the bottom of the module there is a list of functions (for inner module functions which defined before), and strings (for plug and play files which are added in the first for	loop in the main function) to be executed, and the main function of this module runs over this list and activate each function with the paths specified above.
+At the bottom of the module there is a list of functions (for inner module functions which defined before), and strings (for plug and play files which are added in the first for	loop in the main function) to be executed, and the main function of this module runs over this list and activate each function/call to the relevant file respectively with the paths specified above.
+> **Note**: Each file in plug and play is called with the paths and with some other arguments relevant for 
+
 The output of this module is 2 csv files. The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected.
 > **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
 	> Function name : check_if_< error description with underscores between words>
@@ -319,7 +321,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIzMjEwMjg3MCwyMDQzMjgxMzA1LC0xMz
+eyJoaXN0b3J5IjpbLTQ2NDU1MTkwNSwyMDQzMjgxMzA1LC0xMz
 MzMTc2Mzc2LC0xNDg5OTIyMTc5LDE5NzM3NzkwODksLTE1Njc2
 ODYwNTIsMTQ4NDQzNjkyOCw2MDgxMTM1NzEsMjEyNzIzMTUxNl
 19
