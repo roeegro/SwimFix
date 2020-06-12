@@ -1,5 +1,3 @@
-
-
 # <center> SwimFix Maintenance Guide</center>
 
 ## Table of Contents
@@ -157,7 +155,8 @@ columns - each body part we have 3 columns : < Body Part >X , < Body Part >Y, < 
 X,Y stands for the coordinates of the specific body part, and Score stands for the confidence score of OpenPose for its estimation.
 If the body part appears in hand so we have those 3 columns for each side. We specifying it by L/R (left or right) letter before the body part name.
 Those are the columns: 
-`[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,  RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore.LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
+`[Frame Number,NoseX,NoseY,NoseScore,NeckX,NeckY,RElbowY,RElbowScore,RWristX,RWristY,RWristScore,LShoulderX,LShoulderY,LShoulderScore,
+LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
 	This is the second stage in data extraction process. This function takes the csv path returned from the first function, and filters records with low score value. If there are closer intervals with high score, the function completes the gap between the intervals by interpolation. Returns path to updated body parts coordinates.
