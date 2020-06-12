@@ -12,6 +12,7 @@ from . import app, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
+sock = socket.socket()
 
 
 def is_admin():
@@ -73,6 +74,26 @@ def index():
     return render_template('index.html', isAdmin=is_admin())
 
 
+def receive_openpose_msg():
+    global sock
+    # sock.accept()
+    # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # sock.connect((SERVER_IP, SERVER_PORT))
+    start_msg = sock.recv(1024)  # for 'start' message
+    if start_msg.decode('utf-8') != 'success':
+        sock.close()
+        return render_template('load-video.html', isAdmin=is_admin())
+    sock.close()
+    return redirect(url_for("load_video"))
+
+
+@app.route("/waiting-page", methods=['GET', 'POST'])
+def waiting_page():
+    thr = threading.Thread(target=receive_openpose_msg, args=[])
+    thr.start()
+    return render_template('waiting-page.html', isAdmin=is_admin())
+
+
 @app.route("/load-video", methods=['GET', 'POST'])
 def load_video():
     if request.method == 'POST':
@@ -86,25 +107,30 @@ def load_video():
                 # to create the output dir from the server
                 # create_dir_if_not_exists('output')
                 # create_dir_if_not_exists('../../server/videos/')
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    s.connect((SERVER_IP, SERVER_PORT))
-                    msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
-                    print('UPLOAD {} '.format(msg))
-                    s.sendall(msg.encode('utf-8'))
-                    start_msg = s.recv(1024)  # for 'start' message
-                    if start_msg.decode('utf-8') != 'start':
-                        flash('Failed to upload video file. Please try again', 'failure')
-                        return render_template('load-video.html', isAdmin=is_admin())
-                    f = open(video_path, 'rb')
-                    # send the file
+                global sock
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.connect((SERVER_IP, SERVER_PORT))
+                msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
+                print('UPLOAD {} '.format(msg))
+                sock.sendall(msg.encode('utf-8'))
+                start_msg = sock.recv(1024)  # for 'start' message
+                if start_msg.decode('utf-8') != 'start':
+                    flash('Failed to upload video file. Please try again', 'failure')
+                    return render_template('load-video.html', isAdmin=is_admin())
+                f = open(video_path, 'rb')
+                # video_size = os.path.getsize(video_path)
+                # upload_percent = 0
+                # send the file
+                l = f.read(1024)
+                while l:
+                    sock.send(l)
+                    print("Sending data")
+                    # upload_percent += 1024 / video_size * 100
                     l = f.read(1024)
-                    while l:
-                        s.send(l)
-                        print("Sending data")
-                        l = f.read(1024)
-                    f.close()
-            flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            return redirect(url_for('index'))
+                f.close()
+            # flash('The file {} was uploaded successfully'.format(file.filename), 'success')
+            #     sock.close()
+            return redirect(url_for('waiting_page'))
         else:
             flash('Failed to upload video file. Please try again', 'failure')
     return render_template('load-video.html', isAdmin=is_admin())
@@ -150,9 +176,8 @@ def run_test():
                         print("Sending data")
                         l = f.read(1024)
                     f.close()
-
-            flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            return redirect(url_for('admin_index'))
+                flash('The file {} was uploaded successfully'.format(file.filename), 'success')
+                return redirect(url_for('admin_index'))
         else:
             flash('Failed to upload video file. Please try again', 'failure')
     return render_template('run-test.html')
@@ -595,7 +620,7 @@ def user_feedback(details):
 
     return render_template('user-feedback.html', zip_name=zip_name, data=[], frames=frames_paths_dict,
                            errors_list=error_description_by_frames,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num, last_frame_number= last_frame_num)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num, last_frame_number=last_frame_num)
 
 
 @app.route('/add-admin/<id_to_promote>/', methods=['GET', 'POST'])
@@ -606,10 +631,10 @@ def add_admin(id_to_promote):
 
     if id_to_promote and int(id_to_promote):
         print(id_to_promote)
-        promote_msg="make_admin user_id: {}".format(id_to_promote)
+        promote_msg = "make_admin user_id: {}".format(id_to_promote)
         answer = send_msg_to_server(promote_msg).decode('utf-8')
         if answer == "failure":
-            flash("Failed to promote user. Please try again","danger")
+            flash("Failed to promote user. Please try again", "danger")
         else:
             flash("Promoted successfully", 'success')
 

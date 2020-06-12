@@ -395,10 +395,11 @@ def upload_image_fix(data, conn, params):
         if res == 0:
             return
         username = cur.fetchone()['USERNAME']
-        path_to_update = os.getcwd() + '/../output/{}/{}/{}/{}/swimfix_annotated_frames/{}'.format(username, video_name_with_no_extension,
-                                                                                 date,
-                                                                                 time,
-                                                                                 filename)
+        path_to_update = os.getcwd() + '/../output/{}/{}/{}/{}/swimfix_annotated_frames/{}'.format(username,
+                                                                                                   video_name_with_no_extension,
+                                                                                                   date,
+                                                                                                   time,
+                                                                                                   filename)
         msg = 'start'
         conn.send(msg.encode('utf-8'))
         with open(path_to_update, 'wb') as f:
@@ -440,12 +441,17 @@ def upload(data, conn, params):
         path_to_video = videos_path + filename
         f = open(path_to_video, 'wb')
         data = conn.recv(1024)
+        conn.settimeout(5.0)
         while data:
             if not data:
                 break
             # write data to a file
             f.write(data)
-            data = conn.recv(1024)
+            try:
+                data = conn.recv(1024)
+            except Exception as e:
+                break
+        conn.settimeout(None)
         f.close()
         print('Successfully get the file')
         print("Analysing path...")
@@ -550,6 +556,7 @@ def view_test_results(data, conn, params):
     finally:
         return return_msg
 
+
 def view_users(data, conn, params):
     return_msg = FAILURE_MSG
     try:
@@ -569,8 +576,9 @@ def view_users(data, conn, params):
     finally:
         return return_msg
 
+
 def make_admin(data, conn, params):
-    return_msg= FAILURE_MSG
+    return_msg = FAILURE_MSG
     user_id = data[data.index('user_id:') + 1]
     try:
         mysql.ping(True)
@@ -598,7 +606,8 @@ requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': vi
                  'forum_topic_name': forum_topic_name,
                  'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post, 'add_test': add_test,
                  'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,
-                 'view_tests_list': view_tests_list, 'view_test_results': view_test_results, 'view_users' : view_users, 'make_admin': make_admin}
+                 'view_tests_list': view_tests_list, 'view_test_results': view_test_results, 'view_users': view_users,
+                 'make_admin': make_admin}
 
 
 def main_parser(data, conn, params):

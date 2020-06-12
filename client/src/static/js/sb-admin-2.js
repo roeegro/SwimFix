@@ -47,3 +47,7 @@
   });
 
 })(jQuery); // End of use strict
+
+function showLoader() {
+   document.getElementsByClassName('loader').style.display = "block";
+}

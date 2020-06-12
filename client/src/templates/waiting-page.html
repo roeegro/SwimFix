@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block content %}
+
     <div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card-body p-0">
             <div class="row">
@@ -7,15 +8,13 @@
                 <div class="col-lg-6">
                     <div class="p-5">
                         <div class="text-center">
-                            <h3>Please select a video file to be sent for analysis:</h3>
-                            <form action="" method=post enctype=multipart/form-data>
-                                <p><input type=file name=file>
-                                    <input type=submit value=Upload onclick="showLoader()">
-                            </form>
+                            <h3>Your video is being processed</h3>
                         </div>
+                        <div class="loader" style="display: block"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock content %}
