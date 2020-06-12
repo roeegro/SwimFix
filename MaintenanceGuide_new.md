@@ -197,7 +197,13 @@ Content:
 
     import evaluator
     def check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df):
-    < your error detection code > 
+	    if side not in ['L', 'R']:
+	        return
+	    error_id = evaluator.get_id_of_error(name,error_names_for_external_calling = error_names)
+	    < your error detection code >
+	    if error_id != -1 and index not in errors_df['frames'][error_id]:
+	                errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index] 
+    
     
 
 
@@ -305,7 +311,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI1NTIxNTQ1OCwtMTQ4OTkyMjE3OSwxOT
+eyJoaXN0b3J5IjpbLTM5NzA1MDI0MywtMTQ4OTkyMjE3OSwxOT
 czNzc5MDg5LC0xNTY3Njg2MDUyLDE0ODQ0MzY5MjgsNjA4MTEz
 NTcxLDIxMjcyMzE1MTZdfQ==
 -->
