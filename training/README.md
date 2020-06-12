@@ -9,7 +9,7 @@
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
-   * [LMDB File Generation](#step-4---lmdb-file-generation)
+   * [Data Transformation](#step-4---data-transformation)
 6. [Training](#training)
 7. [Q&A](#qa)
 8. [Installation Commands](#installation-commands)
@@ -136,12 +136,13 @@ In our context, the key is an id of an image and the value is the image itself a
 - To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the `lmdb_coco` and `lmdb_coco_background` datasets from the `custom.json` and `coco_negetives.json` files respectively. 
 - We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
->**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
+>**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those shell scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
 
 
-By the end of this step you should have:
-- `lmdb_coco`, `lmdb_background` generated from the python script.
-- `lmdb_mpii` and `lmdb_coco2017_foot` folders in the `dataset` folder
+By the end of this step you should have in the `training/dataset` folder:
+- `lmdb_coco`, `lmdb_background` folders generated from the python script.
+- `lmdb_mpii` and `lmdb_coco2017_foot` folder generated from the shell scripts.
+
 Each folder consists of a `data.mdb` file which represents the data as a LMDB file and a  `lock.mdb` files for synchronization locks (not important).
 
 ## Training
@@ -194,6 +195,6 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEyNjI2MTgwNiwxNDM5OTUwOTgsNzY3ND
-g3NTk1XX0=
+eyJoaXN0b3J5IjpbLTE5OTE4NTIzMzQsMTQzOTk1MDk4LDc2Nz
+Q4NzU5NV19
 -->
