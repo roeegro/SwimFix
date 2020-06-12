@@ -34,6 +34,10 @@ def get_src_path():
     return os.path.dirname(os.path.realpath(__file__))
 
 
+def get_plug_and_play_functions_dir():
+    return os.getcwd() + '/../plug_and_play_functions'
+
+
 def get_body_parts_columns():
     return ['NoseX', 'NoseY', 'NoseScore', 'NeckX', 'NeckY', 'NeckScore', 'RShoulderX', 'RShoulderY',
             'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
