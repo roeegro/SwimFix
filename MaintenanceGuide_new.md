@@ -210,7 +210,10 @@ Content:
 	check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df) # function activation
     
     
- > **Note**: Disable of plug-and-play function execution is done by removing the matching .py file from the directory mentioned above. 
+ > **Note 1**: Disable of plug-and-play function execution is done by removing the matching .py file from the directory mentioned above. 
+
+ > **Note 1**: You may want to annotate your error emphasis. You can do it with the function:
+ > `evaluator.draw_line(index, elbow_pos, wrist_pos_for_min_recommended_angle)`
 
 ### Tester Module
 This module purpose is to compare csv files with the same format, and used to compare manual annotations vs. automatic annotation returned from the [Data_Extractor Module](#data_extractor-module), This module generates csv files comparing each column and plotting figures based on the new csv files to emphasis and visualize the gap between the manual annotations and the automatic ones. By activating this module we can measure the performance of the system.
@@ -316,7 +319,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTYxMDY0MTE4NSwtMTMzMzE3NjM3NiwtMT
-Q4OTkyMjE3OSwxOTczNzc5MDg5LC0xNTY3Njg2MDUyLDE0ODQ0
-MzY5MjgsNjA4MTEzNTcxLDIxMjcyMzE1MTZdfQ==
+eyJoaXN0b3J5IjpbLTExOTE0ODYyNDksLTEzMzMxNzYzNzYsLT
+E0ODk5MjIxNzksMTk3Mzc3OTA4OSwtMTU2NzY4NjA1MiwxNDg0
+NDM2OTI4LDYwODExMzU3MSwyMTI3MjMxNTE2XX0=
 -->
