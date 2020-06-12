@@ -206,7 +206,8 @@ Content:
 	    < your error detection code >
 	    if error_id != -1 and index not in errors_df['frames'][error_id]: # Update accumulated error dataframe if this error never detected in this frame
 		    errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
- check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df)
+ 
+	check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df) # function activation
     
     
 
@@ -315,7 +316,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNDUxNzk1MjEsLTE0ODk5MjIxNzksMT
+eyJoaXN0b3J5IjpbLTEzMzMxNzYzNzYsLTE0ODk5MjIxNzksMT
 k3Mzc3OTA4OSwtMTU2NzY4NjA1MiwxNDg0NDM2OTI4LDYwODEx
 MzU3MSwyMTI3MjMxNTE2XX0=
 -->
