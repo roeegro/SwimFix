@@ -192,10 +192,13 @@ The output of this module is 2 csv files. The first one keeps an id of error and
 This feature supplies the ability for developers to add new swimming errors definitions (and their weights) for future analysis.
 Feature use is done by writing separated .py files without disable server's running, and sending the files to the server when they are ready. Those files will be executed when error evaluation will be done to swimmer's video.
 In order to use this feature correctly, the project authors defined a format for writing such an external functions. The format is as follows:
-File naming: `check_if_< error description >`
+File naming: `check_if_< your new error description >`
 Content:
 
-    enter code here
+    import evaluator
+    def check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df):
+    < your error detection code > 
+    
 
 
 ### Tester Module
@@ -302,7 +305,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEwNTA3MjU1NSwtMTQ4OTkyMjE3OSwxOT
+eyJoaXN0b3J5IjpbMTI1NTIxNTQ1OCwtMTQ4OTkyMjE3OSwxOT
 czNzc5MDg5LC0xNTY3Njg2MDUyLDE0ODQ0MzY5MjgsNjA4MTEz
 NTcxLDIxMjcyMzE1MTZdfQ==
 -->
