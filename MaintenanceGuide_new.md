@@ -189,6 +189,7 @@ The output of this module is 2 csv files. The first one keeps an id of error and
 	> Function name : check_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 #### Plug and Play
+This feature supplies the ability for developers to add new swimming errors definition and their weights 
 
 
 ### Tester Module
@@ -295,7 +296,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NTU4NzMwNDAsLTE0ODk5MjIxNzksMT
-k3Mzc3OTA4OSwtMTU2NzY4NjA1MiwxNDg0NDM2OTI4LDYwODEx
-MzU3MSwyMTI3MjMxNTE2XX0=
+eyJoaXN0b3J5IjpbOTkzNTg0ODM1LC0xNDg5OTIyMTc5LDE5Nz
+M3NzkwODksLTE1Njc2ODYwNTIsMTQ4NDQzNjkyOCw2MDgxMTM1
+NzEsMjEyNzIzMTUxNl19
 -->
