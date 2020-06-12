@@ -188,6 +188,8 @@ The output of this module is 2 csv files. The first one keeps an id of error and
 > **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
 	> Function name : check_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
+#### Plug and Play
+
 
 ### Tester Module
 This module purpose is to compare csv files with the same format, and used to compare manual annotations vs. automatic annotation returned from the [Data_Extractor Module](#data_extractor-module), This module generates csv files comparing each column and plotting figures based on the new csv files to emphasis and visualize the gap between the manual annotations and the automatic ones. By activating this module we can measure the performance of the system.
@@ -293,7 +295,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0ODk5MjIxNzksMTk3Mzc3OTA4OSwtMT
-U2NzY4NjA1MiwxNDg0NDM2OTI4LDYwODExMzU3MSwyMTI3MjMx
-NTE2XX0=
+eyJoaXN0b3J5IjpbLTE0NTU4NzMwNDAsLTE0ODk5MjIxNzksMT
+k3Mzc3OTA4OSwtMTU2NzY4NjA1MiwxNDg0NDM2OTI4LDYwODEx
+MzU3MSwyMTI3MjMxNTE2XX0=
 -->
