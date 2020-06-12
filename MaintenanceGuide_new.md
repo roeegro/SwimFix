@@ -186,10 +186,10 @@ This module gets as an input paths to the body part coordinates after filter and
 At the bottom of the module there is a dictionary that binds between the errors description in the function that detects this error, and the main function of this module runs over this dictionary and activate each function with the paths specified above.
 The output of this module is 2 csv files. The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected.
 > **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
-	> Function name : check_< error description with underscores between words>
+	> Function name : check_if_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 #### Plug and Play
-This feature supplies the ability for developers to add new swimming errors definition and their weights 
+This feature supplies the ability for developers to add new swimming errors definitions (and their weights) for future analysis by writing separated  
 
 
 ### Tester Module
@@ -296,7 +296,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTkzNTg0ODM1LC0xNDg5OTIyMTc5LDE5Nz
-M3NzkwODksLTE1Njc2ODYwNTIsMTQ4NDQzNjkyOCw2MDgxMTM1
-NzEsMjEyNzIzMTUxNl19
+eyJoaXN0b3J5IjpbMTAyMDc0ODQzNywtMTQ4OTkyMjE3OSwxOT
+czNzc5MDg5LC0xNTY3Njg2MDUyLDE0ODQ0MzY5MjgsNjA4MTEz
+NTcxLDIxMjcyMzE1MTZdfQ==
 -->
