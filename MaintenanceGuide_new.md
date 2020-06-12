@@ -213,7 +213,7 @@ Content:
  > **Note 1**: Disable of plug-and-play function execution is done by removing the matching .py file from the directory mentioned above. 
 
  > **Note 1**: You may want to annotate your error emphasis. You can do it with the function:
- > `evaluator.draw_line(index, (from_x_coor,from_y_coor), (to_x_coor,to_y_coor),color)`, a function written in evaluator which draw lines between defined points and stores the results in the [swimfix_annotated_frames directory](#output), where color is in BGR format (this function uses [cv2.line](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) function)
+ > `evaluator.draw_line(index, (from_x_coor,from_y_coor), (to_x_coor,to_y_coor),color)`, a function written in evaluator which draw lines between defined points and stores the results in the [swimfix_annotated_frames directory](#output), where color is in BGR format (this function uses [cv2.line](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) function).
 
 ### Tester Module
 This module purpose is to compare csv files with the same format, and used to compare manual annotations vs. automatic annotation returned from the [Data_Extractor Module](#data_extractor-module), This module generates csv files comparing each column and plotting figures based on the new csv files to emphasis and visualize the gap between the manual annotations and the automatic ones. By activating this module we can measure the performance of the system.
@@ -319,7 +319,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzg5OTg2NTY5LC0xMzMzMTc2Mzc2LC0xND
-g5OTIyMTc5LDE5NzM3NzkwODksLTE1Njc2ODYwNTIsMTQ4NDQz
-NjkyOCw2MDgxMTM1NzEsMjEyNzIzMTUxNl19
+eyJoaXN0b3J5IjpbMjA0MzI4MTMwNSwtMTMzMzE3NjM3NiwtMT
+Q4OTkyMjE3OSwxOTczNzc5MDg5LC0xNTY3Njg2MDUyLDE0ODQ0
+MzY5MjgsNjA4MTEzNTcxLDIxMjcyMzE1MTZdfQ==
 -->
