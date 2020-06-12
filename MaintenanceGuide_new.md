@@ -189,7 +189,7 @@ The output of this module is 2 csv files. The first one keeps an id of error and
 	> Function name : check_if_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
 #### Plug and Play
-This feature supplies the ability for developers to add new swimming errors definitions (and their weights) for future analysis by writing separated  
+This feature supplies the ability for developers to add new swimming errors definitions (and their weights) for future analysis by writing separated .py files without disa 
 
 
 ### Tester Module
@@ -296,7 +296,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAyMDc0ODQzNywtMTQ4OTkyMjE3OSwxOT
+eyJoaXN0b3J5IjpbLTU5ODAwNjk4NCwtMTQ4OTkyMjE3OSwxOT
 czNzc5MDg5LC0xNTY3Njg2MDUyLDE0ODQ0MzY5MjgsNjA4MTEz
 NTcxLDIxMjcyMzE1MTZdfQ==
 -->
