@@ -293,6 +293,7 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk3Mzc3OTA4OSwtMTU2NzY4NjA1MiwxND
-g0NDM2OTI4LDYwODExMzU3MSwyMTI3MjMxNTE2XX0=
+eyJoaXN0b3J5IjpbLTE0ODk5MjIxNzksMTk3Mzc3OTA4OSwtMT
+U2NzY4NjA1MiwxNDg0NDM2OTI4LDYwODExMzU3MSwyMTI3MjMx
+NTE2XX0=
 -->
