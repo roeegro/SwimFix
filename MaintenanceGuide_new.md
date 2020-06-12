@@ -186,7 +186,7 @@ This module gets as an input paths to the body part coordinates after filter and
 At the bottom of the module there is a list of functions (for inner module functions which defined before), and strings (for plug and play files which are added in the first for	loop in the main function) to be executed, and the main function of this module runs over this list and activate each function/call to the relevant file respectively with the paths specified above.
 > **Note**: Each file in plug and play is called with the paths and with some other arguments relevant for consistency of information to be accumulated during the runtime of this module over all the error detection function - whereas they defined before inside the module, or by plug and play functions.
 
-The output of this module is 2 csv files (and grade). The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected. The files above are sav
+The output of this module is 2 csv files (and grade). The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected. The files above are saved in the directory of current upload. See [output path hierarchy](#output) for more information about
 > **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
 	> Function name : check_if_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
@@ -321,8 +321,8 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODY5MjE4ODYzLDIwNDMyODEzMDUsLTEzMz
-MxNzYzNzYsLTE0ODk5MjIxNzksMTk3Mzc3OTA4OSwtMTU2NzY4
-NjA1MiwxNDg0NDM2OTI4LDYwODExMzU3MSwyMTI3MjMxNTE2XX
-0=
+eyJoaXN0b3J5IjpbLTEwNjA1MjUxMDgsMjA0MzI4MTMwNSwtMT
+MzMzE3NjM3NiwtMTQ4OTkyMjE3OSwxOTczNzc5MDg5LC0xNTY3
+Njg2MDUyLDE0ODQ0MzY5MjgsNjA4MTEzNTcxLDIxMjcyMzE1MT
+ZdfQ==
 -->
