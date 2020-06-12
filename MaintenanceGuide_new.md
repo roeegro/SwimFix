@@ -182,12 +182,40 @@ This module is able to calculate:
  In each function in this module, you can control the output file name, the location of this file, which columns will be export into figure, and even how to define the x-axis in the figures. This module enables the developer even to plot multifigures based on the same csvs and even comparison figures based on csv files with the same structure (e.g columns names).
 
  ### Evaluator Module
-This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module, in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
-At the bottom of the module there is a dictionary that binds between the errors description in the function that detects this error, and the main function of this module runs over this dictionary and activate each function with the paths specified above.
-The output of this module is 2 csv files. The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected.
+This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module and each function defines in plug and play < link >, in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
+At the bottom of the module there is a list of functions (for inner module functions which defined before), and strings (for plug and play files which are added in the first for	loop in the main function) to be executed, and the main function of this module runs over this list and activate each function/call to the relevant file respectively with the paths specified above.
+> **Note**: Each file in plug and play is called with the paths and with some other arguments relevant for consistency of information to be accumulated during the runtime of this module over all the error detection function - whereas they defined before inside the module, or by plug and play functions.
+
+The output of this module is 2 csv files (and grade). The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected. The files above are saved in the directory of current upload. Read [output path hierarchy](#output) for more information about the output hierarchy and the files it includes.
 > **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
-	> Function name : check_< error description with underscores between words>
+	> Function name : check_if_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
+#### Plug and Play
+This feature supplies the ability for developers to add new swimming errors definitions (and their weights) for future analysis.
+Feature use is done by writing separated .py files without disable server's running, and sending the files to the server when they are ready.
+Once the user sent those functions from the client side, they are stored in [plug_and_play_functions](#plug_and_play_functions) directory.
+Those files will be executed when error evaluation will be done to swimmer's video within evaluator module.
+In order to use this feature correctly, the project authors defined a format for writing such an external functions. The format is as follows:
+File naming: `check_if_< your new error description >`
+Content:
+
+    import evaluator # for using its functions.
+    def check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df):
+	    if side not in ['L', 'R']: # make sure you explore right and left side of the swimmer's body and not something else.
+	        return
+	    error_id = evaluator.get_id_of_error(name,error_names_for_external_calling = error_names)
+	    for index, __ in all_kp_df.iterrows()/angles_df.iterrows():
+	    < your error detection code >
+	    if error_id != -1 and index not in errors_df['frames'][error_id]: # Update accumulated error dataframe if this error never detected in this frame
+		    errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+ 
+	check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df) # function activation
+    
+    
+ > **Note 1**: Disable of plug-and-play function execution is done by removing the matching .py file from the directory mentioned above. 
+
+ > **Note 1**: You may want to annotate your error emphasis. You can do it with the function:
+ > `evaluator.draw_line(index, (from_x_coor,from_y_coor), (to_x_coor,to_y_coor),color)`, a function written in evaluator which draw lines between defined points and stores the results in the [swimfix_annotated_frames directory](#output), where color is in BGR format (this function uses [cv2.line](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) function).
 
 ### Tester Module
 This module purpose is to compare csv files with the same format, and used to compare manual annotations vs. automatic annotation returned from the [Data_Extractor Module](#data_extractor-module), This module generates csv files comparing each column and plotting figures based on the new csv files to emphasis and visualize the gap between the manual annotations and the automatic ones. By activating this module we can measure the performance of the system.
@@ -233,7 +261,7 @@ The directory structure is as follows:
 	* test results - directory contains csvs comparing the same colum values from ground truth csv vs. same column values appears in csv generated by OpenPose exectuion (See [Data_Extractor Module](#data_extractor-module)).
 
 #### Plug_and_play_functions
-Directory for future use, where one python function files would be stored here. Function naming format is identical to the format required here [Evaluator Module](#evaluator-module)
+Directory for python files to be stored for activating them for swimming error evaluation. Function and file format is identical to the format required here [Evaluator Module](#evaluator-module)
 
 #### Output
 This directory keeps all the files generated in the modules described before for all clients and videos uploaded.
@@ -247,6 +275,8 @@ Each specific upload contains the following folders:
 * swimfix_annotated_frames- with annotations of keypoints used after filter and interpolation of all keypoints.
 * analytical_data - contains csv files generated by [Data_Extractor Module](#data_extractor-module).
 * figures - contains figures generated by [Visualizer Module](#visualizer-module).
+
+In addition the specific upload folder contains 2 csvs in the level of the directories above. The first one "map.csv" contains mapping between error id and its description. The second on "swimmer_errors.csv" holds the frames that specific swimming error type detected in, for each frame in the uploaded movie.
 				 
 ### Data Base Structure
 The server side receives from the client preprocessed videos and saves the produced analytical data to track after the swimmers performance over time. The system saves the following data:
@@ -293,6 +323,8 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk3Mzc3OTA4OSwtMTU2NzY4NjA1MiwxND
-g0NDM2OTI4LDYwODExMzU3MSwyMTI3MjMxNTE2XX0=
+eyJoaXN0b3J5IjpbMTcyMTg4NDc1OSwyMDQzMjgxMzA1LC0xMz
+MzMTc2Mzc2LC0xNDg5OTIyMTc5LDE5NzM3NzkwODksLTE1Njc2
+ODYwNTIsMTQ4NDQzNjkyOCw2MDgxMTM1NzEsMjEyNzIzMTUxNl
+19
 -->
