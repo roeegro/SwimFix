@@ -130,9 +130,10 @@ Do expect for some errors regarding paths in to `cocoapi`
 By the end of this step you should have a `coco_negatives.json` and `custom.json` files in the `dataset/COCO/json/` directory
 
 ### Step 4 - Data Transformation
-In this step we will transform the data into the required The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
+In this step we will transform the data into the required [.mdb](https://www.lifewire.com/mdb-file-2621974) format.
+The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
-- To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
+- To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the coco_lmdb and coco-background_lmdb LMDB f. The generated 
 - We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
 >**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
@@ -190,6 +191,6 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMxNDU3MTQ4MiwxNDM5OTUwOTgsNzY3ND
-g3NTk1XX0=
+eyJoaXN0b3J5IjpbLTEzMDg2MTkzNTMsMTQzOTk1MDk4LDc2Nz
+Q4NzU5NV19
 -->
