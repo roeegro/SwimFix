@@ -23,8 +23,8 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 		- The angles of the swimmer's shoulders/elbows/wrists.
 		- Graph for every measure with its value in every frame of the video
     - **Model Testing and Evaluation**
-	    - Manual video annotation for setting .
-	    - Expected vs actual swimmer's pose comparison.
+	    - Manual video annotation for setting the expected result.
+	    - Expected vs actual result comparison.
 - **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmer as he swims towards it).
 - **Output**:
 	- Keypoints display (PNG, JPG, MP4) and saving (CSV).
@@ -66,6 +66,6 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NzQxNDg1MCwtNTEyOTUyMTc3LDM4ND
-k0NDM4LDEwMzc1MDE5NF19
+eyJoaXN0b3J5IjpbLTEyODQwODUwNjgsLTUxMjk1MjE3NywzOD
+Q5NDQzOCwxMDM3NTAxOTRdfQ==
 -->
