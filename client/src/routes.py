@@ -4,7 +4,7 @@ import socket
 from gui_utils import *
 from flask import render_template, url_for, flash, redirect, request, session, jsonify
 from forms import RegistrationForm, LoginForm
-import threading
+from threading import Thread
 import re
 import os
 from test_generator import run
@@ -13,6 +13,8 @@ from . import app, SERVER_IP, SERVER_PORT
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 sock = socket.socket()
+th = Thread()
+finished = False
 
 
 def is_admin():
@@ -39,7 +41,7 @@ def add_test():
     if not is_admin() == 'True':
         flash("You are not authorized to access this page", 'danger')
         return redirect(url_for('index'))
-    add_test_thread = threading.Thread(target=run)
+    add_test_thread = Thread(target=run)
     add_test_thread.start()
     while add_test_thread.is_alive():
         time.sleep(5)
@@ -74,23 +76,29 @@ def index():
     return render_template('index.html', isAdmin=is_admin())
 
 
+@app.route('/status')
+def thread_status():
+    global finished
+    """ Return the status of the worker thread """
+    return jsonify(dict(status=('finished' if finished else 'running')))
+
+
 def receive_openpose_msg():
     global sock
-    # sock.accept()
-    # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # sock.connect((SERVER_IP, SERVER_PORT))
-    start_msg = sock.recv(1024)  # for 'start' message
+    global finished
+    start_msg = sock.recv(1024)  # for 'success'' message
     if start_msg.decode('utf-8') != 'success':
         sock.close()
-        return render_template('load-video.html', isAdmin=is_admin())
+        # flash(u'An error has occurred, please try again', 'danger')
+        return
+        # return render_template('load-video.html', isAdmin=is_admin())
     sock.close()
-    return redirect(url_for("load_video"))
+    # flash(u'Video was processed successfully, assessment feedback is ready', 'success')
+    finished = True
 
 
 @app.route("/waiting-page", methods=['GET', 'POST'])
 def waiting_page():
-    thr = threading.Thread(target=receive_openpose_msg, args=[])
-    thr.start()
     return render_template('waiting-page.html', isAdmin=is_admin())
 
 
@@ -130,6 +138,12 @@ def load_video():
                 f.close()
             # flash('The file {} was uploaded successfully'.format(file.filename), 'success')
             #     sock.close()
+            global th
+            global finished
+            finished = False
+            th = Thread(target=receive_openpose_msg, args=())
+            th.start()
+            # return render_template('waiting-page.html', isAdmin=is_admin())
             return redirect(url_for('waiting_page'))
         else:
             flash('Failed to upload video file. Please try again', 'failure')
@@ -255,6 +269,7 @@ def previous_feedbacks():
     user_id = session.get('ID') if session and session.get('logged_in') else 0
     files_details = ''
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.connect((SERVER_IP, SERVER_PORT))
         msg = 'view_feedbacks_list user_id: {}'.format(user_id)
         s.sendall(msg.encode('utf-8'))
