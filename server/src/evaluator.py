@@ -5,6 +5,7 @@ import output_manager
 import os
 import math
 import utils
+import types
 
 errors_df = None
 
@@ -99,10 +100,10 @@ def check_if_elbow_angle_not_in_valid_range(all_kp_df, angles_df, name, side, mi
 
 def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0)):
     frame_index = int(frame_index)
-    # frame_path = output_manager.get_output_dirs_dict()[
-    #                  'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
-    frame_path = os.getcwd() + '/../output/roeegro/MVI_8012_from_frame_30/2020-06-12/14-22-41/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(
-        frame_index)
+    frame_path = output_manager.get_output_dirs_dict()[
+                     'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
+    # frame_path = os.getcwd() + '/../output/roeegro/MVI_8012_from_frame_30/2020-06-12/14-22-41/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(
+    #     frame_index)
     frame = cv2.imread(frame_path)
     annotated_frame = cv2.line(frame, to_point, from_point, selected_bgr_color)
     cv2.imwrite(frame_path, annotated_frame)
@@ -110,7 +111,8 @@ def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0))
 
 # error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range,
 #                    check_if_global_forearm_angle_not_in_valid_range]
-
+init_error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range]
+init_error_names = []
 error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range]
 
 error_names = []
@@ -141,7 +143,8 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
 
     for potential_error in error_detectors:
         for side_entry in sides.items():
-            try:
+            if isinstance(potential_error, types.FunctionType):
+                print('is function')
                 description = potential_error.__name__.replace('check_', '').replace('_', ' ').replace('if',
                                                                                                        side_entry[1])
                 error_names.append(description)
@@ -150,7 +153,8 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
                 error_id += 1
                 error_map_df = error_map_df.append(new_error_to_add, ignore_index=True)
                 potential_error(all_kp_df, angles_df, description, side_entry[0])
-            except:
+            elif isinstance(potential_error, str):
+                print('is str')
                 description = potential_error.replace('check_', '').replace('_', ' ').replace('if',
                                                                                               side_entry[1])
                 error_names.append(description)
@@ -159,18 +163,23 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
                 error_id += 1
                 error_map_df = error_map_df.append(new_error_to_add, ignore_index=True)
                 exec(open(plug_and_play_dir_path + '/' + potential_error).read(),
-                     {'all_kp_df': all_kp_df, 'angles_df': angles_df, 'name': description, 'side': side_entry[0], 'error_names':error_names,'errors_df':errors_df})
+                     {'all_kp_df': all_kp_df, 'angles_df': angles_df, 'name': description, 'side': side_entry[0],
+                      'error_names': error_names, 'errors_df': errors_df})
 
     errors_df.to_csv(output_directory + '/swimmer_errors.csv', index=False)
     error_map_df.to_csv(output_directory + '/map.csv', index=False)
     errors_df = None
+    error_detectors = init_error_detectors
+    error_names = init_error_names
 
 
-def get_id_of_error(error_name,error_names_for_external_calling=None):
+def get_id_of_error(error_name, error_names_for_external_calling=None):
     if error_names_for_external_calling is None:
         global error_names
     else:
         error_names = error_names_for_external_calling
+
+    print('overiided error names? {}, error names = {}'.format(error_names_for_external_calling, error_names))
     for i, error in enumerate(error_names):
         if error == error_name:
             return i

@@ -5,10 +5,7 @@ def check_if_global_forearm_angle_not_in_valid_range(all_kp_df, angles_df, name,
     
     if side not in ['L', 'R']:
         return
-    print('name:')
-    print(name)
     error_id = evaluator.get_id_of_error(name,error_names_for_external_calling = error_names)
-    print('hello hello the id of the error is {}'.format(error_id))
     for index, __ in all_kp_df.iterrows():
         global_forearm_angle = angles_df[side + 'GlobalForeArmAng'][index]
         wrist_x = all_kp_df[side + 'WristX'][index]
@@ -36,7 +33,6 @@ def check_if_global_forearm_angle_not_in_valid_range(all_kp_df, angles_df, name,
             evaluator.draw_line(index, elbow_pos, wrist_pos_for_min_recommended_angle)
             evaluator.draw_line(index, elbow_pos, wrist_pos_for_max_recommended_angle)
             if error_id != -1 and index not in errors_df['frames'][error_id]:
-                print('fucking write this error and lets go sleep')
                 errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
                 
                
