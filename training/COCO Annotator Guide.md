@@ -12,7 +12,7 @@
 
 OpenPose Library is based on deep learning and requires additional data that includes pictures(frames), and in each frames the relevant keypoints are annotated, and the object is identified by segmentation- describing the desired object by its contour.
 
-In this guide we will go through the relevant functionality of the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which we used in order to annotate our training data in the COCO format, so make sure you set it up properly before continuing.
+In this guide we will go through the relevant functionality of the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which we used in order to annotate our training data in the [COCO](cocodataset.org)  format, so make sure you set it up properly before moving on.
 
 
 ## Functionality implemented by the annotator
@@ -22,20 +22,13 @@ Note: The following guide describes the functionality needed to annotate keypoin
 2.  A page containing all the categories that were created by you in the past will appear (you can choose category and edit them).
 3.  Choose “Create”
 4.  In the following page you need to name the new category, and its parent category(optional), and define the keypoints in the category and the relations between them.
-### Adding a new dataset
-1.  Login to the remote desktop (see “Creating VPN connection to the annotator server”)
-    
-2.  Enter the url in the browser (from the remote desktop) “localhost:5000”, and enter with your user.
-    
-3.  Choose “Datasets” from the main menu.
-    
-4.  Choose “Create” option from the page, and enter the new dataset name.
-    
-5.  Enter the directory `D:/SwimmingProject/Coco-annotator`, in this directory the server’s code is found.
-    
-6.  Enter the “datasets” directory, in this directory all the previous datasets can be found.
-    
-7.  Verify that there is a folder with the name you have chosen on step 4.
+### Adding a new dataset   
+1.  Choose “Datasets”  in the main menu which can be found at the top of the page.
+2.  Choose “Create” option from the page, and enter the new dataset name.  
+3.  Enter the directory `D:/SwimmingProject/Coco-annotator`, in this directory the server’s code is found.  
+4.  Enter the “datasets” directory, in this directory all the previous datasets can be found.
+   
+5.  Verify that there is a folder with the name you have chosen on step 4.
 ### Adding pictures To The Dataset
 1.  Login to the remote desktop (see “Creating VPN connection to the annotator server”)
     
@@ -149,5 +142,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExNTI3OTU4NCwtOTkwNzQ0MzQ1XX0=
+eyJoaXN0b3J5IjpbNDM2NjcxODM0LC05OTA3NDQzNDVdfQ==
 -->
