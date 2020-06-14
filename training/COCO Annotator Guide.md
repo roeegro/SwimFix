@@ -79,7 +79,7 @@ Notes:
 2.  Every previous annotated point can be removed by pressing the Trash Can icon which appears next to each keypoint previously annotated(see in the image above).
 
 F:  
-Classify chosen keypoint from section E by visibility (see keypoints format :[http://cocodataset.org/#format-data](http://cocodataset.org/#format-data))
+Classify chosen keypoint from section E by visibility see [keypoints format)[http://cocodataset.org/#format-data](http://cocodataset.org/#format-data))
 
 G:  
 Pressing this button will cancel the option to annotate the frame and will allow the user to navigate and focus elements in the frame by dragging it with the mouse.
@@ -130,5 +130,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjg2MjM4MzY5LC05OTA3NDQzNDVdfQ==
+eyJoaXN0b3J5IjpbLTExMDkzOTc2NjMsLTk5MDc0NDM0NV19
 -->
