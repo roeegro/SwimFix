@@ -2,11 +2,11 @@
 
 ## Table of Contents
 1. [Introduction](#preparing-additional-data-to-train-openpose)
-4. [Creating a Category](#creating-a-category)
-5. [Adding New Dataset](#adding-new-dataset)
-6. [Adding Pictures To The Dataset](#adding-pictures-to-the-dataset)
-7. [Annotating Frames](#annotating-frames)
-8. [Exporting Products](#exporting-products)
+2. [Creating a Category](#creating-a-category)
+3. [Adding New Dataset](#adding-new-dataset)
+4. [Adding Pictures To The Dataset](#adding-pictures-to-the-dataset)
+5. [Annotating Frames](#annotating-frames)
+6. [Exporting Products](#exporting-products)
 
 ## Preparing Additional Data to Train OpenPose
 
@@ -147,5 +147,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk5MDc0NDM0NV19
+eyJoaXN0b3J5IjpbMTA4NzQ3NTI5MywtOTkwNzQ0MzQ1XX0=
 -->
