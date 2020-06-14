@@ -30,15 +30,11 @@ Note: The following guide describes the functionality needed to annotate keypoin
 5.  Verify that there is a folder with the name you have chosen on step 4.
 ### Adding pictures To The Dataset
 1.  Go to `SwimmingProject/training/coco-annotator/datasets` where all the previous datasets can be found.    
-3.  If the desired dataset cannot be found see “Adding new dataset” in this guide.
-    
-4.  Enter the desired dataset directory, in this directory you can create new sub-directories, we do not recommend doing so.
-    
-5.  Copy into the desired directory the frames you want to annotate, and wait a minute.
-     
-6.  Choose “Datasets” from the main menu and pick the dataset you want to work with.
-    
-7.  Press “Scan” from the left menu to load the pictures to the browser, wait few seconds until the pictures are fully loaded to the page.**![](https://lh4.googleusercontent.com/f2jqXCnJwT2-Czv-Y_dUp6crpBGvKhPYPX3641eLDUrmUJnrqGVk2_k9N6UEADZKvoNydDqfT4ycruWC_H1gRUsPQzaMAnJMnGV4ES8AESBv3UK60K2LbIcMKjl5i7CzaXnknwXb)**
+2.  If the desired dataset cannot be found check [Adding a new dataset](#adding-a-new-dataset) above.
+3.  Enter the desired dataset directory, in this directory you can create new sub-directories, we do not recommend doing so.   
+4.  Copy into the desired directory the frames you want to annotate, and wait a minute.
+5.  Choose “Datasets” from the main menu and pick the dataset you want to work with.
+6.  Press “Scan” from the left menu to load the pictures to the browser, wait few seconds until the pictures are fully loaded to the page.**![](https://lh4.googleusercontent.com/f2jqXCnJwT2-Czv-Y_dUp6crpBGvKhPYPX3641eLDUrmUJnrqGVk2_k9N6UEADZKvoNydDqfT4ycruWC_H1gRUsPQzaMAnJMnGV4ES8AESBv3UK60K2LbIcMKjl5i7CzaXnknwXb)**
 ### Annotating Frames
 In order to choose the frame you want to annotate follow this steps:
 
@@ -133,5 +129,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NzgzOTIxNjgsLTk5MDc0NDM0NV19
+eyJoaXN0b3J5IjpbLTE0NTcwMzc3ODksLTk5MDc0NDM0NV19
 -->
