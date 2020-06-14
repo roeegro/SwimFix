@@ -325,11 +325,10 @@ def previous_feedback(details):
     csvs_paths = get_all_files_paths(zip_name, 'csvs', extensions_of_files_to_find=['csv'],
                                      predicate=(lambda x: x in ['all_keypoints', 'angles',
                                                                 'interpolated_and_filtered_all_keypoints']))
-    [error_map_path, swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
+    [swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
                                                                 extensions_of_files_to_find=['csv'],
-                                                                predicate=lambda x: x in ['map',
-                                                                                          'swimmer_errors'])
-    error_description_by_frames = match_error_description_to_frames(error_map_path, swimmer_errors_path)
+                                                                predicate=lambda x: x in ['swimmer_errors'])
+    error_description_by_frames = match_error_description_to_frames(swimmer_errors_path)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
     frames_paths = sorted(frames_paths, key=sort_lambda)
@@ -535,6 +534,7 @@ def plug_and_play():
     if not is_admin() == 'True':
         flash("You are not authorized to access this page", 'danger')
         return redirect(url_for('index'))
+
     if request.method == 'POST':
         file = request.files['file']
         if file:
@@ -546,7 +546,22 @@ def plug_and_play():
                 flash('Failed to upload python file. Please try again', 'danger')
         else:
             flash('Failed to upload python file. Please try again', 'danger')
-    return render_template('plug-and-play.html', isAdmin=is_admin())
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        msg = 'get_defined_error_list'
+        s.sendall(msg.encode('utf-8'))
+        defined_errors_list_as_str = ''
+        data = s.recv(1024)
+        while data:
+            defined_errors_list_as_str += data.decode('utf8')
+            data = s.recv(1024)
+    defined_errors_list = defined_errors_list_as_str.split(',')
+    print(data)
+    print(defined_errors_list)
+    items = [{'id': defined_errors_list.index(defined_error), 'description': defined_error} for defined_error in
+             defined_errors_list]
+    return render_template('plug-and-play.html', items=items, isAdmin=is_admin())
 
 
 # Helpers
@@ -620,11 +635,11 @@ def user_feedback(details):
                 data = s.recv(1024)
             print('finish receiving data')
 
-    [error_map_path, swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
+    [swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
                                                                 extensions_of_files_to_find=['csv'],
-                                                                predicate=lambda x: x in ['map',
-                                                                                          'swimmer_errors'])
-    error_description_by_frames = match_error_description_to_frames(error_map_path, swimmer_errors_path)
+                                                                predicate=lambda x: x in ['swimmer_errors'])
+    error_description_by_frames = match_error_description_to_frames(swimmer_errors_path)
+    print(error_description_by_frames)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', extensions_of_files_to_find=['jpg'],
                                        predicate=lambda x: x.startswith('swimfix'))
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])

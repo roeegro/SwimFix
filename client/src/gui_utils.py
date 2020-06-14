@@ -32,7 +32,6 @@ def upload_video_file(upload_folder, file, should_take_full_video=False):
 
 
 def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], predicate=None):
-
     """ Get zip name to search in Client/crc/temp/zip name and extract to other directory in temp 'found_files_dir_name'
         files with specific extension and with specific names.
 
@@ -99,14 +98,12 @@ def upload_python_file(upload_folder, file):
         return False
 
 
-def match_error_description_to_frames(error_map_path, swimmer_errors_path):
-    """Gets paths two errors map, and swimmer's errors and returns
+def match_error_description_to_frames(swimmer_errors_path):
+    """Gets path to swimmer errors map, and returns
     list of dictionaries of errors description and relevant frames."""
     list_of_errors_by_frames_detected = list()
-    error_map_df = pd.read_csv(os.getcwd() + error_map_path)
     swimmer_errors_df = pd.read_csv(os.getcwd() + swimmer_errors_path)
-    joined_df = swimmer_errors_df.join(error_map_df)
-    for index, row in joined_df.iterrows():
-        new_record = {'frames': joined_df['frames'][index], 'description': joined_df['description'][index]}
+    for index, row in swimmer_errors_df.iterrows():
+        new_record = {'frames': swimmer_errors_df['frames'][index], 'description': swimmer_errors_df['description'][index], 'points_reduced':swimmer_errors_df['points_reduced'][index]}
         list_of_errors_by_frames_detected.append(new_record)
     return list_of_errors_by_frames_detected
