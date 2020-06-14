@@ -11,6 +11,7 @@
 ## Preparing Additional Data to Train OpenPose
 
 OpenPose Library is based on deep learning and requires additional data that includes pictures(frames), and in each frames the relevant keypoints are annotated, and the object is identified by segmentation- describing the desired object by its contour.
+In this guide we will go through the relevant functionality of the [
 
 
 ## Functionality implemented by the annotator
@@ -147,5 +148,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTYyMTkxOTAsLTk5MDc0NDM0NV19
+eyJoaXN0b3J5IjpbMTY0NDM4NDI2NCwtOTkwNzQ0MzQ1XX0=
 -->
