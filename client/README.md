@@ -1,4 +1,3 @@
-
 # <center> SwimFix<br> User Guide Web Interface</center>
 
 ## Table of Contents
@@ -10,18 +9,14 @@
 	* [Watching Feedbacks On Videos](#watching-feedbacks-on-videos)
 	* [Users Forum](#users-forum)
 5. [Admin Interface functionality](#admin-interface-functionality)
-	* [Add Admin](#add-admin)
 	* [Plug and Play](#plug-and-play)
 	* [Add Test](#add-test)
-	* [Select and Run Test](#select-and-run-test)
-	* [Test Results](#test-results)
 
 ## Web Interface
 Our system allows users to communicate with the system through a web interface which allows uploading new videos to the server, watch statistics extracted from his previous uploaded videos, while maintaining the users’ privacy and a convenient user experience.
 ### Login
 Login to the system is done by entering username and password and pressing on the Login button as seen in the picture:
-**![](https://lh3.googleusercontent.com/BQe6w3Jzea2wTVGbxPqLhGZiljwI2BBxwu1UF7Rmj5YSgYobiBDK_sKNZrIn-RVdXW51dX54pbbq1n55Mmv9Y62ADK0HCBhsMP9VFsBwsx6LeokOYyyq0X6HEsF1yokBViAOy0gY)**
-
+**![](https://lh3.googleusercontent.com/4rXSsvwTc9hLFd1cDh10kOJAbYD8C5u8kpMKvfwv8FwKyc7tHST1vAkngfZQKVJ80fauS_ijGFq1a8o5vFiXhwmUgjRJLWGGn0v4FTWR0pOMUN93w08Oxol031Lci7-cEo18N8n6)**
 In case a user is not registered in the system- pressing the blue link below the Login button will redirect you to the Registration page (next page).
 
 ### Register User
@@ -38,8 +33,7 @@ In this page, the user has to enter the following credentials:
 
   
 If the user is already registered, you can go back to the login page by pressing on the blue link which appears below the Sign Up button.
-**![](https://lh4.googleusercontent.com/QLHdCARdjUWYuQ-fhxeWyc7xnW43zlKLVrRMgnxtoJbUhjr_Cue1VE_g0OHZAgEkAOjp92KSrd5f5FAgycuE9jxyxR1sGD_W43215umiUfXCjoONqOwUVquYFxa880_njmQFDcfw)**
-
+**![](https://lh3.googleusercontent.com/3VlLSIV6KapoORkjeuQS7elqrfbS66HiwjcTpHn6IAIODUJlNPrUDcVEgqLO_w9RWgsLKPM1Jznj7J67tkL_fucijZGzOj04GvnpHYBoqClPA71Y8KFy6-ckjD8uqw3jTu1foPK1)**
 After logging in to the system, there are 2 kinds of menus to 2 kinds of users:  
 on the right menu- a menu for a regular user, and the two menus to the left are for an admin user. Admin users have all the regular user permissions, with more functionality that appears after pressing on the Admin Panel on the navigation bar and appears on the most left menu.
 
@@ -55,10 +49,9 @@ After a video is uploaded, the user is redirected to the index page- and a succe
 ![](https://lh4.googleusercontent.com/knnw5wdv8sEr-HpjFiRAgF9yRbPqNREXX65fuWWET0HshWkX3QEnd5FsN2y75_mGyU2RveXTSLyQ2zWS7X8KlBOJW0fov_TFKdqD5v4RZ7yxZmBwAqJEKx9St8JKIelc7YmhFT7K)
 ### Watching Feedbacks On Videos
 The user can watch statistics extracted from his previous uploaded videos in the “Previous Feedbacks” page which can be accessed by pressing on “Previous Feedbacks” button in the navigation bar. 
-**![](https://lh4.googleusercontent.com/jIGmEg-ipROTGszdFViYpfXbuQrbFsFn02CfF6ttyDJhbk_28lN-Lo-1UsTuAWTXPRkyydyB8dYDgyn6x_pA9WyiLLp3XDqPesW8gULmL-z8_ibSJKsIblMitfCjC1QA9atpJ5mZ)**
+![](https://lh4.googleusercontent.com/J8vcjRUfqQVWseFaGUE953txPiPYOZpXIfsP8kKJWM1KBAFN4_m2js_luQbFUX6GQejnRL425ESjCtgnTIlGCeALUtWZz0tcmtmLIzZ1LpNjYi6YgEOPzy2eY_h-pgABJqz5mlU2)
 In this page there is a table containing all the feedbacks the user has received on his videos ordered by the upload date.
-By pressing "View Feedback" the user will be redirected to a page containing the video frames and a table which contains error descriptions and a list of frames in which the system recognized the error in.< insert image here > <break>
-In addition, the user can watch the graphs extracted from his video by pressing on the “View graphs” button on the video’s row. By doing so, the user will be redirected to a page containing all the graphs in a dynamic view, which allows him to click on a point in a graph and see immediately the frame of the video in this point with a Wireframe on it.<span> < update image here >
+The user can watch the graphs extracted from his video by pressing on the “View graphs” button on the video’s row. By doing so, the user will be redirected to a page containing all the graphs in a dynamic view, which allows him to click on a point in a graph and see immediately the frame of the video in this point with a Wireframe on it.<span>
 **Example:**
 ![](https://lh6.googleusercontent.com/KNclyogaT-jfia3YFZgoWCutEJr_2M30pWkjDsy9MnkwZXiKdJspuOKTXCXj8UFt14fB3KjzxTkxm73Q9sdBGF5zmRLtcGbDP-frXB8CQ96q3ao4-9c-Njhq1pFoAVV9zUBwb_H_)
 [In this picture: the user clicked on frame number 136 in the graph, and immediately saw the frame corresponding with the number in the video, with annotations of keypoints and wireframe on the frame]
@@ -79,10 +72,6 @@ User can access more info about the project by pressing “About” on the navig
 
 ## Admin Interface Functionality
 The following functionalities can be access only by Admin users:
-### Add Admin
-Allows admin to promote other registered users to Admins.
-The page contains a list of all the users registered to the system, and by pressing the "Promote" link on the same row- the selected user will become an admin.
-**![](https://lh5.googleusercontent.com/w8aLTPCaw5j21u4n2XeZ2s6nsdlM2dv3sNB-_qYP_MrA41B1_yxNXBMGchz5vxtHnU8PpG2IektGWzgy1AramDzHIDbkLpogSkKYrAD0gwemkgTYCIW2ab67r7TwBH4BxI6I8pad)**
 
 ### Plug and Play
 Allows admin to send the server scripts in python for classifying swimming errors.
@@ -92,6 +81,9 @@ The server side implementation will be implemented in the future.
 The following mechanism allows admin to manually annotate videos and save their annotation as csv and compare it to the OpenPose library performance.
 The manual to the test adding interface:<br>
 ------------Test Generator Guide--------
+
+Prerequisites:
+1. You must have Python3 installed
 
 Guide:
 
@@ -158,10 +150,5 @@ CSV Output Section:
 The CSV output format is as follows:
 You will have for each frame number the X and Y coordinated for each body part mentioned in body parts table in the program.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMSw2OTA2Njg5OTFdfQ==
+eyJoaXN0b3J5IjpbMTA4NjQ0ODYyMV19
 -->
-### Select and Run Test
-In this page, you can choose a video to upload and if the video has a test for it on the server (generated by [Add Test](#add-test)) the video will be processed the same it would have been through [Upload Video To The Server](#upload-video-to-the-server), but at the end, it will be compared to the expected output. To see the comparison go to [Test Results](#test-results)
-
-### Test Results
-In this page a list of all the videos the user uploaded in [Select and Run Test](#select-and-run-test)   will appear. To watch the results press on the results page in the same row as the video desired. By doing so, the user will be redirected to a page containing all the graphs in a dynamic view, which allows him to click on a point in a graph and see immediately the frame of the video in this point with a Wireframe on it.<span> < update image here >
