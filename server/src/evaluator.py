@@ -10,57 +10,55 @@ import types
 errors_df = None
 
 
-def check_if_hand_crossed_the_middle_line(all_kp_df, angles_df, name, side):
+def check_if_hand_crossed_the_middle_line(index,all_kp_df, angles_df, name, side):
     if side not in ['L', 'R']:
         return
-
+    
     error_id = get_id_of_error(name)
-    for index, __ in all_kp_df.iterrows():
-        wrist_x = all_kp_df[side + 'WristX'][index]
-        wrist_y = all_kp_df[side + 'WristY'][index]
-        elbow_x = all_kp_df[side + 'WristX'][index]
-        neck_x = all_kp_df['NeckX'][index]
-        neck_y = all_kp_df['NeckY'][index]
-        palm_x_loc = calculate_palm_x_loc(wrist_x, elbow_x)
-        if palm_x_loc < neck_x:
-            from_point = (int(neck_x), int(neck_y))
-            to_point = (int(neck_x), int(wrist_y))
-            draw_line(index, from_point, to_point, selected_bgr_color=(0, 128, 255))
-            if error_id != -1 and index not in errors_df['frames'][error_id]:
-                errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+    wrist_x = all_kp_df[side + 'WristX'][index]
+    wrist_y = all_kp_df[side + 'WristY'][index]
+    elbow_x = all_kp_df[side + 'WristX'][index]
+    neck_x = all_kp_df['NeckX'][index]
+    neck_y = all_kp_df['NeckY'][index]
+    palm_x_loc = calculate_palm_x_loc(wrist_x, elbow_x)
+    if palm_x_loc < neck_x:
+        from_point = (int(neck_x), int(neck_y))
+        to_point = (int(neck_x), int(wrist_y))
+        draw_line(index, from_point, to_point, selected_bgr_color=(0, 128, 255))
+        if error_id != -1 and index not in errors_df['frames'][error_id]:
+            errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
 
 
-def check_if_elbow_angle_not_in_valid_range(all_kp_df, angles_df, name, side, min_angle_recommended=90,
-                                            max_angle_recommended=175):
+def check_if_elbow_angle_not_in_valid_range(index,all_kp_df, angles_df, name, side):
     if side not in ['L', 'R']:
         return
-
+    min_angle_recommended = 90
+    max_angle_recommended = 175
     error_id = get_id_of_error(name)
-    for index, __ in all_kp_df.iterrows():
-        elbow_engle = angles_df[side + 'ElbowAng'][index]
-        if elbow_engle > max_angle_recommended or elbow_engle < min_angle_recommended:
-            elbow_x = all_kp_df[side + 'ElbowX'][index]
-            elbow_y = all_kp_df[side + 'ElbowY'][index]
-            elbow_pos = (int(elbow_x), int(elbow_y))
-            forearm_length = math.sqrt(
-                math.pow(all_kp_df[side + 'ElbowX'][index] - all_kp_df[side + 'WristX'][index], 2) + math.pow(
-                    all_kp_df[side + 'ElbowY'][index] - all_kp_df[side + 'WristY'][index], 2))
-            wrist_x_recommended_for_min_angle = elbow_x + (
-                    math.cos(math.radians(min_angle_recommended)) * forearm_length)
-            wrist_y_recommended_for_min_angle = elbow_y + (
-                    math.sin(math.radians(min_angle_recommended)) * forearm_length)
-            wrist_x_recommended_for_max_angle = elbow_x + (
-                    math.cos(math.radians(max_angle_recommended)) * forearm_length)
-            wrist_y_recommended_for_max_angle = elbow_y + (
-                    math.sin(math.radians(max_angle_recommended)) * forearm_length)
-            wrist_pos_for_min_recommended_angle = (
-                int(wrist_x_recommended_for_min_angle), int(wrist_y_recommended_for_min_angle))
-            wrist_pos_for_max_recommended_angle = (
-                int(wrist_x_recommended_for_max_angle), int(wrist_y_recommended_for_max_angle))
-            draw_line(index, elbow_pos, wrist_pos_for_min_recommended_angle, selected_bgr_color=(128, 0, 128))
-            draw_line(index, elbow_pos, wrist_pos_for_max_recommended_angle)
-            if error_id != -1 and index not in errors_df['frames'][error_id]:
-                errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+    elbow_angle = angles_df[side + 'ElbowAng'][index]
+    if elbow_angle > max_angle_recommended or elbow_angle < min_angle_recommended:
+        elbow_x = all_kp_df[side + 'ElbowX'][index]
+        elbow_y = all_kp_df[side + 'ElbowY'][index]
+        elbow_pos = (int(elbow_x), int(elbow_y))
+        forearm_length = math.sqrt(
+            math.pow(all_kp_df[side + 'ElbowX'][index] - all_kp_df[side + 'WristX'][index], 2) + math.pow(
+                all_kp_df[side + 'ElbowY'][index] - all_kp_df[side + 'WristY'][index], 2))
+        wrist_x_recommended_for_min_angle = elbow_x + (
+                math.cos(math.radians(min_angle_recommended)) * forearm_length)
+        wrist_y_recommended_for_min_angle = elbow_y + (
+                math.sin(math.radians(min_angle_recommended)) * forearm_length)
+        wrist_x_recommended_for_max_angle = elbow_x + (
+                math.cos(math.radians(max_angle_recommended)) * forearm_length)
+        wrist_y_recommended_for_max_angle = elbow_y + (
+                math.sin(math.radians(max_angle_recommended)) * forearm_length)
+        wrist_pos_for_min_recommended_angle = (
+            int(wrist_x_recommended_for_min_angle), int(wrist_y_recommended_for_min_angle))
+        wrist_pos_for_max_recommended_angle = (
+            int(wrist_x_recommended_for_max_angle), int(wrist_y_recommended_for_max_angle))
+        draw_line(index, elbow_pos, wrist_pos_for_min_recommended_angle, selected_bgr_color=(128, 0, 128))
+        draw_line(index, elbow_pos, wrist_pos_for_max_recommended_angle)
+        if error_id != -1 and index not in errors_df['frames'][error_id]:
+            errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
 
 
 # def check_if_global_forearm_angle_not_in_valid_range(all_kp_df, angles_df, name, side, inner_angle=45,
@@ -100,10 +98,10 @@ def check_if_elbow_angle_not_in_valid_range(all_kp_df, angles_df, name, side, mi
 
 def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0)):
     frame_index = int(frame_index)
-    frame_path = output_manager.get_output_dirs_dict()[
-                     'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
-    # frame_path = os.getcwd() + '/../output/roeegro/MVI_8012_from_frame_30/2020-06-12/14-22-41/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(
-    #     frame_index)
+    # frame_path = output_manager.get_output_dirs_dict()[
+    #                  'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
+    frame_path = os.getcwd() + '/../output/roeegro/MVI_8012_from_frame_30/2020-06-12/14-22-41/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(
+        frame_index)
     frame = cv2.imread(frame_path)
     annotated_frame = cv2.line(frame, to_point, from_point, selected_bgr_color)
     cv2.imwrite(frame_path, annotated_frame)
@@ -114,7 +112,6 @@ def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0))
 init_error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range]
 init_error_names = []
 error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range]
-
 error_names = []
 
 
@@ -140,31 +137,39 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
         {'error_id': np.arange(0, len(error_detectors) * 2), 'frames': [[]] * (2 * len(error_detectors))}).set_index(
         'error_id')
     error_map_df = pd.DataFrame(columns=['error_id', 'description'])
-
+    # definition of errors
     for potential_error in error_detectors:
         for side_entry in sides.items():
             if isinstance(potential_error, types.FunctionType):
                 print('is function')
                 description = potential_error.__name__.replace('check_', '').replace('_', ' ').replace('if',
                                                                                                        side_entry[1])
-                error_names.append(description)
-                new_error_to_add = {'error_id': error_id,
-                                    'description': description}
-                error_id += 1
-                error_map_df = error_map_df.append(new_error_to_add, ignore_index=True)
-                potential_error(all_kp_df, angles_df, description, side_entry[0])
             elif isinstance(potential_error, str):
                 print('is str')
                 description = potential_error.replace('check_', '').replace('_', ' ').replace('if',
                                                                                               side_entry[1])
-                error_names.append(description)
-                new_error_to_add = {'error_id': error_id,
-                                    'description': description}
-                error_id += 1
-                error_map_df = error_map_df.append(new_error_to_add, ignore_index=True)
-                exec(open(plug_and_play_dir_path + '/' + potential_error).read(),
-                     {'all_kp_df': all_kp_df, 'angles_df': angles_df, 'name': description, 'side': side_entry[0],
-                      'error_names': error_names, 'errors_df': errors_df})
+            error_names.append(description)
+            new_error_to_add = {'error_id': error_id,
+                                'description': description}
+            error_id += 1
+            error_map_df = error_map_df.append(new_error_to_add, ignore_index=True)
+
+    for index, frame in angles_df.iterrows():
+        # go over potential errors for both sides.
+        for potential_error in error_detectors:
+            for side_entry in sides.items():
+                if isinstance(potential_error, types.FunctionType):
+                    description = potential_error.__name__.replace('check_', '').replace('_', ' ').replace('if',
+                                                                                                           side_entry[
+                                                                                                               1])
+                    potential_error(index, all_kp_df, angles_df, description, side_entry[0])
+                elif isinstance(potential_error, str):
+                    description = potential_error.replace('check_', '').replace('_', ' ').replace('if',
+                                                                                                  side_entry[1])
+                    exec(open(plug_and_play_dir_path + '/' + potential_error).read(),
+                         {'index': index, 'all_kp_df': all_kp_df, 'angles_df': angles_df, 'name': description,
+                          'side': side_entry[0],
+                          'error_names': error_names, 'errors_df': errors_df})
 
     errors_df.to_csv(output_directory + '/swimmer_errors.csv', index=False)
     error_map_df.to_csv(output_directory + '/map.csv', index=False)
@@ -179,7 +184,6 @@ def get_id_of_error(error_name, error_names_for_external_calling=None):
     else:
         error_names = error_names_for_external_calling
 
-    print('overiided error names? {}, error names = {}'.format(error_names_for_external_calling, error_names))
     for i, error in enumerate(error_names):
         if error == error_name:
             return i
