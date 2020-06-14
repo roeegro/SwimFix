@@ -16,7 +16,7 @@ sock = socket.socket()
 th = Thread()
 finished = False
 indication_msg = None
-server_response = None
+server_response = "".encode('utf-8')
 
 
 def is_admin():
@@ -168,10 +168,14 @@ def load_video():
             return redirect(url_for('waiting_page'))
         else:
             flash(u'Failed to upload video file. Please try again', 'error')
-    if server_response.decode('utf-8') == 'success':
+    if indication_msg is None:
+        finished = False
+    elif server_response.decode('utf-8') == 'success':
         flash(indication_msg, 'success')
+        indication_msg = None
     else:
         flash(indication_msg, 'danger')
+        indication_msg = None
     finished = False
     return render_template('load-video.html', isAdmin=is_admin())
 
