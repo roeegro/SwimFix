@@ -1,11 +1,13 @@
 import evaluator
 import math
-def check_if_global_forearm_angle_not_in_valid_range(index,all_kp_df, angles_df, name, side,error_names,errors_df):
+
+def check_if_global_forearm_angle_not_in_valid_range(index,all_kp_df, angles_df, name, side,error_names,errors_df,points_reduced):
     
     if side not in ['L', 'R']:
         return
     outer_angle=10
     inner_angle=45
+    error_weight = 0
     error_id = evaluator.get_id_of_error(name,error_names_for_external_calling = error_names)
 
     global_forearm_angle = angles_df[side + 'GlobalForeArmAng'][index]
@@ -34,7 +36,9 @@ def check_if_global_forearm_angle_not_in_valid_range(index,all_kp_df, angles_df,
         evaluator.draw_line(index, elbow_pos, wrist_pos_for_min_recommended_angle)
         evaluator.draw_line(index, elbow_pos, wrist_pos_for_max_recommended_angle)
         if error_id != -1 and index not in errors_df['frames'][error_id]:
+            error_weight += 1.5
             errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+    points_reduced[0] += error_weight
                 
                
-check_if_global_forearm_angle_not_in_valid_range(index,all_kp_df, angles_df, name, side,error_names,errors_df)
+check_if_global_forearm_angle_not_in_valid_range(index,all_kp_df, angles_df, name, side,error_names,errors_df,points_reduced)

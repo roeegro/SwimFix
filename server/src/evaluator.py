@@ -8,12 +8,13 @@ import utils
 import types
 
 errors_df = None
+final_grade = 100
 
 
-def check_if_hand_crossed_the_middle_line(index,all_kp_df, angles_df, name, side):
+def check_if_hand_crossed_the_middle_line(index, all_kp_df, angles_df, name, side):
     if side not in ['L', 'R']:
         return
-    
+    error_weight = 0
     error_id = get_id_of_error(name)
     wrist_x = all_kp_df[side + 'WristX'][index]
     wrist_y = all_kp_df[side + 'WristY'][index]
@@ -27,11 +28,14 @@ def check_if_hand_crossed_the_middle_line(index,all_kp_df, angles_df, name, side
         draw_line(index, from_point, to_point, selected_bgr_color=(0, 128, 255))
         if error_id != -1 and index not in errors_df['frames'][error_id]:
             errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+            error_weight += 1.5
+    return error_weight
 
 
-def check_if_elbow_angle_not_in_valid_range(index,all_kp_df, angles_df, name, side):
+def check_if_elbow_angle_not_in_valid_range(index, all_kp_df, angles_df, name, side):
     if side not in ['L', 'R']:
         return
+    error_weight = 0
     min_angle_recommended = 90
     max_angle_recommended = 175
     error_id = get_id_of_error(name)
@@ -59,6 +63,9 @@ def check_if_elbow_angle_not_in_valid_range(index,all_kp_df, angles_df, name, si
         draw_line(index, elbow_pos, wrist_pos_for_max_recommended_angle)
         if error_id != -1 and index not in errors_df['frames'][error_id]:
             errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+            error_weight += 1.5
+
+    return error_weight
 
 
 # def check_if_global_forearm_angle_not_in_valid_range(all_kp_df, angles_df, name, side, inner_angle=45,
@@ -154,7 +161,9 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
             error_id += 1
             error_map_df = error_map_df.append(new_error_to_add, ignore_index=True)
 
+    global final_grade
     for index, frame in angles_df.iterrows():
+        points_reduced = [0] # in order to pass this mutable list to exec.
         # go over potential errors for both sides.
         for potential_error in error_detectors:
             for side_entry in sides.items():
@@ -162,20 +171,23 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
                     description = potential_error.__name__.replace('check_', '').replace('_', ' ').replace('if',
                                                                                                            side_entry[
                                                                                                                1])
-                    potential_error(index, all_kp_df, angles_df, description, side_entry[0])
+                    points_reduced[0] += potential_error(index, all_kp_df, angles_df, description, side_entry[0])
                 elif isinstance(potential_error, str):
                     description = potential_error.replace('check_', '').replace('_', ' ').replace('if',
                                                                                                   side_entry[1])
+
                     exec(open(plug_and_play_dir_path + '/' + potential_error).read(),
-                         {'index': index, 'all_kp_df': all_kp_df, 'angles_df': angles_df, 'name': description,
-                          'side': side_entry[0],
-                          'error_names': error_names, 'errors_df': errors_df})
+                         {"index": index, "all_kp_df": all_kp_df, "angles_df": angles_df, "name": description,
+                          "side": side_entry[0],
+                          "error_names": error_names, "errors_df": errors_df, 'points_reduced': points_reduced})
+        final_grade -= points_reduced[0]
 
     errors_df.to_csv(output_directory + '/swimmer_errors.csv', index=False)
     error_map_df.to_csv(output_directory + '/map.csv', index=False)
     errors_df = None
     error_detectors = init_error_detectors
     error_names = init_error_names
+    print(final_grade)
 
 
 def get_id_of_error(error_name, error_names_for_external_calling=None):
