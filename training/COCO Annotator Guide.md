@@ -13,7 +13,7 @@
 OpenPose Library is based on deep learning and requires additional data that includes pictures(frames), and in each frames the relevant keypoints are annotated, and the object is identified by segmentation- describing the desired object by its contour.
 
 
-## Functionality implemented by the annotator server
+## Functionality implemented by the annotator
 Note: The following guide describes the functionality needed to annotate keypoints on frames, and doing segmentation on it. The interface contains more functionality which is not relevant to this guide.
 ### Creating a Category
 1.  Choose “Categories” in the main menu which can be found at the top of the page.
@@ -147,5 +147,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA4NzQ3NTI5MywtOTkwNzQ0MzQ1XX0=
+eyJoaXN0b3J5IjpbNTYyMTkxOTAsLTk5MDc0NDM0NV19
 -->
