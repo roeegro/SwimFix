@@ -29,10 +29,7 @@ Note: The following guide describes the functionality needed to annotate keypoin
 4.  Enter the “datasets” directory, in this directory all the previous datasets can be found. 
 5.  Verify that there is a folder with the name you have chosen on step 4.
 ### Adding pictures To The Dataset
-1.  Enter the directory `SwimmingProject/coco-annotator` in this directory the server’s code is found.
-    
-2.  Enter the “datasets” directory, in this directory all the previous datasets can be found.
-    
+1.  Go to `SwimmingProject/training/coco-annotator/datasets` where all the previous datasets can be found.    
 3.  If the desired dataset cannot be found see “Adding new dataset” in this guide.
     
 4.  Enter the desired dataset directory, in this directory you can create new sub-directories, we do not recommend doing so.
@@ -136,5 +133,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIxODcyODEwMiwtOTkwNzQ0MzQ1XX0=
+eyJoaXN0b3J5IjpbLTE1NzgzOTIxNjgsLTk5MDc0NDM0NV19
 -->
