@@ -2,17 +2,18 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
-3. [Prerequisites](#prerequisites)
-4. [Required Third-Party Repositories and Packages](#required-third-party-repositories-and-packages)
-5. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
+2. [Disclaimer](#disclaimer)
+3. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
+4. [Prerequisites](#prerequisites)
+5. [Required Third-Party Repositories and Packages](#required-third-party-repositories-and-packages)
+6. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
    * [Data Transformation](#step-4---data-transformation)
-6. [Training](#training)
-7. [Q&A](#qa)
-8. [Installation Commands](#installation-commands)
+7. [Training](#training)
+8. [Q&A](#qa)
+9. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -195,6 +196,6 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5OTE4NTIzMzQsMTQzOTk1MDk4LDc2Nz
-Q4NzU5NV19
+eyJoaXN0b3J5IjpbMTAyMjcwODc5NSwtMTk5MTg1MjMzNCwxND
+M5OTUwOTgsNzY3NDg3NTk1XX0=
 -->
