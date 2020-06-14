@@ -13,7 +13,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 
 ## Features
 - **Functionality**:
-    - **2D eal-ime ulti-erson eypoint etection**:
+    - **2D real-time multi-person keypoint detection**:
         - 18 keypoint body keypoint estimation based on the OpenPose library.
     - **Performance Assessment** of the swimmer:
 	    - Error detection including multiple error types.
@@ -35,7 +35,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 	- Currently we do not support deployment of the model
 	- You can find a complete walk-through guide [here](https://github.com/roeegro/SwimFix/blob/master/training/README.md)
  
->**TODO**: put the impression video e
+>**TODO**: put the impression video here
     
 ## Web Client
 Our client-side consists of a Flask based web client
@@ -66,5 +66,6 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4Njg3NTkzMjhdfQ==
+eyJoaXN0b3J5IjpbLTEzNTk0NzYzMTcsLTE4Njg3NTkzMjhdfQ
+==
 -->
