@@ -12,8 +12,7 @@
 
 OpenPose Library is based on deep learning and requires additional data that includes pictures(frames), and in each frames the relevant keypoints are annotated, and the object is identified by segmentation- describing the desired object by its contour.
 
-In this guide we will go through the relevant functionality of the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which we used in order to annotate our training data in the [COCO](cocodataset.org)  format, so make sure you set it up properly before moving on.
-
+In this guide we will go through the relevant functionality of the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which we used in order to annotate our training data in the [COCO](cocodataset.org)  format, so make sure it is up and running before moving on.
 
 ## Functionality implemented by the annotator
 Note: The following guide describes the functionality needed to annotate keypoints on frames, and doing segmentation on it. The interface contains more functionality which is not relevant to this guide.
@@ -128,5 +127,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ5MzQ3NTIzNCwtOTkwNzQ0MzQ1XX0=
+eyJoaXN0b3J5IjpbOTE1MTUxMTI2LC05OTA3NDQzNDVdfQ==
 -->
