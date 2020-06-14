@@ -19,13 +19,13 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 	    - Error detection including multiple error types.
 	    - Manual error fixing over the frames where the error occurred
 	    - Final assessment grade calculation based on the detected errors
-	    - 
+	    - Add new types of errors on the fly [Plug and Play]
     - **Extraction & Visualization** of various performance measures:
 		- The keypoints' coordinates.
 		- The angles of the swimmer's shoulders/elbows/wrists.
 		- Graph for every measure with its value in every frame of the video
     - **Model Testing and Evaluation**
-	    - Manual video annotation for setting the expected result.
+	    - Manual video annotation tool to set the expected result.
 	    - Expected vs actual result comparison.
 - **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmer as he swims towards it).
 - **Output**:
@@ -68,7 +68,7 @@ graph LR
 	D -- Deploy Model --> C
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1Njk2MjIyMDYsLTEzNTk0NzYzMTcsLT
-E4Njg3NTkzMjgsLTEyODQwODUwNjgsLTUxMjk1MjE3NywzODQ5
-NDQzOCwxMDM3NTAxOTRdfQ==
+eyJoaXN0b3J5IjpbOTAyNTgwMzcyLC0xMzU5NDc2MzE3LC0xOD
+Y4NzU5MzI4LC0xMjg0MDg1MDY4LC01MTI5NTIxNzcsMzg0OTQ0
+MzgsMTAzNzUwMTk0XX0=
 -->
