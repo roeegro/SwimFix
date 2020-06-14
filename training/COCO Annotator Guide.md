@@ -26,28 +26,22 @@ Note: The following guide describes the functionality needed to annotate keypoin
 1.  Choose “Datasets”  in the main menu which can be found at the top of the page.
 2.  Choose “Create” option from the page, and enter the new dataset name.  
 3.  Enter the directory `D:/SwimmingProject/Coco-annotator`, in this directory the server’s code is found.  
-4.  Enter the “datasets” directory, in this directory all the previous datasets can be found.
-   
+4.  Enter the “datasets” directory, in this directory all the previous datasets can be found. 
 5.  Verify that there is a folder with the name you have chosen on step 4.
 ### Adding pictures To The Dataset
-1.  Login to the remote desktop (see “Creating VPN connection to the annotator server”)
+1.  Enter the directory `SwimmingProject/coco-annotator` in this directory the server’s code is found.
     
-2.  Enter the directory `D:/SwimmingProject/Coco-annotator` in this directory the server’s code is found.
+2.  Enter the “datasets” directory, in this directory all the previous datasets can be found.
     
-3.  Enter the “datasets” directory, in this directory all the previous datasets can be found.
+3.  If the desired dataset cannot be found see “Adding new dataset” in this guide.
     
-4.  If the desired dataset cannot be found see “Adding new dataset” in this guide.
+4.  Enter the desired dataset directory, in this directory you can create new sub-directories, we do not recommend doing so.
     
-5.  Enter the desired dataset directory, in this directory you can create new sub-directories, we do not recommend doing so.
+5.  Copy into the desired directory the frames you want to annotate, and wait a minute.
+     
+6.  Choose “Datasets” from the main menu and pick the dataset you want to work with.
     
-6.  Copy into the desired directory the frames you want to annotate, and wait a minute.
-    
-7.  Enter the url in the browser (from the remote desktop) “localhost:5000”, and enter with your user.
-    
-8.  Choose “Datasets” from the main menu and pick the dataset you want to work with.
-    
-9.  Press “Scan” from the left menu to load the pictures to the browser, wait few seconds until the pictures are fully loaded to the page.**![](https://lh4.googleusercontent.com/f2jqXCnJwT2-Czv-Y_dUp6crpBGvKhPYPX3641eLDUrmUJnrqGVk2_k9N6UEADZKvoNydDqfT4ycruWC_H1gRUsPQzaMAnJMnGV4ES8AESBv3UK60K2LbIcMKjl5i7CzaXnknwXb)**
-10. After completing the instructions above successfully, you can access to the desired dataset from the browser of any computer that can access to the remote desktop.
+7.  Press “Scan” from the left menu to load the pictures to the browser, wait few seconds until the pictures are fully loaded to the page.**![](https://lh4.googleusercontent.com/f2jqXCnJwT2-Czv-Y_dUp6crpBGvKhPYPX3641eLDUrmUJnrqGVk2_k9N6UEADZKvoNydDqfT4ycruWC_H1gRUsPQzaMAnJMnGV4ES8AESBv3UK60K2LbIcMKjl5i7CzaXnknwXb)**
 ### Annotating Frames
 In order to choose the frame you want to annotate follow this steps:
 
@@ -142,5 +136,5 @@ To create the file follow this steps:
     
 3.  In the pop-up menu press “Download Coco”, and the download will begin on the client side.**![](https://lh4.googleusercontent.com/9iNRgSxOWHG1GAz06kKHDC80soyh9TQsxoQ2WIUfWk1sPlrLVc2_BaXEzfDo52DCTOL7jXZY1NHQT0jIqxKs72c7T1N-MvyMXfBJmQNDPzk3flM6XWhrFNkNFd-HzMZE02SYnCLI)**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDM2NjcxODM0LC05OTA3NDQzNDVdfQ==
+eyJoaXN0b3J5IjpbMTIxODcyODEwMiwtOTkwNzQ0MzQ1XX0=
 -->
