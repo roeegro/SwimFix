@@ -652,8 +652,10 @@ function load_img(index) {
     var clicked = false;
     var fPoint = {};
     c.onclick = function (e) {
+        check_box = document.getElementById('fix-checkbox')
+
         console.log(clicked);
-        if (!clicked) {
+        if (!clicked && check_box.checked) {
             var x = (image.width / c.scrollWidth) * e.offsetX;
             var y = (image.height / c.scrollHeight) * e.offsetY;
             console.log(e);
@@ -666,7 +668,7 @@ function load_img(index) {
                 x: x,
                 y: y
             };
-        } else {
+        } else if(clicked && check_box.checked){
             var x2 = (image.width / c.scrollWidth) * e.offsetX;
             var y2 = (image.height / c.scrollHeight) * e.offsetY;
 
