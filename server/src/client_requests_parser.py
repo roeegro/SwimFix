@@ -455,16 +455,20 @@ def upload(data, conn, params):
         f.close()
         print('Successfully get the file')
         print("Analysing path...")
-
+        conn.send('0'.encode('utf-8'))
         facade.create_output_dir_for_movie_of_user(path_to_video, username)
         all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
+        conn.send('1'.encode('utf-8'))
         filtered_and_interpolated_csv_path = facade.filter_and_interpolate(all_keypoints_csv_path, filename)
+        conn.send('2'.encode('utf-8'))
         facade.plot_keypoints(filtered_and_interpolated_csv_path)
         # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
         angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path)
+        conn.send('3'.encode('utf-8'))
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
         facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
         facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path)
+        conn.send('4'.encode('utf-8'))
         # zip_path = facade.zip_output()
         creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
         creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
@@ -477,17 +481,19 @@ def upload(data, conn, params):
             ''', (filename, user_id, date_time_obj))
         mysql.commit()
         cur.close()
+        conn.send('5'.encode('utf-8'))
         return_msg = "success".encode('utf-8')
-    except FileNotFoundError as e:
-        print("File not found at path: ", e.filename)
-    except socket.error as e:
-        print("An socket error occurred when trying to receive the uploaded video: ", e)
-    except mysql.Error as e:
-        print("Something went wrong with MySQL: {}".format(e))
-    except Exception as e:
-        print("An error occurred when trying to upload the video: ", e)
-    finally:
         return return_msg
+    except FileNotFoundError as e:
+        return_msg = "File not found at path: " + str(e.filename)
+    except socket.error as e:
+        return_msg = "An socket error occurred when trying to receive the uploaded video: " + str(e)
+    except mysql.Error as e:
+        return_msg = "Something went wrong with MySQL: {}".format(e.filename)
+    except Exception as e:
+        return_msg = "An error occurred when trying to upload the video: " + str(e)
+    conn.send('f'.encode('utf-8'))
+    return return_msg
 
 
 def upload_file_sql(filename, user_id=0):

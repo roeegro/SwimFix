@@ -15,6 +15,8 @@ IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 sock = socket.socket()
 th = Thread()
 finished = False
+indication_msg = None
+server_response = None
 
 
 def is_admin():
@@ -78,23 +80,42 @@ def index():
 
 @app.route('/status')
 def thread_status():
-    global finished
+    global finished, indication_msg
     """ Return the status of the worker thread """
-    return jsonify(dict(status=('finished' if finished else 'running')))
+    return jsonify(dict(status=('finished' if finished else 'running'),
+                        msg=("Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg)))
+
+
+response_dict = {'0': "OpenPose started, detecting keypoints",
+                 '1': 'Keypoints detected, preprocessing',
+                 '2': 'Keypoints preprocessed, extracting angles',
+                 '3': 'Angles extracted, detecting errors',
+                 '4': 'Finished error detection, calculating final grade',
+                 '5': 'Final grade calculated, assessment is ready'}
+
+num_of_steps = len(response_dict) - 1
 
 
 def receive_openpose_msg():
-    global sock
-    global finished
-    start_msg = sock.recv(1024)  # for 'success'' message
-    if start_msg.decode('utf-8') != 'success':
+    global sock, indication_msg, finished, server_response
+    try:
+        server_response = sock.recv(1).decode('utf-8')
+        indication_msg = response_dict[server_response]
+        sock.settimeout(60.0)
+        while server_response != str(num_of_steps):
+            server_response = sock.recv(1).decode('utf-8')
+            if server_response is 'f':
+                break
+            indication_msg = response_dict[server_response]
+        server_response = sock.recv(1024)  # for 'success'' message
+        if server_response.decode('utf-8') == 'success':
+            indication_msg = "The video was processed and assessed successfully.\n" \
+                             "The feedback is waiting in Previous Feedbacks"
         sock.close()
-        # flash(u'An error has occurred, please try again', 'danger')
-        return
-        # return render_template('load-video.html', isAdmin=is_admin())
-    sock.close()
-    # flash(u'Video was processed successfully, assessment feedback is ready', 'success')
-    finished = True
+        finished = True
+    except Exception as e:
+        indication_msg = 'An error occurred while processing the video: ' + str(e)
+        finished = True
 
 
 @app.route("/waiting-page", methods=['GET', 'POST'])
@@ -104,6 +125,7 @@ def waiting_page():
 
 @app.route("/load-video", methods=['GET', 'POST'])
 def load_video():
+    global finished, indication_msg, server_response
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
@@ -139,14 +161,18 @@ def load_video():
             # flash('The file {} was uploaded successfully'.format(file.filename), 'success')
             #     sock.close()
             global th
-            global finished
             finished = False
             th = Thread(target=receive_openpose_msg, args=())
             th.start()
             # return render_template('waiting-page.html', isAdmin=is_admin())
             return redirect(url_for('waiting_page'))
         else:
-            flash('Failed to upload video file. Please try again', 'failure')
+            flash(u'Failed to upload video file. Please try again', 'error')
+    if server_response.decode('utf-8') == 'success':
+        flash(indication_msg, 'success')
+    else:
+        flash(indication_msg, 'danger')
+    finished = False
     return render_template('load-video.html', isAdmin=is_admin())
 
 
