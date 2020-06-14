@@ -31,6 +31,7 @@
         <tr>
             <th>Error Description</th>
             <th>Frames Detected</th>
+            <th>Point reduced</th>
         </tr>
         </thead>
         <tbody id="previous_feedbacks_tbl_body">
@@ -39,6 +40,7 @@
         <tr>
             <td>{{ item.description }}</td>
             <td>{{ item.frames }}</td>
+            <td>{{item.points_reduced}}</td>
         </tr>
         {% endfor %}
     </table>
