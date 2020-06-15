@@ -9,7 +9,6 @@ import re
 import os
 from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
-from flask_login import current_user, login_user
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
@@ -510,14 +509,11 @@ def send_msg_to_server(msg):
 @app.route('/', methods=['GET', 'POST'])
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
     form = LoginForm(request.form)
     if not form.validate_on_submit():
         return render_template('login.html', title='Login', form=form)
 
     _username = request.form['username']
-    current_user.username = _username
     _passwd = request.form['password']
 
     msg = 'login username: {} password: {}'.format(_username, _passwd)
