@@ -27,12 +27,12 @@
                         <td>{{ item.date }}</td>
                         <td>{{ item.movie_name }}</td>
                         <td>
-                            <a href="{{url_for('user_feedback', details = item.zip_name + '__' + item.date)}}"> View
+                            <a href="{{url_for('user_feedback', details = item.zip_name + '__' + item.date)}}"> Download and View
                                 Feedback </a>
 
                         </td>
                         <td>
-                            <a href="{{url_for('previous_feedback', details = item.zip_name + '__' + item.date)}}"> View
+                            <a href="{{url_for('previous_feedback', details = item.zip_name + '__' + item.date)}}"> Download and View
                                 Graphs </a>
 
                         </td>

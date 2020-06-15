@@ -6,6 +6,8 @@ import os
 import math
 import utils
 import types
+import warnings
+warnings.simplefilter("ignore")
 
 errors_df = None
 
@@ -21,7 +23,7 @@ def check_if_hand_crossed_the_middle_line(index, all_kp_df, angles_df, name, sid
     neck_x = all_kp_df['NeckX'][index]
     neck_y = all_kp_df['NeckY'][index]
     palm_x_loc = calculate_palm_x_loc(wrist_x, elbow_x)
-    if palm_x_loc < neck_x:
+    if (palm_x_loc < neck_x and side == 'L') or (palm_x_loc > neck_x and side == 'R'):
         from_point = (int(neck_x), int(neck_y))
         to_point = (int(neck_x), int(wrist_y))
         draw_line(index, from_point, to_point, selected_bgr_color=(0, 128, 255))
@@ -105,7 +107,7 @@ def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0))
     frame_index = int(frame_index)
     frame_path = output_manager.get_output_dirs_dict()[
                      'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
-    # frame_path = os.getcwd() + '/../output/roeegro/MVI_8012_from_frame_30/2020-06-12/14-22-41/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(
+    # frame_path = os.getcwd() + '/../output/roeegro/MVI_8027_from_frame_60/2020-06-15/12-41-55/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(
     #     frame_index)
     frame = cv2.imread(frame_path)
     annotated_frame = cv2.line(frame, to_point, from_point, selected_bgr_color)
