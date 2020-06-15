@@ -10,7 +10,7 @@
 6. [CSV Input Section](#csv-input-section)
 7. [CSV Output Section](#csv-output-section)
 
-## Introduction
+## Introduciton
 The following mechanism allows admin to manually annotate videos and save their annotation as csv and compare it to the OpenPose library performance.
 
 
