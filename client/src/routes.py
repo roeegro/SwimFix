@@ -7,7 +7,6 @@ from forms import RegistrationForm, LoginForm
 from threading import Thread
 import re
 import os
-from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])

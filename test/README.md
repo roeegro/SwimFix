@@ -1,72 +1,92 @@
-# SwimFix<br>Pose Estimation Based System for Improving Front Crawl 
+# SwimFix<br>Test Generator Guide 
 ## Table of Contents
 1. [Introduction](#web-interface)
-2. [Features](#features)
-3. [Web Client](#web-client)
-4. [Inference](#inference)
-5. [Training Infrastructure](#training-infrastructure)
+2. [Prerequisites](#Prerequisites)
+3. [Upload files, and Settings of Keypoints and Lines](#Upload-files-and-Settings-of-Keypoints-and-Lines)
+4. [Manual Tag](#Manual-Tag)
+	* [Tag Operation](#Tag-Operation)
+	* [Finish and Rerun the Program with Other Input](#Finish-and-Rerun-the-Program-with-Other-Input)
+5. [Output Section](#Output-Section)
+6. [CSV Input Section](#csv-input-section)
+7. [CSV Output Section](#csv-output-section)
 
 ## Introduction
-This is a official git repository for the graduation project of our B<span>.Sc. in Software Engineering in Ben Gurion University of the Negev located in Be'er Sheva, Israel.
-We developed a system for improving front crawl swimming which relies on pose estimation of the swimmer.
-The system takes as input a video of swimming in a front crawl setting and outputs an en for the swimmer to improve upon.
+The following mechanism allows admin to manually annotate videos and save their annotation as csv and compare it to the OpenPose library performance.
 
-## Features
-- **Functionality**:
-    - **2D real-time multi-person keypoint detection**:
-        - 18 keypoint body keypoint estimation based on the OpenPose library.
-    - **Performance Assessment** of the swimmer:
-	    - Error detection including multiple error types.
-	    - Manuel error annotation on selected video frames
-	    - 
-    - **Extraction & Visualization** of various performance measures:
-		- The keypoints' coordinates.
-		- The angles of the swimmer's shoulders/elbows/wrists.
-		- Graph for every measure with its value in every frame of the video
-    - **Model Testing and Evaluation**
-	    - Manual video annotation for setting the expected result.
-	    - Expected vs actual result comparison.
-- **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmer as he swims towards it).
-- **Output**:
-	- Keypoints display (PNG, JPG, MP4) and saving (CSV).
-	- Graphs of the keypoints' coordinates in eete vide.
-	- Graphs of the angles of the swimmer's shoulder/elbows/wrists in each frame of the video.
-- **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
-- **Training**:  Train your own model on your own data.
-	- Currently we do not support deployment of the model
-	- You can find a complete walk-through guide [here](https://github.com/roeegro/SwimFix/blob/master/training/README.md)
- 
->**TODO**: put the impression video here
+
+## Prerequisites
+1.  You must have Python3 installed.
+2.  If you didn't run requirements.txt file of whole project, you can run in the terminal/command line the following command: `pip install -r requirements.txt`
+3. Video files must be .mov format only.
+4. Working with existing CSV file must be done with csvs stands in the  [input format](#csv-input-section)
+
+
+## Upload files, and Settings of Keypoints and Lines
+
+1.  Run the script by opening "test_generator.py" file.
     
-## Web Client
-Our client-side consists of a Flask based web client
-The client allows users to upload a video of a front crawl swimming. The video is then sent to our server and receive various insights that can hopefully improve the swimmer's performance.
-For detailed information and guidelines please visit [our](https://github.com/roeegro/SwimFix/blob/master/client/README.md) guide.
-## Inference
-Our server-side consists of a inference module based on the [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) library which estimates the smrso in every frame of the video given as input from the web client and then evaluates the swimmer's performance based on the estimation.
-To install OpenPose, please check [our](https://github.com/roeegro/SwimmingProject/blob/master/server/README.md) quick guide or go to the official repository linked above.
-## Training Infrastructure
-We created a training infrastructure for training your own custom model on your own data using the official  [OpenPose Train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
-For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/README.md) out.
+2.  Press on "Load Video" button in order to load a MOV video.
+    
+3.  [Optional] : Press on "Load CSV" button in order to load existing csv file with keypoints [with the given format](#csv-input-section)
+    
+4.  [Optional] : Press on "Default Settings" in order to load the default key points and lines settings (Based on our relevant keypoints for analysis process). 
 
-> **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
+> **Note:** that in this case you will not be able to define keypoints and lines by yourself or load CSV file, so you can continue to (7)
+    
+5.  Insert records to body parts table. This table includes the following : Name of body part , x coordinate for current frame and y one. In this level, just type the body parts you want to include in your test. Insertion of new body part line record are done by pressing "Insert Row". Finish to do the above is done by pressing the "Finish define table" button.
 
-## System Architecture
-```mermaid
-graph LR
-	A[Web Client]
-	E[Database]
-	B[Server]
-	C((OpenPose))
-	D((OpenPoseTraining))
+    
+6.  At the bottom of the window you can find drop down lists in order to define the lines between 2 body parts you want to include as line in every frame. Insertion of new line record is done by "Add" button. Finish definition the above is done by pressing "Finish line definition"
+    
+7.  The first frame of the loaded video is shown.
+    
 
-	A -- Model Testing --> B
-	A -- Database --> E
-	A -- Front Crawl Evaluation --> B
-	B -- Inference --> C
-	D -- Deploy Model --> C
-```
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2ODAwMzE2NjYsLTEzNTk0NzYzMTcsLT
-E4Njg3NTkzMjhdfQ==
--->
+## Manual Tag
+### Tag Operation
+**![](https://lh5.googleusercontent.com/X8UDNyQpL8N7k57wK2h1wmL5CrPYGwTYB9ixQ9Mkwr2j-pvKmn_HvfHiB0E2Lgwiw1S1Zd8Fb3EiaKU0BRAPBFPbZb4WK8-e2EXBlEoYKt6nfWfHl7xnem9yffxOYTFkMA6Vh2zM)**
+
+You can now move between the frames of the loaded movie (Prev and Next buttons).
+    
+Getting the key points coordinates is done as follows:
+
+A. By default- the first body part to be taken is the first one appears in body parts list defined before, unless you defined otherwise (by pressing the desired body part row as shown in B).
+
+B. Selection of specific body part is done by pressing the match line of your body part choice, e.g in one of the cell in this line. Pay attention that after you paint the point in this case, points measurement continues for the next body part appears in body parts list.
+
+C. Definition coordinates of some point is done by clicking on the desired location.
+
+> Note: When finish all frames tag of the given movie - the program will be closed.
+
+D. Moving to the next of the previous frame is done by Next and Prev buttons respectively.
+> Note: both buttons saves the information got from the current frame.
+
+E. Clearing all coordinates of current frame is done by Clean all button.
+
+F. Clean all button - deletes all the records of the current frame from the table, and also the points and lines in the shown frame.
+
+**![](https://lh5.googleusercontent.com/IA-KBBZNYY5Fyh8nCksiLDbuaNR0cCFJqqlap06zfs4bD-AONcLdNmZBCJcRASXuji-w8gUH8UM5ggiP_VQYznF4tL8zXH_HyDdHphjw5s0Jjg-CB90IXg_ZEO7i1XW6Faf7pd_z)**
+
+### Finish and Rerun the Program with Other Input
+Load video button - loads other video. Working with the new video is done by following this guide again. 
+> Important Note : choosing this option will delete accumulated data. Make sure you saved the data you generated before!
+
+> Important Note : Clicking the red button will also delete accumulated data. Make sure you saved the data you generated before.
+
+H. Save button - Saves all the data generate until the current working stage. See [output section](#output-section).
+
+## Output Section:
+
+The following files are saved as an output of the program in the working directory (e.g in test folder):
+
+1.  .MOV file named by the given file with the wireframe annotation according to your manual tag.
+2.  .CSV file with the key points coordinated you signed before for each frame. Please read CSV Output section.
+
+## CSV Input Section:
+
+There is an expected format for the csv file. The csv must include the following columns : 
+
+    Frame Number , <body_part>* s.t <body_part> := <body_part>_X , <body_part>_Y
+
+## CSV Output Section:
+
+The CSV output format is as follows: You will have for each frame number the X and Y coordinated for each body part mentioned in body parts table in the program.
