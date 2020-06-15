@@ -493,7 +493,7 @@ def upload(data, conn, params):
     except Exception as e:
         return_msg = "An error occurred when trying to upload the video: " + str(e)
     conn.send('f'.encode('utf-8'))
-    return return_msg
+    return return_msg.encode('utf-8')
 
 
 def upload_file_sql(filename, user_id=0):
