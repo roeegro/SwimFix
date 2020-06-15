@@ -7,7 +7,6 @@ from forms import RegistrationForm, LoginForm
 from threading import Thread
 import re
 import os
-from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
@@ -43,21 +42,30 @@ def add_test():
     if not is_admin() == 'True':
         flash("You are not authorized to access this page", 'danger')
         return redirect(url_for('index'))
-    add_test_thread = Thread(target=run)
-    add_test_thread.start()
-    while add_test_thread.is_alive():
-        time.sleep(5)
-    # add_test_thread.join()
-    from test_generator import success_sending_flag
-    time.sleep(5)
-    if success_sending_flag == 'exit':
-        flash('No test uploaded to the server', 'info')
-        return redirect(url_for("admin_index"))
-    if not success_sending_flag:
-        flash('Failed to upload test files', 'danger')
-    else:
-        flash('The test files were uploaded successfully', 'success')
-    return redirect(url_for("admin_index"))
+    if request.method == 'POST':
+        file = request.files['file']
+        filename = file.filename
+        path_to_temp_store_flle = os.getcwd() + '/static/temp/'+filename
+        file.save(path_to_temp_store_flle)
+        file_size = get_size_of_file_path(path_to_temp_store_flle)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((SERVER_IP, SERVER_PORT))
+            msg = 'add_test file_path: {} file_extension: {} file_size: {}'.format(filename, filename.split('.')[-1],
+                                                                                   file_size)
+            s.send(msg.encode('utf-8'))
+            msg = None
+            while msg != 'start':
+                start_msg = s.recv(1024)  # for 'start' message
+                msg = start_msg.decode('utf-8')
+            f = open(path_to_temp_store_flle, 'rb')
+            # send the file
+            l = f.read(1024)
+            while l:
+                s.send(l)
+                l = f.read(1024)
+            f.close()
+            os.remove(path_to_temp_store_flle)
+    return render_template('add-test.html')
 
 
 @app.route('/admin-index', methods=['GET', 'POST'])

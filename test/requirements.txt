@@ -1,0 +1,4 @@
+opencv_python==3.4.9.33
+pandas==0.25.3
+filetype==1.0.5
+PyQt5==5.15.0
