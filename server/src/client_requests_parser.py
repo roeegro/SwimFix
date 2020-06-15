@@ -598,7 +598,7 @@ def make_admin(data, conn, params):
         cur = mysql.cursor()
         cur.execute(''' UPDATE USERS
         SET ISADMIN = 1
-        WHERE ID= %s''', user_id)
+        WHERE ID= {}'''.format(user_id))
         mysql.commit()
         cur.close()
         return_msg = SUCCESS_MSG
