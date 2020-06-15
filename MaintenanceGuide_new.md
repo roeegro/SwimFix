@@ -1,4 +1,4 @@
-# <center> SwimFix Maintenance Guide</center>
+# <center> SwimFix Maintenance2222 Guide</center>
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -323,8 +323,8 @@ For running the system on your own device:
 6. For server side activation: from `server/src`, run `python main.py`
 7. For client side activation: execute `run.py`.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTcyMTg4NDc1OSwyMDQzMjgxMzA1LC0xMz
-MzMTc2Mzc2LC0xNDg5OTIyMTc5LDE5NzM3NzkwODksLTE1Njc2
-ODYwNTIsMTQ4NDQzNjkyOCw2MDgxMTM1NzEsMjEyNzIzMTUxNl
-19
+eyJoaXN0b3J5IjpbMTIxMTU1ODEwMywxNzIxODg0NzU5LDIwND
+MyODEzMDUsLTEzMzMxNzYzNzYsLTE0ODk5MjIxNzksMTk3Mzc3
+OTA4OSwtMTU2NzY4NjA1MiwxNDg0NDM2OTI4LDYwODExMzU3MS
+wyMTI3MjMxNTE2XX0=
 -->
