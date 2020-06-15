@@ -1,12 +1,12 @@
 # SwimFix<br>Test Generator Guide 
 ## Table of Contents
-1. [Introduction](#web-interface)
-2. [Prerequisites](#Prerequisites)
-3. [Upload files, and Settings of Keypoints and Lines](#Upload-files-and-Settings-of-Keypoints-and-Lines)
-4. [Manual Tag](#Manual-Tag)
-	* [Tag Operation](#Tag-Operation)
-	* [Finish and Rerun the Program with Other Input](#Finish-and-Rerun-the-Program-with-Other-Input)
-5. [Output Section](#Output-Section)
+1. [Introduction](#introduciton)
+2. [Prerequisites](#prerequisites)
+3. [Upload files, and Settings of Keypoints and Lines](#upload-files-and-settings-of-keypoints-and-lines)
+4. [Manual Tag](#manual-tag)
+	* [Tag Operation](#tag-operation)
+	* [Finish and Rerun the Program with Other Input](#finish-and-rerun-the-program-with-other-input)
+5. [Output Section](#output-section)
 6. [CSV Input Section](#csv-input-section)
 7. [CSV Output Section](#csv-output-section)
 
