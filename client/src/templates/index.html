@@ -7,7 +7,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="position: static" id="accordionSidebar">
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -76,10 +76,17 @@
 
     </ul>
     <!-- End of Sidebar -->
+
     <div class="container-fluid">
         {% block content %}
+        <div style="margin-top: 5%;">
+            <h1 class="display-1 text-center" style="color: #4e73df">SwimFix</h1>
+            <h2 class="display-4 text-center" style="color: black">Pose Estimation Based Platform<br>for Improving Front Crawl</h2>
+            <img class="img-center" src="https://webstockreview.net/images/clipart-swimming-front-crawl.png" alt="Front Crawl">
+        </div>
         {% endblock content %}
     </div>
+
     <div class="alert-heading"
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

@@ -11167,6 +11167,13 @@ body.sidebar-toggled footer.sticky-footer {
   margin: auto;
 }
 
+.img-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
 /* Safari */
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
