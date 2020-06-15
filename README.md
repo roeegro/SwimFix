@@ -17,19 +17,21 @@ The system takes as input a video of swimming in a front crawl setting and outpu
         - 18 keypoint body keypoint estimation based on the OpenPose library.
     - **Performance Assessment** of the swimmer:
 	    - Error detection including multiple error types.
-	    - Manuel error annotation on selected video frames
-	    - 
+	    - Manual error fixing over the frames where the error occurred
+	    - Final assessment grade calculation based on the detected errors
+	    - Add new types of errors on the fly [Plug and Play]
     - **Extraction & Visualization** of various performance measures:
 		- The keypoints' coordinates.
 		- The angles of the swimmer's shoulders/elbows/wrists.
 		- Graph for every measure with its value in every frame of the video
     - **Model Testing and Evaluation**
-	    - Manual video annotation for setting the expected result.
+	    - Manual video annotation tool to set the expected result.
 	    - Expected vs actual result comparison.
 - **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmer as he swims towards it).
 - **Output**:
-	- Keypoints display (PNG, JPG, MP4) and saving (CSV).
-	- Graphs of the keypoints' coordinates in eete vide.
+	- Keypoints display on each frame (JPG)
+	- Input video with OpenPose wireframes on it (MP4)
+	- Graphs of the keypoints' coordinates in each frame of the video.
 	- Graphs of the angles of the swimmer's shoulder/elbows/wrists in each frame of the video.
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
 - **Training**:  Train your own model on your own data.
@@ -50,23 +52,6 @@ We created a training infrastructure for training your own custom model on your 
 For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/README.md) out.
 
 > **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
-
-## System Architecture
-```mermaid
-graph LR
-	A[Web Client]
-	E[Database]
-	B[Server]
-	C((OpenPose))
-	D((OpenPoseTraining))
-
-	A -- Model Testing --> B
-	A -- Database --> E
-	A -- Front Crawl Evaluation --> B
-	B -- Inference --> C
-	D -- Deploy Model --> C
-```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2ODAwMzE2NjYsLTEzNTk0NzYzMTcsLT
-E4Njg3NTkzMjhdfQ==
+eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
