@@ -10,7 +10,6 @@ import os
 from test_generator import run
 from . import app, SERVER_IP, SERVER_PORT
 
-
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 sock = socket.socket()
@@ -84,7 +83,8 @@ def thread_status():
     global finished, indication_msg
     """ Return the status of the worker thread """
     return jsonify(dict(status=('finished' if finished else 'running'),
-                        msg=("Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg)))
+                        msg=(
+                            "Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg)))
 
 
 response_dict = {'0': "OpenPose started, detecting keypoints",
@@ -282,7 +282,8 @@ def test_results(video_name):
     csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
                                      predicate=lambda x: x.endswith('_comparison'))
 
-    frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'])
+    frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'],
+                                       predicate=lambda x: x.startswith('swimfix'))
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
     frames_paths = sorted(frames_paths, key=sort_lambda)
     print(frames_paths)
@@ -357,8 +358,8 @@ def previous_feedback(details):
                                      predicate=(lambda x: x in ['all_keypoints', 'angles',
                                                                 'interpolated_and_filtered_all_keypoints']))
     [swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
-                                                                extensions_of_files_to_find=['csv'],
-                                                                predicate=lambda x: x in ['swimmer_errors'])
+                                                extensions_of_files_to_find=['csv'],
+                                                predicate=lambda x: x in ['swimmer_errors'])
     error_description_by_frames = match_error_description_to_frames(swimmer_errors_path)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
@@ -667,8 +668,8 @@ def user_feedback(details):
             print('finish receiving data')
 
     [swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
-                                                                extensions_of_files_to_find=['csv'],
-                                                                predicate=lambda x: x in ['swimmer_errors'])
+                                                extensions_of_files_to_find=['csv'],
+                                                predicate=lambda x: x in ['swimmer_errors'])
     error_description_by_frames = match_error_description_to_frames(swimmer_errors_path)
     print(error_description_by_frames)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', extensions_of_files_to_find=['jpg'],
