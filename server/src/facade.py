@@ -19,7 +19,7 @@ def filter_and_interpolate(csv_path, video_full_name, y_cols=None, x_col='Frame 
     :return: Path to the csv that contains interpolated and filtered key points data.
     """
     filtered_and_interpolated_csv_path = data_extractor.filter_and_interpolate(csv_path, output_path=output_path)
-    expected_csv_for_movie_path = output_manager.get_excepted_csv_path_for_movie(video_full_name)
+    expected_csv_for_movie_path = output_manager.get_expected_csv_path_for_movie(video_full_name)
     csvs_paths_to_compare = filtered_and_interpolated_csv_path if expected_csv_for_movie_path is None else [
         expected_csv_for_movie_path, filtered_and_interpolated_csv_path]
     visualizer.plot_multi_graphs_from_other_csvs(csvs_paths_to_compare, y_cols, x_col, mult_figures,

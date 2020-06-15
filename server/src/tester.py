@@ -62,7 +62,7 @@ def start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename):
                 visualizer.plot_multi_graphs_from_other_csvs([expected_csv_path,actual_csv_path])
 
     interpolated_and_filtered_csv_path = actual_csvs_dir + '/interpolated_and_filtered_all_keypoints.csv'
-    ground_truth_all_kp = output_manager.get_excepted_csv_path_for_movie(filename)
+    ground_truth_all_kp = output_manager.get_expected_csv_path_for_movie(filename)
     visualizer.plot_multi_graphs_from_other_csvs([ground_truth_all_kp, interpolated_and_filtered_csv_path],
                                                  output_path=output_path)
     row_data_path = actual_csvs_dir + '/all_keypoints.csv'
