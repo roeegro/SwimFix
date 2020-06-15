@@ -230,10 +230,16 @@ def get_defined_error_list():
     plug_and_play_dir_path = utils.get_plug_and_play_functions_dir()
     errors_descriptions = list()
     for error_detector in error_detectors:
-        description_to_add = error_detector.__name__.replace('check_', '').replace('_', ' ').replace('if', 'left')
-        errors_descriptions.append(description_to_add)
-        description_to_add = description_to_add.replace('left', 'right')
-        errors_descriptions.append(description_to_add)
+        if isinstance(error_detector, types.FunctionType):
+            description_to_add = error_detector.__name__.replace('check_', '').replace('_', ' ').replace('if', 'left')
+            errors_descriptions.append(description_to_add)
+            description_to_add = description_to_add.replace('left', 'right')
+            errors_descriptions.append(description_to_add)
+        if isinstance(error_detector, str):
+            description_to_add = error_detector.replace('check_', '').replace('_', ' ').replace('if', 'left')
+            errors_descriptions.append(description_to_add)
+            description_to_add = description_to_add.replace('left', 'right')
+            errors_descriptions.append(description_to_add)
     for file_name in os.listdir(plug_and_play_dir_path):
         if os.path.splitext(file_name)[-1] == '.py':
             plug_and_play_func_description = file_name.replace('check_', '').replace('_', ' ').replace('if',
@@ -248,6 +254,6 @@ def get_defined_error_list():
 
 
 if __name__ == '__main__':
-    # get_defined_error_list()
-    perfomance_evaluator(os.getcwd() + '/interpolated_and_filtered_all_keypoints.csv', os.getcwd() + '/angles.csv',
-                         output_path=os.getcwd())
+    get_defined_error_list()
+    # perfomance_evaluator(os.getcwd() + '/interpolated_and_filtered_all_keypoints.csv', os.getcwd() + '/angles.csv',
+    #                      output_path=os.getcwd())
