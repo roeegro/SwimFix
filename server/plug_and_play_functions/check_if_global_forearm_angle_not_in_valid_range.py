@@ -14,21 +14,31 @@ def check_if_global_forearm_angle_not_in_valid_range(index,all_kp_df, angles_df,
     wrist_x = all_kp_df[side + 'WristX'][index]
     wrist_y = all_kp_df[side + 'WristY'][index]
     elbow_x = all_kp_df[side + 'ElbowX'][index]
-    if (wrist_x > elbow_x and global_forearm_angle > inner_angle) or (
-            wrist_x < elbow_x and global_forearm_angle > outer_angle):
+    if (((wrist_x > elbow_x and global_forearm_angle > outer_angle) or 
+            (wrist_x < elbow_x and global_forearm_angle > inner_angle)) and side == 'L') or (((wrist_x > elbow_x and global_forearm_angle > inner_angle) or (wrist_x < elbow_x and global_forearm_angle > outer_angle)) and side == 'R'):
         elbow_y = all_kp_df[side + 'ElbowY'][index]
         elbow_pos = (int(elbow_x), int(elbow_y))
         forearm_length = math.sqrt(
             math.pow(all_kp_df[side + 'ElbowX'][index] - all_kp_df[side + 'WristX'][index], 2) + math.pow(
                 all_kp_df[side + 'ElbowY'][index] - all_kp_df[side + 'WristY'][index], 2))
-        wrist_x_recommended_for_inner_angle = elbow_x + (
-                math.sin(math.radians(inner_angle)) * forearm_length)
-        wrist_y_recommended_for_inner_angle = elbow_y + (
-                math.cos(math.radians(inner_angle)) * forearm_length)
-        wrist_x_recommended_for_outer_angle = wrist_x - (
-                -math.sin(math.radians(outer_angle)) * forearm_length)
-        wrist_y_recommended_for_outer_angle = wrist_y + (
-                math.cos(math.radians(outer_angle)) * forearm_length)
+        if side == 'L':
+            wrist_x_recommended_for_inner_angle = elbow_x - (
+                    math.sin(math.radians(inner_angle)) * forearm_length)
+            wrist_y_recommended_for_inner_angle = elbow_y + (
+                    math.cos(math.radians(inner_angle)) * forearm_length)
+            wrist_x_recommended_for_outer_angle = wrist_x + (
+                    math.sin(math.radians(outer_angle)) * forearm_length)
+            wrist_y_recommended_for_outer_angle = wrist_y + (
+                    math.cos(math.radians(outer_angle)) * forearm_length)
+        if side == 'R':
+            wrist_x_recommended_for_inner_angle = elbow_x - (
+                    math.sin(math.radians(inner_angle)) * forearm_length)
+            wrist_y_recommended_for_inner_angle = elbow_y + (
+                    math.cos(math.radians(inner_angle)) * forearm_length)
+            wrist_x_recommended_for_outer_angle = wrist_x - (
+                    math.sin(math.radians(outer_angle)) * forearm_length)
+            wrist_y_recommended_for_outer_angle = wrist_y + (
+                    math.cos(math.radians(outer_angle)) * forearm_length)
         wrist_pos_for_min_recommended_angle = (
             int(wrist_x_recommended_for_inner_angle), int(wrist_y_recommended_for_inner_angle))
         wrist_pos_for_max_recommended_angle = (

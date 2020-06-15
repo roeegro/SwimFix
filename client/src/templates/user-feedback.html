@@ -22,37 +22,43 @@
 </head>
 
 <body id="page-top">
-<div class="img-sticky">
-    <canvas id="current frame to show"></canvas>
-    <label> Fix this frame manually </label>
-    <input type="checkbox" value="Submit" id="fix-checkbox"><br><br>
 
-<!--    <a class="btn btn-primary btn-circle" id='prev_button'> < </a>-->
-<!--    <a class="btn btn-primary btn-circle" id='next_button' > > </a>-->
-    <button type="button" id='prev_button' onclick="setPrevImage()"> prev </button>
-    <button type="button" id='next_button' onclick="setNextImage()"> next </button>
-    <input type="number" id="change_img" min= "{{first_frame_number}}" max="{{last_frame_number}}" onchange="setNumberImage()">
+<div>
+    <div class="img-sticky float-left">
+        <canvas id="current frame to show"></canvas>
+        <label> Fix this frame manually </label>
+        <input type="checkbox" value="Submit" id="fix-checkbox"><br><br>
 
-    <button type="button" id='save changes' onclick="sendFixes()">Save fixes</button>
-    <table id="previous_feedbacks_tbl" class="table table-bordered" id="dataTable" width="100%"
-           cellspacing="0">
-        <thead>
-        <tr>
-            <th>Error Description</th>
-            <th>Frames Detected</th>
-            <th>Points Reduced</th>
-        </tr>
-        </thead>
-        <tbody id="previous_feedbacks_tbl_body">
-        </tbody>
-        {% for item in errors_list %}
-        <tr>
-            <td>{{ item.description }}</td>
-            <td>{{ item.frames }}</td>
-            <td>{{ item.points_reduced }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <!--    <a class="btn btn-primary btn-circle" id='prev_button'> < </a>-->
+        <!--    <a class="btn btn-primary btn-circle" id='next_button' > > </a>-->
+        <button type="button" id='prev_button' onclick="setPrevImage()"> prev</button>
+        <button type="button" id='next_button' onclick="setNextImage()"> next</button>
+        <input type="number" id="change_img" min="{{first_frame_number}}" max="{{last_frame_number}}"
+               onchange="setNumberImage()">
+
+        <button type="button" id='save changes' onclick="sendFixes()">Save fixes</button>
+    </div>
+    <div class="float-right align-content-center container">
+        <table id="previous_feedbacks_tbl" class="table table-bordered" id="dataTable" width="100%"
+               cellspacing="0">
+            <thead>
+            <tr>
+                <th>Error Description</th>
+                <th>Frames Detected</th>
+                <th>Points Reduced</th>
+            </tr>
+            </thead>
+            <tbody id="previous_feedbacks_tbl_body">
+            </tbody>
+            {% for item in errors_list %}
+            <tr>
+                <td>{{ item.description }}</td>
+                <td>{{ item.frames }}</td>
+                <td>{{ item.points_reduced }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 
 <!--<img id="current frame to show" class="img-sticky">-->
