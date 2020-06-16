@@ -271,7 +271,8 @@ def tests_results():
     data_recieved = ''
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
-        msg = 'view_tests_list'
+        user_id = session.get('ID') if session and session.get('logged_in') else 0
+        msg = 'view_tests_list user_id: {}'.format(user_id)
         s.sendall(msg.encode('utf-8'))
         data = s.recv(1024)
         files_details = data.decode('utf-8')
@@ -280,27 +281,42 @@ def tests_results():
         return render_template('tests-results.html', data=list(), isAdmin=is_admin())
     print('available tests are : {}'.format(files_details))
     files_details = files_details.split(',')
+    files_details.reverse()  # To view new feedbacks first.
     data_to_pass = list()
-    for file_detail in files_details[:-1]:
+    for file_detail in files_details:
         try:
+            name_and_date = file_detail.split('__')
+            zip_date = name_and_date[1]
             new_data = dict()
-            new_data['video_name'] = file_detail
+            new_data['date'] = zip_date
+            new_data['zip_name'] = name_and_date[0]  # with no extension
+            new_data['movie_name'] = name_and_date[0].split('_from')[0]
             data_to_pass.append(new_data)
         except:
             continue
+    # data_to_pass = list()
+    # for file_detail in files_details[:-1]:
+    #     try:
+    #         new_data = dict()
+    #         new_data['video_name'] = file_detail
+    #         data_to_pass.append(new_data)
+    #     except:
+    #         continue
 
     return render_template('tests-results.html', data=data_to_pass, isAdmin=is_admin())
 
 
-@app.route('/test-results/<video_name>', methods=['GET', 'POST'])
-def test_results(video_name):
+@app.route('/test-results/<details>', methods=['GET', 'POST'])
+def test_results(details):
     if not is_admin() == 'True':
         flash("You are not authorized to access this page", 'danger')
         return redirect(url_for('index'))
-
+    [video_name, date] = details.split('__')
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((SERVER_IP, SERVER_PORT))
-        msg = 'view_test_results filename: {}'.format(video_name)
+        user_id = session.get('ID') if session and session.get('logged_in') else 0
+        video_name = video_name.split('.')[0].split('_from')[0]
+        msg = 'view_test_results user_id: {} filename: {} date: {}'.format(user_id,video_name,date)
         s.sendall(msg.encode('utf-8'))
 
         path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(video_name)

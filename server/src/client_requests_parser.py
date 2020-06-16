@@ -344,6 +344,7 @@ def add_test(data, conn, params):
 def run_test(data, conn, params):
     return_msg = FAILURE_MSG
     try:
+        user_id = data[data.index('user_id:') + 1]
         filename = data[data.index('filename:') + 1]
         expected_all_kp_csv_path = output_manager.get_expected_csv_path_for_movie(filename)
         if expected_all_kp_csv_path is None:
@@ -354,8 +355,12 @@ def run_test(data, conn, params):
         if return_msg.decode('utf-8') != 'success':
             return
         movie_name = filename.split('_from')[0]
+        mysql.ping(True)
+        cur = mysql.cursor()
+        cur.execute("SELECT USERNAME FROM USERS WHERE ID = {}".format(user_id))
+        username = cur.fetchone()['USERNAME']
         movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
-            movie_name)
+            movie_name, username)
 
         # facade.filter_and_interpolate(expected_all_kp_csv_path, filename, output_path=movie_ground_truth_data_dir)
         frames_dir_path = output_manager.get_output_dir_path('swimfix_frames_path')
@@ -368,7 +373,20 @@ def run_test(data, conn, params):
                                                  output_path=movie_ground_truth_data_dir)
         facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
         conn.send('7'.encode('utf-8'))
-        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir, filename)
+        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,
+                          filename)
+        creation_date = output_manager.get_expected_output_dirs_dict()['date_path'].split('/')[-1]
+        creation_time = output_manager.get_expected_output_dirs_dict()['time_path'].split('/')[-1]
+        creation_time = creation_time.replace('-', ':')
+        date_time_as_str = creation_date + " " + creation_time
+        date_time_obj = datetime.datetime.strptime(date_time_as_str, '%Y-%m-%d %H:%M:%S')
+
+        cur.execute('''
+                    INSERT INTO TESTS(NAME, CREATORID, CREATION_DATE)
+                    VALUE (%s, %s, %s)
+                    ''', (movie_name, user_id, date_time_obj))
+        mysql.commit()
+        cur.close()
         conn.send('8'.encode('utf-8'))
         return_msg = "success".encode("utf-8")
     except FileNotFoundError as e:
@@ -466,7 +484,7 @@ def upload(data, conn, params):
         conn.send('2'.encode('utf-8'))
         facade.plot_keypoints(filtered_and_interpolated_csv_path)
         # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
-        angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path,avg_angles=False)
+        angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path, avg_angles=False)
         conn.send('3'.encode('utf-8'))
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
         facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
@@ -519,34 +537,91 @@ def upload_file_sql(filename, user_id=0):
 
 
 def view_tests_list(data, conn, params):
-    print('view_tests_list')
     return_msg = FAILURE_MSG
-    answer = ''
-    path_to_look_at = '../tests'
     try:
-        test_list = os.listdir(path_to_look_at)
-        for test in test_list:
-            answer = answer + test + ','
-        print('answer is ')
-        print(answer)
+        user_id = data[data.index('user_id:') + 1]
+        mysql.ping(True)
+        cur = mysql.cursor()
+        res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = {}".format(user_id))
+        if res == 0:
+            return FAILURE_MSG
+        mysql.ping(True)
+        cur = mysql.cursor()
+        cur.execute("SELECT * FROM TESTS WHERE CREATORID = {}".format(user_id))
+        results = cur.fetchall()
+        answer = ''
+        for result in results:
+            try:
+                creation_date = result['CREATION_DATE']
+                movie_name = result['NAME']
+                [date, time] = str(creation_date).split(' ')[0:2]
+                time = time.replace(':', '-')
+                to_add = '{}__{}_{}'.format(movie_name, date, time) + ','
+                answer += to_add
+            except KeyError as e:
+                print("An exception occurred: %s\nInvalid data %s" % (e, result))
+                return FAILURE_MSG
         return_msg = answer.encode("utf-8")
-    except FileNotFoundError as e:
-        print("File not found at path: ", e.filename)
+    except IndexError as e:
+        print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
         print("Something went wrong with MySQL: {}".format(e))
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
         return return_msg
+    # print('view_tests_list')
+    # return_msg = FAILURE_MSG
+    # answer = ''
+    # path_to_look_at = '../tests'
+    # try:
+    #     test_list = os.listdir(path_to_look_at)
+    #     for test in test_list:
+    #         answer = answer + test + ','
+    #     print('answer is ')
+    #     print(answer)
+    #     return_msg = answer.encode("utf-8")
+    # except FileNotFoundError as e:
+    #     print("File not found at path: ", e.filename)
+    # except mysql.Error as e:
+    #     print("Something went wrong with MySQL: {}".format(e))
+    # except Exception as e:
+    #     print("An error occurred when trying to upload the video: ", e)
+    # finally:
+    #     return return_msg
 
 
 def view_test_results(data, conn, params):
     return_msg = FAILURE_MSG
     try:
+        user_id = data[data.index('user_id:') + 1]
         filename = data[data.index('filename:') + 1]
-        path_to_search_in = '../tests/{}'.format(filename)
-        print('search in {}'.format(path_to_search_in))
+        asked_date = data[data.index('date:') + 1]
+        date = asked_date.split('_')[0]
+        time = asked_date.split('_')[1].replace('-', ':')
+        date_time_as_str = date + ' ' + time
+        date_time_obj = datetime.datetime.strptime(date_time_as_str, '%Y-%m-%d %H:%M:%S')
+        mysql.ping(True)
+        cur = mysql.cursor()
+        res = cur.execute("SELECT USERNAME FROM USERS WHERE ID = %s", user_id)
+        if res == 0:
+            return
+        username = cur.fetchone()['USERNAME']
+        cur.execute(
+            "SELECT * FROM TESTS WHERE NAME = \'{}\' AND CREATORID = {} AND CREATION_DATE = \'{}\'".format(filename,
+                                                                                                           user_id,
+                                                                                                           date_time_obj))
+        if res == 0:
+            return
+        res = cur.fetchone()
+        creation_date = res['CREATION_DATE']
+        [date, time] = str(creation_date).split(' ')[0:2]
+        time = time.replace(':', '-')
+        creation_date_to_search = date + '/' + time
+        path_to_search_in = '../tests/{}/{}/{}'.format(username, filename, creation_date_to_search)
         zip_location = '../temp'
+        if not os.path.exists(zip_location):
+            os.mkdir(zip_location)
         output_manager.make_archive(path_to_search_in, zip_location, filename + ".zip")
         file_path_to_send = zip_location + '/' + filename + ".zip"
         f = open(file_path_to_send, 'rb')
@@ -556,14 +631,39 @@ def view_test_results(data, conn, params):
             conn.send(l)
             l = f.read(1024)
         f.close()
-        print('sent all test zip')
-        return_msg = SUCCESS_MSG
-    except FileNotFoundError as e:
-        print("File not found at path: ", e.filename)
+        print('sent all zip successfully')
+        return_msg = "success".encode("utf-8")
+    except IndexError as e:
+        print("An exception occurred: %s\nInvalid data %s" % (e, data))
+    except mysql.Error as e:
+        print("Something went wrong with MySQL: {}".format(e))
     except Exception as e:
         print("An error occurred when trying to upload the video: ", e)
     finally:
         return return_msg
+    # return_msg = FAILURE_MSG
+    # try:
+    #     filename = data[data.index('filename:') + 1]
+    #     path_to_search_in = '../tests/{}'.format(filename)
+    #     print('search in {}'.format(path_to_search_in))
+    #     zip_location = '../temp'
+    #     output_manager.make_archive(path_to_search_in, zip_location, filename + ".zip")
+    #     file_path_to_send = zip_location + '/' + filename + ".zip"
+    #     f = open(file_path_to_send, 'rb')
+    #     l = f.read(1024)
+    #     while l:
+    #         conn.send(l)
+    #         print('sending zip...')
+    #         l = f.read(1024)
+    #     f.close()
+    #     print('sent all test zip')
+    #     return_msg = SUCCESS_MSG
+    # except FileNotFoundError as e:
+    #     print("File not found at path: ", e.filename)
+    # except Exception as e:
+    #     print("An error occurred when trying to upload the video: ", e)
+    # finally:
+    #     return return_msg
 
 
 def view_users(data, conn, params):
