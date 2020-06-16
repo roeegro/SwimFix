@@ -49,6 +49,7 @@ params = dict()
 params["model_folder"] = "../openpose/models/"
 params["model_pose"] = "COCO"
 
+
 # Add others in path?
 for i in range(0, len(args[1])):
     curr_item = args[1][i]

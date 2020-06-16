@@ -106,4 +106,4 @@ def match_error_description_to_frames(swimmer_errors_path):
     for index, row in swimmer_errors_df.iterrows():
         new_record = {'frames': swimmer_errors_df['frames'][index], 'description': swimmer_errors_df['description'][index], 'points_reduced':swimmer_errors_df['points_reduced'][index]}
         list_of_errors_by_frames_detected.append(new_record)
-    return list_of_errors_by_frames_detected
+    return list_of_errors_by_frames_detected[:-1], list_of_errors_by_frames_detected[-1]
