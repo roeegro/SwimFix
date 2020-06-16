@@ -13,6 +13,7 @@
                        cellspacing="0">
                     <thead>
                     <tr>
+                        <th>Test Date</th>
                         <th>Video Name</th>
                         <th>Results Page</th>
                     </tr>
@@ -22,9 +23,10 @@
                     </tbody>
                     {% for item in data %}
                     <tr>
-                        <td>{{ item.video_name }}</td>
+                        <td>{{item.date}}</td>
+                        <td>{{ item.zip_name }}</td>
                         <td>
-                            <a href="{{url_for('test_results', video_name = item.video_name)}}"> Go to see results for this test</a>
+                            <a href="{{url_for('test_results', details = item.zip_name + '__' + item.date)}}"> Go to see results for this test</a>
                         </td>
                     </tr>
                     {% endfor %}
