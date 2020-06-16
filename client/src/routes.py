@@ -234,11 +234,12 @@ def run_test():
                 f = open(video_path, 'rb')
                 # send the file
                 l = f.read(1024)
+                print("Sending data...")
                 while l:
                     sock.send(l)
-                    print("Sending data")
                     l = f.read(1024)
                 f.close()
+                print("Done sending data")
             # flash('The file {} was uploaded successfully'.format(file.filename), 'success')
             finished = False
             redirect_page = 'run_test'
@@ -305,8 +306,8 @@ def test_results(video_name):
         path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(video_name)
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
+            print('getting test zip into temp directory ...')
             while data:
-                print('getting test zip into temp directory ...')
                 f.write(data)
                 data = s.recv(1024)
             print('finish receiving data')
@@ -384,8 +385,8 @@ def previous_feedback(details):
             os.mkdir(zip_location)
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
+            print('getting zip into temp directory ...')
             while data:
-                # print('getting zip into temp directory ...')
                 f.write(data)
                 data = s.recv(1024)
             print('finish receiving data')
@@ -673,10 +674,11 @@ def _pass_data():
             start_msg = s.recv(1024)
         with open(path_to_save_img_in, "rb") as f:
             l = f.read(1024)
+            print("Sending data...")
             while l:
                 s.send(l)
-                print("Sending data")
                 l = f.read(1024)
+            print("Done sending data")
     return jsonify({'returned_url': url_for('previous_feedback', details=zip_and_date)})
 
 
@@ -697,8 +699,8 @@ def user_feedback(details):
             os.mkdir(zip_location)
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
+            print('getting zip into temp directory ...')
             while data:
-                # print('getting zip into temp directory ...')
                 f.write(data)
                 data = s.recv(1024)
             print('finish receiving data')

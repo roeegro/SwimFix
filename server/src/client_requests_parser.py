@@ -154,10 +154,11 @@ def view_graphs(data, conn, params):
         file_path_to_send = zip_location + '/' + filename + ".zip"
         f = open(file_path_to_send, 'rb')
         l = f.read(1024)
+        print('sending zip...')
         while l:
             conn.send(l)
-            print('sending zip...')
             l = f.read(1024)
+        print('done sending zip')
         f.close()
         print('sent all zip successfully')
         return_msg = "success".encode("utf-8")
@@ -320,6 +321,7 @@ def add_test(data, conn, params):
         conn.send(msg.encode('utf-8'))
         counter = 0
         with open(new_expected_file_path, 'wb') as f:
+            print('receiving data...')
             while file_size > counter:
                 data = conn.recv(1024)
                 if not data:
@@ -327,7 +329,7 @@ def add_test(data, conn, params):
                 # write data to a file
                 f.write(data)
                 counter += 1024
-                print('receiving data...')
+            print('done receiving data...')
         return_msg = SUCCESS_MSG
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
@@ -404,14 +406,15 @@ def upload_image_fix(data, conn, params):
         conn.send(msg.encode('utf-8'))
         with open(path_to_update, 'wb') as f:
             counter = 0
+            print('receiving data...')
             data = conn.recv(1024)
             while data:
                 # write data to a file
                 f.write(data)
                 data = conn.recv(1024)
                 counter += 1024
-                print(counter)
-                print('receiving data...')
+                # print(counter)
+            print('done receiving data')
         return_msg = SUCCESS_MSG
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
@@ -548,9 +551,9 @@ def view_test_results(data, conn, params):
         file_path_to_send = zip_location + '/' + filename + ".zip"
         f = open(file_path_to_send, 'rb')
         l = f.read(1024)
+        print('sending zip...')
         while l:
             conn.send(l)
-            print('sending zip...')
             l = f.read(1024)
         f.close()
         print('sent all test zip')
