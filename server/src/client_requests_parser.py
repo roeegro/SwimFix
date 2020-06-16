@@ -310,19 +310,12 @@ def createPostFunction(content, topicID, userID=0):
 def add_test(data, conn, params):
     return_msg = FAILURE_MSG
     try:
-        expected_videos_path = '../excepted_data/videos/'
-        expected_csvs_path = '../excepted_data/csvs/'
+        expected_csvs_path = '../expected_data/csvs/'
         extension = data[data.index('file_extension:') + 1]
         file_size = int(data[data.index('file_size:') + 1])
-        if extension == 'avi':
-            specific_expected_dir = expected_videos_path
-        elif extension == 'csv':
-            specific_expected_dir = expected_csvs_path
-        else:
-            return_msg = 'ERROR - CAN NOT RECOGNIZE PATH'.encode('utf-8')
-            return
-
-        new_expected_file_path = specific_expected_dir + data[data.index('file_path:') + 1]
+        if not extension == 'csv':
+            return return_msg
+        new_expected_file_path = expected_csvs_path + data[data.index('file_path:') + 1]
         msg = 'start'
         conn.send(msg.encode('utf-8'))
         counter = 0
