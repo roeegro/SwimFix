@@ -102,8 +102,7 @@ def thread_status():
     global finished, indication_msg, redirect_page
     """ Return the status of the worker thread """
     return jsonify(dict(status=('finished' if finished else 'running'),
-                        msg=(
-                            "Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg),
+                        msg=("Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg),
                         redirect_page=redirect_page))
 
 
@@ -121,7 +120,7 @@ num_of_steps_inference = '5'
 num_of_steps_test = '8'
 
 
-def receive_openpose_msg(test):
+def receive_openpose_msg(test=False):
     global sock, indication_msg, finished, server_response, redirect_page
     try:
         redirect_page = 'run-test' if test else 'load-video'
