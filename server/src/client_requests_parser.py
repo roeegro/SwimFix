@@ -309,8 +309,7 @@ def add_test(data, conn, params):
         extension = data[data.index('file_extension:') + 1]
         file_size = int(data[data.index('file_size:') + 1])
         if not extension == 'csv':
-            return_msg = 'ERROR - CAN NOT RECOGNIZE PATH'.encode('utf-8')
-            return
+            return return_msg
         new_expected_file_path = expected_csvs_path + data[data.index('file_path:') + 1]
         msg = 'start'
         conn.send(msg.encode('utf-8'))
