@@ -10,11 +10,16 @@ import tester
 import socket
 import traceback
 
-# Import sql database connection settings
-from server.swimfix_db.swimfix_shadow import MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB, \
-    MYSQL_CURSORCLASS
+# some_file.py
+import sys
 
-mysql = MySQLdb.Connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB,
+sys.path.append('../swimfix_db/')
+
+# Import sql database connection settings
+from swimfix_shadow import MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB, MYSQL_CURSORCLASS
+
+mysql = MySQLdb.Connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER,
+                        passwd=MYSQL_PASSWORD, db=MYSQL_DB,
                         cursorclass=MySQLdb.cursors.DictCursor)
 FAILURE_MSG = "failure".encode('utf-8')
 SUCCESS_MSG = "success".encode('utf-8')
