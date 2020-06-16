@@ -1,3 +1,4 @@
+
 # <center> SwimFix Maintenance Guide</center>
 
 ## Table of Contents
@@ -5,17 +6,22 @@
 2. [Client Side](#client-side)
 	* [Routes File](#routes-file)
 	* [Gui Utils](#gui-utils)
-	* [Directory Management](#directory-management)
+	* [Directory and Files Management](#directory-and-files-management)
 	* [Video Cutter](#video-cutter)
-	* [Test Generator](#test-generator)
 	* [Requests Format](#requests-format)
 4. [Server Side](#server-side)
 	* [Request Parser File](#client-request-parser-file)
 	* [Facade Module](#facade-module)
 	* [Data_Extractor Module](#data_extractor-module)
+		* [functionality](#functionality)
+		* [algorithms](#algorithms)
 	* [Data_Analyser Module](#data_analyser-module)
 	* [Visualizer Module](#visualizer-module)
 	* [Evaluator Module](#evaluator-module)
+		 * [functionality](#functionality)
+		* [Error Detection Algorithms](#error-detection-algorithms)
+		* [Scoring Method](#scoring-method)
+		* [Plug and Play](#plug-and-play)
 	* [Tester Module](#tester-module)
 	* [Output Manager Module](#output-manager-module)
 	* [Utils](#utils)
@@ -25,19 +31,19 @@
 6. [Assimilation on New Device and Run All Program](#assimilation-on-new-device-and-run-all-program)
 
 ## Introduction
-Our system has 3 main parts. The first one is the training infrastructure.
+Our system has 4 main parts. The first one is the training infrastructure.
 For more details, [click here](https://github.com/roeegro/SwimFix/tree/master/training).
+The second one is the test generator module, where user can produce ground truth csvs. For more details, [click here]([https://github.com/roeegro/SwimFix/tree/master/test](https://github.com/roeegro/SwimFix/tree/master/test)).
 
 The other 2 parts are used for the SwimFix web application and they include a web client part and a server for analysis and evaluation. Both parts written in Python and connect each other with TCP conneciton.
 
-< Join here project hierarchy chart>
-
 
 ## Client Side
-The client side is a web interface which supports 2 types of users : usual and admin ones. Usual user interface supports upload of video to the server (for analysis), view data and feedback about technique of previous swimming videos and also participate in forum. Admin users can also add tests and run them in the system in order to examine system's performance. More details about the user interface can be found in this [link](https://github.com/roeegro/SwimFix/tree/master/client).
+The client side is a web interface which supports 2 types of users : usual and admin ones. Usual user interface supports upload of video to the server (for analysis), view data and feedback about technique of previous swimming videos (including error description and final score), and also participate in forum.
+Admin users can also add tests and run them in the system in order to examine system's performance. More details about the user interface can be found in this [link](https://github.com/roeegro/SwimFix/tree/master/client).
 We used Flask, a python web framework, to write the client side. This library enables the developers to load dynamically web pages with python code, define relations between pages, and even pass parameters from python code to html one.
 
-<Client side structure must be put here>
+**![](https://lh4.googleusercontent.com/pdX746XNbQLlHE_6zDMXXP7rpbMgTFroraBN8xC-R3Qnm78W9YiKm30DgKCjz8rehIAaTdKNiCdZUZo5CGQkyQ7c2Sndu6k4DMRUiXpNyHQ4VMTcAhmrD847jSxLGj2dGtI3_lvd)**
 
 ### Routes File
 This is the most important module in the client side. It defines the web links of all the pages and binds them to the relevant html page (appears in templates directory). For each html page, there must be found a function in this .py file which looks as follows:
@@ -60,17 +66,35 @@ Using this arguments in the respective html code is done as follows
     {{parameter name}}
 
 > **Note**: Url address definition, function name and html page redirection returned in the end of the function name must be consistent, correlative and named by html and python conventions respectively.
+
+Another important service supplied by this module is handling waiting pages in order to give the client indication for the progress of upload and analyse the video. The functions that deals with handling with this functionality are:
+
+1. `load_video, run_test` -  python code relevant to the pages where waiting page are shown. In this function we create new thread running the waiting page code defined in function `receive_openpose_msg` .
+2. `receive_openpose_msg`  - uses global sockets which used for connecting the server and getting from it a 1 byte code signifies the stage of analysis. Pay attention for the dictionary `response_dict` which map between server code to the message shown in the waiting page. If the code got from the server is code for finish the process, it waits for another message in size of 1024 bytes  signifies whether the process succeeded or not, and changes its status for updating the page shown in the screen (See next function).
+3. `thread_status` -  called frequently from `waiting-page.html`(in templates folder), for checking thread status. Returns to the html the status, and if the status is "finished" the html redirects to other page (with jquery).
+
+
 ### Gui Utils
-A small module with some functions for files manipulation such as extracting data from zip file got from server, getting specific files from zip, crucifixion with errors map (id and description), to swimmers errors so he/she can see the error description with the relevant frames.
- ### Directory Management
+A small module with some functions for files manipulation such as extracting data from zip file got from server, getting specific files from zip, convert csv content to list of dictionaries passed to the server.
+
+ ### Directory and Files Management
  
  **temp -** Contains zip files with information hold in the server, and some temporal folder which holds files to be shown in the browser.
+> Note: When asking for feedback or data of specific video, the zip is downloaded to this directory. For more details of getting feedbacks and data, please click [here](https://github.com/roeegro/SwimFix/tree/master/client#watching-feedbacks-on-videos).
  
-**partial_movies -** Generated by the code and contains intervals of movies to be uploaded to the server. See video trimmer section for more details.
+**partial_movies -** Generated by the code and contains intervals of movies to be uploaded to the server. See video trimmer section for more details, [Video Cutter ](#video-cutter)
 
 **uploaded_files  -** Generated by the code and contains videos uploaded before from the machine the user works on.
 
 **static -** Contains temp directory and also css, js files, images and other files that are loaded or shown in the html pages shown in temp directory.
+
+#### chart-area-js-demo.js
+Important js file is chart-area-js-demo.js ( appears in static/js/demo/chart-area-js-demo.js), which has the following responsibilities: 
+ 1. This file has functions taking csv file (located in [temp directory](https://github.com/roeegro/SwimFix/blob/master/MaintenanceGuide_new.md#directory-management)), reads it into map object, parse this object in order to show graphs using chart.js library dynamically. Graphs positions is done by working with document elements, and definition of visibility and events (showing the frame matched to point position in the graph) is done with Chart object.
+ 2. Frame view - When pressing on points in the graph, the frame is changed to the match frame. This done by taking the position of the point in the x-axis and getting the relevant frames stored in (located in [temp directory](https://github.com/roeegro/SwimFix/blob/master/MaintenanceGuide_new.md#directory-management)).
+ The relevant functions handling with those events are setImage and drawImage and loadImage (they have the same described functionality, but the second one binds an event to the load image of painting manual fixes on the current frame).
+ 
+This js file is used by all the pages shown feedbacks (e.g user-feedback.html, previous-feedback.html, and test-results.html).
 
 **templates -** Contains html code that are loaded by the Flask code as shown in the section above.
 
@@ -84,19 +108,14 @@ A module for cutting out only the relevant parts from a swimmer's video- which a
 The output of this function is 1 or more video in the directory mentioned in the variable `output_dir` under the name `<original video name>_from_frame_<the frame number this part was cutted from>.mp4`<break>
 >More about the algorithm can be found in the comments of the file [preprocessor.py](https://github.com/roeegro/SwimFix/blob/master/client/src/preprocessor.py).
 
-### Test Generator
-`test_generator.py,test_generator.ui`
-A module for manual annotation of videos. A guide for user mode can be found at this [link](https://github.com/roeegro/SwimFix/tree/master/client#add-test).
-The widgets, and their positions in the window is defined in .ui file. You can open ui files with program that can be found in scripts directory under python directory in programs directory.
-Python file code is based on [PyQt5](https://doc.qt.io/qtforpython/) package.
-This code manipulates those widgets in the code by QtApplication object which holdes all the widgets defined in the ui file. 
-This module has 3 main parts: accessors to the widgets objects, events (for buttons), and some helper functions. The functions in each part are sorted by the alpha-bet for easier navigation.
-Pay attention that the save button function sends the files generated by this module to the server, and acknowledge 'routes' module to show success message to the client with some global variable.
 
 ### Requests Format
 In order to connect to the server, TCP connection is handled for each request. There are different types of requests but they all have the same general format.
-< Request Type > (< parameter name >: < argument name >)*
+
+    < Request Type > (< parameter name >: < argument name >)*
+
 Handling those requests in server side are described in this section [Request Parser File](#client-request-parser-file)
+
 
 ## Server Side
 
@@ -146,6 +165,7 @@ j - Global left forearm angle.
 For more information about the wire frame structure and the output of OpenPose, please check the official [output](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md)  doc.<br>
 </p>
 
+#### Functionality
 Main functionality supported in this module:
 
 1. `get_keypoints_csv_from_video` 
@@ -159,7 +179,7 @@ Those are the columns:
 LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	This is the second stage in data extraction process. This function takes the csv path returned from the first function, and filters records with low score value. If there are closer intervals with high score, the function completes the gap between the intervals by interpolation. Returns path to updated body parts coordinates.
+	This is the second stage in data extraction process. This function takes the csv path returned from the first function, and filters records with noises and inaccuracies. For the algorithm use [clicke here](#algorithmns) .If there are closer intervals with high score, the function completes the gap between the intervals by interpolation. Returns path to updated body parts coordinates.
 
 3. `generate_vectors_csv`
 	This is the third stage in data extraction process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
@@ -169,6 +189,29 @@ LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 4. `generate_angles_csv` The last stage in data extraction process. This function takes a path to the vectors csv file got from the function above and calculate the angles between 2 relevant vectors. The format of the csv file is similar to the csvs above and includes for each frame the following angles: right shoulder angle, left shoulder angle, right elbow angle, left elbow angle, righat global shoulder angle , left global shoulder angle ,right global elbow angle and left global elbow angle.
 
 5. There are more helper functions which are called by one or more of the functions above. Some of those functions are used for calculation or some intermediate stages in one of the functions above. Documentation for each function in data_extractor module is found in the code.
+
+#### Algorithms
+**Filter and Interpolate algorithm (all keypoints csv path):**
+This algorithm runs for the following body-parts: neck , nose, right shoulder, left shoulder, (right elbow and wrist together, considering elbow score), and (right elbow and wrist together, considering elbow score):
+1. Get intervals of at least x (by default 3) frames placed in sequence with body part score higher then threshold ( set to be 0,4 by default).
+2. Filter body-part coordinates data for frames which are not in the mentioned intervals.
+3. Merge between adjacent intervals with at most distance d (where d defined to be 10 by default).
+4. Try to extend each intervals by interval extension algorithm.
+For neck only
+5. Run neck pose-estimator algorithm.
+
+**Interval Extension Algorithm (interval, body-part):**
+1. Calculate average change of Y coordinate of body part in the given interval.
+2. Go over the next and the previous frames in relation to the interval and check if the change of frame body-part-Y coordinate in relation to next/previous respectively include it in the interval. 
+
+**Neck Pose Estimator Algorithm (all keypoints csv path):**
+1. For each frame:
+     A. If neck (X and Y) known - continue to the next frame.
+     B. If both shoulders are known - neck x,y coordinates are the average
+ 2. Find known intervals for right shoulder.
+ 3. For each interval (if it is possible) - calculate the location of the missing data of neck with linear interpolation over the specific interval.
+ 4.  Find known intervals for left shoulder.
+ 5. For each interval (if it is possible) - calculate the location of the missing data of neck with linear interpolation over the specific interval.
 
 ### Data_Analyser Module
 
@@ -182,6 +225,7 @@ This module is able to calculate:
  In each function in this module, you can control the output file name, the location of this file, which columns will be export into figure, and even how to define the x-axis in the figures. This module enables the developer even to plot multifigures based on the same csvs and even comparison figures based on csv files with the same structure (e.g columns names).
 
  ### Evaluator Module
+#### Functionality
 This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module and each function defines in plug and play < link >, in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
 At the bottom of the module there is a list of functions (for inner module functions which defined before), and strings (for plug and play files which are added in the first for	loop in the main function) to be executed, and the main function of this module runs over this list and activate each function/call to the relevant file respectively with the paths specified above.
 > **Note**: Each file in plug and play is called with the paths and with some other arguments relevant for consistency of information to be accumulated during the runtime of this module over all the error detection function - whereas they defined before inside the module, or by plug and play functions.
@@ -190,6 +234,43 @@ The output of this module is 2 csv files (and grade). The first one keeps an id 
 > **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
 	> Function name : check_if_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
+
+#### Error Detection Algorithms
+> Notes:
+>* All the algorithms below are found in the module and defined by Dr. Raziel Riemer - one of the entrepreneurs of the project, and bio-mechanic expert.
+>* All the algorithms receive as an input 2 paths to the keypoints and angles csvs, if not mentioned otherwise.
+>* In the code, the algorithms are activated for right and left hand separately, but written here generality to make it easier to read and understand.
+
+**Check if hand crossed the neck line:**
+1. For each frame:
+A. calculate x coordinate of palm.
+B. If (x coordinate of right palm bigger than x coordinate of neck) or (x coordinate of left palm smaller than x coordinate of neck) - sign as error and draw line from neck down to the palm to emphasis the error.
+
+**Calculate palm x coordinate (elbow x coordinate, wrist x coordinate):**
+Use the formula : 0.37 * (elbow x coordinate - wrist x coordinate) + elbow x coordinate
+
+**Check if elbow angle is out of range\* :**
+
+1. if angle > max angle or angle < min angle:
+	A. Sign this frame as an error.
+	B. Draw 2 lines emphasis the position of wrist when angle is the max and min angle for emphasis the position range.
+
+* min angle = 90, max angle = 175 (When elbows almost lock)
+
+**Check if global wrist angle is out of range\* :**
+Inner angle - the angle directs to the body
+External angle - the angle directs outside the body.
+
+1. if inner or outer angle > max inner or outer angle respectively:
+	A. Sign this frame as an error.
+	B. Draw 2 lines of the max inner and outer angles, for emphasis the recommended range of wrist position.
+
+* Max inner angle = 45, Max external angle is 10.
+
+#### Scoring Method
+Defined for each function and makes it more flexible to define scoring method separately for each type of error and even for single instance of this error.
+For now we defined the cost of each error to be 1.5 points. Score range is in scale of 0-100. 
+
 #### Plug and Play
 This feature supplies the ability for developers to add new swimming errors definitions (and their weights) for future analysis.
 Feature use is done by writing separated .py files without disable server's running, and sending the files to the server when they are ready.
@@ -206,24 +287,34 @@ Content:
 	    error_id = evaluator.get_id_of_error(name,error_names_for_external_calling = error_names)
 	    for index, __ in all_kp_df.iterrows()/angles_df.iterrows():
 	    < your error detection code >
-	    if error_id != -1 and index not in errors_df['frames'][error_id]: # Update accumulated error dataframe if this error never detected in this frame
-		    errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+	    if error_id != -1 and index not in errors_df['frames'][error_id]:
+	    error_weight  += <some formula for error weight>
+	    errors_df['frames'][error_id] =  errors_df['frames'][error_id] + [index] # Join this frame to frames which this error already detected.
+	    errors_df['points_reduced'][error_id] =  errors_df['points_reduced'][error_id] +  error_weight # Accumulate points reduced for this error, for user view.
+
  
 	check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df) # function activation
     
     
  > **Note 1**: Disable of plug-and-play function execution is done by removing the matching .py file from the directory mentioned above. 
 
- > **Note 1**: You may want to annotate your error emphasis. You can do it with the function:
- > `evaluator.draw_line(index, (from_x_coor,from_y_coor), (to_x_coor,to_y_coor),color)`, a function written in evaluator which draw lines between defined points and stores the results in the [swimfix_annotated_frames directory](#output), where color is in BGR format (this function uses [cv2.line](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) function).
+ > **Note 2**: You may want to annotate your error emphasis. You can do it with the function:
+ > `evaluator.draw_line(index, (from_x_coor,from_y_coor), (to_x_coor,to_y_coor),color)`, a function written in evaluator which draw lines between defined points and stores the results in the 
+[swimfix_annotated_frames directory](#output), where color is in BGR format (this function uses [cv2.line](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) function).
+
+ > **Note 3**: Make this function fit to error detection of both hands. 
 
 ### Tester Module
-This module purpose is to compare csv files with the same format, and used to compare manual annotations vs. automatic annotation returned from the [Data_Extractor Module](#data_extractor-module), This module generates csv files comparing each column and plotting figures based on the new csv files to emphasis and visualize the gap between the manual annotations and the automatic ones. By activating this module we can measure the performance of the system.
+This module has some responsibilities: 
+1. Comparing csv files with the same format, and used to compare manual annotations vs. automatic annotation returned from the [Data_Extractor Module](#data_extractor-module), This module generates csv files comparing each column and plotting figures based on the new csv files to emphasis and visualize the gap between the manual annotations and the automatic ones. By activating this module we can measure the performance of the system.
  > **Note**: You can activate Tester module by calling
  > Tester.start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename), only after you insured you have expected data for this video (see [Expected Data](#expected_data)), and after you call to all functions in [Data_Extractor Module](#data_extractor-module). Our implementation automatically does the described steps before run the test itself (See implementation in client_request_parser in function run_test).
 
+2. Calculating loss value for each comparison csv file for measurement of the accuracy of our angles extractor algorithm related to the angles extracted from ground truth csvs, which we have for some movies.
+3. (???????????????????????????????????????????????) - Comparing errors which were derived from our extracted data with errors derived from ground truth data. 
+
 ### Output Manager Module
-This module purpose is to build dynamically folders for each upload and supply easy access to directories in order to store the generated files dynamically.
+This module purpose is to build dynamically folders which are necessary for data storage and create each upload and supply easy access to directories in order to store the generated files dynamically.
 This module uses dictionary that maps between a name of desired path to its actual path in the [output path hierarchy](#output).
 The output manager also enables you to know if there is a ground_truth file in expected data [Expected Data](#expected_data), and also builds environment to locate the test results in. See [Tester Module](#tester-module) for more details.
 
@@ -240,8 +331,9 @@ each video sent to the server is stored in this directory for future use of the 
 #### Temp
 Stores zip files containing relevant content for user's request. Those files sent to the client side and stored in `/client/src/static/temp` on the client side.
 #### Expected_data
-Stores csvs and videos annotated by the manual tag defined in [Test Generator](#test-generator) .
-> **Note**: Csv file names must be named as follows: < video name>_expected.
+Stores csvs that created by the manual tag defined in [test generator](https://github.com/roeegro/SwimFix/tree/master/test) part. The tester module search for the ground truth of given video and comparing this csv file and the data derived from it to the data that our system produces.
+
+
 #### OpenPose
 
 This directory is not exist in the repository but should be added by the developer to the server side directory. This directory should contain the binaries necessary for execution of this pose estimation library's code. Please see this [link](https://github.com/CMU-Perceptual-Computing-Lab/openpose) in order to build OpenPose on your machine. After building OpenPose, move into `server/openpose` the following directories:
