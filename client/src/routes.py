@@ -300,6 +300,10 @@ def test_results(video_name):
     csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
                                      predicate=lambda x: x.endswith('_comparison'))
 
+    loss_path = get_all_files_paths(video_name, 'metrics_csvs', extensions_of_files_to_find=['csv'],
+                                     predicate=lambda x: 'loss' in x)
+    loss_records = convert_csv_to_list_of_dicts(loss_path[0])
+
     frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'],
                                        predicate=lambda x: x.startswith('swimfix'))
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
@@ -310,7 +314,7 @@ def test_results(video_name):
 
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
     return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num,loss_records=loss_records)
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
@@ -378,7 +382,7 @@ def previous_feedback(details):
     [swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
                                                 extensions_of_files_to_find=['csv'],
                                                 predicate=lambda x: x in ['swimmer_errors'])
-    error_description_by_frames = match_error_description_to_frames(swimmer_errors_path)
+    error_description_by_frames, score = match_error_description_to_frames(swimmer_errors_path)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', ['jpg'])
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
     frames_paths = sorted(frames_paths, key=sort_lambda)
@@ -387,7 +391,7 @@ def previous_feedback(details):
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
 
     return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
-                           errors_list=error_description_by_frames,
+                           errors_list=error_description_by_frames, score=score,
                            isAdmin=is_admin(), first_frame_number=first_frame_num)
 
 
@@ -688,8 +692,8 @@ def user_feedback(details):
     [swimmer_errors_path] = get_all_files_paths(zip_name, 'error_detection_csvs',
                                                 extensions_of_files_to_find=['csv'],
                                                 predicate=lambda x: x in ['swimmer_errors'])
-    error_description_by_frames = match_error_description_to_frames(swimmer_errors_path)
-    print(error_description_by_frames)
+    error_description_by_frames, score = match_error_description_to_frames(swimmer_errors_path)
+    print(error_description_by_frames, score)
     frames_paths = get_all_files_paths(zip_name, 'annotated_frames', extensions_of_files_to_find=['jpg'],
                                        predicate=lambda x: x.startswith('swimfix'))
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
@@ -699,7 +703,7 @@ def user_feedback(details):
     last_frame_num = int((frames_paths[-1].split('.')[0]).split('_')[-1])
 
     return render_template('user-feedback.html', zip_name=zip_name, data=[], frames=frames_paths_dict,
-                           errors_list=error_description_by_frames,
+                           errors_list=error_description_by_frames, score=score,
                            isAdmin=is_admin(), first_frame_number=first_frame_num, last_frame_number=last_frame_num)
 
 

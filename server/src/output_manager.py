@@ -122,23 +122,23 @@ def get_output_dir_path(key=None):
     return output_dirs_dict[key]
 
 
-def get_excepted_data_path():
-    return "../excepted_data"
+def get_expected_data_path():
+    return "../expected_data"
 
 
-def get_excepted_csvs_path():
-    return get_excepted_data_path() + "/csvs"
+def get_expected_csvs_path():
+    return get_expected_data_path() + "/csvs"
 
 
-def get_excepted_videos_path():
-    return get_excepted_data_path() + "/videos"
+def get_expected_videos_path():
+    return get_expected_data_path() + "/videos"
 
 
-def get_excepted_csv_path_for_movie(video_full_name):
+def get_expected_csv_path_for_movie(video_full_name):
     """Checks if there is an expected csv file in server and returns the path to this file. Otherwise, returns None"""
     video_name = video_full_name.split('_from')[0]
-    all_excepted_csvs_path = get_excepted_csvs_path()
-    wanted_path = all_excepted_csvs_path + '/' + video_name + '_expected.csv'
+    all_expected_csvs_path = get_expected_csvs_path()
+    wanted_path = all_expected_csvs_path + '/' + video_name + '_expected.csv'
     return wanted_path if os.path.exists(wanted_path) else None
 
 

@@ -44,10 +44,11 @@
         <tr>
             <td>{{ item.description }}</td>
             <td>{{ item.frames }}</td>
-            <td>{{item.points_reduced}}</td>
+            <td>{{ item.points_reduced}}</td>
         </tr>
         {% endfor %}
     </table>
+    <h3 class="h3">Final Score: {{score.points_reduced}}</h3>
 </div>
 
 <!--<img id="current frame to show" class="img-sticky">-->

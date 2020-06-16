@@ -168,10 +168,12 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
             fig, ax = plt.subplots()
             y_values = [df[y_col].values for df in dfs]
             dict_for_df = dict()
+            dict_for_df.update(
+                {x_col: dfs[0][x_col].values if x_col != 'Frame Number' else dfs[0].index})
             for index, y_value in enumerate(y_values):
-                if index == 0:
-                    dict_for_df.update(
-                        {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index})
+                # if index == 0:
+                #     dict_for_df.update(
+                #         {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index})
                 x_axis_of_current_csv = dfs[index][x_col] if x_col != 'Frame Number' else dfs[index].index
                 np_nans = np.empty(len(dict_for_df[x_col]))
                 np_nans[:] = np.nan
