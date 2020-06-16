@@ -13,7 +13,7 @@
                             console.log(data);
                             $("h5").text(data.msg);
                             if (data.status == 'finished') {
-                                window.location.replace("{{ url_for('load_video') }}");
+                                window.location.replace(data.redirect_page);
                             }
                         }
                     )

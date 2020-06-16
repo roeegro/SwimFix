@@ -16,6 +16,7 @@ th = Thread()
 finished = False
 indication_msg = None
 server_response = "".encode('utf-8')
+redirect_page = 'index.html'
 
 
 def is_admin():
@@ -45,7 +46,7 @@ def add_test():
     if request.method == 'POST':
         file = request.files['file']
         filename = file.filename
-        path_to_temp_store_flle = os.getcwd() + '/static/temp/'+filename
+        path_to_temp_store_flle = os.getcwd() + '/static/temp/' + filename
         file.save(path_to_temp_store_flle)
         file_size = get_size_of_file_path(path_to_temp_store_flle)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -88,38 +89,46 @@ def index():
 
 @app.route('/status')
 def thread_status():
-    global finished, indication_msg
+    global finished, indication_msg, redirect_page
     """ Return the status of the worker thread """
     return jsonify(dict(status=('finished' if finished else 'running'),
                         msg=(
-                            "Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg)))
+                            "Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg),
+                        redirect_page=redirect_page))
 
 
-response_dict = {'0': "OpenPose started, detecting keypoints",
-                 '1': 'Keypoints detected, preprocessing',
-                 '2': 'Keypoints preprocessed, extracting angles',
-                 '3': 'Angles extracted, detecting errors',
-                 '4': 'Finished error detection, calculating final grade',
-                 '5': 'Final grade calculated, assessment is ready'}
+server_response_dict = {'0': "OpenPose started, detecting keypoints",
+                        '1': 'Keypoints detected, preprocessing',
+                        '2': 'Keypoints preprocessed, extracting angles',
+                        '3': 'Angles extracted, detecting errors',
+                        '4': 'Finished error detection, calculating final grade',
+                        '5': 'Final grade calculated',
+                        '6': 'Getting expected angles from expected keypoints file',
+                        '7': 'Starting test',
+                        '8': 'Ending test'}
 
-num_of_steps = len(response_dict) - 1
+num_of_steps_inference = '5'
+num_of_steps_test = '8'
 
 
-def receive_openpose_msg():
-    global sock, indication_msg, finished, server_response
+def receive_openpose_msg(test):
+    global sock, indication_msg, finished, server_response, redirect_page
     try:
+        redirect_page = 'run-test' if test else 'load-video'
         server_response = sock.recv(1).decode('utf-8')
-        indication_msg = response_dict[server_response]
+        indication_msg = server_response_dict[server_response]
         sock.settimeout(60.0)
-        while server_response != str(num_of_steps):
+        final_response_code = num_of_steps_test if test else num_of_steps_inference
+        while server_response != str(final_response_code):
             server_response = sock.recv(1).decode('utf-8')
             if server_response is 'f':
                 break
-            indication_msg = response_dict[server_response]
+            indication_msg = server_response_dict[server_response]
         server_response = sock.recv(1024)  # for 'success'' message
         if server_response.decode('utf-8') == 'success':
-            indication_msg = "The video was processed and assessed successfully.\n" \
-                             "The feedback is waiting in Previous Feedbacks"
+            indication_msg = 'The test was completed successfully.\nThe result is waiting in the Test Results page' \
+                if test else \
+                "The video was processed and assessed successfully.\nThe feedback is waiting in Previous Feedbacks"
         sock.close()
         finished = True
     except Exception as e:
@@ -134,7 +143,7 @@ def waiting_page():
 
 @app.route("/load-video", methods=['GET', 'POST'])
 def load_video():
-    global finished, indication_msg, server_response
+    global finished, indication_msg, server_response, sock, th, redirect_page
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
@@ -143,10 +152,6 @@ def load_video():
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
                 video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
-                # to create the output dir from the server
-                # create_dir_if_not_exists('output')
-                # create_dir_if_not_exists('../../server/videos/')
-                global sock
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.connect((SERVER_IP, SERVER_PORT))
                 msg = 'upload user_id: {} filename: {} '.format(userID, video_name)
@@ -154,26 +159,22 @@ def load_video():
                 sock.sendall(msg.encode('utf-8'))
                 start_msg = sock.recv(1024)  # for 'start' message
                 if start_msg.decode('utf-8') != 'start':
-                    flash('Failed to upload video file. Please try again', 'failure')
+                    flash('Failed to upload video file. Please try again', 'danger')
                     return render_template('load-video.html', isAdmin=is_admin())
                 f = open(video_path, 'rb')
                 # video_size = os.path.getsize(video_path)
                 # upload_percent = 0
                 # send the file
                 l = f.read(1024)
+                print("Sending data")
                 while l:
                     sock.send(l)
-                    print("Sending data")
                     # upload_percent += 1024 / video_size * 100
                     l = f.read(1024)
                 f.close()
-            # flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-            #     sock.close()
-            global th
             finished = False
-            th = Thread(target=receive_openpose_msg, args=())
+            th = Thread(target=receive_openpose_msg, args=[False])
             th.start()
-            # return render_template('waiting-page.html', isAdmin=is_admin())
             return redirect(url_for('waiting_page'))
         else:
             flash(u'Failed to upload video file. Please try again', 'error')
@@ -186,6 +187,7 @@ def load_video():
         flash(indication_msg, 'danger')
         indication_msg = None
     finished = False
+    redirect_page = 'index'
     return render_template('load-video.html', isAdmin=is_admin())
 
 
@@ -202,7 +204,7 @@ def run_test():
     if not is_admin() == 'True':
         flash("You are not authorized to access this page", 'danger')
         return redirect(url_for('index'))
-
+    global finished, indication_msg, server_response, sock, th, redirect_page
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
@@ -210,29 +212,42 @@ def run_test():
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
                 video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    s.connect((SERVER_IP, SERVER_PORT))
-                    msg = 'run_test user_id: {} filename: {} file_size: {}'.format(userID, video_name,
-                                                                                   get_size_of_file_path(video_path))
-                    s.sendall(msg.encode('utf-8'))
-                    start_msg = s.recv(1024)  # for 'start' message
-                    while start_msg.decode('utf-8') != 'start':
-                        if start_msg.decode('utf-8') == 'not found':
-                            flash('No test found for this video', 'info')
-                            return render_template('run-test.html')
-                        start_msg = s.recv(1024)
-                    f = open(video_path, 'rb')
-                    # send the file
+                sock.connect((SERVER_IP, SERVER_PORT))
+                msg = 'run_test user_id: {} filename: {} file_size: {}'.format(userID, video_name,
+                                                                               get_size_of_file_path(video_path))
+                sock.sendall(msg.encode('utf-8'))
+                start_msg = sock.recv(1024)  # for 'start' message
+                while start_msg.decode('utf-8') != 'start':
+                    if start_msg.decode('utf-8') == 'not found':
+                        flash('No test found for this video', 'info')
+                        return render_template('run-test.html')
+                    start_msg = sock.recv(1024)
+                f = open(video_path, 'rb')
+                # send the file
+                l = f.read(1024)
+                while l:
+                    sock.send(l)
+                    print("Sending data")
                     l = f.read(1024)
-                    while l:
-                        s.send(l)
-                        print("Sending data")
-                        l = f.read(1024)
-                    f.close()
-                flash('The file {} was uploaded successfully'.format(file.filename), 'success')
-                return redirect(url_for('admin_index'))
+                f.close()
+            # flash('The file {} was uploaded successfully'.format(file.filename), 'success')
+            finished = False
+            redirect_page = 'run_test'
+            th = Thread(target=receive_openpose_msg, args=[True])
+            th.start()
+            return redirect(url_for('waiting_page'))
         else:
-            flash('Failed to upload video file. Please try again', 'failure')
+            flash('Failed to upload video file. Please try again', 'danger')
+    if indication_msg is None:
+        finished = False
+    elif server_response.decode('utf-8') == 'success':
+        flash(indication_msg, 'success')
+        indication_msg = None
+    else:
+        flash(indication_msg, 'danger')
+        indication_msg = None
+    finished = False
+    redirect_page = 'index'
     return render_template('run-test.html')
 
 
@@ -291,7 +306,7 @@ def test_results(video_name):
                                      predicate=lambda x: x.endswith('_comparison'))
 
     loss_path = get_all_files_paths(video_name, 'metrics_csvs', extensions_of_files_to_find=['csv'],
-                                     predicate=lambda x: 'loss' in x)
+                                    predicate=lambda x: 'loss' in x)
     loss_records = convert_csv_to_list_of_dicts(loss_path[0])
 
     frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'],
@@ -304,7 +319,7 @@ def test_results(video_name):
 
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
     return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num,loss_records=loss_records)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num, loss_records=loss_records)
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
