@@ -348,7 +348,7 @@ def run_test(data, conn, params):
             return_msg = str("not found").encode('utf-8')
             return
 
-        return_msg = upload(data, conn, params, send_flag=True)  # Run openpose to create the actual all keypoints csv
+        return_msg = upload(data, conn, params)  # Run openpose to create the actual all keypoints csv
         if return_msg.decode('utf-8') != 'success':
             return
         movie_name = filename.split('_from')[0]
@@ -422,7 +422,7 @@ def upload_image_fix(data, conn, params):
         return return_msg
 
 
-def upload(data, conn, params, test=False):
+def upload(data, conn, params):
     return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
