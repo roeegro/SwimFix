@@ -10,10 +10,16 @@ import tester
 import socket
 import traceback
 
-#Import sql database connection settings
-from server.swimfix_db.swimfix_shadow import MYSQL_HOST,MYSQL_PORT,MYSQL_USER,MYSQL_PASSWORD,MYSQL_DB,MYSQL_CURSORCLASS
+# some_file.py
+import sys
 
-mysql = MySQLdb.Connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, passwd=MYSQL_PASSWORD, db=MYSQL_DB,
+sys.path.append('../swimfix_db/')
+
+# Import sql database connection settings
+from swimfix_shadow import MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB, MYSQL_CURSORCLASS
+
+mysql = MySQLdb.Connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER,
+                        passwd=MYSQL_PASSWORD, db=MYSQL_DB,
                         cursorclass=MySQLdb.cursors.DictCursor)
 FAILURE_MSG = "failure".encode('utf-8')
 SUCCESS_MSG = "success".encode('utf-8')
@@ -608,7 +614,7 @@ def get_defined_error_list(data, conn, params):
     try:
         defined_errors_list = facade.get_defined_errors_list()
         from functools import reduce
-        defined_errors_list_as_str = reduce(lambda acc,x: acc + ','+x,defined_errors_list)
+        defined_errors_list_as_str = reduce(lambda acc, x: acc + ',' + x, defined_errors_list)
         print('before sending the list')
         conn.send(defined_errors_list_as_str.encode('utf-8'))
         print('after sending')
@@ -619,7 +625,6 @@ def get_defined_error_list(data, conn, params):
         return return_msg
 
 
-
 requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': view_feedbacks_list,
                  'view_graphs': view_graphs,
                  'forum_view_page': forum_view_page, 'forum_view_topic': forum_view_topic,
@@ -627,7 +632,7 @@ requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': vi
                  'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post, 'add_test': add_test,
                  'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,
                  'view_tests_list': view_tests_list, 'view_test_results': view_test_results, 'view_users': view_users,
-                 'make_admin': make_admin, 'get_defined_error_list':get_defined_error_list}
+                 'make_admin': make_admin, 'get_defined_error_list': get_defined_error_list}
 
 
 def main_parser(data, conn, params):

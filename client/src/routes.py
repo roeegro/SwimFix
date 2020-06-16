@@ -7,7 +7,17 @@ from forms import RegistrationForm, LoginForm
 from threading import Thread
 import re
 import os
-from . import app, SERVER_IP, SERVER_PORT
+
+import sys
+sys.path.append('/')
+from src import SERVER_IP, SERVER_PORT
+
+app = Flask(__name__, static_folder='./static')
+app.config['SECRET_KEY'] = '46a3aa3658359c95a3fe731050236443'
+UPLOAD_FOLDER = './uploaded_files'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
