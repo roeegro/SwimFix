@@ -1,5 +1,3 @@
-
-
 # <center> SwimFix Maintenance Guide</center>
 
 ## Table of Contents

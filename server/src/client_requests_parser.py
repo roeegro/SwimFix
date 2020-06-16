@@ -154,10 +154,11 @@ def view_graphs(data, conn, params):
         file_path_to_send = zip_location + '/' + filename + ".zip"
         f = open(file_path_to_send, 'rb')
         l = f.read(1024)
+        print('sending zip...')
         while l:
             conn.send(l)
-            print('sending zip...')
             l = f.read(1024)
+        print('done sending zip')
         f.close()
         print('sent all zip successfully')
         return_msg = "success".encode("utf-8")
@@ -310,23 +311,17 @@ def createPostFunction(content, topicID, userID=0):
 def add_test(data, conn, params):
     return_msg = FAILURE_MSG
     try:
-        expected_videos_path = '../excepted_data/videos/'
-        expected_csvs_path = '../excepted_data/csvs/'
+        expected_csvs_path = '../expected_data/csvs/'
         extension = data[data.index('file_extension:') + 1]
         file_size = int(data[data.index('file_size:') + 1])
-        if extension == 'avi':
-            specific_expected_dir = expected_videos_path
-        elif extension == 'csv':
-            specific_expected_dir = expected_csvs_path
-        else:
-            return_msg = 'ERROR - CAN NOT RECOGNIZE PATH'.encode('utf-8')
-            return
-
-        new_expected_file_path = specific_expected_dir + data[data.index('file_path:') + 1]
+        if not extension == 'csv':
+            return return_msg
+        new_expected_file_path = expected_csvs_path + data[data.index('file_path:') + 1]
         msg = 'start'
         conn.send(msg.encode('utf-8'))
         counter = 0
         with open(new_expected_file_path, 'wb') as f:
+            print('receiving data...')
             while file_size > counter:
                 data = conn.recv(1024)
                 if not data:
@@ -334,7 +329,7 @@ def add_test(data, conn, params):
                 # write data to a file
                 f.write(data)
                 counter += 1024
-                print('receiving data...')
+            print('done receiving data...')
         return_msg = SUCCESS_MSG
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
@@ -355,7 +350,9 @@ def run_test(data, conn, params):
             return_msg = str("not found").encode('utf-8')
             return
 
-        upload(data, conn, params, send_flag=False)  # Run openpose to create the actual all keypoints csv
+        return_msg = upload(data, conn, params)  # Run openpose to create the actual all keypoints csv
+        if return_msg.decode('utf-8') != 'success':
+            return
         movie_name = filename.split('_from')[0]
         movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
             movie_name)
@@ -366,11 +363,14 @@ def run_test(data, conn, params):
         from distutils.dir_util import copy_tree
         copy_tree(frames_dir_path, movie_frames_dir)
 
+        conn.send('6'.encode('utf-8'))
         facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path, angles_filename="angles_expected.csv",
                                                  output_path=movie_ground_truth_data_dir)
         facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
-        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,filename)
-        return_msg = str("success").encode("utf-8")
+        conn.send('7'.encode('utf-8'))
+        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir, filename)
+        conn.send('8'.encode('utf-8'))
+        return_msg = "success".encode("utf-8")
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
     except socket.error as e:
@@ -406,14 +406,15 @@ def upload_image_fix(data, conn, params):
         conn.send(msg.encode('utf-8'))
         with open(path_to_update, 'wb') as f:
             counter = 0
+            print('receiving data...')
             data = conn.recv(1024)
             while data:
                 # write data to a file
                 f.write(data)
                 data = conn.recv(1024)
                 counter += 1024
-                print(counter)
-                print('receiving data...')
+                # print(counter)
+            print('done receiving data')
         return_msg = SUCCESS_MSG
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
@@ -424,7 +425,7 @@ def upload_image_fix(data, conn, params):
         return return_msg
 
 
-def upload(data, conn, params, send_flag=True):
+def upload(data, conn, params):
     return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
@@ -457,25 +458,20 @@ def upload(data, conn, params, send_flag=True):
         f.close()
         print('Successfully get the file')
         print("Analysing path...")
-        if send_flag:
-            conn.send('0'.encode('utf-8'))
+        conn.send('0'.encode('utf-8'))
         facade.create_output_dir_for_movie_of_user(path_to_video, username)
         all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
-        if send_flag:
-            conn.send('1'.encode('utf-8'))
+        conn.send('1'.encode('utf-8'))
         filtered_and_interpolated_csv_path = facade.filter_and_interpolate(all_keypoints_csv_path, filename)
-        if send_flag:
-            conn.send('2'.encode('utf-8'))
+        conn.send('2'.encode('utf-8'))
         facade.plot_keypoints(filtered_and_interpolated_csv_path)
         # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
         angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path,avg_angles=False)
-        if send_flag:
-            conn.send('3'.encode('utf-8'))
+        conn.send('3'.encode('utf-8'))
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
         facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
         facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path)
-        if send_flag:
-            conn.send('4'.encode('utf-8'))
+        conn.send('4'.encode('utf-8'))
         # zip_path = facade.zip_output()
         creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
         creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
@@ -488,8 +484,7 @@ def upload(data, conn, params, send_flag=True):
             ''', (filename, user_id, date_time_obj))
         mysql.commit()
         cur.close()
-        if send_flag:
-            conn.send('5'.encode('utf-8'))
+        conn.send('5'.encode('utf-8'))
         return_msg = "success".encode('utf-8')
         return return_msg
     except FileNotFoundError as e:
@@ -500,8 +495,7 @@ def upload(data, conn, params, send_flag=True):
         return_msg = "Something went wrong with MySQL: {}".format(e.filename)
     except Exception as e:
         return_msg = "An error occurred when trying to upload the video: " + str(e)
-    if send_flag:
-        conn.send('f'.encode('utf-8'))
+    conn.send('f'.encode('utf-8'))
     return return_msg
 
 
@@ -557,9 +551,9 @@ def view_test_results(data, conn, params):
         file_path_to_send = zip_location + '/' + filename + ".zip"
         f = open(file_path_to_send, 'rb')
         l = f.read(1024)
+        print('sending zip...')
         while l:
             conn.send(l)
-            print('sending zip...')
             l = f.read(1024)
         f.close()
         print('sent all test zip')

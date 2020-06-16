@@ -11,7 +11,7 @@ import socket
 import MySQLdb
 from requests import get
 from client_requests_parser import main_parser
-
+import output_manager
 # import preprocessor
 # setup
 try:
@@ -67,12 +67,13 @@ for i in range(0, len(args[1])):
 # HOST = '84.228.103.80'  # Standard loopback interface address (localhost)
 # HOST = '192.168.43.250'  # Standard loopback interface address (localhost)
 # HOST = '10.0.0.10'  # Standard loopback interface address (localhost)
-HOST = '192.168.1.240'
+HOST = '192.168.2.57'
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 
 def accept_request():
     """" Listens to requests from client side."""
+    output_manager.generate_data_folders()
     while True:
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
