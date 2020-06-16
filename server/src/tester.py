@@ -44,7 +44,7 @@ def compare_avg_angle_from_csv(actual_csv_path, expected_csv_path, col_names):
     return actual_avg_angle_dict
 
 
-def start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename):
+def start_test(actual_csvs_dir, expected_csvs_dir, output_path,movie_name):
     """ Compare between each pair of csv files from  expected and actual directories.
 
     :param actual_csvs_dir: Path to actual results directory.
@@ -52,22 +52,35 @@ def start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename):
     :param output_path: Path to store generated files in.
     :param filename: Movie name for getting expected csv.
     """
-    for root, dirs_list, files_list in os.walk(expected_csvs_dir):
+    for root, dirs_list, files_list in os.walk(actual_csvs_dir):
         for file_name in files_list:
-            if os.path.splitext(file_name)[-1] == '.csv' and os.path.exists(actual_csvs_dir + '/' + file_name):
-                filename_without_extension = str(file_name).split('.')[0]
-                actual_csv_path = actual_csvs_dir + '/' + file_name
-                expected_csv_path = expected_csvs_dir + '/' + file_name
-                compare_csvs(actual_csv_path, expected_csv_path, output_path, filename=filename_without_extension)
-                visualizer.plot_multi_graphs_from_other_csvs([expected_csv_path,actual_csv_path])
+            filename_without_extension = str(file_name).split('.')[0]
+            if os.path.splitext(file_name)[-1] == '.csv':
+                expected_match_file = check_for_match_file_in_expected(filename_without_extension,expected_csvs_dir)
+                if not expected_match_file is None:
+                    actual_csv_path = actual_csvs_dir + '/' + file_name
+                    expected_csv_path = expected_csvs_dir + '/' + expected_match_file
+                    compare_csvs(actual_csv_path, expected_csv_path, output_path, filename=filename_without_extension)
+                    visualizer.plot_multi_graphs_from_other_csvs([expected_csv_path, actual_csv_path],
+                                                                 output_path=output_path)
 
     interpolated_and_filtered_csv_path = actual_csvs_dir + '/interpolated_and_filtered_all_keypoints.csv'
-    ground_truth_all_kp = output_manager.get_expected_csv_path_for_movie(filename)
+    ground_truth_all_kp = output_manager.get_expected_csv_path_for_movie(movie_name)
     visualizer.plot_multi_graphs_from_other_csvs([ground_truth_all_kp, interpolated_and_filtered_csv_path],
                                                  output_path=output_path)
     row_data_path = actual_csvs_dir + '/all_keypoints.csv'
-    visualizer.plot_multi_graphs_from_other_csvs([ground_truth_all_kp, interpolated_and_filtered_csv_path,row_data_path],
-                                                 output_path=output_path,name_prefix='expected_vs_interpolated_vs_raw_data')
+    visualizer.plot_multi_graphs_from_other_csvs(
+        [ground_truth_all_kp, interpolated_and_filtered_csv_path, row_data_path],
+        output_path=output_path, name_prefix='expected_vs_interpolated_vs_raw_data')
+
+
+def check_for_match_file_in_expected(actual_filename, expected_csvs_dir):
+    for root, dirs_list, files_list in os.walk(expected_csvs_dir):
+        for file_name in files_list:
+            filename_without_extension = str(file_name).split('.')[0]
+            if filename_without_extension.startswith(actual_filename + '_') and os.path.splitext(file_name)[-1] == '.csv':
+                return file_name
+    return None
 
 
 def compare_csvs(actual_csv_path, expected_csv_path, output_path, filename='comparison.csv', tolerance=1,
@@ -119,9 +132,11 @@ def compare_csvs(actual_csv_path, expected_csv_path, output_path, filename='comp
 
 if __name__ == '__main__':
     actual_path = '<enter actual path>'
+    actual_path = os.getcwd() + '/../output/roeegro/MVI_8180_from_frame_0/2020-06-14/20-24-06/analytical_data'
     expected_path = '<enter expected path>'
+    expected_path = os.getcwd() + '/../tests/MVI_8180/ground_truth_data'
     output_path = '<enter output path> '
     cols = ['RShoulderX', 'RShoulderY', 'RElbowX', 'RElbowY', 'RWristX', 'RWristY',
             'LShoulderX', 'LShoulderY', 'LElbowX', 'LElbowY', 'LWristX', 'LWristY']
-
-    # compare_csvs(actual_path, expected_path, output_path, 5, cols)
+    output_path = os.getcwd() + '/comparison'
+    start_test(actual_path, expected_path, output_path, 'MVI_8180')

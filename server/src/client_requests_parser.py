@@ -352,7 +352,7 @@ def run_test(data, conn, params):
             return_msg = str("not found").encode('utf-8')
             return
 
-        upload(data, conn, params,send_flag=False)  # Run openpose to create the actual all keypoints csv
+        upload(data, conn, params, send_flag=False)  # Run openpose to create the actual all keypoints csv
         movie_name = filename.split('_from')[0]
         movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
             movie_name)
@@ -363,11 +363,10 @@ def run_test(data, conn, params):
         from distutils.dir_util import copy_tree
         copy_tree(frames_dir_path, movie_frames_dir)
 
-        facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
+        facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path, angles_filename="angles_expected.csv",
                                                  output_path=movie_ground_truth_data_dir)
         facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
-        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,
-                          filename)
+        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,filename)
         return_msg = str("success").encode("utf-8")
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
@@ -422,7 +421,7 @@ def upload_image_fix(data, conn, params):
         return return_msg
 
 
-def upload(data, conn, params,send_flag=True):
+def upload(data, conn, params, send_flag=True):
     return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
@@ -466,7 +465,7 @@ def upload(data, conn, params,send_flag=True):
             conn.send('2'.encode('utf-8'))
         facade.plot_keypoints(filtered_and_interpolated_csv_path)
         # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
-        angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path)
+        angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path,avg_angles=False)
         if send_flag:
             conn.send('3'.encode('utf-8'))
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
@@ -618,7 +617,7 @@ def get_defined_error_list(data, conn, params):
     try:
         defined_errors_list = facade.get_defined_errors_list()
         from functools import reduce
-        defined_errors_list_as_str = reduce(lambda acc,x: acc + ','+x,defined_errors_list)
+        defined_errors_list_as_str = reduce(lambda acc, x: acc + ',' + x, defined_errors_list)
         print('before sending the list')
         conn.send(defined_errors_list_as_str.encode('utf-8'))
         print('after sending')
@@ -629,7 +628,6 @@ def get_defined_error_list(data, conn, params):
         return return_msg
 
 
-
 requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': view_feedbacks_list,
                  'view_graphs': view_graphs,
                  'forum_view_page': forum_view_page, 'forum_view_topic': forum_view_topic,
@@ -637,7 +635,7 @@ requests_dict = {'login': login, 'register': register, 'view_feedbacks_list': vi
                  'forum_create_topic': forum_create_topic, 'forum_create_post': forum_create_post, 'add_test': add_test,
                  'run_test': run_test, 'upload': upload, 'upload_image_fix': upload_image_fix,
                  'view_tests_list': view_tests_list, 'view_test_results': view_test_results, 'view_users': view_users,
-                 'make_admin': make_admin, 'get_defined_error_list':get_defined_error_list}
+                 'make_admin': make_admin, 'get_defined_error_list': get_defined_error_list}
 
 
 def main_parser(data, conn, params):
@@ -661,4 +659,3 @@ def main_parser(data, conn, params):
         print("An error occurred while trying to process the user request: ", e)
     finally:
         return return_msg
-
