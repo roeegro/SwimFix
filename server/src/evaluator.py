@@ -150,11 +150,9 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
     for potential_error in error_detectors:
         for side_entry in sides.items():
             if isinstance(potential_error, types.FunctionType):
-                print('is function')
                 description = potential_error.__name__.replace('check_', '').replace('_', ' ').replace('if',
                                                                                                        side_entry[1])
             elif isinstance(potential_error, str):
-                print('is str')
                 description = potential_error.replace('check_', '').replace('_', ' ').replace('if',
                                                                                               side_entry[1]).replace(
                     '.py', '')
@@ -249,7 +247,6 @@ def get_defined_error_list():
             errors_descriptions.append(plug_and_play_func_description)
             plug_and_play_func_description = plug_and_play_func_description.replace('left', 'right')
             errors_descriptions.append(plug_and_play_func_description)
-    print(errors_descriptions)
     return errors_descriptions
 
 

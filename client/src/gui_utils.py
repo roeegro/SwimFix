@@ -107,3 +107,16 @@ def match_error_description_to_frames(swimmer_errors_path):
         new_record = {'frames': swimmer_errors_df['frames'][index], 'description': swimmer_errors_df['description'][index], 'points_reduced':swimmer_errors_df['points_reduced'][index]}
         list_of_errors_by_frames_detected.append(new_record)
     return list_of_errors_by_frames_detected[:-1], list_of_errors_by_frames_detected[-1]
+
+def convert_csv_to_list_of_dicts(csv_path):
+    list_of_dicts = list()
+    df = pd.read_csv(os.getcwd() + '/' + csv_path)
+    for index, row in df.iterrows():
+        current_dict = dict()
+        for col in list(df.columns):
+            current_dict[col] = df[col][index]
+        list_of_dicts.append(current_dict)
+    return list_of_dicts
+
+if __name__ == '__main__':
+    print(convert_csv_to_list_of_dicts('loss_values.csv'))

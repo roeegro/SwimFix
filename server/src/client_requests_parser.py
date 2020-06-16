@@ -345,12 +345,12 @@ def run_test(data, conn, params):
     return_msg = FAILURE_MSG
     try:
         filename = data[data.index('filename:') + 1]
-        expected_all_kp_csv_path = output_manager.get_excepted_csv_path_for_movie(filename)
+        expected_all_kp_csv_path = output_manager.get_expected_csv_path_for_movie(filename)
         if expected_all_kp_csv_path is None:
             return_msg = str("not found").encode('utf-8')
             return
 
-        upload(data, conn, params)  # Run openpose to create the actual all keypoints csv
+        upload(data, conn, params, send_flag=False)  # Run openpose to create the actual all keypoints csv
         movie_name = filename.split('_from')[0]
         movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
             movie_name)
@@ -361,11 +361,10 @@ def run_test(data, conn, params):
         from distutils.dir_util import copy_tree
         copy_tree(frames_dir_path, movie_frames_dir)
 
-        facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path,
+        facade.get_angles_csv_from_keypoints_csv(expected_all_kp_csv_path, angles_filename="angles_expected.csv",
                                                  output_path=movie_ground_truth_data_dir)
         facade.get_detected_keypoints_by_frame(expected_all_kp_csv_path, output_path=movie_ground_truth_data_dir)
-        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,
-                          filename)
+        tester.start_test(output_manager.get_analytics_dir(), movie_ground_truth_data_dir, movie_test_results_dir,filename)
         return_msg = str("success").encode("utf-8")
     except FileNotFoundError as e:
         print("File not found at path: ", e.filename)
@@ -420,7 +419,7 @@ def upload_image_fix(data, conn, params):
         return return_msg
 
 
-def upload(data, conn, params):
+def upload(data, conn, params, send_flag=True):
     return_msg = FAILURE_MSG
     try:
         user_id = data[data.index('user_id:') + 1]
@@ -453,20 +452,25 @@ def upload(data, conn, params):
         f.close()
         print('Successfully get the file')
         print("Analysing path...")
-        conn.send('0'.encode('utf-8'))
+        if send_flag:
+            conn.send('0'.encode('utf-8'))
         facade.create_output_dir_for_movie_of_user(path_to_video, username)
         all_keypoints_csv_path = facade.get_keypoints_csv_from_video(path_to_video, params)
-        conn.send('1'.encode('utf-8'))
+        if send_flag:
+            conn.send('1'.encode('utf-8'))
         filtered_and_interpolated_csv_path = facade.filter_and_interpolate(all_keypoints_csv_path, filename)
-        conn.send('2'.encode('utf-8'))
+        if send_flag:
+            conn.send('2'.encode('utf-8'))
         facade.plot_keypoints(filtered_and_interpolated_csv_path)
         # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
-        angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path)
-        conn.send('3'.encode('utf-8'))
+        angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path,avg_angles=False)
+        if send_flag:
+            conn.send('3'.encode('utf-8'))
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
         facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
         facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path)
-        conn.send('4'.encode('utf-8'))
+        if send_flag:
+            conn.send('4'.encode('utf-8'))
         # zip_path = facade.zip_output()
         creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
         creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
@@ -479,7 +483,8 @@ def upload(data, conn, params):
             ''', (filename, user_id, date_time_obj))
         mysql.commit()
         cur.close()
-        conn.send('5'.encode('utf-8'))
+        if send_flag:
+            conn.send('5'.encode('utf-8'))
         return_msg = "success".encode('utf-8')
         return return_msg
     except FileNotFoundError as e:
@@ -490,8 +495,9 @@ def upload(data, conn, params):
         return_msg = "Something went wrong with MySQL: {}".format(e.filename)
     except Exception as e:
         return_msg = "An error occurred when trying to upload the video: " + str(e)
-    conn.send('f'.encode('utf-8'))
-    return return_msg.encode('utf-8')
+    if send_flag:
+        conn.send('f'.encode('utf-8'))
+    return return_msg
 
 
 def upload_file_sql(filename, user_id=0):
@@ -589,7 +595,7 @@ def make_admin(data, conn, params):
         cur = mysql.cursor()
         cur.execute(''' UPDATE USERS
         SET ISADMIN = 1
-        WHERE ID= %s''', user_id)
+        WHERE ID= {}'''.format(user_id))
         mysql.commit()
         cur.close()
         return_msg = SUCCESS_MSG
