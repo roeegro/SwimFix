@@ -171,3 +171,22 @@ def build_test_environment_dir(filename):
         os.mkdir(movie_test_results_dir)
 
     return movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir
+
+
+def generate_data_folders():
+    os.chdir('..')
+    if not os.path.exists('expected_data'):
+        os.mkdir('expected_data')
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
+    if not os.path.exists('tests'):
+        os.mkdir('tests')
+    if not os.path.exists('videos'):
+        os.mkdir('videos')
+    if not os.path.exists('plug_and_play_functions'):
+        os.mkdir('plug_and_play_functions')
+    os.chdir('expected_data')
+    if not os.path.exists('csvs'):
+        os.mkdir('csvs')
+    os.chdir(get_src_path())
+
