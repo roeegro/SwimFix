@@ -24,27 +24,40 @@
             <p class="text-lg">
                 SwimFix is a platform for improving front crawl based on pose estimation of the swimmer.
                 Given a swimming video in a front crawl setting, the system estimates different keypoints
-                of the swimmer in each frame and extracts analytical measures which are later used to
+                of the swimmer in each frame and extracts analytical measures such as angles which are later used to
                 asses the performance of the swimmer.
+                The assessment is performed using an error detection algorithms that is based on a pre-defined set of errors,
+                which takes as input the extracted analytical measures.
+                After the detection phase, a scoring method is used to calculate the final score of the video using the detected errors.
             </p>
-            <h2 class="sub-heading pb-2">About the System </h2>
+            <h2 class="sub-heading pb-2">About the Entrepreneurs </h2>
+            Entrepreneurs of the project are Dr. Raziel Riemer, biomechanics expert and high swimming achiever in his past,
+            and Gera Weiss, Dr. of Computer Science, a swimming enthusiast.
+            Their vision is to develop a platfrom for improving swimming that can be marketed to groups of swimmers and even swimmers' unions.<br>
+            <b>Raziel Riemer</b> is assistant professor at Dept of industrial engineering and
+            management at Ben-Gurion University of the Negev in Israel. He hold a Ph.D. form
+            Department of Mechanical and Industrial Engineering at the University of Illinois at
+            Urbana-Champaign, USA. His research interests are in the areas of analysis,
+            modeling, and simulation of human movement, as well as warble robots (exoskeletons).
+            In addition to his academic career, Raziel is a certified swimming coach with more than 20
+            years of experience. In his coaching he emphasis on teaching swimming technique to be both
+            efficient and biomechanical correct to improve power output and reduce injuries. Raziel have
+            been working with swimmers at all levels: beginners, national level swimmers and triathlete,
+            Israel champion and one Olympian triathlete. Other accomplishments of Raziel include being
+            the Israeli national swimming champion and record holder from 1984 to 1989.
+            In his research and coaching Raziel realized the importance of being able to provide the
+            swimmer with a fast and accurate feedback on their swimming technique. This is hard to do
+            for recreational swimmier as they might not have a coach or see him only once a week and
+            both for competitive level swimming teams due to the large amount of swimmers per coach.
+            This project aims to develop a tool that swimmers could use to improve their swimming
+            technique. Further for the use of coaches that would like to have an automatic tool that could
+            provide feedback to the swimmer based on the coach recommendation.
+            <h2 class="sub-heading pb-2">About the Developers</h2>
             <p class="text-lg">
-                Initiators of the project are Dr. Raziel Riemer, biomechanics expert and high swimming achiever
-                in his past, and Gera Weiss, Dr. of Computer Science, a swimming enthusiast. Their goal is to
-                establish a
-                swimming style enhancement system. The system receives a video as an input from a swimmer, extracts the
-                locations
-                of
-                his body part, and produces additional data and metrics by which it gives feedback as to the measure
-                of
-                the swimming style.
-                The vision of the system's entrepreneurs is to develop a high-finish system that can be marketed to
-                groups of swimmers and even swimmers' unions.
+                We are graduating B.Sc. students in Ben Gurion University of the Negev, located in Be'er Sheva, Israel<br>
                 Our goal in the final project was to optimize the ability to extract the various joints through
-                machine
-                learning, and build a user interface that would allow the swimmer to load his video and return as
-                output
-                metrics extracted from the video and save previous results over time.</p>
+                deep learning, and build a user interface that would allow the swimmer to load his video and return as
+                output metrics extracted from the video and save previous results over time.</p>
         </div>
     </div>
 
@@ -94,7 +107,7 @@
 
     <div class="row">
         <div class="col-12 pb-2">
-            <a class="h4" target="_blank" rel="noopener noreferrer" href="https://github.com/roeegro/SwimFix/blob/master/MaintenanceGuide_new.md">Maintenance Manual</a>
+            <a class="h4" target="_blank" rel="noopener noreferrer" href="https://github.com/roeegro/SwimFix/blob/master/MaintenanceGuide.md">Maintenance Manual</a>
         </div>
     </div>
 
