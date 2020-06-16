@@ -290,6 +290,10 @@ def test_results(video_name):
     csvs_paths = get_all_files_paths(video_name, 'csvs', extensions_of_files_to_find=['csv'],
                                      predicate=lambda x: x.endswith('_comparison'))
 
+    loss_path = get_all_files_paths(video_name, 'metrics_csvs', extensions_of_files_to_find=['csv'],
+                                     predicate=lambda x: 'loss' in x)
+    loss_records = convert_csv_to_list_of_dicts(loss_path[0])
+
     frames_paths = get_all_files_paths(video_name, 'annotated_frames', ['jpg'],
                                        predicate=lambda x: x.startswith('swimfix'))
     sort_lambda = lambda path: int((path.split('.')[0]).split('_')[-1])
@@ -300,7 +304,7 @@ def test_results(video_name):
 
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
     return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num,loss_records=loss_records)
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
