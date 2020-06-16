@@ -11,7 +11,7 @@ import socket
 import MySQLdb
 from requests import get
 from client_requests_parser import main_parser
-
+import output_manager
 # import preprocessor
 # setup
 try:
@@ -73,6 +73,7 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 def accept_request():
     """" Listens to requests from client side."""
+    output_manager.generate_data_folders()
     while True:
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
