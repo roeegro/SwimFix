@@ -1,20 +1,21 @@
+
 # SwimFix<br>Pose Estimation Based System for Improving Front Crawl 
 ## Table of Contents
-1. [Introduction](#web-interface)
+1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Web Client](#web-client)
 4. [Inference](#inference)
 5. [Training Infrastructure](#training-infrastructure)
 
 ## Introduction
-This is a official git repository for the graduation project of our B<span>.Sc. in Software Engineering in Ben Gurion University of the Negev located in Be'er Sheva, Israel.
-We developed a system for improving front crawl swimming which relies on pose estimation of the swimmer.
-The system takes as input a video of swimming in a front crawl setting and outputs an en for the swimmer to improve upon.
+This is an official git repository for the graduation project of our B<span>.Sc. in Software Engineering in Ben Gurion University of the Negev located in Be'er Sheva, Israel.
+We have developed a system for improving front crawl swimming which relies on pose estimation of the swimmer.
+The system takes as input a video of swimming in a front crawl setting and outputs a feedback for the swimmer to improve upon.
 
 ## Features
 - **Functionality**:
     - **2D real-time multi-person keypoint detection**:
-        - 18 keypoint body keypoint estimation based on the OpenPose library.
+        - 18 body keypoints estimation based on the OpenPose library.
     - **Performance Assessment** of the swimmer:
 	    - Error detection including multiple error types.
 	    - Manual error fixing over the frames where the error occurred
@@ -42,16 +43,16 @@ The system takes as input a video of swimming in a front crawl setting and outpu
     
 ## Web Client
 Our client-side consists of a Flask based web client
-The client allows users to upload a video of a front crawl swimming. The video is then sent to our server and receive various insights that can hopefully improve the swimmer's performance.
+The client allows users to upload a video of a front crawl swimming. The video is then sent to our server and receive various insights that can improve the swimmer's performance.
 For detailed information and guidelines please visit [our](https://github.com/roeegro/SwimFix/blob/master/client/README.md) guide.
 ## Inference
-Our server-side consists of a inference module based on the [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) library which estimates the smrso in every frame of the video given as input from the web client and then evaluates the swimmer's performance based on the estimation.
+Our server-side consists of a inference module based on the [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) library which estimates the pose in every frame of the video given as input from the web client and then evaluates the swimmer's performance based on the estimation.
 To install OpenPose, please check [our](https://github.com/roeegro/SwimmingProject/blob/master/server/README.md) quick guide or go to the official repository linked above.
 ## Training Infrastructure
 We created a training infrastructure for training your own custom model on your own data using the official  [OpenPose Train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
 For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/README.md) out.
 
-> **Note:** We have also experienced with another Pose Estimation library called [OpenPose-Plus](https://github.com/tensorlayer/openpose-plus) but we do not recommend it at the moment since our inference module is using [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) which is integrated side-by-side with the above  [OpenPose Training](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
+
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
