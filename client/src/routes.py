@@ -471,8 +471,8 @@ def topic(forumPage, topicID, page):
     limit = 10
     nextPageExists = False
 
-    msg = 'forum_topic_name topic_id: {}'.format(topicID)
-    name = send_msg_to_server(msg).decode("utf-8")
+    # msg = 'forum_topic_name topic_id: {}'.format(topicID)
+    # name = send_msg_to_server(msg).decode("utf-8")
 
     # cur = mysql.connection.cursor()
     # cur.execute('''
@@ -482,13 +482,20 @@ def topic(forumPage, topicID, page):
     # topic = cur.fetchone()
     # if not topic:
     #     return redirect("/forum/" + forumPage)
-    if not name:
-        return redirect("/forum/" + forumPage)
+    # if not name:
+    #     return redirect("/forum/" + forumPage)
     # name = topic['NAME']
     # isPinned = int(topic['ISPINNED'])
     isPinned = 0
     msg = 'forum_view_topic topic_id: {} page: {} limit: {}'.format(topicID, page, limit)
-    posts = pickle.loads(send_msg_to_server(msg))
+    posts_pickled = send_msg_to_server(msg)
+    posts_dict = pickle.loads(posts_pickled)
+    posts = posts_dict['posts']
+    name = posts_dict['name'].decode('utf-8')
+    if name == 'failure':
+        flash(u'No posts found for topic with id {}'.format(topicID), 'danger')
+        return redirect("/forum/" + forumPage)
+    flash(u'posts for {} loaded successfully'.format(name), 'success')
 
     # cur.execute('''
     #     SELECT POSTS.ID, POSTS.CONTENT, POSTS.CREATION_DATE, USERS.USERNAME, USERS.ISADMIN

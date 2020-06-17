@@ -227,6 +227,9 @@ def forum_topic_name(data, conn, params):
 def forum_view_topic(data, conn, params):
     return_msg = FAILURE_MSG
     try:
+        name = forum_topic_name(data, conn, params)
+        if not name:
+            return
         topicID = data[data.index('topic_id:') + 1]
         page = int(data[data.index('page:') + 1])
         limit = int(data[data.index('limit:') + 1])
@@ -240,7 +243,7 @@ def forum_view_topic(data, conn, params):
                 ORDER BY POSTS.CREATION_DATE
                 LIMIT %s, %s;''', (topicID, page * limit, limit + 1))
         posts = cur.fetchall()
-        return_msg = pickle.dumps(posts)
+        return_msg = pickle.dumps(dict({'name': name, 'posts': posts}))
     except IndexError as e:
         print("An exception occurred: %s\nInvalid data %s" % (e, data))
     except mysql.Error as e:
@@ -485,7 +488,7 @@ def upload(data, conn, params):
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
         facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
         vectors_path = facade.get_output_dir_path('analytical_data_path') + '/vectors.csv'
-        facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path,vectors_path)
+        facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path, vectors_path)
         conn.send('4'.encode('utf-8'))
         creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
         creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
