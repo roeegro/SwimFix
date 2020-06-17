@@ -14,10 +14,10 @@
 7. [Training](#training)
 8. [Q&A](#qa)
 ## Introduction
-This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
+This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swim Fix](https://github.com/roeegro/SwimFix).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
 Throughout this guide we will walk through all the required steps for training a custom model on your own data, top to bottom.
-From now on the `openpose_train` directory will be our working directory and the `SwimmingProject` directory which is the main directory of our git repository will be our root directory.
+From now on the `openpose_train` directory will be our working directory and the `SwimFix` directory which is the main directory of our git repository will be our root directory.
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
 >  In case you want to train a model just on the COCO dataset only rather than on your own data, consider following the original repository's instructions. You can read more about the COCO dataset (which the OpenPose default COCO model was trained on) [here](http://cocodataset.org/).
 ## Disclaimer
@@ -75,7 +75,7 @@ The cloned repositories are:
 - [openpose_train](https://github.com/tommarz/openpose_train) - The main training library.
 - [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) - Used by the main `openopose_train` library for the training of the model on the NVIDIA GPU.
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) - The annotation tool for our data.
-- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
+- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimFix/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
 
 All of the above will be clone into the `training` directory - this guide is about the first three.
 
@@ -109,9 +109,9 @@ At the end of this step you should have:
 ### Step 2 - Data Filtering and Re-indexing
 In this section we will filter out some data and update the corresponding annotations JSON file accordingly.
 
-Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `python3 json_ops.py`
+Go to the [utils](https://github.com/roeegro/SwimFix/tree/master/training/utils) directory and run `python3 json_ops.py`
 
-By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs these operations on the `custom.json` annotations file in the following order:
+By default, the [script](https://github.com/roeegro/SwimFix/blob/master/training/utils/json_ops.py) performs these operations on the `custom.json` annotations file in the following order:
 1) Deletes redundant fields from the json structure.
 2) Removes annotations with no keypoints/no segmentation, (i.e. area=0).
 3) Removes images with no annotations (Those images will stay in the `dataset/COCO/cocoapi/images` folder and will be used in the next step to generate the `coco_negatives.json` file.
@@ -134,7 +134,7 @@ In this step we will transform the data into the required [.mdb](https://www.lif
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
 - To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the `lmdb_coco` and `lmdb_coco_background` datasets from the `custom.json` and `coco_negetives.json` files respectively. 
-- We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
+- We created a [modified LMDB reader](https://github.com/roeegro/SwimFix/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
 >**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those shell scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
 
