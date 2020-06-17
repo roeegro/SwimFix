@@ -14,9 +14,9 @@
 7. [Training](#training)
 8. [Q&A](#qa)
 ## Introduction
-This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimFix).
+This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [SwimFix Project](https://github.com/roeegro/SwimFix).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
-Throughout this guide we will walk through all the required steps for training a custom model on your own data, top to bottom.<br>
+Throughout this guide we will walk you through all the required steps for training a custom model on your own data, top to bottom.<br>
 From now on the `openpose_train` directory (which will be cloned to `SwimFix/training` later in [this](#required-third-party-repositories-and-packages) section) will be **our working directory.**<br>The `SwimFix` directory which is the main directory of our git repository will be **our root directory**.
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
 >  In case you want to train a model just on the COCO dataset only rather than on your own data, consider following the original repository's instructions. You can read more about the COCO dataset (which the OpenPose default COCO model was trained on) [here](http://cocodataset.org/).
@@ -83,10 +83,11 @@ All of the above will be clone into the `training` directory - this guide is abo
 ### Packages
 This script will install on your machine all the required  packages for both Ubuntu and Python 2.7 :
 ```
+# Switch to our working directory
 cd SwimFix/training/openpose_train
-# Ubuntu
+# Install Ubuntu packages
 sh requirements.sh
-# Python 2.7
+# Install Python 2.7 packages
 pip2 install -r requirements.txt
 ```
 
@@ -197,7 +198,7 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTEyNTAzNTIyMyw4MzkzODc2NDMsLTU3Mz
+eyJoaXN0b3J5IjpbLTE1NDQ2MTEyNiw4MzkzODc2NDMsLTU3Mz
 AxOTY5NCwxMTkyNTIxNDUyLC0xNjUyNzgxOTcyLC0xOTkxODUy
 MzM0LDE0Mzk5NTA5OCw3Njc0ODc1OTVdfQ==
 -->
