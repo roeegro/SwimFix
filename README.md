@@ -36,9 +36,10 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 	- Graphs of the keypoints' coordinates in each frame of the video.
 	- Graphs of the angles of the swimmer's shoulder/elbows/wrists in each frame of the video.
 	- List of detected swimming errors including error type and on which frame it occurred.
-	- Final score bas
+	- Final score based on the detected error.
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
 - **Training**:  Train your own model on your own data.
+	- Prepare and transform your data 
 	- Currently we do not support deployment of the model
 	- You can find a complete walk-through guide [here](https://github.com/roeegro/SwimFix/blob/master/training/README.md)
  
@@ -60,8 +61,8 @@ For more information about it and a guide how to set it up and use it, please ch
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExNDQzOTY5NjksLTE4NjMxMjUzNjMsMT
-cxODk4NzIzNSwtNDk3OTExODk5LC0xMzU5NDc2MzE3LC0xODY4
-NzU5MzI4LC0xMjg0MDg1MDY4LC01MTI5NTIxNzcsMzg0OTQ0Mz
-gsMTAzNzUwMTk0XX0=
+eyJoaXN0b3J5IjpbMTQ2OTUxNjU4OCwtMTg2MzEyNTM2MywxNz
+E4OTg3MjM1LC00OTc5MTE4OTksLTEzNTk0NzYzMTcsLTE4Njg3
+NTkzMjgsLTEyODQwODUwNjgsLTUxMjk1MjE3NywzODQ5NDQzOC
+wxMDM3NTAxOTRdfQ==
 -->
