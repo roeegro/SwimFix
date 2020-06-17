@@ -17,7 +17,7 @@
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
 Throughout this guide we will walk through all the required steps for training a custom model on your own data, top to bottom.
-From now on the `openpose_train` directory will be our working directory and the `SwimmingProject` directory which is the main directory of our git repository will be our root directory.
+**From now on the `openpose_train` directory will be our working directory and the `SwimFix` directory which is the main directory of our git repository will be our root directory.**
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
 >  In case you want to train a model just on the COCO dataset only rather than on your own data, consider following the original repository's instructions. You can read more about the COCO dataset (which the OpenPose default COCO model was trained on) [here](http://cocodataset.org/).
 ## Disclaimer
@@ -79,9 +79,11 @@ The cloned repositories are:
 
 All of the above will be clone into the `training` directory - this guide is about the first three.
 
+
 ### Packages
 This script will install on your machine all the required  packages for both Ubuntu and Python 2.7 :
 ```
+cd SwimFix/training/openpose_train
 # Ubuntu
 sh requirements.sh
 # Python 2.7
@@ -195,7 +197,7 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU3MzAxOTY5NCwxMTkyNTIxNDUyLC0xNj
-UyNzgxOTcyLC0xOTkxODUyMzM0LDE0Mzk5NTA5OCw3Njc0ODc1
-OTVdfQ==
+eyJoaXN0b3J5IjpbODM5Mzg3NjQzLC01NzMwMTk2OTQsMTE5Mj
+UyMTQ1MiwtMTY1Mjc4MTk3MiwtMTk5MTg1MjMzNCwxNDM5OTUw
+OTgsNzY3NDg3NTk1XX0=
 -->
