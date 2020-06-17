@@ -98,7 +98,7 @@ In this section we will explain how we annotated our own custom data and geneter
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
 
 ### Step 1 - Data Annotation
-For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is located in `training/coco-annotator`.
+For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is located in `SwimFix/training/coco-annotator`.
  We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimFix/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
@@ -112,15 +112,15 @@ At the end of this step you should have:
 ### Step 2 - Data Filtering and Re-indexing
 In this section we will filter out some data and update the corresponding annotations JSON file accordingly.
 
-Go to the [utils](https://github.com/roeegro/SwimmingProject/tree/master/training/utils) directory and run `python3 json_ops.py`
+Go to the [utils](https://github.com/roeegro/SwimFix/tree/master/training/utils) directory and run `python3 json_ops.py`
 
-By default, the [script](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/json_ops.py) performs these operations on the `custom.json` annotations file in the following order:
+By default, the [script](https://github.com/roeegro/SwimFix/blob/master/training/utils/json_ops.py) performs these operations on the `custom.json` annotations file in the following order:
 1) Deletes redundant fields from the json structure.
 2) Removes annotations with no keypoints/no segmentation, (i.e. area=0).
 3) Removes images with no annotations (Those images will stay in the `dataset/COCO/cocoapi/images` folder and will be used in the next step to generate the `coco_negatives.json` file.
 4) Performs re-indexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
 ### Step 3 - Data Augmentation
-For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
+For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `openpose_train/training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
 Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
 
 Before running anything, make sure you have the `common` and `private` folders (which is located in the `training` folder) in the Matlab path.
@@ -151,7 +151,7 @@ Each folder consists of a `data.mdb` file which represents the data as a LMDB fi
 ## Training
 In this section we will walk through the training process, assuming you followed the instructions above successfully.
 1) Compile our modified Caffe:
-    -  Go to `training\openpose_caffe_train`
+    -  Go to `SwimFix/training.openpose_caffe_train`
     - Make sure the `Makefile.config` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda and OpenCV 3)
     - The original config file is `Makefile.config.example` in case you want to use it or modify it. When you are done, run `cp Makefile.config.example Makefile.config` to copy it to the config file.
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
@@ -198,7 +198,7 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NDQ2MTEyNiw4MzkzODc2NDMsLTU3Mz
-AxOTY5NCwxMTkyNTIxNDUyLC0xNjUyNzgxOTcyLC0xOTkxODUy
-MzM0LDE0Mzk5NTA5OCw3Njc0ODc1OTVdfQ==
+eyJoaXN0b3J5IjpbLTExNjUxNzUzMjUsODM5Mzg3NjQzLC01Nz
+MwMTk2OTQsMTE5MjUyMTQ1MiwtMTY1Mjc4MTk3MiwtMTk5MTg1
+MjMzNCwxNDM5OTUwOTgsNzY3NDg3NTk1XX0=
 -->
