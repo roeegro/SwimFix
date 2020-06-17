@@ -2,17 +2,18 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
-3. [Prerequisites](#prerequisites)
-4. [Required Third-Party Repositories and Packages](#required-third-party-repositories-and-packages)
-5. [Data Preparation and Preprocessing](#data-preparation-and-preprocessing)
+2. [Disclaimer](#disclaimer)
+3. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
+4. [Prerequisites](#prerequisites)
+5. [Required Third-Party Repositories and Packages](#required-third-party-repositories-and-packages)
+6. [Data Preparation and Preprocessing](#data-preparation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
-   * [LMDB File Generation](#step-4---lmdb-file-generation)
-6. [Training](#training)
-7. [Q&A](#qa)
-8. [Installation Commands](#installation-commands)
+   * [Data Transformation](#step-4---data-transformation)
+7. [Training](#training)
+8. [Q&A](#qa)
+9. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -96,7 +97,7 @@ Before we get started, create a folder with all of you images and name it `custo
 
 ### Step 1 - Data Annotation
 For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is located in `training/coco-annotator`.
- We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimmingProject/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
+ We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimFix/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
 2.  Export the annotations file as `person_keypoints_custom.json` to the `dataset/COCO/cocoapi/annotations/` folder.
@@ -129,16 +130,21 @@ Do expect for some errors regarding paths in to `cocoapi`
 
 By the end of this step you should have a `coco_negatives.json` and `custom.json` files in the `dataset/COCO/json/` directory
 
-### Step 4 - LMDB File Generation
+### Step 4 - Data Transformation
+In this step we will transform the data into the required [.mdb](https://www.lifewire.com/mdb-file-2621974) format.
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
-- To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the COCO and background-COCO LMDBs. The generated 
+- To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the `lmdb_coco` and `lmdb_coco_background` datasets from the `custom.json` and `coco_negetives.json` files respectively. 
 - We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
->**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
+>**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those shell scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
 
 
-By the end of this step you should have `lmdb_coco`,`lmdb_background`,`lmdb_mpii` and `lmdb_coco2017_foot` folders in the `dataset` folder, each folder consists of a `data.mdb` file which represents the data as a LMDB file and a  `lock.mdb` files for synchronization locks (not important).
+By the end of this step you should have in the `training/dataset` folder:
+- `lmdb_coco`, `lmdb_background` folders generated from the python script.
+- `lmdb_mpii` and `lmdb_coco2017_foot` folder generated from the shell scripts.
+
+Each folder consists of a `data.mdb` file which represents the data as a LMDB file and a  `lock.mdb` files for synchronization locks (not important).
 
 ## Training
 In this section we will walk through the training process, assuming you followed the instructions above successfully.
@@ -163,7 +169,7 @@ The first 10 layers are used as backbone.
     -  Run  `bash train_pose.sh` (generated by  `d_setLayers.py`) to start the training with 1 GPU
     -   Run  `bash train_pose.sh 0,1,2,3`  (generated by  `d_setLayers.py`) to start the training with the 4 GPUs (0-3).
 
-## Training Flow
+### Training Flow
 ```mermaid
 graph LR
 	A[Raw Data] 
@@ -190,6 +196,5 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzY3NDg3NTk1LC05MzI3MTkyOTYsMTE2Mz
-E3OTk1NSw3NTg5MzMzNzZdfQ==
+eyJoaXN0b3J5IjpbMTE5MjUyMTQ1Ml19
 -->
