@@ -5,7 +5,7 @@ Chart.defaults.global.defaultFontColor = '#858796';
 var current_img_path = '';
 
 
-function number_format(number){
+function number_format(number) {
     if (Number.isInteger(number))
         return number.toString()
     return number.toFixed(3).toString()
@@ -15,29 +15,53 @@ function make_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
+    console.log(csv_path)
     d3.csv(csv_path).then(make_chart.bind(csv_name, csv_name))
     return 0
 }
 
+
 function setImage(index) {
-    console.log(index)
     frame_element = document.getElementById('current frame to show')
-    frame_element.setAttribute('src', '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg')
+    frame_element.setAttribute('src', '/static/temp/annotated_frames/swimfix_annotated_frame_' + index + '.jpg')
 }
 
+function setPrevImage() {
+    frame_element = document.getElementById('current frame to show')
+    img_path = frame_element.getAttribute('src')
+    if (img_path == null) {
+        img_path = current_img_path
+    }
+    curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
+    document.getElementById("change_img").value = parseInt(curr_index)-1
+    load_img(parseInt(curr_index)- 1)
+}
+
+function setNextImage() {
+    frame_element = document.getElementById('current frame to show')
+    img_path = frame_element.getAttribute('src')
+    if (img_path == null) {
+        img_path = current_img_path
+    }
+    curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
+    document.getElementById("change_img").value = parseInt(curr_index)+1
+    load_img(parseInt(curr_index) + 1)
+}
+function setNumberImage() {
+    index = document.getElementById("change_img").value
+    load_img(parseInt(index))
+}
 
 function make_comparison_chart_from_csv(csv_path) {
     let splited_by_slash = csv_path.split('/')
     let name_with_extension = splited_by_slash[splited_by_slash.length - 1]
     csv_name = name_with_extension.split('.')[0]
-    console.log(csv_name)
     d3.csv(csv_path).then(make_comparison_chart.bind(csv_name, csv_name))
     return 0
 }
 
 function make_comparison_chart(csv_name, data) {
-    columns = d3.keys(data[0])
-    console.log(columns)
+    var columns = d3.keys(data[0])
 
     var frame_range = []
     // Load frame Numberes
@@ -74,48 +98,51 @@ function make_comparison_chart(csv_name, data) {
 
     charts_node.appendChild(card_shadow_div)
 
-    var y1_axis = []
-    var y2_axis = []
-    for (i = 0; i < data.length; i++) {
-        var value1 = (data[i])[columns[1]]
-        var value2 = (data[i])[columns[2]]
-        y1_axis.push(value1)
-        y2_axis.push(value2)
+    var y_axis = [];
+    for (j = 0; j < columns.length; j++) {
+        y_axis.push([])
+        for (i = 0; i < data.length; i++) {
+            var value = (data[i])[columns[j]]
+            y_axis[j].push(value)
+        }
+    }
+    backgroundColors = []
+    pointHoverBackgroundColors = []
+    for (j = 0; j < columns.length; j++) {
+        if (j == 1) {
+            backgroundColors.push("rgba(78, 115, 223, 0.05)")
+            pointHoverBackgroundColors.push("rgba(78, 115, 223, 1)")
+        } else {
+            r = (244- (10^j) ).toString()
+            g = (115 - (4*j)).toString()
+            b = (223 - Math.pow(8,j)).toString()
+            backgroundColors.push("rgba(" + [r, g, b, 0.05].join(",") + ")")
+            pointHoverBackgroundColors.push("rgba(" + [r, g, b, 1].join(",") + ")")
+        }
+    }
+    dataToPut = []
+    for (j = 1; j < columns.length; j++) {
+        dataToPut.push({
+            label: columns[j],
+            lineTension: 0.3,
+            backgroundColor: backgroundColors[j],
+            borderColor: pointHoverBackgroundColors[j],
+            pointRadius: 3,
+            pointBackgroundColor: pointHoverBackgroundColors[j],
+            pointBorderColor: pointHoverBackgroundColors[j],
+            pointHoverRadius: 3,
+            pointHoverBackgroundColor: pointHoverBackgroundColors[j],
+            pointHoverBorderColor: pointHoverBackgroundColors[j],
+            pointHitRadius: 10,
+            pointBorderWidth: 2,
+            data: y_axis[j],
+        })
     }
     myLineChart = new Chart(canvas_tag, {
         type: 'line',
         data: {
             labels: frame_range,
-            datasets: [{
-                label: columns[1],
-                lineTension: 0.3,
-                backgroundColor: "rgba(78, 115, 223, 0.05)",
-                borderColor: "rgba(78, 115, 223, 1)",
-                pointRadius: 3,
-                pointBackgroundColor: "rgba(255, 255, 255, 1)",
-                pointBorderColor: "rgba(78, 115, 223, 1)",
-                pointHoverRadius: 3,
-                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                pointHitRadius: 10,
-                pointBorderWidth: 2,
-                data: y1_axis,
-            },
-                {
-                    label: columns[2],
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgba(255, 0, 0, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(255, 255, 255, 1)",
-                    pointBorderColor: "rgba(255, 0, 0, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(255, 0, 0, 1)",
-                    pointHoverBorderColor: "rgba(255, 0, 0, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    data: y2_axis,
-                }],
+            datasets: dataToPut
         },
         options: {
             bezierCurve: true,
@@ -147,8 +174,7 @@ function make_comparison_chart(csv_name, data) {
                         padding: 10,
                         // Include a dollar sign in the ticks
                         callback: function (value, index, values) {
-                            console.log(index)
-                            return number_format(value, 2);
+                            return number_format(value);
                         }
                     },
                     gridLines: {
@@ -186,10 +212,114 @@ function make_comparison_chart(csv_name, data) {
             }
         }
     });
+    // myLineChart = new Chart(canvas_tag, {
+    //     type: 'line',
+    //     data: {
+    //         labels: frame_range,
+    //         datasets: [{
+    //             label: columns[1],
+    //             lineTension: 0.3,
+    //             backgroundColor: "rgba(78, 115, 223, 0.05)",
+    //             borderColor: "rgba(78, 115, 223, 1)",
+    //             pointRadius: 3,
+    //             pointBackgroundColor: "rgba(255, 255, 255, 1)",
+    //             pointBorderColor: "rgba(78, 115, 223, 1)",
+    //             pointHoverRadius: 3,
+    //             pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+    //             pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+    //             pointHitRadius: 10,
+    //             pointBorderWidth: 2,
+    //             data: y1_axis,
+    //         },
+    //             {
+    //                 label: columns[2],
+    //                 lineTension: 0.3,
+    //                 backgroundColor: "rgba(78, 115, 223, 0.05)",
+    //                 borderColor: "rgba(255, 0, 0, 1)",
+    //                 pointRadius: 3,
+    //                 pointBackgroundColor: "rgba(255, 255, 255, 1)",
+    //                 pointBorderColor: "rgba(255, 0, 0, 1)",
+    //                 pointHoverRadius: 3,
+    //                 pointHoverBackgroundColor: "rgba(255, 0, 0, 1)",
+    //                 pointHoverBorderColor: "rgba(255, 0, 0, 1)",
+    //                 pointHitRadius: 10,
+    //                 pointBorderWidth: 2,
+    //                 data: y2_axis,
+    //             }],
+    //     },
+    //     options: {
+    //         bezierCurve: true,
+    //         maintainAspectRatio: false,
+    //         layout: {
+    //             padding: {
+    //                 left: 10,
+    //                 right: 25,
+    //                 top: 25,
+    //                 bottom: 0
+    //             }
+    //         },
+    //         scales: {
+    //             xAxes: [{
+    //                 time: {
+    //                     unit: 'date'
+    //                 },
+    //                 gridLines: {
+    //                     display: false,
+    //                     drawBorder: false
+    //                 },
+    //                 ticks: {
+    //                     maxTicksLimit: 7
+    //                 }
+    //             }],
+    //             yAxes: [{
+    //                 ticks: {
+    //                     maxTicksLimit: 5,
+    //                     padding: 10,
+    //                     // Include a dollar sign in the ticks
+    //                     callback: function (value, index, values) {
+    //                         return number_format(value);
+    //                     }
+    //                 },
+    //                 gridLines: {
+    //                     color: "rgb(234, 236, 244)",
+    //                     zeroLineColor: "rgb(234, 236, 244)",
+    //                     drawBorder: false,
+    //                     borderDash: [2],
+    //                     zeroLineBorderDash: [2]
+    //                 }
+    //             }],
+    //         },
+    //         legend: {
+    //             display: true
+    //         },
+    //         tooltips: {
+    //             backgroundColor: "rgb(255,255,255)",
+    //             bodyFontColor: "#858796",
+    //             titleMarginBottom: 10,
+    //             titleFontColor: '#6e707e',
+    //             titleFontSize: 14,
+    //             borderColor: '#dddfeb',
+    //             borderWidth: 1,
+    //             xPadding: 15,
+    //             yPadding: 15,
+    //             displayColors: false,
+    //             intersect: false,
+    //             mode: 'index',
+    //             caretPadding: 10,
+    //             callbacks: {
+    //                 label: function (tooltipItem, chart) {
+    //                     var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+    //                     return datasetLabel + ' ' + number_format(tooltipItem.yLabel);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
 
 
     document.getElementById(canvas_id).onclick = function (evt) {
         var activePoints = myLineChart.getElementAtEvent(evt);
+        console.log('bla bla ' + activePoints.length)
         // make sure click was on an actual point
         if (activePoints.length > 0) {
             var clickedDatasetIndex = activePoints[0]._datasetIndex;
@@ -357,7 +487,7 @@ function make_chart(csv_name, data) {
                         callbacks: {
                             label: function (tooltipItem, chart) {
                                 var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                return datasetLabel + ' ' +  number_format(tooltipItem.yLabel);
+                                return datasetLabel + ' ' + number_format(tooltipItem.yLabel);
                             }
                         }
                     }
@@ -494,7 +624,7 @@ function make_chart(csv_name, data) {
 
 
 function load_img(index) {
-    current_img_path = '/static/temp/annotated_frames/annotated_frame_' + index + '.jpg'
+    current_img_path = '/static/temp/annotated_frames/swimfix_annotated_frame_' + index + '.jpg'
     console.log(current_img_path)
     var c = document.getElementById("current frame to show");
     var ctx = c.getContext("2d");
@@ -517,13 +647,15 @@ function load_img(index) {
         console.log("clicked");
     };
     image.style.display = "block";
-    image.src = "/static/temp/annotated_frames/annotated_frame_" + index + ".jpg";
+    image.src = "/static/temp/annotated_frames/swimfix_annotated_frame_" + index + ".jpg";
 
     var clicked = false;
     var fPoint = {};
     c.onclick = function (e) {
+        check_box = document.getElementById('fix-checkbox')
+
         console.log(clicked);
-        if (!clicked) {
+        if (!clicked && check_box.checked) {
             var x = (image.width / c.scrollWidth) * e.offsetX;
             var y = (image.height / c.scrollHeight) * e.offsetY;
             console.log(e);
@@ -536,7 +668,7 @@ function load_img(index) {
                 x: x,
                 y: y
             };
-        } else {
+        } else if(clicked && check_box.checked){
             var x2 = (image.width / c.scrollWidth) * e.offsetX;
             var y2 = (image.height / c.scrollHeight) * e.offsetY;
 
@@ -553,7 +685,6 @@ function sendFixes() {
     var c = document.getElementById("current frame to show");
     var ctx = c.getContext("2d");
     var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
-    console.log(current_img_path)
     imgData_url = c.toDataURL()
     var data = {'current url': document.URL, 'img': imgData_url, 'current img path': current_img_path};
     // data = {'current_url' : document.URL , 'img' : 44}
@@ -564,12 +695,10 @@ function sendFixes() {
         dataType: 'json',
         data: JSON.stringify(data),
         success: function (result) {
-            console.log(2)
-            console.log(result['returned_url'])
+            console.log('success')
             jQuery("#clash").html(result['returned_url']);
         }, error: function (result) {
-            console.log(3)
-            console.log(result['returned_url']);
+            console.log('error')
         }
     });
 }

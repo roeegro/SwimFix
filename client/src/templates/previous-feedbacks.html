@@ -3,7 +3,8 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Previous Feedbacks</h1>
+    <h1 class="display-3 text-center" style="color: #4e73df">Previous Feedbacks</h1>
+<!--    <h1 class="h3 mb-2 text-gray-800">Previous Feedbacks</h1>-->
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -15,7 +16,8 @@
                     <tr>
                         <th>Upload Date</th>
                         <th>Video Name</th>
-                        <th>Charts Page</th>
+                        <th>User Feedback</th>
+                        <th>Dev - Charts Page</th>
                     </tr>
                     </thead>
                     <tbody id="previous_feedbacks_tbl_body">
@@ -26,7 +28,13 @@
                         <td>{{ item.date }}</td>
                         <td>{{ item.movie_name }}</td>
                         <td>
-                            <a href="{{url_for('previous_feedback', zip_name = item.zip_name)}}" > Get Graphs for this file </a>
+                            <a href="{{url_for('user_feedback', details = item.zip_name + '__' + item.date)}}"> Download and View
+                                Feedback </a>
+
+                        </td>
+                        <td>
+                            <a href="{{url_for('previous_feedback', details = item.zip_name + '__' + item.date)}}"> Download and View
+                                Graphs </a>
 
                         </td>
                     </tr>

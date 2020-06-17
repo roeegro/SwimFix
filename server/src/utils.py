@@ -34,11 +34,23 @@ def get_src_path():
     return os.path.dirname(os.path.realpath(__file__))
 
 
-def get_body_parts():
-    return ['NoseX', 'NoseY','NoseScore','NeckX', 'NeckY', 'NeckScore', 'RShoulderX', 'RShoulderY',
+def get_plug_and_play_functions_dir():
+    return os.getcwd() + '/../plug_and_play_functions'
+
+
+def get_body_parts_columns():
+    return ['NoseX', 'NoseY', 'NoseScore', 'NeckX', 'NeckY', 'NeckScore', 'RShoulderX', 'RShoulderY',
             'RShoulderScore', 'RElbowX', 'RElbowY', 'RElbowScore', 'RWristX', 'RWristY', 'RWristScore', 'LShoulderX',
             'LShoulderY', 'LShoulderScore',
             'LElbowX', 'LElbowY', 'LElbowScore', 'LWristX', 'LWristY', 'LWristScore']
+
+
+def get_body_parts():
+    return ['Nose', 'Neck', 'RShoulder', 'RElbow', 'RWrist', 'LShoulder', 'LElbow', 'LWrist']
+
+
+def get_body_skeleton():
+    return [[0, 1], [1, 2], [1, 5], [2, 3], [3, 4], [5, 6], [6, 7]]
 
 
 def keypoint_to_score(col_name):

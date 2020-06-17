@@ -1,0 +1,130 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - User Feedback</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/static/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+<div>
+    <div class="img-sticky float-left">
+        <canvas id="current frame to show"></canvas>
+        <label> Fix this frame manually </label>
+        <input type="checkbox" value="Submit" id="fix-checkbox"><br><br>
+
+        <!--    <a class="btn btn-primary btn-circle" id='prev_button'> < </a>-->
+        <!--    <a class="btn btn-primary btn-circle" id='next_button' > > </a>-->
+        <button type="button" id='prev_button' onclick="setPrevImage()"> prev</button>
+        <button type="button" id='next_button' onclick="setNextImage()"> next</button>
+        <input type="number" id="change_img" min="{{first_frame_number}}" max="{{last_frame_number}}"
+               onchange="setNumberImage()">
+
+        <button type="button" id='save changes' onclick="sendFixes()">Save fixes</button>
+    </div>
+    <div class="float-right align-content-center container">
+        <table id="previous_feedbacks_tbl" class="table table-bordered" id="dataTable" width="100%"
+               cellspacing="0">
+            <thead>
+            <tr>
+                <th>Error Description</th>
+                <th>Frames Detected</th>
+                <th>Points Reduced</th>
+            </tr>
+            </thead>
+            <tbody id="previous_feedbacks_tbl_body">
+            </tbody>
+            {% for item in errors_list %}
+            <tr>
+                <td>{{ item.description }}</td>
+                <td>{{ item.frames }}</td>
+                <td>{{ item.points_reduced }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h3 class="h3">Final Score: {{score.points_reduced}}</h3>
+    </div>
+</div>
+
+<!--<img id="current frame to show" class="img-sticky">-->
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper-sticky" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <script src="/static/js/demo/chart-area-demo.js"></script>
+                    <script>
+                        load_img(parseInt("{{first_frame_number}}"))
+                    </script>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="/static/vendor/jquery/jquery.min.js"></script>
+<script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/static/js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="/static/vendor/chart.js/Chart.min.js"></script>
+<script src="/static/js/d3.min.js"></script>
+<!-- Page level custom scripts -->
+
+<!--<script src="/static/js/demo/chart-area-demo.js"></script>-->
+<!--<script src="/static/js/demo/chart-pie-demo.js"></script>-->
+<!--<script src="/static/js/demo/chart-bar-demo.js"></script>-->
+
+
+</body>
+
+
+{% endblock content %}

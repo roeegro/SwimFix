@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import output_manager
+import cv2
+import math
+import utils
 
 
 def show_avg_angle_diff(dict_of_avg_angle_for_test, dict_of_avg_angle_for_tested):
@@ -140,7 +143,7 @@ def autolabel(rects, ax):
 
 
 def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True,
-                                      output_path=None):
+                                      output_path=None,name_prefix = ''):
     """ Plot single or multi figures from different csv files.
         **Very important assumption** : The columns must be the same when using this function for more than one csv path.
 
@@ -165,10 +168,12 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
             fig, ax = plt.subplots()
             y_values = [df[y_col].values for df in dfs]
             dict_for_df = dict()
+            dict_for_df.update(
+                {x_col: dfs[0][x_col].values if x_col != 'Frame Number' else dfs[0].index})
             for index, y_value in enumerate(y_values):
-                if index == 0:
-                    dict_for_df.update(
-                        {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index})
+                # if index == 0:
+                #     dict_for_df.update(
+                #         {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index})
                 x_axis_of_current_csv = dfs[index][x_col] if x_col != 'Frame Number' else dfs[index].index
                 np_nans = np.empty(len(dict_for_df[x_col]))
                 np_nans[:] = np.nan
@@ -183,6 +188,56 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
             title = specific_y_col + ' comparison'
             plt.title = title
             df_to_new_csv = pd.DataFrame(data=dict_for_df).set_index(x_col)
-            df_to_new_csv.to_csv(analytics_path + '/' + specific_y_col + '_comparison.csv')
-            plt.savefig(figures_path + '/' + specific_y_col + '_by_' + x_col + '_comparison')
+            df_to_new_csv.to_csv(analytics_path + '/' + name_prefix + specific_y_col + '_comparison.csv')
+            plt.savefig(figures_path + '/' + name_prefix + specific_y_col + '_by_' + x_col + '_comparison')
             plt.close(fig)
+
+
+def draw_detected_keypoints(keypoints_path):
+    keypoints_df = pd.read_csv(keypoints_path).set_index('Frame Number')
+    # swimfix_frames_dir_path = os.getcwd() + '/../output/tom\MVI_8027_from_frame_60/2020-06-08/13-09-47/to_annotate'
+    swimfix_frames_dir_path = output_manager.get_output_dir_path(key='swimfix_frames_path')
+    coco_skeleton = utils.get_body_skeleton()
+    for index, frame_data in keypoints_df.iterrows():
+        int_index = int(index)
+        # current_frame_path = swimfix_frames_dir_path + '/annotated_frame_{}.jpg'.format(int_index)
+        current_frame_path = swimfix_frames_dir_path + '/swimfix_annotated_frame_{}.jpg'.format(int_index)
+        current_frame = cv2.imread(current_frame_path)
+        nose = (int(frame_data['NoseX']), int(frame_data['NoseY'])) if not math.isnan(frame_data['NoseX']) else (
+            math.nan, math.nan)
+        neck = (int(frame_data['NeckX']), int(frame_data['NeckY'])) if not math.isnan(frame_data['NeckX']) else (
+            math.nan, math.nan)
+        r_shoulder = (int(frame_data['RShoulderX']), int(frame_data['RShoulderY'])) if not math.isnan(
+            frame_data['RShoulderX']) else (
+            math.nan, math.nan)
+        r_elbow = (int(frame_data['RElbowX']), int(frame_data['RElbowY'])) if not math.isnan(frame_data['RElbowX']) else (
+            math.nan, math.nan)
+        r_wrist = (int(frame_data['RWristX']), int(frame_data['RWristY'])) if not math.isnan(frame_data['RWristX']) else (
+            math.nan, math.nan)
+        l_shoulder = (int(frame_data['LShoulderX']), int(frame_data['LShoulderY'])) if not math.isnan(
+            frame_data['LShoulderX']) else (
+            math.nan, math.nan)
+        l_elbow = (int(frame_data['LElbowX']), int(frame_data['LElbowY'])) if not math.isnan(frame_data['LElbowX']) else (
+            math.nan, math.nan)
+        l_wrist = (int(frame_data['LWristX']), int(frame_data['LWristY'])) if not math.isnan(frame_data['LWristX']) else (
+            math.nan, math.nan)
+        body_parts = [nose, neck, r_shoulder, r_elbow, r_wrist, l_shoulder, l_elbow, l_wrist]
+
+        for body_part in body_parts:
+            if not math.isnan(body_part[0]):
+                current_frame = cv2.circle(current_frame, body_part, 2, (0, 0, 0), 5)
+        for line in coco_skeleton:
+            from_body_part_index = line[0]
+            to_body_part_index = line[1]
+            from_point = body_parts[from_body_part_index]
+            to_point = body_parts[to_body_part_index]
+            if math.isnan(from_point[0]) or math.isnan(to_point[0]):
+                continue
+            current_frame = cv2.line(current_frame, from_point, to_point, (0, 255, 0), 4)
+            cv2.imwrite(current_frame_path,current_frame)
+
+
+if __name__ == '__main__':
+    import os
+
+    draw_detected_keypoints(os.getcwd() + '/interpolated_and_filtered_all_keypoints.csv')

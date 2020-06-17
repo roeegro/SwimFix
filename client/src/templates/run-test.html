@@ -1,21 +1,41 @@
 {% extends 'admin-index.html' %}
 {% block content %}
-    <div class="card o-hidden border-0 shadow-lg my-5">
-        <div class="card-body p-0">
-            <div class="row">
-                <div class="col-lg-3"></div>
-                <div class="col-lg-6">
-                    <div class="p-5">
-                        <div class="text-center">
-                            <h3>Please select a video file to test:</h3>
-                            <form action="" method=post enctype=multipart/form-data>
-                                <p><input type=file name=file>
-                                    <input type=submit value=Upload>
-                            </form>
-                        </div>
+<script type="javascript"></script>
+
+<script>
+    function showUpload() {
+        if (document.getElementById('file-input').value != "") {
+            // you have a file
+            // alert("Uploading video to server")
+            document.getElementsByClassName('loadersmall').item(0).style.display = "block";
+            document.getElementById('vid-upload-status').innerHTML = "Uploading video to server";
+        } else {
+            document.getElementsByClassName('loadersmall').item(0).style.display = "none";
+            document.getElementById('vid-upload-status').innerHTML = "";
+        }
+    }
+</script>
+
+<div class="card o-hidden border-0 shadow-lg my-5">
+    <div class="card-body p-0">
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h3>Please select a video file to test:</h3>
+                        <form action="" method=post enctype=multipart/form-data>
+                            <p><input id='file-input' type=file name=file>
+                                <input type=submit value=Upload onclick="showUpload()">
+                        </form>
+                        <div class="loadersmall text-center align-content-center"
+                             style="display: none; margin-right: auto; margin-left: auto"></div>
+                        <h5 id="vid-upload-status"></h5>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</body>
 {% endblock content %}

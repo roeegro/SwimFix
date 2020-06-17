@@ -5,24 +5,13 @@ from shutil import copyfile
 import shutil
 import time
 from zipfile import ZipFile
+import pandas as pd
 
 
 def create_dir_if_not_exists(directory):
     if not os.path.exists(directory):
         os.mkdir(directory)
         print('Created dir ' + directory)
-
-
-def send_file_to_server(video_paths):
-    for video_path in video_paths:
-        video_name = video_path.split('/')[-1]
-        # to create the output dir from the server
-        create_dir_if_not_exists('output')
-        create_dir_if_not_exists('../../server/videos/')
-        copyfile(video_path, "../../server/videos/" + video_name)
-        # os.remove(video_path)
-        print("Sent file!")
-    shutil.rmtree('partial_movies')
 
 
 def upload_video_file(upload_folder, file, should_take_full_video=False):
@@ -39,19 +28,17 @@ def upload_video_file(upload_folder, file, should_take_full_video=False):
     video_path = os.path.join(upload_folder, filename)
     file.save(video_path)
     new_video_paths = preprocessor.video_cutter(video_path, should_take_full_video)
-    print('new_video_paths : {}'.format(new_video_paths))
-    # send_file_to_server(new_video_paths)
     return new_video_paths
 
 
-def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], expected_file_names=None):
+def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_find=[], predicate=None):
     """ Get zip name to search in Client/crc/temp/zip name and extract to other directory in temp 'found_files_dir_name'
         files with specific extension and with specific names.
 
     :param zip_name:
     :param found_files_dir_name:
     :param extensions_of_files_to_find:
-    :param expected_file_names:
+    :param predicate: predicate of desired filenames
     :return: List of files paths in the new directory for future use.
     """
     returned_file_paths = list()
@@ -78,7 +65,7 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
                 # Extract a single file from zip
                 name_of_file_with_extension = fileName.split('/')[-1]
                 name_of_file_without_extension = name_of_file_with_extension.split('.')[0]
-                if expected_file_names is None or name_of_file_without_extension in expected_file_names:  # check if we want this csv
+                if predicate is None or predicate(name_of_file_without_extension):  # check if we want this csv
                     # print('filename {} , extension {} is extracted'.format(fileName, file_extension))
                     zipObj.extract(fileName, output_dir + found_files_dir_name)
                     try:
@@ -92,7 +79,6 @@ def get_all_files_paths(zip_name, found_files_dir_name, extensions_of_files_to_f
         if not file_extension in extensions_of_files_to_find:
             shutil.rmtree(output_dir + found_files_dir_name + '/{}'.format(file))
         else:
-            # print(relative_output_dir + found_files_dir_name + '/{}'.format(file))
             returned_file_paths.append(relative_output_dir + found_files_dir_name + '/{}'.format(file))
 
     return returned_file_paths
@@ -112,6 +98,25 @@ def upload_python_file(upload_folder, file):
         return False
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
-    # serve(app)
+def match_error_description_to_frames(swimmer_errors_path):
+    """Gets path to swimmer errors map, and returns
+    list of dictionaries of errors description and relevant frames."""
+    list_of_errors_by_frames_detected = list()
+    swimmer_errors_df = pd.read_csv(os.getcwd() + swimmer_errors_path)
+    for index, row in swimmer_errors_df.iterrows():
+        new_record = {'frames': swimmer_errors_df['frames'][index], 'description': swimmer_errors_df['description'][index], 'points_reduced':swimmer_errors_df['points_reduced'][index]}
+        list_of_errors_by_frames_detected.append(new_record)
+    return list_of_errors_by_frames_detected[:-1], list_of_errors_by_frames_detected[-1]
+
+def convert_csv_to_list_of_dicts(csv_path):
+    list_of_dicts = list()
+    df = pd.read_csv(os.getcwd() + '/' + csv_path)
+    for index, row in df.iterrows():
+        current_dict = dict()
+        for col in list(df.columns):
+            current_dict[col] = df[col][index]
+        list_of_dicts.append(current_dict)
+    return list_of_dicts
+
+if __name__ == '__main__':
+    print(convert_csv_to_list_of_dicts('loss_values.csv'))

@@ -59,8 +59,5 @@ For more information about it and a guide how to set it up and use it, please ch
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIxMjU2MTM0MSwtMTg2MzEyNTM2MywxNz
-E4OTg3MjM1LC00OTc5MTE4OTksLTEzNTk0NzYzMTcsLTE4Njg3
-NTkzMjgsLTEyODQwODUwNjgsLTUxMjk1MjE3NywzODQ5NDQzOC
-wxMDM3NTAxOTRdfQ==
+eyJoaXN0b3J5IjpbMTIxMjU2MTM0MV19
 -->

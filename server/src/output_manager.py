@@ -43,9 +43,11 @@ def generate_dirs_for_output_of_movie(movie_name, username='guest'):
     analytical_data_dir_name = "analytical_data"
     figures_dir_name = "figures"
     frames_dir_name = "frames"
+    swimfix_frames_dir_name = "swimfix_annotated_frames"
     os.mkdir(analytical_data_dir_name)
     os.mkdir(figures_dir_name)
     os.mkdir(frames_dir_name)
+    os.mkdir(swimfix_frames_dir_name)
     new_output_dirs_dict["output_dir"] = outputs_dir
     new_output_dirs_dict["username_dir"] = outputs_dir + "/" + username
     new_output_dirs_dict["output_movie_dir"] = outputs_dir + "/" + username + "/" + video_name
@@ -58,6 +60,8 @@ def generate_dirs_for_output_of_movie(movie_name, username='guest'):
         "figures_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + figures_dir_name
     new_output_dirs_dict[
         "frames_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + frames_dir_name
+    new_output_dirs_dict[
+        "swimfix_frames_path"] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + swimfix_frames_dir_name
     new_output_dirs_dict[
         'annotated_video'] = outputs_dir + "/" + username + "/" + video_name + "/" + curr_date + "/" + curr_time + "/" + "annotated_video.mp4"
     os.chdir(get_src_path())
@@ -118,27 +122,31 @@ def get_output_dir_path(key=None):
     return output_dirs_dict[key]
 
 
-def get_excepted_data_path():
-    return "../excepted_data"
+def get_expected_data_path():
+    return "../expected_data"
 
 
-def get_excepted_csvs_path():
-    return get_excepted_data_path() + "/csvs"
+def get_expected_csvs_path():
+    return get_expected_data_path() + "/csvs"
 
 
-def get_excepted_videos_path():
-    return get_excepted_data_path() + "/videos"
+def get_expected_videos_path():
+    return get_expected_data_path() + "/videos"
 
 
-def get_excepted_csv_path_for_movie(video_full_name):
+def get_expected_csv_path_for_movie(video_full_name):
     """Checks if there is an expected csv file in server and returns the path to this file. Otherwise, returns None"""
     video_name = video_full_name.split('_from')[0]
-    all_excepted_csvs_path = get_excepted_csvs_path()
-    wanted_path = all_excepted_csvs_path + '/' + video_name + '_expected.csv'
+    all_expected_csvs_path = get_expected_csvs_path()
+    wanted_path = all_expected_csvs_path + '/' + video_name + '_expected.csv'
     return wanted_path if os.path.exists(wanted_path) else None
 
 
-def build_test_environment_dir(filename):
+def get_expected_output_dirs_dict():
+    return expected_output_dirs_dict
+
+
+def build_test_environment_dir(filename, username='guest'):
     """ Build test environment for specific movie with the filename specified.
         The environment will include:
         - Ground_truth : csv files with information derived from Server/expected_data/csvs/<filename>_expected
@@ -151,19 +159,70 @@ def build_test_environment_dir(filename):
     test_dir = '../tests'
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
-    movie_test_env_dir = test_dir + '/' + filename
+
+    #username
+    username_test_dir = test_dir + '/' + username
+    if not os.path.exists(username_test_dir):
+        os.mkdir(username_test_dir)
+
+    # movie
+    movie_test_env_dir = username_test_dir + '/' + filename
     if not os.path.exists(movie_test_env_dir):
         os.mkdir(movie_test_env_dir)
-    movie_ground_truth_data_dir = movie_test_env_dir + '/ground_truth_data'
+
+    # hour
+    date = datetime.now()
+    curr_date = date.strftime('%Y-%m-%d')
+    date_path = movie_test_env_dir + '/' + curr_date
+    if not os.path.exists(date_path):
+        os.mkdir(date_path)
+
+    # time
+    curr_time = date.strftime('%H-%M-%S')
+    time_path = date_path + '/' + curr_time
+    if not os.path.exists(time_path):
+        os.mkdir(time_path)
+
+    # data
+    movie_ground_truth_data_dir = time_path + '/ground_truth_data'
     if not os.path.exists(movie_ground_truth_data_dir):
         os.mkdir(movie_ground_truth_data_dir)
 
-    movie_frames_dir = movie_test_env_dir + '/frames'
+    movie_frames_dir = time_path + '/frames'
     if not os.path.exists(movie_frames_dir):
         os.mkdir(movie_frames_dir)
 
-    movie_test_results_dir = movie_test_env_dir + '/test_results'
+    movie_test_results_dir = time_path + '/test_results'
     if not os.path.exists(movie_test_results_dir):
         os.mkdir(movie_test_results_dir)
 
+    new_expected_output_dict = dict()
+    new_expected_output_dict['test_results_path'] = movie_test_results_dir
+    new_expected_output_dict['frames_path'] = movie_frames_dir
+    new_expected_output_dict['ground_truth_data_path'] = movie_ground_truth_data_dir
+    new_expected_output_dict['time_path'] = time_path
+    new_expected_output_dict['date_path'] = date_path
+    new_expected_output_dict['movie_test_env_path'] = movie_test_env_dir
+    new_expected_output_dict['tests_path'] = test_dir
+    global expected_output_dirs_dict
+    expected_output_dirs_dict = new_expected_output_dict
+
     return movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir
+
+
+def generate_data_folders():
+    os.chdir('..')
+    if not os.path.exists('expected_data'):
+        os.mkdir('expected_data')
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
+    if not os.path.exists('tests'):
+        os.mkdir('tests')
+    if not os.path.exists('videos'):
+        os.mkdir('videos')
+    if not os.path.exists('plug_and_play_functions'):
+        os.mkdir('plug_and_play_functions')
+    os.chdir('expected_data')
+    if not os.path.exists('csvs'):
+        os.mkdir('csvs')
+    os.chdir(get_src_path())

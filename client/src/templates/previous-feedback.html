@@ -24,7 +24,31 @@
 <body id="page-top">
 <div class="img-sticky">
     <canvas id="current frame to show"></canvas>
+
+    <label> Fix this frame manually </label>
+    <input type="checkbox" value="Submit" id="fix-checkbox"><br><br>
+
     <button type="button" id='save changes' onclick="sendFixes()">Save fixes</button>
+    <table id="previous_feedbacks_tbl" class="table table-bordered right" id="dataTable" width="100%"
+           cellspacing="0">
+        <thead>
+        <tr>
+            <th>Error Description</th>
+            <th>Frames Detected</th>
+            <th>Point reduced</th>
+        </tr>
+        </thead>
+        <tbody id="previous_feedbacks_tbl_body">
+        </tbody>
+        {% for item in errors_list %}
+        <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.frames }}</td>
+            <td>{{ item.points_reduced}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h3 class="h3">Final Score: {{score.points_reduced}}</h3>
 </div>
 
 <!--<img id="current frame to show" class="img-sticky">-->

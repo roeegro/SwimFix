@@ -26,6 +26,24 @@
 
 <div class="img-sticky">
     <img id="current frame to show">
+    <table id="loss_tbl" class="table table-bordered" id="dataTable" width="100%"
+           cellspacing="0">
+        <thead>
+        <tr>
+            <th>File Name</th>
+            <th>RMSE</th>
+        </tr>
+        </thead>
+        <tbody id="loss_tbl_body">
+        {% for item in loss_records %}
+        <tr>
+            <td>{{ item.filename }}</td>
+            <td>{{ item.loss }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
 </div>
 
 

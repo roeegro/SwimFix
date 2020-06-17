@@ -173,3 +173,8 @@ client/src/__pycache__/preprocessor.cpython-37.pyc
 
 /server/openpose/
 /server/openpose/.github/
+/server/swimfix_db/swimfix_shadow.py
+/server/videos/
+/server/results/
+/server/expected_data/
+/server/expected_data/

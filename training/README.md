@@ -185,7 +185,5 @@ The first 10 layers are used as backbone.
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA4MTI0ODE5Niw4MzkzODc2NDMsLTU3Mz
-AxOTY5NCwxMTkyNTIxNDUyLC0xNjUyNzgxOTcyLC0xOTkxODUy
-MzM0LDE0Mzk5NTA5OCw3Njc0ODc1OTVdfQ==
+eyJoaXN0b3J5IjpbMTA4MTI0ODE5Nl19
 -->
