@@ -1,3 +1,4 @@
+
 # <center> SwimFix Maintenance Guide</center>
 
 ## Table of Contents
@@ -69,7 +70,7 @@ Using this arguments in the respective html code is done as follows
 Another important service supplied by this module is handling waiting pages in order to give the client indication for the progress of upload and analyse the video. The functions that deals with handling with this functionality are:
 
 1. `load_video, run_test` -  python code relevant to the pages where waiting page are shown. In this function we create new thread running the waiting page code defined in function `receive_openpose_msg` .
-2. `receive_openpose_msg`  - uses global sockets which used for connecting the server and getting from it a 1 byte code signifies the stage of analysis. Pay attention for the dictionary `response_dict` which map between server code to the message shown in the waiting page. If the code got from the server is code for finish the process, it waits for another message in size of 1024 bytes  signifies whether the process succeeded or not, and changes its status for updating the page shown in the screen (See next function).
+2. `receive_openpose_msg`  - uses global socket which used for connecting the server and getting from it a 1 byte code signifies the stage of analysis. Pay attention for the dictionary `response_dict` which map between server code to the message shown in the waiting page. If the code got from the server is code for finish the process, it waits for another message in size of 1024 bytes  signifies whether the process succeeded or not, and changes its status for updating the page shown in the screen (See next function).
 3. `thread_status` -  called frequently from `waiting-page.html`(in templates folder), for checking thread status. Returns to the html the status, and if the status is "finished" the html redirects to other page (with jquery).
 
 
@@ -91,7 +92,7 @@ A small module with some functions for files manipulation such as extracting dat
 Important js file is chart-area-js-demo.js ( appears in static/js/demo/chart-area-js-demo.js), which has the following responsibilities: 
  1. This file has functions taking csv file (located in [temp directory](https://github.com/roeegro/SwimFix/blob/master/MaintenanceGuide_new.md#directory-management)), reads it into map object, parse this object in order to show graphs using chart.js library dynamically. Graphs positions is done by working with document elements, and definition of visibility and events (showing the frame matched to point position in the graph) is done with Chart object.
  2. Frame view - When pressing on points in the graph, the frame is changed to the match frame. This done by taking the position of the point in the x-axis and getting the relevant frames stored in (located in [temp directory](https://github.com/roeegro/SwimFix/blob/master/MaintenanceGuide_new.md#directory-management)).
- The relevant functions handling with those events are setImage and drawImage and loadImage (they have the same described functionality, but the second one binds an event to the load image of painting manual fixes on the current frame).
+ The relevant functions handling with those events are setImage and `drawImage` and `loadImage` (they have the same described functionality, but the second one binds an event to the load image of painting manual fixes on the current frame).
  
 This js file is used by all the pages shown feedbacks (e.g user-feedback.html, previous-feedback.html, and test-results.html).
 
@@ -168,7 +169,7 @@ For more information about the wire frame structure and the output of OpenPose, 
 Main functionality supported in this module:
 
 1. `get_keypoints_csv_from_video` 
-	function is the first stage in data extraction of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a path to csv file named `all _keypoints` with the following format:
+	This function is the first stage in data extraction of video. It receives path to video, and argument named `params` - dictionary which can holds some of OpenPose configurations. The output is a path to csv file named `all _keypoints` with the following format:
 rows - for each frame
 columns - each body part we have 3 columns : < Body Part >X , < Body Part >Y, < Body Part >Score.
 X,Y stands for the coordinates of the specific body part, and Score stands for the confidence score of OpenPose for its estimation.
@@ -178,7 +179,7 @@ Those are the columns:
 LElbowX,LElbowY,LElbowScore,LWristX,LWristY,LWristScore]`
 
 2. `filter_and_interpolate`
-	This is the second stage in data extraction process. This function takes the csv path returned from the first function, and filters records with noises and inaccuracies. For the algorithm use [clicke here](#algorithmns) .If there are closer intervals with high score, the function completes the gap between the intervals by interpolation. Returns path to updated body parts coordinates.
+	This is the second stage in data extraction process. This function takes the csv path returned from the first function, and filters records with noises and inaccuracies. For the algorithm use [clicke here](#algorithms).
 
 3. `generate_vectors_csv`
 	This is the third stage in data extraction process. This function takes the path given in the second function, extracted in the function above, and returns a path to csv file generated in the function, includes the vectors.
@@ -225,11 +226,11 @@ This module is able to calculate:
 
  ### Evaluator Module
 #### Functionality
-This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module and each function defines in plug and play < link >, in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
+This module gets as an input paths to the body part coordinates after filter and path to csv contains the angles calculated before, and operates each function inside this module and each function defines in [plug and play](#plug-and-play), in order to detect errors of technique of the filmed swimmer. The main function of this module is `perfomance_evaluator`.
 At the bottom of the module there is a list of functions (for inner module functions which defined before), and strings (for plug and play files which are added in the first for	loop in the main function) to be executed, and the main function of this module runs over this list and activate each function/call to the relevant file respectively with the paths specified above.
 > **Note**: Each file in plug and play is called with the paths and with some other arguments relevant for consistency of information to be accumulated during the runtime of this module over all the error detection function - whereas they defined before inside the module, or by plug and play functions.
 
-The output of this module is 2 csv files (and grade). The first one keeps an id of error and its description, based on the dictionary explained before. The second one includes for each error type defined in the module: the id, and list of frames where the specific error detected. The files above are saved in the directory of current upload. Read [output path hierarchy](#output) for more information about the output hierarchy and the files it includes.
+The output of this module is a csv file contains for each error its description, list of frames which the error was detected, and how much points reduced from this score because of this error. The file is saved in the directory of current upload. Read [output path hierarchy](#output) for more information about the output hierarchy and the files it includes.
 > **Note**: Each function name and the relevant description entry in the dictionary must be named as follows:
 	> Function name : check_if_< error description with underscores between words>
 	Description match to this error must be the description above with spaces seperated between the words (instead of the underscores before).
@@ -267,7 +268,7 @@ External angle - the angle directs outside the body.
 * Max inner angle = 45, Max external angle is 10.
 
 #### Scoring Method
-Defined for each function and makes it more flexible to define scoring method separately for each type of error and even for single instance of this error.
+Defined for each error detection function, makes it more flexible to define scoring method separately for each type of error and even for a single instance of this error.
 For now we defined the cost of each error to be 1.5 points. Score range is in scale of 0-100. 
 
 #### Plug and Play
@@ -280,7 +281,7 @@ File naming: `check_if_< your new error description >`
 Content:
 
     import evaluator # for using its functions.
-    def check_if_< your new error description >(all_kp_df, angles_df, name, side,error_names,errors_df):
+    def check_if_< your new error description >(all_kp_df, angles_df, vectors_df, name, side,error_names,errors_df):
 	    if side not in ['L', 'R']: # make sure you explore right and left side of the swimmer's body and not something else.
 	        return
 	    error_id = evaluator.get_id_of_error(name,error_names_for_external_calling = error_names)
@@ -298,8 +299,8 @@ Content:
  > **Note 1**: Disable of plug-and-play function execution is done by removing the matching .py file from the directory mentioned above. 
 
  > **Note 2**: You may want to annotate your error emphasis. You can do it with the function:
- > `evaluator.draw_line(index, (from_x_coor,from_y_coor), (to_x_coor,to_y_coor),color)`, a function written in evaluator which draw lines between defined points and stores the results in the 
-[swimfix_annotated_frames directory](#output), where color is in BGR format (this function uses [cv2.line](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) function).
+ > `evaluator.draw_line  `-  a function written in evaluator which draw lines between defined points and stores the results in the 
+[swimfix_annotated_frames directory](#output), where color is in BGR format (this function uses [cv2.line](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) function). See the code for more documentation.
 
  > **Note 3**: Make this function fit to error detection of both hands. 
 
@@ -310,7 +311,8 @@ This module has some responsibilities:
  > Tester.start_test(actual_csvs_dir, expected_csvs_dir, output_path, filename), only after you insured you have expected data for this video (see [Expected Data](#expected_data)), and after you call to all functions in [Data Extractor Module](#data-extractor-module). Our implementation automatically does the described steps before run the test itself (See implementation in client_request_parser in function run_test).
 
 2. Calculating loss value for each comparison csv file for measurement of the accuracy of our angles extractor algorithm related to the angles extracted from ground truth csvs, which we have for some movies.
-3. (???????????????????????????????????????????????) - Comparing errors which were derived from our extracted data with errors derived from ground truth data. 
+3. Saving results of tests over time, so user can examine different results of tests and get insights from his search.
+
 
 ### Output Manager Module
 This module purpose is to build dynamically folders which are necessary for data storage and create each upload and supply easy access to directories in order to store the generated files dynamically.
@@ -345,14 +347,10 @@ This directory is not exist in the repository but should be added by the develop
 #### Tests
 
 Auto generated directory that holds all test results, based on [Tester Module](#tester-module) execution.
-The directory structure is as follows:
-* Video name
-	* frames - directory that contains the frames with OpenPose annotations.
-	* ground_truth_data - directory that contains csvs based on csv files appears in [Expected Data](#expected_data).
-	* test results - directory contains csvs comparing the same colum values from ground truth csv vs. same column values appears in csv generated by OpenPose exectuion (See [Data Extractor Module](#data-extractor-module)).
+The tests are saved in the server in hierarchy similar to the hierarchy mentioned in [output section](#output)
 
 #### Plug_and_play_functions
-Directory for python files to be stored for activating them for swimming error evaluation. Function and file format is identical to the format required here [Evaluator Module](#evaluator-module)
+Directory for python files to be stored for activating them for swimming error evaluation. Function and file format is identical to the format required can be found in [plug and play section](#plug-and-play)
 
 #### Output
 This directory keeps all the files generated in the modules described before for all clients and videos uploaded.
@@ -378,7 +376,7 @@ The server side receives from the client preprocessed videos and saves the produ
 * Topics and posts of users on the forum.
 
 The system saves this data in a database which contains 5 tables.
-> Note: in the "FILES" table we save only the name of the videos, and the videos can be found in the system and not on the database- this is done in order to save the time required in downloading and uploading files from/to a remote database, and to search easily the location of desired file in the server.
+> Note: in the "FILES" and "TESTS" tables we save only the name of the videos, and the videos can be found in the system and not on the database- this is done in order to save the time required in downloading and uploading files from/to a remote database, and to search easily the location of desired file in the server.
 
 **![](https://lh6.googleusercontent.com/Lj8IrR9O43pH0ILHDPYybw8I1ww7U-2dqdMQnGaDMVaoEKsDUhTiIarwDcuxlRIHKcHucaIrIJ5suFjfVdRuRDyTYQCAjnd8KCvA7MY6X8kfYcsUTeGfcSPVV-ies8ykABZGuJjS)**
 The sql code to create this database can be found in `server/swimfix_db/swimfix.sql`
@@ -396,10 +394,10 @@ For this guide, we will call our new functionality new_functionality:
 4. You can help some other function in routes in order to write code sending message to the server, with the following format: < new_request_type > ...
 
 #### From server side:
-4. Go to `client_request_parser.py` file and add in the dictionary in the bottom of the page an entry with `'new_request_type': new_functionality`.
-5. Create in the same page function named new_functionality that receives all the parameters that the other functions in this page got. You can use those functions to create a code snippet that receives files from client, or sending message or file to the server (if you have to).
-6. Create in facade module a function that abstracts the functionality you want to create, and call it from the function you created in section 5.
-7. According to your needs, feel free to add new functionalities for other modules existing in the project.
+5. Go to `client_request_parser.py` file and add in the dictionary in the bottom of the page an entry with `'new_request_type': new_functionality`.
+6. Create in the same page function named new_functionality that receives all the parameters that the other functions in this page got. You can use those functions to create a code snippet that receives files from client, or sending message or file to the server (if you have to).
+7. Create in facade module a function that abstracts the functionality you want to create, and call it from the function you created in section 5.
+8. According to your needs, feel free to add new functionalities for other modules existing in the project.
 
 ## Assimilation on New Device and Run All Program
 
