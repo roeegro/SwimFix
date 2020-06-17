@@ -33,8 +33,8 @@ function setPrevImage() {
         img_path = current_img_path
     }
     curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
-    document.getElementById("change_img").value = parseInt(curr_index)-1
-    load_img(parseInt(curr_index)- 1)
+    document.getElementById("change_img").value = parseInt(curr_index) - 1
+    load_img(parseInt(curr_index) - 1)
 }
 
 function setNextImage() {
@@ -44,9 +44,10 @@ function setNextImage() {
         img_path = current_img_path
     }
     curr_index = img_path.split('.jpg')[0].split('_')[img_path.split('.jpg')[0].split('_').length - 1]
-    document.getElementById("change_img").value = parseInt(curr_index)+1
+    document.getElementById("change_img").value = parseInt(curr_index) + 1
     load_img(parseInt(curr_index) + 1)
 }
+
 function setNumberImage() {
     index = document.getElementById("change_img").value
     load_img(parseInt(index))
@@ -113,9 +114,9 @@ function make_comparison_chart(csv_name, data) {
             backgroundColors.push("rgba(78, 115, 223, 0.05)")
             pointHoverBackgroundColors.push("rgba(78, 115, 223, 1)")
         } else {
-            r = (244- (10^j) ).toString()
-            g = (115 - (4*j)).toString()
-            b = (223 - Math.pow(8,j)).toString()
+            r = (244 - (10 ^ j)).toString()
+            g = (115 - (4 * j)).toString()
+            b = (223 - Math.pow(8, j)).toString()
             backgroundColors.push("rgba(" + [r, g, b, 0.05].join(",") + ")")
             pointHoverBackgroundColors.push("rgba(" + [r, g, b, 1].join(",") + ")")
         }
@@ -647,7 +648,7 @@ function load_img(index) {
         console.log("clicked");
     };
     image.style.display = "block";
-    image.src = "/static/temp/annotated_frames/swimfix_annotated_frame_" + index + ".jpg";
+    image.src = "/static/temp/annotated_frames/swimfix_annotated_frame_" + index + ".jpg?t=" + new Date().getTime();
 
     var clicked = false;
     var fPoint = {};
@@ -668,7 +669,7 @@ function load_img(index) {
                 x: x,
                 y: y
             };
-        } else if(clicked && check_box.checked){
+        } else if (clicked && check_box.checked) {
             var x2 = (image.width / c.scrollWidth) * e.offsetX;
             var y2 = (image.height / c.scrollHeight) * e.offsetY;
 

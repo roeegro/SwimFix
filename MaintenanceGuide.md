@@ -32,7 +32,7 @@
 ## Introduction
 Our system has 4 main parts. The first one is the training infrastructure.
 For more details, [click here](https://github.com/roeegro/SwimFix/tree/master/training).
-The second one is the test generator module, where user can produce ground truth csvs. For more details, [click here]([https://github.com/roeegro/SwimFix/tree/master/test](https://github.com/roeegro/SwimFix/tree/master/test)).
+The second one is the test generator module, where user can produce ground truth csvs. For more details, [click here](https://github.com/roeegro/SwimFix/tree/master/testing/README.md).
 
 The other 2 parts are used for the SwimFix web application and they include a web client part and a server for analysis and evaluation. Both parts written in Python and connect each other with TCP conneciton.
 
@@ -330,7 +330,7 @@ each video sent to the server is stored in this directory for future use of the 
 #### Temp
 Stores zip files containing relevant content for user's request. Those files sent to the client side and stored in `/client/src/static/temp` on the client side.
 #### Expected_data
-Stores csvs that created by the manual tag defined in [test generator](https://github.com/roeegro/SwimFix/tree/master/test) part. The tester module search for the ground truth of given video and comparing this csv file and the data derived from it to the data that our system produces.
+Stores csvs that created by the manual tag defined in [test generator](https://github.com/roeegro/SwimFix/tree/master/testing) part. The tester module search for the ground truth of given video and comparing this csv file and the data derived from it to the data that our system produces.
 
 
 #### OpenPose
