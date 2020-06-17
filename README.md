@@ -1,4 +1,3 @@
-
 # SwimFix<br>Pose Estimation Based System for Improving Front Crawl 
 
 ## Table of Contents
@@ -37,7 +36,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 	- Graphs of the angles of the swimmer's shoulder/elbows/wrists in each frame of the video.
 	- List of detected swimming errors including error type and on which frame it occurred.
 	- Final score based on the detected error.
-- **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
+- **OS**: Ubuntu 18.04, Windows 10 for web client only.
 - **Training**:  Train your own model on your own data.
 	- Prepare and transform your data so it can fit the model.
 	- Currently we do not support deployment of the model.
@@ -51,17 +50,16 @@ The client allows users to upload a video of a front crawl swimming. The video i
 For detailed information and guidelines please visit [our](https://github.com/roeegro/SwimFix/blob/master/client/README.md) guide.
 ## Inference Server
 Our server-side consists of a inference module based on the [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) library which estimates the pose in every frame of the video given as input from the web client and then evaluates the swimmer's performance based on the estimation.
-To install OpenPose, please check [our](https://github.com/roeegro/SwimmingProject/blob/master/server/README.md) quick guide or go to the official repository linked above.
+To install OpenPose, please check [our](https://github.com/roeegro/SwimFix/blob/master/server/README.md) quick guide or go to the official repository linked above.
 ## Training Infrastructure
 We created a training infrastructure for training your own custom model on your own data using the official  [OpenPose Train](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train) repository.
-For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimmingProject/blob/master/training/README.md) out.
-
+For more information about it and a guide how to set it up and use it, please check [this](https://github.com/roeegro/SwimFix/blob/master/training/README.md) out.
 
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg4MjA4OTY3NiwtMTg2MzEyNTM2MywxNz
+eyJoaXN0b3J5IjpbMTIxMjU2MTM0MSwtMTg2MzEyNTM2MywxNz
 E4OTg3MjM1LC00OTc5MTE4OTksLTEzNTk0NzYzMTcsLTE4Njg3
 NTkzMjgsLTEyODQwODUwNjgsLTUxMjk1MjE3NywzODQ5NDQzOC
 wxMDM3NTAxOTRdfQ==
