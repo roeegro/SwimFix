@@ -93,7 +93,8 @@ def get_angles_csv_from_keypoints_csv(csv_path, avg_angles=True, vectors_filenam
     :return: Path to the generated csv.
     """
     angles_csv_path = data_extractor.generate_angles_csv(
-        data_extractor.generate_vectors_csv(csv_path, filename=vectors_filename,output_path=output_path), filename=angles_filename,
+        data_extractor.generate_vectors_csv(csv_path, filename=vectors_filename, output_path=output_path),
+        filename=angles_filename,
         output_path=output_path)
     if avg_angles:
         avg_angles_dict = data_analyser.calc_avg_angle(angles_csv_path)
@@ -150,8 +151,8 @@ def zip_output():
     return zip_path
 
 
-def evaluate_errors(all_kp_path, angles_path, output_name=None):
-    evaluator.perfomance_evaluator(all_kp_path, angles_path, output_name)
+def evaluate_errors(all_kp_path, angles_path, vectors_path, output_name=None):
+    evaluator.perfomance_evaluator(all_kp_path, angles_path, vectors_path, output_name)
 
 
 def get_defined_errors_list():

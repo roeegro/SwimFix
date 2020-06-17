@@ -484,7 +484,8 @@ def upload(data, conn, params):
         conn.send('3'.encode('utf-8'))
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
         facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
-        facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path)
+        vectors_path = facade.get_output_dir_path('analytical_data_path') + '/vectors.csv'
+        facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path,vectors_path)
         conn.send('4'.encode('utf-8'))
         creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
         creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
