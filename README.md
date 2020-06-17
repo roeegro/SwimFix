@@ -39,9 +39,9 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 	- Final score based on the detected error.
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
 - **Training**:  Train your own model on your own data.
-	- Prepare and transform your data 
-	- Currently we do not support deployment of the model
-	- You can find a complete walk-through guide [here](https://github.com/roeegro/SwimFix/blob/master/training/README.md)
+	- Prepare and transform your data so it can fit the model.
+	- Currently we do not support deployment of the model.
+	- You can find a complete walk-through guide [here](https://github.com/roeegro/SwimFix/blob/master/training/README.md).
  
 >**TODO**: put the impression video here
     
@@ -61,7 +61,7 @@ For more information about it and a guide how to set it up and use it, please ch
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ2OTUxNjU4OCwtMTg2MzEyNTM2MywxNz
+eyJoaXN0b3J5IjpbLTg4MjA4OTY3NiwtMTg2MzEyNTM2MywxNz
 E4OTg3MjM1LC00OTc5MTE4OTksLTEzNTk0NzYzMTcsLTE4Njg3
 NTkzMjgsLTEyODQwODUwNjgsLTUxMjk1MjE3NywzODQ5NDQzOC
 wxMDM3NTAxOTRdfQ==
