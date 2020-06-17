@@ -29,12 +29,14 @@ The system takes as input a video of swimming in a front crawl setting and outpu
     - **Model Testing and Evaluation**
 	    - Manual video annotation tool to set the expected result.
 	    - Expected vs actual result comparison made easy with graphs.
-- **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmer as he swims towards it).
+- **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the swimming pool's lane and faces the swimmer as he swims towards it).
 - **Output**:
 	- Keypoints display on each frame (JPG)
 	- Input video with OpenPose wireframes on it (MP4)
 	- Graphs of the keypoints' coordinates in each frame of the video.
 	- Graphs of the angles of the swimmer's shoulder/elbows/wrists in each frame of the video.
+	- List of detected swimming errors including error type and on which frame it occurred.
+	- Final score bas
 - **OS**: Ubuntu 18.04 for inference/training, Windows 10 for inference only.
 - **Training**:  Train your own model on your own data.
 	- Currently we do not support deployment of the model
@@ -58,8 +60,8 @@ For more information about it and a guide how to set it up and use it, please ch
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4NjMxMjUzNjMsMTcxODk4NzIzNSwtND
-k3OTExODk5LC0xMzU5NDc2MzE3LC0xODY4NzU5MzI4LC0xMjg0
-MDg1MDY4LC01MTI5NTIxNzcsMzg0OTQ0MzgsMTAzNzUwMTk0XX
-0=
+eyJoaXN0b3J5IjpbLTExNDQzOTY5NjksLTE4NjMxMjUzNjMsMT
+cxODk4NzIzNSwtNDk3OTExODk5LC0xMzU5NDc2MzE3LC0xODY4
+NzU5MzI4LC0xMjg0MDg1MDY4LC01MTI5NTIxNzcsMzg0OTQ0Mz
+gsMTAzNzUwMTk0XX0=
 -->
