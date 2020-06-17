@@ -5,7 +5,7 @@
 2. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
 3. [Prerequisites](#prerequisites)
 4. [Required Third-Party Repositories and Packages](#required-third-party-repositories-and-packages)
-5. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
+5. [Data Preparation and Preprocessing](#data-preparation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
