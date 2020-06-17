@@ -14,10 +14,10 @@
 7. [Training](#training)
 8. [Q&A](#qa)
 ## Introduction
-This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swim Fix](https://github.com/roeegro/SwimFix).
+This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [SwimFix Project](https://github.com/roeegro/SwimFix).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
-Throughout this guide we will walk through all the required steps for training a custom model on your own data, top to bottom.
-From now on the `openpose_train` directory will be our working directory and the `SwimFix` directory which is the main directory of our git repository will be our root directory.
+Throughout this guide we will walk you through all the required steps for training a custom model on your own data, top to bottom.<br>
+From now on the `openpose_train` directory (which will be cloned to `SwimFix/training` later in [this](#required-third-party-repositories-and-packages) section) will be **our working directory.**<br>The `SwimFix` directory which is the main directory of our git repository will be **our root directory**.
 > **Note**: This guide is related on training a model on a COCO formatted custom data **only**. 
 >  In case you want to train a model just on the COCO dataset only rather than on your own data, consider following the original repository's instructions. You can read more about the COCO dataset (which the OpenPose default COCO model was trained on) [here](http://cocodataset.org/).
 ## Disclaimer
@@ -75,16 +75,19 @@ The cloned repositories are:
 - [openpose_train](https://github.com/tommarz/openpose_train) - The main training library.
 - [openpose_caffe_train](https://github.com/tommarz/openpose_caffe_train) - Used by the main `openopose_train` library for the training of the model on the NVIDIA GPU.
 - [coco-annotator](https://github.com/jsbroks/coco-annotator) - The annotation tool for our data.
-- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimFix/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
+- [openpose-plus](https://github.com/tommarz/openpose-plus) - Another training library we experienced with which is not used in this guide. If you wish to use it (although we recommend to you use the official training library this guide relates to) , please go to [this](https://github.com/roeegro/SwimmingProject/blob/master/training/OpenPose%20Plus%20Setup%20Guide.md) guide we also wrote. 
 
 All of the above will be clone into the `training` directory - this guide is about the first three.
+
 
 ### Packages
 This script will install on your machine all the required  packages for both Ubuntu and Python 2.7 :
 ```
-# Ubuntu
+# Switch to our working directory
+cd SwimFix/training/openpose_train
+# Install Ubuntu packages
 sh requirements.sh
-# Python 2.7
+# Install Python 2.7 packages
 pip2 install -r requirements.txt
 ```
 
@@ -95,7 +98,7 @@ In this section we will explain how we annotated our own custom data and geneter
 Before we get started, create a folder with all of you images and name it `custom`. We will refer it as the `Dataset Folder` from now on but it is important to name it exactly as we stated.
 
 ### Step 1 - Data Annotation
-For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is located in `training/coco-annotator`.
+For annotating our data we used the [coco-annotator](https://github.com/jsbroks/coco-annotator) repository which is located in `SwimFix/training/coco-annotator`.
  We recommend you to use it as well - you can check out [this](https://github.com/roeegro/SwimFix/blob/master/training/Annotator-Guide.md) guide we wrote regarding installation and correct usage.
 
 1. Use the above annotator (or any other annotator) in order to annotate your data in the [COCO Format](http://cocodataset.org/#format-data).
@@ -117,7 +120,7 @@ By default, the [script](https://github.com/roeegro/SwimFix/blob/master/training
 3) Removes images with no annotations (Those images will stay in the `dataset/COCO/cocoapi/images` folder and will be used in the next step to generate the `coco_negatives.json` file.
 4) Performs re-indexing of the data so that the new indexes ranges from 1 to N where N is the number of images.
 ### Step 3 - Data Augmentation
-For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
+For augmenting the dataset after annotating it, we used a couple of Matlab scripts located in the `openpose_train/training` directory which are based on the scripts from the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/tree/master/training) openpose_train repository.
 Those scripts rely on the [cocoapi](https://github.com/gineshidalgo99/cocoapi) repository which the original authors of OpenPose forked and modified.
 
 Before running anything, make sure you have the `common` and `private` folders (which is located in the `training` folder) in the Matlab path.
@@ -134,7 +137,7 @@ In this step we will transform the data into the required [.mdb](https://www.lif
 The OpenPose Train repository uses the [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) library which provides a key-value database in a format of [.mdb](https://www.lifewire.com/mdb-file-2621974) file. 
 In our context, the key is an id of an image and the value is the image itself along with its metadata so that the input of our training model is an LMDB file - think of it as a list of key-value pairs.
 - To generate the lmdb file, run  `python2 c_generateLmdbs.py`  to generate the `lmdb_coco` and `lmdb_coco_background` datasets from the `custom.json` and `coco_negetives.json` files respectively. 
-- We created a [modified LMDB reader](https://github.com/roeegro/SwimFix/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
+- We created a [modified LMDB reader](https://github.com/roeegro/SwimmingProject/blob/master/training/utils/lmdb_reader.py) Python module based on [this](https://gist.github.com/bearpaw/3a07f0e8904ed42f376e) git repository in order to check whether the LMDB file was generated successfuly - just run it and it should print the dimension of your data.
 
 >**Important Note**: As stated in the beginning of this guide, we didn't manage to train a COCO model, which means you will have to run `a_lmdbGetFoot.sh` and `a_lmdbGetMpii.sh` - those shell scripts will download the required LMDB files and place them in the `dataset` directory. As a result, the model will train on the foot and MPII datasets as well.
 
@@ -148,12 +151,12 @@ Each folder consists of a `data.mdb` file which represents the data as a LMDB fi
 ## Training
 In this section we will walk through the training process, assuming you followed the instructions above successfully.
 1) Compile our modified Caffe:
-    -  Go to `training\openpose_caffe_train`
+    -  Go to `SwimFix/training/openpose_caffe_train`
     - Make sure the `Makefile.config` is set up correctly with all correct path (By default it assumes Python2.7 without Anaconda and OpenCV 3)
     - The original config file is `Makefile.config.example` in case you want to use it or modify it. When you are done, run `cp Makefile.config.example Makefile.config` to copy it to the config file.
     -   Compile it by running:  `make all -j{num_cores} && make pycaffe -j{num_cores}`.
 2) Generate the training model:
-	- Go to the `training` directory
+	- Go to the `openpose_train/training` directory
 	- Generate the Caffe ProtoTxt and shell file for training by running  `python2 d_setLayers.py`. We strongly recommend you to stick with the our configuration as this was the [only](#a-very-important-note-before-we-start) one that worked for us. In case you wish to change it, please check the [official](https://github.com/CMU-Perceptual-Computing-Lab/openpose_train/blob/master/training/README.md) training instructions for more details.  
 	   
 3) Pre-trained weights setup:
@@ -168,22 +171,8 @@ The first 10 layers are used as backbone.
     -  Run  `bash train_pose.sh` (generated by  `d_setLayers.py`) to start the training with 1 GPU
     -   Run  `bash train_pose.sh 0,1,2,3`  (generated by  `d_setLayers.py`) to start the training with the 4 GPUs (0-3).
 
-### Training Flow
-```mermaid
-graph LR
-	A[Raw Data] 
-	B[Annotated Data]
-	C[Augmented Data]
-	D[Data in LMDB Format]
-	E[Trained Model]
-
-	A -- COCO Annotator --> B
-	B -- MATLAB --> C;
-	C -- Python Scripts --> D
-	D -- OpenPose Train --> E
-```
-
 ## Q&A
+
 |Error					|Reason|Solution
 |-----------------------|------------------------------------|---------------|
 `ImportError: dynamic module does not define module export function (PyInit__caffe)`|When trying to build the Modified Caffe Train on Anaconda enviroment |https://github.com/BVLC/caffe/issues/6054#issuecomment-375571190
@@ -192,8 +181,9 @@ graph LR
 |`Could NOT find OpenSSL`| When installing CMake|[https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library)
 | `Could NOT find Atlas (missing: Atlas_CBLAS_INCLUDE_DIR)` | When building OpenPose with CMake |https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/305
 
+### Useful Links
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE5MjUyMTQ1Ml19
+eyJoaXN0b3J5IjpbMTA4MTI0ODE5Nl19
 -->
