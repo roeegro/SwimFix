@@ -13,7 +13,6 @@
    * [Data Transformation](#step-4---data-transformation)
 7. [Training](#training)
 8. [Q&A](#qa)
-9. [Installation Commands](#installation-commands)
 ## Introduction
 This is a complete guide for setting up the [OpenPose Train]((https://github.com/CMU-Perceptual-Computing-Lab/openpose_train))  which is used alongside the [original](https://github.com/CMU-Perceptual-Computing-Lab/openpose) OpenPose library in our [Swimming Project](https://github.com/roeegro/SwimmingProject).
 For our project, we modified some of the files in the original repository so we created a [fork](https://github.com/tommarz/openpose_train) with the updated files which you will work with.
@@ -196,6 +195,7 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE5MjUyMTQ1MiwtMTY1Mjc4MTk3MiwtMT
-k5MTg1MjMzNCwxNDM5OTUwOTgsNzY3NDg3NTk1XX0=
+eyJoaXN0b3J5IjpbLTU3MzAxOTY5NCwxMTkyNTIxNDUyLC0xNj
+UyNzgxOTcyLC0xOTkxODUyMzM0LDE0Mzk5NTA5OCw3Njc0ODc1
+OTVdfQ==
 -->
