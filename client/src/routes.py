@@ -9,6 +9,7 @@ import re
 import os
 
 import sys
+
 sys.path.append('/')
 from src import SERVER_IP, SERVER_PORT
 
@@ -16,8 +17,6 @@ app = Flask(__name__, static_folder='./static')
 app.config['SECRET_KEY'] = '46a3aa3658359c95a3fe731050236443'
 UPLOAD_FOLDER = './uploaded_files'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
@@ -102,7 +101,8 @@ def thread_status():
     global finished, indication_msg, redirect_page
     """ Return the status of the worker thread """
     return jsonify(dict(status=('finished' if finished else 'running'),
-                        msg=("Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg),
+                        msg=(
+                            "Video received, waiting for OpenPose to start" if indication_msg is None else indication_msg),
                         redirect_page=redirect_page))
 
 
@@ -316,7 +316,7 @@ def test_results(details):
         s.connect((SERVER_IP, SERVER_PORT))
         user_id = session.get('ID') if session and session.get('logged_in') else 0
         video_name = video_name.split('.')[0].split('_from')[0]
-        msg = 'view_test_results user_id: {} filename: {} date: {}'.format(user_id,video_name,date)
+        msg = 'view_test_results user_id: {} filename: {} date: {}'.format(user_id, video_name, date)
         s.sendall(msg.encode('utf-8'))
 
         path_to_zip = os.getcwd() + '/static/temp/{}.zip'.format(video_name)
@@ -641,7 +641,7 @@ def plug_and_play():
         while data:
             defined_errors_list_as_str += data.decode('utf8')
             data = s.recv(1024)
-    defined_errors_list = defined_errors_list_as_str.split(',')
+    defined_errors_list = defined_errors_list_as_str.split(',')[:-1]  # without success/failure msg
     print(data)
     print(defined_errors_list)
     items = [{'id': defined_errors_list.index(defined_error), 'description': defined_error} for defined_error in

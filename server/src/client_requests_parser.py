@@ -668,6 +668,7 @@ def get_defined_error_list(data, conn, params):
         defined_errors_list = facade.get_defined_errors_list()
         from functools import reduce
         defined_errors_list_as_str = reduce(lambda acc, x: acc + ',' + x, defined_errors_list)
+        defined_errors_list_as_str += ','  # for concat the success/failure msg.
         conn.send(defined_errors_list_as_str.encode('utf-8'))
         return_msg = SUCCESS_MSG
     except Exception as e:
