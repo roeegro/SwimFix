@@ -92,22 +92,22 @@ def check_if_global_forearm_angle_not_in_valid_range(index, all_kp_df, angles_df
                 all_kp_df[side + 'ElbowY'][index] - all_kp_df[side + 'WristY'][index], 2))
         if side == 'L':
             wrist_x_recommended_for_inner_angle = elbow_x - (
-                    math.sin(math.radians(inner_angle)) * forearm_length)
+                    math.cos(math.radians(90 - inner_angle)) * forearm_length)
             wrist_y_recommended_for_inner_angle = elbow_y + (
-                    math.cos(math.radians(inner_angle)) * forearm_length)
-            wrist_x_recommended_for_outer_angle = wrist_x + (
-                    math.sin(math.radians(outer_angle)) * forearm_length)
-            wrist_y_recommended_for_outer_angle = wrist_y + (
-                    math.cos(math.radians(outer_angle)) * forearm_length)
+                    math.sin(math.radians(90 - inner_angle)) * forearm_length)
+            wrist_x_recommended_for_outer_angle = elbow_x + (
+                    math.cos(math.radians(90 - outer_angle)) * forearm_length)
+            wrist_y_recommended_for_outer_angle = elbow_y + (
+                    math.sin(math.radians(90 - outer_angle)) * forearm_length)
         else:
-            wrist_x_recommended_for_inner_angle = elbow_x - (
-                    math.sin(math.radians(inner_angle)) * forearm_length)
+            wrist_x_recommended_for_inner_angle = elbow_x + (
+                    math.cos(math.radians(90-inner_angle)) * forearm_length)
             wrist_y_recommended_for_inner_angle = elbow_y + (
-                    math.cos(math.radians(inner_angle)) * forearm_length)
-            wrist_x_recommended_for_outer_angle = wrist_x - (
-                    math.sin(math.radians(outer_angle)) * forearm_length)
-            wrist_y_recommended_for_outer_angle = wrist_y + (
-                    math.cos(math.radians(outer_angle)) * forearm_length)
+                    math.sin(math.radians(90-inner_angle)) * forearm_length)
+            wrist_x_recommended_for_outer_angle = elbow_x - (
+                    math.cos(math.radians(90-outer_angle)) * forearm_length)
+            wrist_y_recommended_for_outer_angle = elbow_y + (
+                    math.sin(math.radians(90-outer_angle)) * forearm_length)
         wrist_pos_for_min_recommended_angle = (
             int(wrist_x_recommended_for_inner_angle), int(wrist_y_recommended_for_inner_angle))
         wrist_pos_for_max_recommended_angle = (
@@ -122,8 +122,9 @@ def check_if_global_forearm_angle_not_in_valid_range(index, all_kp_df, angles_df
 
 def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0)):
     frame_index = int(frame_index)
-    frame_path = output_manager.get_output_dirs_dict()[
-                     'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
+    # frame_path = output_manager.get_output_dirs_dict()[
+    #                  'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
+    frame_path = os.getcwd() + '/../output/roeegro/MVI_8180_from_frame_0/2020-06-17/11-44-09/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(frame_index)
 
     frame = cv2.imread(frame_path)
     annotated_frame = cv2.line(frame, to_point, from_point, selected_bgr_color)
@@ -261,3 +262,8 @@ def get_defined_error_list():
             plug_and_play_func_description = plug_and_play_func_description.replace('left', 'right')
             errors_descriptions.append(plug_and_play_func_description)
     return errors_descriptions
+
+if __name__ == '__main__':
+    interp_path = os.getcwd() + '/interpolated_and_filtered_all_keypoints.csv'
+    angles_path = os.getcwd() + '/angles.csv'
+    perfomance_evaluator(interp_path,angles_path,os.getcwd())
