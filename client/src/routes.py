@@ -7,7 +7,6 @@ from forms import RegistrationForm, LoginForm
 from threading import Thread
 import re
 import os
-
 import sys
 
 sys.path.append('/')
@@ -20,12 +19,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'MOV', 'mp4', 'mov'])
 IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
+ANNOTATOR_TOOL_PORT = 5000
 sock = socket.socket()
 th = Thread()
 finished = False
 indication_msg = None
 server_response = "".encode('utf-8')
 redirect_page = 'index.html'
+USERNAME = "guest"
 
 
 def is_admin():
@@ -81,7 +82,7 @@ def add_test():
 @app.route('/admin-index', methods=['GET', 'POST'])
 def admin_index():
     if is_admin() == 'True':
-        return render_template('admin-index.html', isAdmin=is_admin())
+        return render_template('admin-index.html', username=USERNAME, isAdmin=is_admin())
     flash("You are not authorized to access this page", 'danger')
     return redirect(url_for('index'))
 
@@ -93,7 +94,7 @@ def charts():
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', isAdmin=is_admin())
+    return render_template('index.html', isAdmin=is_admin(), username=USERNAME)
 
 
 @app.route('/status')
@@ -563,13 +564,13 @@ def send_msg_to_server(msg):
 @app.route('/', methods=['GET', 'POST'])
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    global USERNAME
     form = LoginForm(request.form)
     if not form.validate_on_submit():
         return render_template('login.html', title='Login', form=form)
 
     _username = request.form['username']
     _passwd = request.form['password']
-
     msg = 'login username: {} password: {}'.format(_username, _passwd)
 
     answer = send_msg_to_server(msg).decode("utf-8")
@@ -580,6 +581,7 @@ def login():
         session['logged_in'] = answer[2]
         session['isAdmin'] = answer[3]
         flash(u"You're now logged in!", "success")
+        USERNAME = _username
         return redirect(url_for('index'))
 
     flash(u"Incorrect login", "danger")
@@ -610,6 +612,8 @@ def register():
 
 @app.route("/logout")
 def logout():
+    global USERNAME
+    USERNAME = 'guest'
     session.clear()
     return redirect(url_for('login'))
 
@@ -758,3 +762,9 @@ def add_admin(id_to_promote):
     users_details = pickle.loads(send_msg_to_server(msg))
 
     return render_template('add-admin.html', data=users_details, isAdmin=is_admin())
+
+
+@app.route('/model-training', methods=['GET', 'POST'])
+def model_training():
+    return render_template('model-training.html', server_ip=SERVER_IP, server_port=ANNOTATOR_TOOL_PORT,
+                           isAdmin=is_admin())

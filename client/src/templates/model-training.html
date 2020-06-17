@@ -1,0 +1,36 @@
+{% extends 'admin-index.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>OpenPose Training</title>
+</head>
+<body>
+
+<div class="myContainer" style="width: 100%">
+    <div class="row">
+        <div class="col-12">
+            <div class="section-heading pb-3">
+                <h1 class="display-3 text-center" style="color: #4e73df">Model Training</h1>
+                <h2 class="display-4 text-center" style="color: #2d4373">Train your own model on your own data</h2>
+            </div>
+        </div>
+        <div class="col-12">
+            <h2 class="center">Our platform allows developers to train a model from scratch with any data they want</h2>
+            <h3 class="text-lg">The motivation behind this feature is to train pose-estimation
+                model that will outperform the current one and achieve more accurate results during the keypoint detection phase in
+                our performance assessment tool, which will ultimately lead to a better product</h3>
+            <h2 class="center">You bring the data, we deliver the model</h2>
+            <h3 class="text-lg">All you need to do is to supply the training data for the model and pass it through our
+                data preparation pipeline, and your'e good to go.<br>Start right away with the <a target="_blank" rel="noopener noreferrer"
+               href="http://{{server_ip}}:{{server_port}}"> COCO-Annotator Tool </a> to create an annotated dataset.</h3>
+            <h2 class="center"></h2>
+        </div>
+    </div>
+    <div class="flex-grow-0">
+
+    </div>
+</div>
+
+</body>
+</html>
+{% endblock content %}
