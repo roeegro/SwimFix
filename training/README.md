@@ -6,7 +6,7 @@
 3. [A Very Important Note Before We Start](#a-very-important-note-before-we-start)
 4. [Prerequisites](#prerequisites)
 5. [Required Third-Party Repositories and Packages](#required-third-party-repositories-and-packages)
-6. [Data Preperation and Preprocessing](#data-preperation-and-preprocessing)
+6. [Data Preparation and Preprocessing](#data-preparation-and-preprocessing)
    * [Data Annotation](#step-1---data-annotation)
    * [Data Filtering and Reindexing](#step-2---data-filtering-and-re-indexing)
    * [Data Augmentation](#step-3---data-augmentation)
@@ -196,6 +196,6 @@ graph LR
 - Install protobuf - https://askubuntu.com/questions/532701/how-can-i-install-protobuf-in-ubuntu-12-04
 - Install FFMPEG - https://linuxize.com/post/how-to-install-ffmpeg-on-ubuntu-18-04/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NTI3ODE5NzIsLTE5OTE4NTIzMzQsMT
-QzOTk1MDk4LDc2NzQ4NzU5NV19
+eyJoaXN0b3J5IjpbMTE5MjUyMTQ1MiwtMTY1Mjc4MTk3MiwtMT
+k5MTg1MjMzNCwxNDM5OTUwOTgsNzY3NDg3NTk1XX0=
 -->
