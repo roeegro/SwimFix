@@ -7,6 +7,7 @@ import math
 import utils
 import types
 import warnings
+
 warnings.simplefilter("ignore")
 
 errors_df = None
@@ -68,39 +69,55 @@ def check_if_elbow_angle_not_in_valid_range(index, all_kp_df, angles_df, name, s
             errors_df['points_reduced'][error_id] = errors_df['points_reduced'][error_id] + error_weight
 
 
-# def check_if_global_forearm_angle_not_in_valid_range(all_kp_df, angles_df, name, side, inner_angle=45,
-#                                                      outer_angle=10):
-#     if side not in ['L', 'R']:
-#         return
-#     error_id = get_id_of_error(name)
-#     for index, __ in all_kp_df.iterrows():
-#         global_forearm_angle = angles_df[side + 'GlobalForeArmAng'][index]
-#         wrist_x = all_kp_df[side + 'WristX'][index]
-#         wrist_y = all_kp_df[side + 'WristY'][index]
-#         elbow_x = all_kp_df[side + 'ElbowX'][index]
-#         if (wrist_x > elbow_x and global_forearm_angle > inner_angle) or (
-#                 wrist_x < elbow_x and global_forearm_angle > outer_angle):
-#             elbow_y = all_kp_df[side + 'ElbowY'][index]
-#             elbow_pos = (int(elbow_x), int(elbow_y))
-#             forearm_length = math.sqrt(
-#                 math.pow(all_kp_df[side + 'ElbowX'][index] - all_kp_df[side + 'WristX'][index], 2) + math.pow(
-#                     all_kp_df[side + 'ElbowY'][index] - all_kp_df[side + 'WristY'][index], 2))
-#             wrist_x_recommended_for_inner_angle = elbow_x + (
-#                     math.sin(math.radians(inner_angle)) * forearm_length)
-#             wrist_y_recommended_for_inner_angle = elbow_y + (
-#                     math.cos(math.radians(inner_angle)) * forearm_length)
-#             wrist_x_recommended_for_outer_angle = wrist_x - (
-#                     -math.sin(math.radians(outer_angle)) * forearm_length)
-#             wrist_y_recommended_for_outer_angle = wrist_y + (
-#                     math.cos(math.radians(outer_angle)) * forearm_length)
-#             wrist_pos_for_min_recommended_angle = (
-#                 int(wrist_x_recommended_for_inner_angle), int(wrist_y_recommended_for_inner_angle))
-#             wrist_pos_for_max_recommended_angle = (
-#                 int(wrist_x_recommended_for_outer_angle), int(wrist_y_recommended_for_outer_angle))
-#             draw_line(index, elbow_pos, wrist_pos_for_min_recommended_angle)
-#             draw_line(index, elbow_pos, wrist_pos_for_max_recommended_angle)
-#             if error_id != -1 and index not in errors_df['frames'][error_id]:
-#                 errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+def check_if_global_forearm_angle_not_in_valid_range(index, all_kp_df, angles_df, name, side):
+    if side not in ['L', 'R']:
+        return
+    outer_angle = 10
+    inner_angle = 45
+    error_weight = 0
+    error_id = get_id_of_error(name)
+
+    global_forearm_angle = angles_df[side + 'GlobalForeArmAng'][index]
+    wrist_x = all_kp_df[side + 'WristX'][index]
+    wrist_y = all_kp_df[side + 'WristY'][index]
+    elbow_x = all_kp_df[side + 'ElbowX'][index]
+    if (((wrist_x > elbow_x and global_forearm_angle > outer_angle) or (
+            wrist_x < elbow_x and global_forearm_angle > inner_angle)) and side == 'L') or (((
+                                                                                                     wrist_x > elbow_x and global_forearm_angle > inner_angle) or (
+                                                                                                     wrist_x < elbow_x and global_forearm_angle > outer_angle)) and side == 'R'):
+        elbow_y = all_kp_df[side + 'ElbowY'][index]
+        elbow_pos = (int(elbow_x), int(elbow_y))
+        forearm_length = math.sqrt(
+            math.pow(all_kp_df[side + 'ElbowX'][index] - all_kp_df[side + 'WristX'][index], 2) + math.pow(
+                all_kp_df[side + 'ElbowY'][index] - all_kp_df[side + 'WristY'][index], 2))
+        if side == 'L':
+            wrist_x_recommended_for_inner_angle = elbow_x - (
+                    math.sin(math.radians(inner_angle)) * forearm_length)
+            wrist_y_recommended_for_inner_angle = elbow_y + (
+                    math.cos(math.radians(inner_angle)) * forearm_length)
+            wrist_x_recommended_for_outer_angle = wrist_x + (
+                    math.sin(math.radians(outer_angle)) * forearm_length)
+            wrist_y_recommended_for_outer_angle = wrist_y + (
+                    math.cos(math.radians(outer_angle)) * forearm_length)
+        else:
+            wrist_x_recommended_for_inner_angle = elbow_x - (
+                    math.sin(math.radians(inner_angle)) * forearm_length)
+            wrist_y_recommended_for_inner_angle = elbow_y + (
+                    math.cos(math.radians(inner_angle)) * forearm_length)
+            wrist_x_recommended_for_outer_angle = wrist_x - (
+                    math.sin(math.radians(outer_angle)) * forearm_length)
+            wrist_y_recommended_for_outer_angle = wrist_y + (
+                    math.cos(math.radians(outer_angle)) * forearm_length)
+        wrist_pos_for_min_recommended_angle = (
+            int(wrist_x_recommended_for_inner_angle), int(wrist_y_recommended_for_inner_angle))
+        wrist_pos_for_max_recommended_angle = (
+            int(wrist_x_recommended_for_outer_angle), int(wrist_y_recommended_for_outer_angle))
+        draw_line(index, elbow_pos, wrist_pos_for_min_recommended_angle)
+        draw_line(index, elbow_pos, wrist_pos_for_max_recommended_angle)
+        if error_id != -1 and index not in errors_df['frames'][error_id]:
+            error_weight += 1.5
+            errors_df['frames'][error_id] = errors_df['frames'][error_id] + [index]
+            errors_df['points_reduced'][error_id] = errors_df['points_reduced'][error_id] + error_weight
 
 
 def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0)):
@@ -113,11 +130,11 @@ def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0))
     cv2.imwrite(frame_path, annotated_frame)
 
 
-# error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range,
-#                    check_if_global_forearm_angle_not_in_valid_range]
-init_error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range]
+init_error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range,
+                        check_if_global_forearm_angle_not_in_valid_range]
 init_error_names = []
-error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range]
+error_detectors = [check_if_hand_crossed_the_middle_line, check_if_elbow_angle_not_in_valid_range,
+                   check_if_global_forearm_angle_not_in_valid_range]
 error_names = []
 
 
@@ -184,13 +201,12 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
     errors_df = error_map_df.join(errors_df)
     final_grade = evaluate_final_grade()
 
-
     errors_df = errors_df.append({'frames': math.nan, 'points_reduced': final_grade}, ignore_index=True)
     errors_df = errors_df[errors_df['frames'].str.len() > 0]
 
     new_error_to_add = {'frames': np.nan,
                         'description': 'final grade',
-                        'points_reduced' : final_grade}
+                        'points_reduced': final_grade}
     errors_df = errors_df.append(new_error_to_add, ignore_index=True)
     errors_df.to_csv(output_directory + '/swimmer_errors.csv', index=False)
     errors_df = None
@@ -245,4 +261,3 @@ def get_defined_error_list():
             plug_and_play_func_description = plug_and_play_func_description.replace('left', 'right')
             errors_descriptions.append(plug_and_play_func_description)
     return errors_descriptions
-
