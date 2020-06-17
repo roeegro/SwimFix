@@ -16,7 +16,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 ## Features
 - **Functionality**:
     - **2D real-time multi-person keypoint detection**:
-        - 18 body keypoints estimation using the OpenPose library.
+        - 18 body keypoints estimation using the OpenPose™ library.
     - **Performance Assessment** of the swimmer:
 	    - Error detection including multiple error types.
 	    - Manual error fixing over the frames where the error occurred
@@ -58,7 +58,8 @@ For more information about it and a guide how to set it up and use it, please ch
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzExNjI1NDk5LDE3MTg5ODcyMzUsLTQ5Nz
-kxMTg5OSwtMTM1OTQ3NjMxNywtMTg2ODc1OTMyOCwtMTI4NDA4
-NTA2OCwtNTEyOTUyMTc3LDM4NDk0NDM4LDEwMzc1MDE5NF19
+eyJoaXN0b3J5IjpbLTY2OTUyODM2MSwxNzE4OTg3MjM1LC00OT
+c5MTE4OTksLTEzNTk0NzYzMTcsLTE4Njg3NTkzMjgsLTEyODQw
+ODUwNjgsLTUxMjk1MjE3NywzODQ5NDQzOCwxMDM3NTAxOTRdfQ
+==
 -->
