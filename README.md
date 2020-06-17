@@ -16,7 +16,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 ## Features
 - **Functionality**:
     - **2D real-time multi-person keypoint detection**:
-        - 18 body keypoints estimation using the OpenPose™ library.
+        - 18 body keypoints estimation using the [OpenPose](#https://github.com/CMU-Perceptual-Computing-Lab/openpose)™ library.
     - **Performance Assessment** of the swimmer:
 	    - Error detection including multiple error types.
 	    - Manual error fixing over the frames where the error occurred
@@ -28,7 +28,7 @@ The system takes as input a video of swimming in a front crawl setting and outpu
 		- Graph for every measure with its value in every frame of the video
     - **Model Testing and Evaluation**
 	    - Manual video annotation tool to set the expected result.
-	    - Expected vs actual result comparison.
+	    - Expected vs actual result comparison made easy with graphs.
 - **Input**: Video of the swimmer in a front setting (i.e. the camera is located at the end of the pool's track and faces the swimmer as he swims towards it).
 - **Output**:
 	- Keypoints display on each frame (JPG)
@@ -58,8 +58,8 @@ For more information about it and a guide how to set it up and use it, please ch
 eyJoaXN0b3J5IjpbMTcxODk4NzIzNV19
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY2OTUyODM2MSwxNzE4OTg3MjM1LC00OT
-c5MTE4OTksLTEzNTk0NzYzMTcsLTE4Njg3NTkzMjgsLTEyODQw
-ODUwNjgsLTUxMjk1MjE3NywzODQ5NDQzOCwxMDM3NTAxOTRdfQ
-==
+eyJoaXN0b3J5IjpbLTE4NjMxMjUzNjMsMTcxODk4NzIzNSwtND
+k3OTExODk5LC0xMzU5NDc2MzE3LC0xODY4NzU5MzI4LC0xMjg0
+MDg1MDY4LC01MTI5NTIxNzcsMzg0OTQ0MzgsMTAzNzUwMTk0XX
+0=
 -->
