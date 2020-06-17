@@ -17,14 +17,14 @@ The following mechanism allows admin to manually annotate videos and save their 
 
 ## Prerequisites
 1.  You must have Python3 installed.
-2.  Run in the terminal/command line from the `/test` directory the following command: `pip install -r requirements.txt`
+2.  Run in the terminal/command line from the `/testing` directory the following command: `pip install -r requirements.txt`
 3. Video files must be .mov format only.
 4. Working with existing CSV files must be done with csvs stand in the  [input format](#csv-input-format)
 
 
 ## Upload files, and Settings of Keypoints and Lines
 
-1. Run in the terminal/command line from the `/test` directory the following command `python test_generator.py`.
+1. Run in the terminal/command line from the `/testing` directory the following command `python test_generator.py`.
     
 2.  Press on "Load Video" button in order to load a MOV video.
     
