@@ -8,7 +8,6 @@ import facade
 import output_manager
 import tester
 import socket
-import traceback
 
 # some_file.py
 import sys
@@ -362,7 +361,6 @@ def run_test(data, conn, params):
         movie_frames_dir, movie_ground_truth_data_dir, movie_test_results_dir = output_manager.build_test_environment_dir(
             movie_name, username)
 
-        # facade.filter_and_interpolate(expected_all_kp_csv_path, filename, output_path=movie_ground_truth_data_dir)
         frames_dir_path = output_manager.get_output_dir_path('swimfix_frames_path')
 
         from distutils.dir_util import copy_tree
@@ -431,7 +429,6 @@ def upload_image_fix(data, conn, params):
                 f.write(data)
                 data = conn.recv(1024)
                 counter += 1024
-                # print(counter)
             print('done receiving data')
         return_msg = SUCCESS_MSG
     except IndexError as e:
@@ -483,14 +480,12 @@ def upload(data, conn, params):
         filtered_and_interpolated_csv_path = facade.filter_and_interpolate(all_keypoints_csv_path, filename)
         conn.send('2'.encode('utf-8'))
         facade.plot_keypoints(filtered_and_interpolated_csv_path)
-        # interpolated_keypoints_path = facade.interpolate_and_plot(all_keypoints_csv_path)
         angles_csv_path = facade.get_angles_csv_from_keypoints_csv(filtered_and_interpolated_csv_path, avg_angles=False)
         conn.send('3'.encode('utf-8'))
         facade.get_detected_keypoints_by_frame(filtered_and_interpolated_csv_path)
         facade.get_average_swimming_period_from_csv(filtered_and_interpolated_csv_path)
         facade.evaluate_errors(filtered_and_interpolated_csv_path, angles_csv_path)
         conn.send('4'.encode('utf-8'))
-        # zip_path = facade.zip_output()
         creation_date = facade.get_output_dir_path('date_path').split('/')[-1]
         creation_time = facade.get_output_dir_path('time_path').split('/')[-1]
         creation_time = creation_time.replace('-', ':')
@@ -570,25 +565,6 @@ def view_tests_list(data, conn, params):
         print("An error occurred when trying to upload the video: ", e)
     finally:
         return return_msg
-    # print('view_tests_list')
-    # return_msg = FAILURE_MSG
-    # answer = ''
-    # path_to_look_at = '../tests'
-    # try:
-    #     test_list = os.listdir(path_to_look_at)
-    #     for test in test_list:
-    #         answer = answer + test + ','
-    #     print('answer is ')
-    #     print(answer)
-    #     return_msg = answer.encode("utf-8")
-    # except FileNotFoundError as e:
-    #     print("File not found at path: ", e.filename)
-    # except mysql.Error as e:
-    #     print("Something went wrong with MySQL: {}".format(e))
-    # except Exception as e:
-    #     print("An error occurred when trying to upload the video: ", e)
-    # finally:
-    #     return return_msg
 
 
 def view_test_results(data, conn, params):
@@ -641,29 +617,6 @@ def view_test_results(data, conn, params):
         print("An error occurred when trying to upload the video: ", e)
     finally:
         return return_msg
-    # return_msg = FAILURE_MSG
-    # try:
-    #     filename = data[data.index('filename:') + 1]
-    #     path_to_search_in = '../tests/{}'.format(filename)
-    #     print('search in {}'.format(path_to_search_in))
-    #     zip_location = '../temp'
-    #     output_manager.make_archive(path_to_search_in, zip_location, filename + ".zip")
-    #     file_path_to_send = zip_location + '/' + filename + ".zip"
-    #     f = open(file_path_to_send, 'rb')
-    #     l = f.read(1024)
-    #     while l:
-    #         conn.send(l)
-    #         print('sending zip...')
-    #         l = f.read(1024)
-    #     f.close()
-    #     print('sent all test zip')
-    #     return_msg = SUCCESS_MSG
-    # except FileNotFoundError as e:
-    #     print("File not found at path: ", e.filename)
-    # except Exception as e:
-    #     print("An error occurred when trying to upload the video: ", e)
-    # finally:
-    #     return return_msg
 
 
 def view_users(data, conn, params):
@@ -715,9 +668,7 @@ def get_defined_error_list(data, conn, params):
         defined_errors_list = facade.get_defined_errors_list()
         from functools import reduce
         defined_errors_list_as_str = reduce(lambda acc, x: acc + ',' + x, defined_errors_list)
-        print('before sending the list')
         conn.send(defined_errors_list_as_str.encode('utf-8'))
-        print('after sending')
         return_msg = SUCCESS_MSG
     except Exception as e:
         print("An error occurred when trying to send defined errors: ", e)

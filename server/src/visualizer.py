@@ -143,7 +143,7 @@ def autolabel(rects, ax):
 
 
 def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Number', mult_figures=True,
-                                      output_path=None,name_prefix = ''):
+                                      output_path=None, name_prefix=''):
     """ Plot single or multi figures from different csv files.
         **Very important assumption** : The columns must be the same when using this function for more than one csv path.
 
@@ -171,9 +171,6 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
             dict_for_df.update(
                 {x_col: dfs[0][x_col].values if x_col != 'Frame Number' else dfs[0].index})
             for index, y_value in enumerate(y_values):
-                # if index == 0:
-                #     dict_for_df.update(
-                #         {x_col: dfs[index][x_col].values if x_col != 'Frame Number' else dfs[index].index})
                 x_axis_of_current_csv = dfs[index][x_col] if x_col != 'Frame Number' else dfs[index].index
                 np_nans = np.empty(len(dict_for_df[x_col]))
                 np_nans[:] = np.nan
@@ -195,12 +192,10 @@ def plot_multi_graphs_from_other_csvs(csv_paths, y_cols=None, x_col='Frame Numbe
 
 def draw_detected_keypoints(keypoints_path):
     keypoints_df = pd.read_csv(keypoints_path).set_index('Frame Number')
-    # swimfix_frames_dir_path = os.getcwd() + '/../output/tom\MVI_8027_from_frame_60/2020-06-08/13-09-47/to_annotate'
     swimfix_frames_dir_path = output_manager.get_output_dir_path(key='swimfix_frames_path')
     coco_skeleton = utils.get_body_skeleton()
     for index, frame_data in keypoints_df.iterrows():
         int_index = int(index)
-        # current_frame_path = swimfix_frames_dir_path + '/annotated_frame_{}.jpg'.format(int_index)
         current_frame_path = swimfix_frames_dir_path + '/swimfix_annotated_frame_{}.jpg'.format(int_index)
         current_frame = cv2.imread(current_frame_path)
         nose = (int(frame_data['NoseX']), int(frame_data['NoseY'])) if not math.isnan(frame_data['NoseX']) else (
@@ -210,16 +205,20 @@ def draw_detected_keypoints(keypoints_path):
         r_shoulder = (int(frame_data['RShoulderX']), int(frame_data['RShoulderY'])) if not math.isnan(
             frame_data['RShoulderX']) else (
             math.nan, math.nan)
-        r_elbow = (int(frame_data['RElbowX']), int(frame_data['RElbowY'])) if not math.isnan(frame_data['RElbowX']) else (
+        r_elbow = (int(frame_data['RElbowX']), int(frame_data['RElbowY'])) if not math.isnan(
+            frame_data['RElbowX']) else (
             math.nan, math.nan)
-        r_wrist = (int(frame_data['RWristX']), int(frame_data['RWristY'])) if not math.isnan(frame_data['RWristX']) else (
+        r_wrist = (int(frame_data['RWristX']), int(frame_data['RWristY'])) if not math.isnan(
+            frame_data['RWristX']) else (
             math.nan, math.nan)
         l_shoulder = (int(frame_data['LShoulderX']), int(frame_data['LShoulderY'])) if not math.isnan(
             frame_data['LShoulderX']) else (
             math.nan, math.nan)
-        l_elbow = (int(frame_data['LElbowX']), int(frame_data['LElbowY'])) if not math.isnan(frame_data['LElbowX']) else (
+        l_elbow = (int(frame_data['LElbowX']), int(frame_data['LElbowY'])) if not math.isnan(
+            frame_data['LElbowX']) else (
             math.nan, math.nan)
-        l_wrist = (int(frame_data['LWristX']), int(frame_data['LWristY'])) if not math.isnan(frame_data['LWristX']) else (
+        l_wrist = (int(frame_data['LWristX']), int(frame_data['LWristY'])) if not math.isnan(
+            frame_data['LWristX']) else (
             math.nan, math.nan)
         body_parts = [nose, neck, r_shoulder, r_elbow, r_wrist, l_shoulder, l_elbow, l_wrist]
 
@@ -234,10 +233,4 @@ def draw_detected_keypoints(keypoints_path):
             if math.isnan(from_point[0]) or math.isnan(to_point[0]):
                 continue
             current_frame = cv2.line(current_frame, from_point, to_point, (0, 255, 0), 4)
-            cv2.imwrite(current_frame_path,current_frame)
-
-
-if __name__ == '__main__':
-    import os
-
-    draw_detected_keypoints(os.getcwd() + '/interpolated_and_filtered_all_keypoints.csv')
+            cv2.imwrite(current_frame_path, current_frame)

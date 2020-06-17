@@ -26,9 +26,6 @@ def generate_vectors_csv(csv_path, filename='vectors.csv', output_path=None):
     kp_cols = sorted(filter(lambda name: 'Score' not in name, df.columns.values))
     df.drop(columns=df.columns.difference(kp_cols), axis=1, inplace=True)
     df.reset_index(drop=True, inplace=True)
-    # frame_nums = df['Frame Number'].values
-    # df.insert(0, 'Frame Number', frame_nums)
-    # kp_cols.remove('Frame Number')
     for idx, frame in df.iterrows():
         frame_vectors = {'Frame Number': frame['Frame Number'],
                          'RChestX': frame['RShoulderX'] - frame['NeckX'],
@@ -81,7 +78,7 @@ def angle_between(v1, v2):
     v1_u = unit_vector(v1)
     v2_u = unit_vector(v2)
     return math.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
-    # return np.arccos(np.dot(v1_u, v2_u))
+
 
 
 def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_distance=10,
@@ -134,9 +131,7 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_d
         # Merge between intervals
         for interval_index in range(len(interval_list_per_this_column) - 1):
             start_seond_interval = interval_list_per_this_column[interval_index + 1]['start']
-            # start_first_interval = interval_list_per_this_column[interval_index]['start']
             end_first_interval = interval_list_per_this_column[interval_index]['end']
-            # end_second_interval = interval_list_per_this_column[interval_index + 1]['end']
             if start_seond_interval - end_first_interval <= max_distance:
                 frames_to_interpolate = np.arange(end_first_interval + 1, start_seond_interval)
                 try:
@@ -148,7 +143,6 @@ def generate_angles_csv(csv_path, filename='angles.csv', output_path=None, max_d
                 angles_df.loc[end_first_interval - 2:start_seond_interval + 2, [column]] = interval_df
 
     outp_path = output_manager.analytical_df_to_csv(angles_df, filename, output_path=output_path)
-    # pd.DataFrame.to_csv(angles_df, filname, index=False)
     return outp_path
 
 
@@ -358,6 +352,12 @@ def valid_frame(current_frame_df):
 
 
 def neck_estimator(df, intervals_per_body_part):
+    """ Estimates neck position by average of shoulder positions or by linear
+        interpolation inside of shoulders intervals.
+
+    :param df: Dataframe contains all keypoints.
+    :param intervals_per_body_part: List of Lists of dictionaries of keypoints intervals.
+    """
     # step 1: use mean shoulders rule if necessary
     for index, frame in df.iterrows():
         if not math.isnan(df['NeckX'][index]):  # we already know neck location
@@ -575,10 +575,6 @@ def try_extend_intervals_by_body_part(df, interval_list_per_hand, body_part):
                 new_start_interval_frame -= 1
         except:
             new_start_interval_frame += 1  # because we get out of bounds of df
-        # extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame,
-        #                                         'frames_to_inerpolate': np.sort(np.append(frames_to_interpolate , np.arange(
-        #                                             new_start_interval_frame,
-        #                                             start_interval_frame)))})
         extended_interval_list_per_hand.append({'start': new_start_interval_frame, 'end': new_end_interval_frame})
     return extended_interval_list_per_hand
 
@@ -742,9 +738,7 @@ def generate_interpolated_angles_csv(angles_path, output_path=None, filename='in
         # Merge between intervals
         for interval_index in range(len(interval_list_per_this_column) - 1):
             start_seond_interval = interval_list_per_this_column[interval_index + 1]['start']
-            start_first_interval = interval_list_per_this_column[interval_index]['start']
             end_first_interval = interval_list_per_this_column[interval_index]['end']
-            end_second_interval = interval_list_per_this_column[interval_index + 1]['end']
             if start_seond_interval - end_first_interval <= max_distance:
                 frames_to_interpolate = np.arange(end_first_interval + 1, start_seond_interval)
                 try:
@@ -759,18 +753,3 @@ def generate_interpolated_angles_csv(angles_path, output_path=None, filename='in
 
     return outp_path
 
-
-if __name__ == '__main__':
-    op_row_path = os.getcwd() + '/all_keypoints.csv'
-    # expected_path = os.getcwd() + '<Enter some path to ground truth file (Server/expected_data/csvs/csv file>'
-    # interp_path = filter_and_interpolate(op_row_path,
-    #                                      output_path='<can be deleted or put some path to generate output to.>',filename='new_interpolated')
-
-    interp_path = filter_and_interpolate(op_row_path,
-                                         output_path=os.getcwd(), filename='new_interpolated')
-
-    facade.get_angles_csv_from_keypoints_csv(interp_path, output_path=os.getcwd())
-
-    import visualizer
-    # visualizer.plot_multi_graphs_from_other_csvs([interp_path, op_row_path],
-    #                                              '<can be deleted or put some path to generate output to.>')

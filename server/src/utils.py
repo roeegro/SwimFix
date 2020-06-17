@@ -60,6 +60,3 @@ def keypoint_to_score(col_name):
         return col_name
     return col_name + 'Score'
 
-
-if __name__ == "__main__":
-    print(get_src_path())

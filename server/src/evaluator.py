@@ -107,8 +107,7 @@ def draw_line(frame_index, from_point, to_point, selected_bgr_color=(255, 0, 0))
     frame_index = int(frame_index)
     frame_path = output_manager.get_output_dirs_dict()[
                      'swimfix_frames_path'] + '/swimfix_annotated_frame_{}.jpg'.format(frame_index)
-    # frame_path = os.getcwd() + '/../output/roeegro/MVI_8027_from_frame_60/2020-06-15/12-41-55/swimfix_annotated_frames/swimfix_annotated_frame_{}.jpg'.format(
-    #     frame_index)
+
     frame = cv2.imread(frame_path)
     annotated_frame = cv2.line(frame, to_point, from_point, selected_bgr_color)
     cv2.imwrite(frame_path, annotated_frame)
@@ -183,7 +182,6 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
                           "error_names": error_names, "errors_df": errors_df})
 
     errors_df = error_map_df.join(errors_df)
-    # errors_df = errors_df[len(errors_df['frames']) == []]
     final_grade = evaluate_final_grade()
 
 
@@ -195,7 +193,6 @@ def perfomance_evaluator(all_kp_path, angles_path, output_path=None):
                         'points_reduced' : final_grade}
     errors_df = errors_df.append(new_error_to_add, ignore_index=True)
     errors_df.to_csv(output_directory + '/swimmer_errors.csv', index=False)
-    # error_map_df.to_csv(output_directory + '/map.csv', index=False)
     errors_df = None
     error_detectors = init_error_detectors
     error_names = init_error_names
@@ -249,8 +246,3 @@ def get_defined_error_list():
             errors_descriptions.append(plug_and_play_func_description)
     return errors_descriptions
 
-
-if __name__ == '__main__':
-    get_defined_error_list()
-    # perfomance_evaluator(os.getcwd() + '/interpolated_and_filtered_all_keypoints.csv', os.getcwd() + '/angles.csv',
-    #                      output_path=os.getcwd())

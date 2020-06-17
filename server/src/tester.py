@@ -1,28 +1,17 @@
-import math
-
 import output_manager
-import utils
 import visualizer
 import data_analyser
 import data_extractor
-from sklearn.metrics import mean_squared_error
 import pandas as pd
 import math
 from sklearn.metrics import mean_squared_error
 import os
-import facade
 
 
 def generate_interpolated_csv_for_test(test_csv_path):
     interpolated_test_csv_path = data_extractor.generate_interpolated_csv(test_csv_path,
                                                                           output_path='../expected_output')
     return interpolated_test_csv_path
-
-
-# def compare_keypoints(output_dirs_for_test, output_dirs_for_tested_video):
-#     interpolated_test_csv_path = generate_interpolated_csv_for_test(output_dirs_for_test)
-#     visualizer.show_body_parts_interpolated_location_diff_by_time(output_dirs_for_test, output_dirs_for_tested_video)
-#     return interpolated_test_csv_path
 
 
 def compare_col_from_csv(actual_csv_path, expected_csv_path, col_to_comp, comp_metric=mean_squared_error):
@@ -65,7 +54,8 @@ def start_test(actual_csvs_dir, expected_csvs_dir, output_path, movie_name):
                     visualizer.plot_multi_graphs_from_other_csvs([expected_csv_path, actual_csv_path],
                                                                  output_path=output_path)
 
-    calculate_loss_values(output_path, files_to_search_predicate=lambda x: "Ang" in x) # calculate loss function for angles files only
+    calculate_loss_values(output_path, files_to_search_predicate=lambda
+        x: "Ang" in x)  # calculate loss function for angles files only
     interpolated_and_filtered_csv_path = actual_csvs_dir + '/interpolated_and_filtered_all_keypoints.csv'
     ground_truth_all_kp = output_manager.get_expected_csv_path_for_movie(movie_name)
     visualizer.plot_multi_graphs_from_other_csvs([ground_truth_all_kp, interpolated_and_filtered_csv_path],
@@ -165,18 +155,3 @@ def calculate_loss_values(output_path, x_col='Frame Number', filename='loss_valu
         loss_df = loss_df.append({'filename': file, 'loss': loss}, ignore_index=True)
 
     loss_df.to_csv(output_path + '/' + filename, index=False)
-
-
-if __name__ == '__main__':
-    actual_path = '<enter actual path>'
-    actual_path = os.getcwd() + '/../output/roeegro/MVI_8180_from_frame_0/2020-06-14/20-24-06/analytical_data'
-    expected_path = '<enter expected path>'
-    expected_path = os.getcwd() + '/../tests/MVI_8180/ground_truth_data'
-    output_path = '<enter output path> '
-    cols = ['RShoulderX', 'RShoulderY', 'RElbowX', 'RElbowY', 'RWristX', 'RWristY',
-            'LShoulderX', 'LShoulderY', 'LElbowX', 'LElbowY', 'LWristX', 'LWristY']
-    output_path = os.getcwd() + '/comparison'
-    # start_test(actual_path, expected_path, output_path, 'MVI_8180')
-    # check_for_match_file_in_expected('angles', expected_path)
-    ang_comparison_path = os.getcwd() + '/../tests/MVI_8027/test_results'
-    calculate_loss_values(ang_comparison_path, files_to_search_predicate=lambda x: "Ang" in x)
