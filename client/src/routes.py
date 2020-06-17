@@ -26,7 +26,9 @@ finished = False
 indication_msg = None
 server_response = "".encode('utf-8')
 redirect_page = 'index.html'
-USERNAME = "guest"
+
+
+# session['username'] = 'guest'
 
 
 def is_admin():
@@ -40,7 +42,7 @@ def allowed_file(filename):
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
-    return render_template('about.html', isAdmin=is_admin())
+    return render_template('about.html', isAdmin=is_admin(), username=session['username'])
 
 
 @app.route('/forgot-password')
@@ -76,25 +78,31 @@ def add_test():
                 l = f.read(1024)
             f.close()
             os.remove(path_to_temp_store_flle)
-    return render_template('add-test.html')
+    return render_template('add-test.html', username=session['username'])
 
 
 @app.route('/admin-index', methods=['GET', 'POST'])
 def admin_index():
     if is_admin() == 'True':
-        return render_template('admin-index.html', username=USERNAME, isAdmin=is_admin())
+        return render_template('admin-index.html', username=session['username'], isAdmin=is_admin())
     flash("You are not authorized to access this page", 'danger')
     return redirect(url_for('index'))
 
 
 @app.route('/charts')
 def charts():
-    return render_template('charts.html', isAdmin=is_admin())
+    return render_template('charts.html', isAdmin=is_admin(), username=session['username'])
 
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', isAdmin=is_admin(), username=USERNAME)
+    username = 'guest'
+    try:
+        username = session['username']
+    except KeyError as e:
+        username = 'guest'
+    finally:
+        return render_template('index.html', isAdmin=is_admin(), username=username)
 
 
 @app.route('/status')
@@ -198,7 +206,7 @@ def load_video():
         indication_msg = None
     finished = False
     redirect_page = 'index'
-    return render_template('load-video.html', isAdmin=is_admin())
+    return render_template('load-video.html', isAdmin=is_admin(), username=session['username'])
 
 
 def get_size_of_file_path(file_path):
@@ -259,7 +267,7 @@ def run_test():
         indication_msg = None
     finished = False
     redirect_page = 'index'
-    return render_template('run-test.html')
+    return render_template('run-test.html', username=session['username'])
 
 
 @app.route('/tests-results', methods=['GET', 'POST'])
@@ -304,7 +312,7 @@ def tests_results():
     #     except:
     #         continue
 
-    return render_template('tests-results.html', data=data_to_pass, isAdmin=is_admin())
+    return render_template('tests-results.html', data=data_to_pass, isAdmin=is_admin(), username=session['username'])
 
 
 @app.route('/test-results/<details>', methods=['GET', 'POST'])
@@ -346,7 +354,8 @@ def test_results(details):
 
     data_to_pass = [{'path': path.replace('\\', '/')} for path in csvs_paths]  # for html format
     return render_template('test-result.html', data=data_to_pass, frames=frames_paths_dict,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num, loss_records=loss_records)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num, loss_records=loss_records,
+                           username=session['username'])
 
 
 @app.route('/previous-feedbacks', methods=['GET', 'POST'])
@@ -365,7 +374,7 @@ def previous_feedbacks():
             data = s.recv(1024)
 
     if files_details == 'Fail':
-        return render_template('previous-feedbacks.html', data=list(), isAdmin=is_admin())
+        return render_template('previous-feedbacks.html', data=list(), isAdmin=is_admin(), username=session['username'])
 
     files_details = files_details.split(',')
     files_details.reverse()  # To view new feedbacks first.
@@ -382,7 +391,8 @@ def previous_feedbacks():
         except:
             continue
 
-    return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin())
+    return render_template('previous-feedbacks.html', data=data_to_pass, isAdmin=is_admin(),
+                           username=session['username'])
 
 
 @app.route('/previous-feedback/<details>', methods=['GET', 'POST'])
@@ -402,7 +412,12 @@ def previous_feedback(details):
             os.mkdir(zip_location)
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
-            print('getting zip into temp directory ...')
+            try:
+                if data.decode('utf-8') == 'failure':
+                    flash(u'zip not found in server', 'danger')
+                    return redirect(url_for('index'))
+            except:
+                print('getting zip into temp directory ...')
             while data:
                 f.write(data)
                 data = s.recv(1024)
@@ -424,7 +439,7 @@ def previous_feedback(details):
 
     return render_template('previous-feedback.html', zip_name=zip_name, data=data_to_pass, frames=frames_paths_dict,
                            errors_list=error_description_by_frames, score=score,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num, username=session['username'])
 
 
 # Forum
@@ -447,7 +462,7 @@ def forum(page):
 
     return render_template("forum.html", p=2, topics=topics, pinned=pinned, page=page,
                            nextPageExists=nextPageExists,
-                           isAdmin=is_admin())
+                           isAdmin=is_admin(), username=session['username'])
 
 
 @app.route("/forum/topic/<forumPage>/<topicID>/<page>")
@@ -490,7 +505,8 @@ def topic(forumPage, topicID, page):
         return redirect("/forum/topic/" + forumPage + "/" + topicID + "/" + str(page - 1))
     posts = posts[:limit]
     return render_template("topic.html", p=2, posts=posts, name=name, topicID=topicID, forumPage=forumPage,
-                           page=page, nextPageExists=nextPageExists, isPinned=isPinned, isAdmin=is_admin())
+                           page=page, nextPageExists=nextPageExists, isPinned=isPinned, isAdmin=is_admin(),
+                           username=session['username'])
 
 
 # Create post, topic
@@ -550,6 +566,7 @@ def createTopic():
 
 def send_msg_to_server(msg):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.connect((SERVER_IP, SERVER_PORT))
         s.sendall(msg.encode('utf-8'))
         answer = b''
@@ -564,10 +581,9 @@ def send_msg_to_server(msg):
 @app.route('/', methods=['GET', 'POST'])
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    global USERNAME
     form = LoginForm(request.form)
     if not form.validate_on_submit():
-        return render_template('login.html', title='Login', form=form)
+        return render_template('login.html', title='Login', form=form, username='guest')
 
     _username = request.form['username']
     _passwd = request.form['password']
@@ -581,9 +597,7 @@ def login():
         session['logged_in'] = answer[2]
         session['isAdmin'] = answer[3]
         flash(u"You're now logged in!", "success")
-        USERNAME = _username
         return redirect(url_for('index'))
-
     flash(u"Incorrect login", "danger")
     return redirect(url_for('login'))
 
@@ -592,7 +606,7 @@ def login():
 def register():
     form = RegistrationForm()
     if not form.validate_on_submit():
-        return render_template('register.html', title='Register', form=form)
+        return render_template('register.html', title='Register', form=form, username=session['username'])
 
     _username = form.username.data
     _passwd = request.form['password']
@@ -612,8 +626,6 @@ def register():
 
 @app.route("/logout")
 def logout():
-    global USERNAME
-    USERNAME = 'guest'
     session.clear()
     return redirect(url_for('login'))
 
@@ -650,7 +662,7 @@ def plug_and_play():
     print(defined_errors_list)
     items = [{'id': defined_errors_list.index(defined_error), 'description': defined_error} for defined_error in
              defined_errors_list]
-    return render_template('plug-and-play.html', items=items, isAdmin=is_admin())
+    return render_template('plug-and-play.html', items=items, isAdmin=is_admin(), username=session['username'])
 
 
 # Helpers
@@ -690,7 +702,7 @@ def _pass_data():
         while start_msg.decode('utf-8') != 'start':
             if start_msg.decode('utf-8') == 'not found':
                 flash('No test found for this video', 'info')
-                return render_template('run-test.html')
+                return render_template('run-test.html', username=session['username'])
             start_msg = s.recv(1024)
         with open(path_to_save_img_in, "rb") as f:
             l = f.read(1024)
@@ -719,7 +731,12 @@ def user_feedback(details):
             os.mkdir(zip_location)
         with open(path_to_zip, 'wb') as f:
             data = s.recv(1024)
-            print('getting zip into temp directory ...')
+            try:
+                if data.decode('utf-8') == 'failure':
+                    flash(u'zip not found in server', 'danger')
+                    return redirect(url_for('index'))
+            except:
+                print('getting zip into temp directory ...')
             while data:
                 f.write(data)
                 data = s.recv(1024)
@@ -740,7 +757,8 @@ def user_feedback(details):
 
     return render_template('user-feedback.html', zip_name=zip_name, data=[], frames=frames_paths_dict,
                            errors_list=error_description_by_frames, score=score,
-                           isAdmin=is_admin(), first_frame_number=first_frame_num, last_frame_number=last_frame_num)
+                           isAdmin=is_admin(), first_frame_number=first_frame_num, last_frame_number=last_frame_num,
+                           username=session['username'])
 
 
 @app.route('/add-admin/<id_to_promote>/', methods=['GET', 'POST'])
@@ -761,10 +779,10 @@ def add_admin(id_to_promote):
     msg = 'view_users'
     users_details = pickle.loads(send_msg_to_server(msg))
 
-    return render_template('add-admin.html', data=users_details, isAdmin=is_admin())
+    return render_template('add-admin.html', data=users_details, isAdmin=is_admin(), username=session['username'])
 
 
 @app.route('/model-training', methods=['GET', 'POST'])
 def model_training():
     return render_template('model-training.html', server_ip=SERVER_IP, server_port=ANNOTATOR_TOOL_PORT,
-                           isAdmin=is_admin())
+                           isAdmin=is_admin(), username=session['username'])
