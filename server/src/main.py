@@ -48,7 +48,7 @@ args = parser.parse_known_args()
 params = dict()
 params["model_folder"] = "../openpose/models/"
 params["model_pose"] = "COCO"
-
+# params["number_people_max"] = 1
 
 # Add others in path?
 for i in range(0, len(args[1])):
@@ -64,6 +64,9 @@ for i in range(0, len(args[1])):
         key = curr_item.replace('-', '')
         if key not in params: params[key] = next_item
 
+# HOST = '84.228.103.80'  # Standard loopback interface address (localhost)
+# HOST = '192.168.43.250'  # Standard loopback interface address (localhost)
+# HOST = '10.0.0.10'  # Standard loopback interface address (localhost)
 HOST = '192.168.2.57'
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
