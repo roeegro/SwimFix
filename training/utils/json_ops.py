@@ -50,24 +50,32 @@ def filter_json(json_path, filters, out_path=None, segmentation=True):
     annots = parsed['annotations']
     filtered_imgs = [filter_dict(img, lambda elem: elem[0] in filters) for img in imgs]
     filtered_annots = [filter_dict(annot, lambda elem: elem[0] in filters) for annot in annots]
+    new_img_id_map = {}
+    for (idx, img) in enumerate(filtered_imgs):
+        new_img_id_map[img['id']] = idx + 1
+        img['id'] = idx + 1
 
-    new_img_id_map = {img['id']: idx + 1 for (idx, img) in enumerate(filtered_imgs)}
+    for anno in filtered_annots:
+        # try:
+        anno['image_id'] = new_img_id_map[anno['image_id']]
+        # except Exception as e:
+        #     print(e)
+
     dataset_dir = openpose_train_path + "dataset/COCO/cocoapi/images/custom"
     filtered_imgs = [copy_rename_img(img, dataset_dir) for img in filtered_imgs]
-
     # Removing annotations with no key points and images with no annotations
     annos_to_rem = []
     imgs_to_rem = []
     for anno in filtered_annots:
         try:
             if segmentation and anno['area'] is 0:
-                print('removed img with id: ', anno['image_id'])
+                # print('removed img with id: ', anno['image_id'])
                 imgs_to_rem.append(anno['image_id'])
                 annos_to_rem.append(anno)
             else:
                 kp = anno['keypoints']
         except Exception as e:
-            print('removed img with id: ', anno['image_id'])
+            # print('removed img with id: ', anno['image_id'])
             imgs_to_rem.append(anno['image_id'])
             annos_to_rem.append(anno)
 
@@ -78,14 +86,10 @@ def filter_json(json_path, filters, out_path=None, segmentation=True):
     parsed['images'] = list(filter(lambda img: img['id'] in map(lambda anno: anno['image_id'], parsed['annotations']), filtered_imgs))
 
     # Remapping the images id so it would be 1 to N when N is the number of images
-    for img in parsed['images']:
-        img['id'] = new_img_id_map[img['id']]
+    # for img in parsed['images']:
+    #     img['id'] = new_img_id_map[img['id']]
     # Fixing the annotations accordingly
-    for anno in parsed['annotations']:
-        # try:
-        anno['image_id'] = new_img_id_map[anno['image_id']]
-        # except Exception as e:
-        #     print(e)
+
 
     parsed['categories'][0]['skeleton'] = coco_skeleton
     with open(out_path, 'w') as f:
@@ -112,7 +116,10 @@ def copy_rename_img(img, dst_path):
     new_path = dst_path + "/" + img['file_name']
     old_path = annotator_path + img['path']
     img['path'] = new_path
-    shutil.copy(old_path, new_path)
+    try:
+        shutil.copy(old_path, new_path)
+    except shutil.SameFileError as e:
+        return img
     # print(img)
     return img
 

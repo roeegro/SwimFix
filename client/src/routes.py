@@ -528,6 +528,7 @@ def topic(forumPage, topicID, page):
 #     cur.close()
 #     return
 
+
 @app.route("/forum/createPost", methods=['POST'])
 def createPost():
     content = request.form['content']
@@ -567,8 +568,11 @@ def createTopic():
         # topicID = cur.lastrowid
         # cur.close()
         # createPostFunction(content, topicID, userID)
-        return redirect("/forum/topic/0/" + str(topicID) + "/0")
-    return redirect("/forum")
+        # return redirect("/forum/topic/0/" + str(topicID) + "/0")
+        flash(u'Topic named {} was created successfully'.format(title), 'success')
+        time.sleep(3)
+        return redirect("/forum/0")
+    return redirect("/forum/0")
 
 
 def send_msg_to_server(msg):
