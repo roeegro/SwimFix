@@ -704,7 +704,7 @@ def main_parser(data, conn, params):
         data = data.decode('utf-8')
         data_lst = (data.split(' '))
         print('decoded data :')
-        print(data)
+        # print(data)
         return_msg = (requests_dict[data_lst[0]])(data_lst[1:], conn, params)
     except IndexError as e:
         print("An error occurred: %s\nOn data: %s" % (data, e))

@@ -318,7 +318,7 @@ def get_keypoints_csv_from_video(video_path, params):
 
     # When everything done, release
     # the video capture object
-    print("finished")
+    print("finished keypoint detection")
     cap.release()
     annotated_video_cap.release()
     shutil.move('annotated_video.avi', output_dirs['annotated_video'])

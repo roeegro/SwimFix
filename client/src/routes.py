@@ -230,6 +230,7 @@ def run_test():
             userID = session.get('ID') if session and session.get('logged_in') else 0
             for video_path in videos_paths_to_upload:
                 video_name = (video_path.split('/')[-1]).split('.')[0]  # no extension
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.connect((SERVER_IP, SERVER_PORT))
                 msg = 'run_test user_id: {} filename: {} file_size: {}'.format(userID, video_name,
                                                                                get_size_of_file_path(video_path))
