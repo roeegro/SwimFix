@@ -10,7 +10,8 @@
 ## Introduction
 This is an official git repository for the graduation project of our B<span>.Sc. in Software Engineering in Ben Gurion University of the Negev located in Be'er Sheva, Israel.
 We have developed a system for improving front crawl swimming which relies on pose estimation of the swimmer.
-The system takes as input a video of swimming in a front crawl setting and outputs a feedback for the swimmer to improve upon.
+The system takes as input a video of swimming in a front crawl setting and outputs a feedback for the swimmer to improve upon.<br>
+Wix site: https://tommarz.wixsite.com/graduation-project/
 
 ## Features
 - **Functionality**:
