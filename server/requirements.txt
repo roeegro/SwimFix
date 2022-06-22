@@ -2,7 +2,7 @@ requests==2.23.0
 opencv_python==4.2.0.32
 scipy==0.19.1
 matplotlib==2.1.1
-numpy==1.13.3
+numpy==1.22.0
 pandas==1.0.4
 pyopenpose==0.1
 python_bcrypt==0.3.2
